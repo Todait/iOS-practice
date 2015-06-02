@@ -8,16 +8,20 @@
 
 import UIKit
 
-class MainViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate  {
+class MainViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate,AimTableViewCellDelegate{
 
     var parallelView : ParallelHeaderView!
     var mainTableView : UITableView!
     var createAimButton : UIButton!
     var settingButton : UIButton!
+    var timer : NSTimer!
     
+    var remainingTime : NSTimeInterval! = 24*60*60
     
     let headerHeight : CGFloat = 220
     let metaData:[String] = ["영어공부","수학공부","프로그래밍","회화공부","운동"]
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,40 +29,27 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         addMainTableView()
         addAimButton()
         
-        // Do any additional setup after loading the view.
-    }
-    
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        addSettingBtn()
-        titleLabel.text = "Todait"
         
-    }
-    
-    func addSettingBtn(){
-        settingButton = UIButton(frame: CGRectMake(288*ratio, 30*ratio, 24*ratio, 24*ratio))
-        settingButton.setImage(UIImage(named: "setting@2x.png"), forState: UIControlState.Normal)
-        settingButton.addTarget(self, action: Selector("setting"), forControlEvents: UIControlEvents.TouchUpInside)
-        view.addSubview(settingButton)
-    }
-    
-    func setting(){
+        setupTimer()
+        timerStart()
         
-        self.navigationController?.pushViewController(SettingViewController(), animated: true)
+        calculateRemainingTime()
     }
+    
     
     func addParallelView(){
         parallelView = ParallelHeaderView(frame: CGRectMake(0, 0, width, headerHeight))
-        parallelView.backgroundColor = UIColor.colorWithHexString("#3CB2A2")
+        parallelView.backgroundColor = UIColor.colorWithHexString("#27DB9F")
     }
     
     func addMainTableView(){
         
         mainTableView = UITableView(frame: CGRectMake(0,navigationHeight,width,height - navigationHeight), style: UITableViewStyle.Grouped)
-        mainTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        mainTableView.registerClass(AimTableViewCell.self, forCellReuseIdentifier: "cell")
         mainTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
         mainTableView.delegate = self
         mainTableView.dataSource = self
+        mainTableView.contentOffset.y = 0
         view.addSubview(mainTableView)
         
     }
@@ -79,11 +70,106 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         view.addSubview(createAimButton)
     }
+    
+    func setupTimer(){
+        //currentTime = 0
+        //totalTime = 0
+    }
+    
+    func timerStart(){
+        timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("countDown"), userInfo: nil, repeats: true)
+        countDown()
+    }
+    
+    func countDown(){
+        
+        if remainingTime > 0{
+           remainingTime = remainingTime - 1
+        }else{
+            calculateRemainingTime()
+        }
+        
+        updateTimeLabel()
+        
+    }
+    
+    func stopTimer(){
+        timer.invalidate()
+    }
+    
+    func updateTimeLabel(){
+        parallelView.remainingTimeLabel.text = "오늘 남은 시간 \(getTimeStringFromSeconds(remainingTime))"
+    }
+    
+    func getTimeStringFromSeconds(seconds : NSTimeInterval ) -> String {
+        
+        
+        let remainder : Int = Int(seconds % 3600 )
+        let hour : Int = Int(seconds / 3600)
+        let minute : Int = Int(remainder / 60)
+        let second : Int = Int(remainder % 60)
+        
+        return String(format:  "%02lu:%02lu:%02lu", arguments: [hour,minute,second])
+    }
+    
+    func calculateRemainingTime(){
+        
+        var calendar : NSCalendar! = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)
+        calendar.locale = NSLocale.currentLocale()
+        
+        var nowDateComp = calendar.components(NSCalendarUnit.CalendarUnitDay | NSCalendarUnit.CalendarUnitHour | NSCalendarUnit.CalendarUnitMinute | NSCalendarUnit.CalendarUnitSecond, fromDate: NSDate())
+        
+        remainingTime = calculateSecondsFromNowToLimit(nowDateComp)
+    }
+    
+    
+    func calculateSecondsFromNowToLimit(nowDateComp : NSDateComponents) -> NSTimeInterval{
+        
+        let limitHour = 27
+        let limitMinute = 30
+        
+        return 3600 * (27-NSTimeInterval(nowDateComp.hour)) + 60 * (30-NSTimeInterval(nowDateComp.minute)) - (NSTimeInterval(nowDateComp.second))
+    }
+    
+    func isTodayEndTimeDefault() -> Int{
+        
+        if (defaults.integerForKey("todayEndTime") == 0){
+            return 240000
+        }else{
+            return defaults.integerForKey("todayEndTime")
+        }
+        
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        addSettingBtn()
+        titleLabel.text = "Todait"
+        mainTableView.contentOffset.y = 0
+        parallelView.scrollViewDidScroll(mainTableView)
+    }
+    
+    func addSettingBtn(){
+        settingButton = UIButton(frame: CGRectMake(288*ratio, 30*ratio, 24*ratio, 24*ratio))
+        settingButton.setImage(UIImage(named: "setting@2x.png"), forState: UIControlState.Normal)
+        settingButton.addTarget(self, action: Selector("setting"), forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(settingButton)
+    }
+    
+    func setting(){
+        
+        self.navigationController?.pushViewController(SettingViewController(), animated: true)
+    }
+    
+    
 
     func showNewAimVC(){
         self.navigationController?.pushViewController(NewAimViewController(), animated: true)
     }
 
+    
+    
+    
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -100,29 +186,34 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! AimTableViewCell
+        cell.delegate = self
+        cell.indexPath = indexPath
+        
+        let aimLibrary = AimLibrary().library[indexPath.row]
+        let current = aimLibrary["current"] as! NSInteger!
+        let aim = aimLibrary["aim"] as! NSInteger!
+        let percent : CGFloat = CGFloat(current)/CGFloat(aim)
+        let unit = aimLibrary["unit"] as! String!
         
         
-        var timerButton : UIButton = UIButton(frame: CGRectMake(20*ratio, 10*ratio, 30*ratio, 30*ratio))
-        timerButton.backgroundColor = UIColor.clearColor()
-        timerButton.clipsToBounds = true
-        timerButton.layer.cornerRadius = 15*ratio
-        timerButton.layer.borderWidth = 2*ratio
-        timerButton.layer.borderColor = UIColor.colorWithHexString("#C9C9C9").CGColor
-        cell.contentView.addSubview(timerButton)
+        cell.titleLabel.text = aimLibrary["title"] as! String!
+        cell.contentsLabel.text = "\(current) / \(aim) \(aim)\(unit)"
+        cell.percentLabel.text = String(format: "%lu%@", Int(percent*100),"%")
+        cell.percentLayer.strokeColor = UIColor.orangeColor().CGColor
+        cell.percentLayer.strokeEnd = percent
         
         
-        
-        
-        
-        var title : UILabel = UILabel(frame: CGRectMake(60*ratio, 10*ratio, 200*ratio, 30*ratio))
-        title.font = UIFont(name: "AvenirNext-Regular", size: 16*ratio)
-        title.text = metaData[indexPath.row]
-        title.textColor = UIColor.colorWithHexString("#969696")
-        
-        cell.contentView.addSubview(title)
+        if indexPath.row % 3 == 0 {
+            cell.colorBoxView.backgroundColor = UIColor.colorWithHexString("#1E56A4")
+        }
         
         return cell
+    }
+    
+    func timerButtonClk(indexPath:NSIndexPath) {
+        
+        self.navigationController?.pushViewController(TimerViewController(),animated: true)
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -144,6 +235,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             scrollView.contentOffset.y = 0
         }
         
+    }
+    
+    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        parallelView.scrollViewDidScroll(scrollView)
+        calculateRemainingTime()
     }
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {

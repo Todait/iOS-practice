@@ -8,7 +8,7 @@
 
 import UIKit
 
-@objc protocol TodaitNavigationDelegate : NSObjectProtocol {
+protocol TodaitNavigationDelegate : NSObjectProtocol {
     func backButtonClk()
 }
 

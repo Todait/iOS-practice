@@ -65,6 +65,18 @@ class SettingViewController: BasicViewController,UITableViewDelegate,TodaitNavig
         return cell
     }
     
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        
+        if indexPath.section == 1 && indexPath.row == 0 {
+            
+        }
+        
+        
+        
+        
+    }
+    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 4
     }

@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C00D4A91B1D49E300CC1D4C /* AimLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C00D4A81B1D49E300CC1D4C /* AimLibrary.swift */; };
+		4C969A321B1D618B00712AB0 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C969A311B1D618B00712AB0 /* DetailViewController.swift */; };
+		4C969A3B1B1D65EC00712AB0 /* track.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4C969A3A1B1D65EC00712AB0 /* track.jpg */; };
+		4C969A421B1D6A0300712AB0 /* TimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C969A401B1D6A0300712AB0 /* TimerViewController.swift */; };
+		4C969A431B1D6A0300712AB0 /* TimerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4C969A411B1D6A0300712AB0 /* TimerViewController.xib */; };
 		4CB353741B1C030F00E36245 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB353731B1C030F00E36245 /* AppDelegate.swift */; };
 		4CB353771B1C030F00E36245 /* Todait.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4CB353751B1C030F00E36245 /* Todait.xcdatamodeld */; };
 		4CB353791B1C030F00E36245 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB353781B1C030F00E36245 /* ViewController.swift */; };
@@ -41,6 +46,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4C00D4A81B1D49E300CC1D4C /* AimLibrary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AimLibrary.swift; sourceTree = "<group>"; };
+		4C969A311B1D618B00712AB0 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		4C969A3A1B1D65EC00712AB0 /* track.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = track.jpg; sourceTree = "<group>"; };
+		4C969A401B1D6A0300712AB0 /* TimerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerViewController.swift; sourceTree = "<group>"; };
+		4C969A411B1D6A0300712AB0 /* TimerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TimerViewController.xib; sourceTree = "<group>"; };
 		4CB3536E1B1C030F00E36245 /* Todait.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todait.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CB353721B1C030F00E36245 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4CB353731B1C030F00E36245 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -86,6 +96,40 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4C969A2F1B1D5B5B00712AB0 /* Setting */ = {
+			isa = PBXGroup;
+			children = (
+				4CB353A81B1C41F900E36245 /* SettingViewController.swift */,
+			);
+			name = Setting;
+			sourceTree = "<group>";
+		};
+		4C969A301B1D5B6300712AB0 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				4C969A311B1D618B00712AB0 /* DetailViewController.swift */,
+			);
+			name = Detail;
+			sourceTree = "<group>";
+		};
+		4C969A331B1D627700712AB0 /* Timer */ = {
+			isa = PBXGroup;
+			children = (
+				4C969A3A1B1D65EC00712AB0 /* track.jpg */,
+				4C969A401B1D6A0300712AB0 /* TimerViewController.swift */,
+				4C969A411B1D6A0300712AB0 /* TimerViewController.xib */,
+			);
+			name = Timer;
+			sourceTree = "<group>";
+		};
+		4C969A441B1D8D7C00712AB0 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4CB353751B1C030F00E36245 /* Todait.xcdatamodeld */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
 		4CB353651B1C030F00E36245 = {
 			isa = PBXGroup;
 			children = (
@@ -107,15 +151,16 @@
 		4CB353701B1C030F00E36245 /* Todait */ = {
 			isa = PBXGroup;
 			children = (
+				4C969A441B1D8D7C00712AB0 /* Model */,
+				4C969A331B1D627700712AB0 /* Timer */,
+				4C969A301B1D5B6300712AB0 /* Detail */,
+				4C969A2F1B1D5B5B00712AB0 /* Setting */,
+				4CB353B21B1D3E2800E36245 /* Main */,
 				4CB353731B1C030F00E36245 /* AppDelegate.swift */,
 				4CB353781B1C030F00E36245 /* ViewController.swift */,
 				4CB353981B1C079200E36245 /* BasicViewController.swift */,
-				4CB3539A1B1C08EE00E36245 /* MainViewController.swift */,
-				4CB353A81B1C41F900E36245 /* SettingViewController.swift */,
 				4CB353B01B1C562100E36245 /* NewAimViewController.swift */,
-				4CB353A01B1C2A0D00E36245 /* AimTableViewCell.swift */,
 				4CB3539C1B1C0ADB00E36245 /* TodaitNavigationBar.swift */,
-				4CB353AC1B1C500F00E36245 /* ParallelHeaderView.swift */,
 				4CB3539E1B1C218700E36245 /* UIColorExtension.swift */,
 				4CB353A21B1C399F00E36245 /* UIImageExtension.swift */,
 				4CB3537A1B1C030F00E36245 /* Main.storyboard */,
@@ -126,7 +171,6 @@
 				4CB353AE1B1C544000E36245 /* test.png */,
 				4CB353A41B1C402B00E36245 /* setting.png */,
 				4CB3537F1B1C030F00E36245 /* LaunchScreen.xib */,
-				4CB353751B1C030F00E36245 /* Todait.xcdatamodeld */,
 				4CB353711B1C030F00E36245 /* Supporting Files */,
 			);
 			path = Todait;
@@ -155,6 +199,17 @@
 				4CB3538B1B1C030F00E36245 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		4CB353B21B1D3E2800E36245 /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				4CB3539A1B1C08EE00E36245 /* MainViewController.swift */,
+				4CB353AC1B1C500F00E36245 /* ParallelHeaderView.swift */,
+				4CB353A01B1C2A0D00E36245 /* AimTableViewCell.swift */,
+				4C00D4A81B1D49E300CC1D4C /* AimLibrary.swift */,
+			);
+			name = Main;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -206,6 +261,7 @@
 				TargetAttributes = {
 					4CB3536D1B1C030F00E36245 = {
 						CreatedOnToolsVersion = 6.3;
+						DevelopmentTeam = K4XSKF4L48;
 					};
 					4CB353851B1C030F00E36245 = {
 						CreatedOnToolsVersion = 6.3;
@@ -245,6 +301,8 @@
 				4CB353AB1B1C48C100E36245 /* back@3x.png in Resources */,
 				4CB3537E1B1C030F00E36245 /* Images.xcassets in Resources */,
 				4CB353A71B1C41A700E36245 /* setting@2x.png in Resources */,
+				4C969A431B1D6A0300712AB0 /* TimerViewController.xib in Resources */,
+				4C969A3B1B1D65EC00712AB0 /* track.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,12 +326,15 @@
 				4CB353A11B1C2A0D00E36245 /* AimTableViewCell.swift in Sources */,
 				4CB3539D1B1C0ADB00E36245 /* TodaitNavigationBar.swift in Sources */,
 				4CB353B11B1C562100E36245 /* NewAimViewController.swift in Sources */,
+				4C00D4A91B1D49E300CC1D4C /* AimLibrary.swift in Sources */,
 				4CB353A91B1C41F900E36245 /* SettingViewController.swift in Sources */,
 				4CB353AD1B1C500F00E36245 /* ParallelHeaderView.swift in Sources */,
 				4CB353A31B1C399F00E36245 /* UIImageExtension.swift in Sources */,
+				4C969A421B1D6A0300712AB0 /* TimerViewController.swift in Sources */,
 				4CB353771B1C030F00E36245 /* Todait.xcdatamodeld in Sources */,
 				4CB353741B1C030F00E36245 /* AppDelegate.swift in Sources */,
 				4CB3539B1B1C08EE00E36245 /* MainViewController.swift in Sources */,
+				4C969A321B1D618B00712AB0 /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,9 +461,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Todait/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -410,9 +475,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = Todait/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -469,6 +538,7 @@
 				4CB353921B1C030F00E36245 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		4CB353931B1C030F00E36245 /* Build configuration list for PBXNativeTarget "TodaitTests" */ = {
 			isa = XCConfigurationList;
@@ -477,6 +547,7 @@
 				4CB353951B1C030F00E36245 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

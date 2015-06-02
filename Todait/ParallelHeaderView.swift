@@ -15,11 +15,12 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     var backgroundImageView : UIImageView!
     var dateLabel : UILabel!
     
+    
     var completionInfoLabel : UILabel!
     var completionRateLabel : UILabel!
     var studyInfoLabel : UILabel!
     var studyTimeLabel : UILabel!
-    var spaceTimeLabel : UILabel!
+    var remainingTimeLabel : UILabel!
     
     var ratio : CGFloat!
     
@@ -33,6 +34,7 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
         addCompletionRateLabel()
         addStudyInfoLabel()
         addStudyTimeLabel()
+        addRemainingTimeLabel()
         addCenterLine()
         
         self.clipsToBounds = true
@@ -111,6 +113,15 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
         backgroundImageView.addSubview(studyTimeLabel)
     }
     
+    func addRemainingTimeLabel(){
+        remainingTimeLabel = UILabel(frame: CGRectMake(60*ratio, 180*ratio, 200*ratio, 20*ratio))
+        remainingTimeLabel.textAlignment = NSTextAlignment.Center
+        remainingTimeLabel.textColor = UIColor.whiteColor()
+        remainingTimeLabel.text = "오늘 남은 시간 12:33:39"
+        remainingTimeLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        backgroundImageView.addSubview(remainingTimeLabel)
+    }
+    
     func addCenterLine(){
         let line = UIView(frame: CGRectMake(159.75*ratio, 60*ratio, 0.5*ratio, 100*ratio))
         line.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
@@ -129,7 +140,13 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
         NSLog("%f", scrollView.contentOffset.y)
         
         var newFrame = backgroundImageView.frame
-        newFrame.origin.y = scrollView.contentOffset.y*0.5
+        
+        if scrollView.contentOffset.y*0.5 > 0 {
+            newFrame.origin.y = scrollView.contentOffset.y*0.5
+        }else{
+            newFrame.origin.y = 0
+        }
+        
         backgroundImageView.frame = newFrame
         
     }

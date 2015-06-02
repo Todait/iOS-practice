@@ -10,7 +10,7 @@ import UIKit
 
 class BasicViewController: UIViewController,UIGestureRecognizerDelegate {
     
-    let defaults = NSUserDefaults.standardUserDefaults()
+    let defaults : NSUserDefaults! = NSUserDefaults.standardUserDefaults()
     let navigationHeight : CGFloat = 64.0
     
     var todaitNavBar : TodaitNavigationBar!
