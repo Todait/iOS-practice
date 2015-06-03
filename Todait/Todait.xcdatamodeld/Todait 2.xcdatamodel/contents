@@ -85,7 +85,6 @@
         <attribute name="server_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <attribute name="start_date" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="unit" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
-        <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="category_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Category" syncable="YES"/>
     </entity>
     <entity name="TimeHistory" representedClassName="Todait.TimeHistory" syncable="YES">
@@ -146,7 +145,7 @@
         <element name="Diary" positionX="403" positionY="204" width="128" height="208"/>
         <element name="Off_Day" positionX="-128" positionY="402" width="128" height="163"/>
         <element name="Review_Task" positionX="-405" positionY="387" width="128" height="178"/>
-        <element name="Task" positionX="-234" positionY="63" width="128" height="283"/>
+        <element name="Task" positionX="-234" positionY="63" width="128" height="268"/>
         <element name="TimeHistory" positionX="133" positionY="513" width="128" height="193"/>
         <element name="TimeLog" positionX="396" positionY="-18" width="128" height="208"/>
         <element name="User" positionX="-585" positionY="117" width="128" height="163"/>

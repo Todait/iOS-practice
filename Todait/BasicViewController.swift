@@ -44,7 +44,7 @@ class BasicViewController: UIViewController,UIGestureRecognizerDelegate {
     
     func styleNavBar(){
         self.navigationController?.setNavigationBarHidden(true, animated: false)
-        todaitNavBar = TodaitNavigationBar(frame: CGRectMake(0, 0, width, navigationHeight))
+        todaitNavBar = TodaitNavigationBar(frame: CGRectMake(0, 0, width, navigationHeight*ratio))
         view.addSubview(todaitNavBar)
     }
     
@@ -65,6 +65,7 @@ class BasicViewController: UIViewController,UIGestureRecognizerDelegate {
         return UIStatusBarStyle.LightContent
     }
 
+    
     /*
     // MARK: - Navigation
 

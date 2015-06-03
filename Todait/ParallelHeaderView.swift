@@ -72,7 +72,7 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
         dateLabel.textColor = UIColor.whiteColor()
         dateLabel.font = UIFont(name: "AvenirNext-Regular", size: 16*ratio)
         dateLabel.textAlignment = NSTextAlignment.Center
-        dateLabel.text = "2015.06.01"
+        dateLabel.text = "2015.06.03"
         backgroundImageView.addSubview(dateLabel)
         
     }

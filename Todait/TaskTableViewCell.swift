@@ -9,13 +9,13 @@
 import UIKit
 
 
-protocol AimTableViewCellDelegate :  NSObjectProtocol {
+protocol TaskTableViewCellDelegate :  NSObjectProtocol {
     func timerButtonClk(indexPath:NSIndexPath)
 }
 
 
 
-class AimTableViewCell: UITableViewCell {
+class TaskTableViewCell: UITableViewCell {
     var titleLabel : UILabel!
     var contentsLabel : UILabel!
     var timerButton : UIButton!
@@ -25,7 +25,7 @@ class AimTableViewCell: UITableViewCell {
     var percentBezierPath : UIBezierPath!
     var indexPath : NSIndexPath!
     
-    var delegate : AimTableViewCellDelegate!
+    var delegate : TaskTableViewCellDelegate!
     
     var ratio : CGFloat!
     

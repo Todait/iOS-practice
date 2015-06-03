@@ -7,21 +7,23 @@
 //
 
 import UIKit
+import CoreData
 
-class MainViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate,AimTableViewCellDelegate{
+class MainViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate,TaskTableViewCellDelegate{
 
-    var parallelView : ParallelHeaderView!
-    var mainTableView : UITableView!
-    var createAimButton : UIButton!
-    var settingButton : UIButton!
-    var timer : NSTimer!
+    var parallelView: ParallelHeaderView!
+    var mainTableView: UITableView!
+    var createAimButton: UIButton!
+    var settingButton: UIButton!
+    var timer: NSTimer!
     
-    var remainingTime : NSTimeInterval! = 24*60*60
-    
-    let headerHeight : CGFloat = 220
-    let metaData:[String] = ["영어공부","수학공부","프로그래밍","회화공부","운동"]
+    var remainingTime: NSTimeInterval! = 24*60*60
     
     
+    var calendarButton: UIButton!
+    
+    let headerHeight: CGFloat = 220
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,18 +36,37 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         timerStart()
         
         calculateRemainingTime()
+    
+        
+        
+        loadTaskData()
     }
     
     
+    func loadTaskData(){
+        
+        let entityDescription = NSEntityDescription.entityForName("Task",inManagedObjectContext:managedObjectContext!)
+        
+        let request = NSFetchRequest()
+        request.entity = entityDescription
+        
+        var error: NSError?
+        var results = managedObjectContext?.executeFetchRequest(request, error: &error)
+        
+        NSLog("results %@",results!)
+    }
+    
+    
+    
     func addParallelView(){
-        parallelView = ParallelHeaderView(frame: CGRectMake(0, 0, width, headerHeight))
+        parallelView = ParallelHeaderView(frame: CGRectMake(0, 0, width, headerHeight*ratio))
         parallelView.backgroundColor = UIColor.colorWithHexString("#27DB9F")
     }
     
     func addMainTableView(){
         
-        mainTableView = UITableView(frame: CGRectMake(0,navigationHeight,width,height - navigationHeight), style: UITableViewStyle.Grouped)
-        mainTableView.registerClass(AimTableViewCell.self, forCellReuseIdentifier: "cell")
+        mainTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio,width,height - navigationHeight*ratio), style: UITableViewStyle.Grouped)
+        mainTableView.registerClass(TaskTableViewCell.self, forCellReuseIdentifier: "cell")
         mainTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
         mainTableView.delegate = self
         mainTableView.dataSource = self
@@ -69,6 +90,19 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         createAimButton.addTarget(self, action: Selector("showNewAimVC"), forControlEvents: UIControlEvents.TouchUpInside)
         
         view.addSubview(createAimButton)
+    }
+    
+    
+    func addCalendarButton(){
+        calendarButton = UIButton(frame: CGRectMake(15*ratio, 33*ratio, 20*ratio, 20*ratio))
+        calendarButton.backgroundColor = UIColor.yellowColor()
+        calendarButton.addTarget(self, action: Selector("showCalendarVC"), forControlEvents: UIControlEvents.TouchDown)
+        view.addSubview(calendarButton)
+        
+    }
+    
+    func showCalendarVC(){
+        self.navigationController?.pushViewController(CalendarViewController(), animated: true)
     }
     
     func setupTimer(){
@@ -144,6 +178,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         addSettingBtn()
+        addCalendarButton()
         titleLabel.text = "Todait"
         mainTableView.contentOffset.y = 0
         parallelView.scrollViewDidScroll(mainTableView)
@@ -164,12 +199,14 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
 
     func showNewAimVC(){
-        self.navigationController?.pushViewController(NewAimViewController(), animated: true)
+        performSegueWithIdentifier("showNewTaskViewController", sender: self)
     }
 
-    
-    
-    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let destination = segue.destinationViewController as! NewTaskViewController
+        
+        
+    }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -186,7 +223,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! AimTableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TaskTableViewCell
         cell.delegate = self
         cell.indexPath = indexPath
         
@@ -217,7 +254,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return headerHeight
+        return headerHeight * ratio
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
