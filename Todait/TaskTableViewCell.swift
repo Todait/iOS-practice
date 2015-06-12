@@ -38,10 +38,8 @@ class TaskTableViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        let screenRect = UIScreen.mainScreen().bounds
-        let screenWidth = screenRect.size.width
-        ratio = screenWidth/320
         
+        setupRatio()
         addTitleLabel()
         addContentsLabel()
         addTimerButton()
@@ -49,8 +47,14 @@ class TaskTableViewCell: UITableViewCell {
         addColorBoxView()
     }
     
+    func setupRatio(){
+        let screenRect = UIScreen.mainScreen().bounds
+        let screenWidth = screenRect.size.width
+        ratio = screenWidth/320
+    }
+    
     func addTitleLabel(){
-        titleLabel = UILabel(frame: CGRectMake(60*ratio, 10*ratio, 200*ratio, 14*ratio))
+        titleLabel = UILabel(frame: CGRectMake(60*ratio, 9*ratio, 200*ratio, 14*ratio))
         titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
         titleLabel.textColor = UIColor.colorWithHexString("#969696")
         titleLabel.textAlignment = NSTextAlignment.Left
@@ -58,7 +62,7 @@ class TaskTableViewCell: UITableViewCell {
     }
 
     func addContentsLabel(){
-        contentsLabel = UILabel(frame: CGRectMake(60*ratio, 25*ratio, 200*ratio, 22*ratio))
+        contentsLabel = UILabel(frame: CGRectMake(60*ratio, 23*ratio, 200*ratio, 22*ratio))
         contentsLabel.font = UIFont(name: "AvenirNext-Regular", size: 16*ratio)
         contentsLabel.textColor = UIColor.colorWithHexString("#969696")
         contentsLabel.textAlignment = NSTextAlignment.Left
@@ -99,7 +103,7 @@ class TaskTableViewCell: UITableViewCell {
         percentLayer = CAShapeLayer()
         percentLayer.path = percentBezierPath.CGPath
         percentLayer.fillColor = UIColor.clearColor().CGColor
-        percentLayer.strokeColor = UIColor.redColor().CGColor
+        percentLayer.strokeColor = UIColor.colorWithHexString("#FFFB887E").CGColor
         percentLayer.strokeStart = 0.0
         percentLayer.strokeEnd = 0.5
         percentLayer.lineWidth = DEFAULT_LINE_WIDTH
@@ -113,7 +117,7 @@ class TaskTableViewCell: UITableViewCell {
         percentLabel.font = UIFont(name: "AvenirNext-Regular", size: 8*ratio)
         percentLabel.text = "%"
         percentLabel.textAlignment = NSTextAlignment.Center
-        percentLabel.textColor = UIColor.orangeColor()
+        percentLabel.textColor = UIColor.colorWithHexString("#00D2B1")
         self.addSubview(percentLabel)
     }
     

@@ -10,11 +10,13 @@ import UIKit
 
 class InvestViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource{
 
+    @IBOutlet weak var investTableView: UITableView!
+    @IBOutlet weak var totalTimeLabel: UILabel!
+    
     
     var blurEffectView: UIVisualEffectView!
-    var investTableView: UITableView!
+    //var investTableView: UITableView!
     var whiteView: UIView!
-    var totalTimeLabel: UILabel!
     
     var completeButton: UIButton!
     let weekNameData:[String] = ["일","월","화","수","목","금","토"]
@@ -24,7 +26,10 @@ class InvestViewController: BasicViewController,UITableViewDelegate,UITableViewD
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        //addInfoContentsView()
+        
+        /*
         setupBlurBackground()
         addWhiteBackground()
         addInfoTitleView()
@@ -32,7 +37,7 @@ class InvestViewController: BasicViewController,UITableViewDelegate,UITableViewD
         addInvestTableView()
         //addInvestAddButton()
         addCompleteButton()
-        
+        */
     }
     
     func setupBlurBackground(){
@@ -139,7 +144,7 @@ class InvestViewController: BasicViewController,UITableViewDelegate,UITableViewD
     func addInvestTableView(){
         
         investTableView = UITableView(frame: CGRectMake(0,320*ratio,width,height-370*ratio), style: UITableViewStyle.Grouped)
-        investTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        investTableView.registerClass(InvestTableViewCell.self, forCellReuseIdentifier: "cell")
         investTableView.contentInset = UIEdgeInsetsMake(-25*ratio, 0, 0, 0)
         investTableView.delegate = self
         investTableView.dataSource = self
@@ -151,7 +156,7 @@ class InvestViewController: BasicViewController,UITableViewDelegate,UITableViewD
     
     func addCompleteButton(){
         completeButton = UIButton(frame: CGRectMake(0, height-50*ratio, width, 50*ratio))
-        completeButton.backgroundColor = UIColor.colorWithHexString("#27DB9F")
+        completeButton.backgroundColor = UIColor.colorWithHexString("#00D2B1")
         completeButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         completeButton.setTitle("확인", forState: UIControlState.Normal)
         completeButton.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
@@ -170,7 +175,7 @@ class InvestViewController: BasicViewController,UITableViewDelegate,UITableViewD
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 80*ratio
+        return 100*ratio
     }
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -187,7 +192,7 @@ class InvestViewController: BasicViewController,UITableViewDelegate,UITableViewD
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! InvestTableViewCell
         
         cell.backgroundColor = UIColor.whiteColor()
         

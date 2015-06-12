@@ -23,7 +23,7 @@ class TodaitNavigationBar: UINavigationBar {
         
         self.tintColor = UIColor.whiteColor()
         setupRatio()
-        self.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("#27DB9F"),frame:frame), forBarMetrics: UIBarMetrics.Default)
+        self.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("#00D2B1"),frame:frame), forBarMetrics: UIBarMetrics.Default)
         addBackButton()
         
     }

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class TimerViewController: BasicViewController,TodaitNavigationDelegate {
     
@@ -15,26 +16,37 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
     var backgroundImageView : UIImageView!
     var backgroundImage : UIImage!
     
-    var mainTimerLabel : UILabel!
+    @IBOutlet weak var mainTimerLabel: UILabel!
     var subTimerLabel : UILabel!
     var contentsLabel : UILabel!
     var timerButton : UIButton!
     
-    
     var currentTime : NSTimeInterval! = 0
     var totalTime : NSTimeInterval! = 0
+    
+    
+    var startDate: NSDate!
+    var endDate: NSDate!
+    
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var day:Day!
+    var task:Task!
+    
+    var completeButton:UIButton!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.whiteColor()
-        setupBackgroundImage()
-        addBackgroundImageView()
-        addMainTimerLabel()
+        
+        
+        
         addSubTimerLabel()
         addTimerButton()
-        
         setupTimer()
         startTimer()
+        
+        addCompleteButton()
     }
     
     func setupBackgroundImage(){
@@ -99,20 +111,98 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
     
     func timerButtonClk(){
         if timer.valid {
+            
+            endDate = NSDate()
             stopTimer()
+            
+            recordTime()
+            
+            
+            
         }else{
             startTimer()
+            
         }
+    }
+    
+    
+    func recordTime(){
+        
+        
+        saveTimeLog()
+        saveTimeHistory()
+        
+        day.done_second = NSNumber(integer:day.done_second.integerValue+Int(totalTime))
+        var error:NSError?
+        managedObjectContext?.save(&error)
+        
+        NSLog("시간이 저장되었습니다",0)
+        
+    }
+    
+    
+    func saveTimeLog(){
+        
+        let entityDescription = NSEntityDescription.entityForName("TimeLog", inManagedObjectContext:managedObjectContext!)
+        let timeLog = TimeLog(entity: entityDescription!, insertIntoManagedObjectContext:managedObjectContext)
+        timeLog.dirty_flag = 0
+        timeLog.day_id = day
+        timeLog.timestamp = NSDate().timeIntervalSince1970
+        timeLog.created_at = NSDate()
+        timeLog.server_id = 0
+        timeLog.before_second = day.done_second
+        timeLog.after_second = day.done_second.integerValue + Int(totalTime)
+        timeLog.done_second = Int(totalTime)
+        timeLog.created_at = NSDate()
+        timeLog.updated_at = NSDate()
+        
+        var error: NSError?
+        managedObjectContext?.save(&error)
+    }
+    
+    func saveTimeHistory(){
+        
+        let entityDescription = NSEntityDescription.entityForName("TimeHistory", inManagedObjectContext:managedObjectContext!)
+        let timeHistory = TimeHistory(entity: entityDescription!, insertIntoManagedObjectContext:managedObjectContext)
+        timeHistory.dirty_flag = 0
+        timeHistory.day_id = day
+        timeHistory.created_at = NSDate()
+        timeHistory.updated_at = NSDate()
+        timeHistory.server_id = 0
+        timeHistory.server_day_id = 0
+        timeHistory.started_at = startDate
+        timeHistory.ended_at = endDate
+        timeHistory.done_millis = endDate.timeIntervalSinceDate(startDate)
+        
+        var error: NSError?
+        managedObjectContext?.save(&error)
     }
     
     func setupTimer(){
         currentTime = 0
         totalTime = 0
+        startDate = NSDate()
     }
     
     func startTimer(){
         timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("countDown"), userInfo: nil, repeats: true)
         countDown()
+    }
+    
+    
+    func addCompleteButton(){
+        
+        completeButton = UIButton(frame:CGRectMake(50*ratio, 400*ratio, 220*ratio, 45*ratio))
+        completeButton.layer.borderWidth = 2*ratio
+        completeButton.layer.borderColor = UIColor.todaitGreen().CGColor
+        completeButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame: CGRectMake(0,0,260*ratio,45*ratio)), forState:UIControlState.Normal)
+        completeButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 260*ratio, 45*ratio)), forState: UIControlState.Highlighted)
+        completeButton.setTitle("Complete", forState: UIControlState.Normal)
+        completeButton.setTitleColor(UIColor.todaitGreen(), forState: UIControlState.Normal)
+        completeButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Highlighted)
+        completeButton.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 18*ratio)
+        
+        view.addSubview(completeButton)
     }
     
     func countDown(){
@@ -149,7 +239,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
         
-        self.titleLabel.text = "타이머"
+        self.titleLabel.text = task.name
         
         todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(),frame:todaitNavBar.frame), forBarMetrics: UIBarMetrics.Default)
         todaitNavBar.shadowImage = UIImage()

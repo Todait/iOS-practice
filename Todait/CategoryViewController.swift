@@ -8,13 +8,14 @@
 //
 
 import UIKit
+import CoreData
 
 protocol CategoryDelegate : NSObjectProtocol {
-    func categoryEdited(color:UIColor,title:String)
+    func categoryEdited(editedCategory:Category)
 }
 
 
-class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource{
+class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,UpdateDelegate{
     
     
     var categoryTableView: UITableView!
@@ -23,14 +24,16 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
     var selectedIndex: Int! = 0
     let headerHeight: CGFloat = 220
     let metaData: [String] = ["영어","수학","국어","회화","운동"]
-    let colorData: [String] = ["#969696","27DB9F","F53436","FBEB56","5A5A5A"]
+    let colorData: [String] = ["#FF969696","#FF00D2B1","#FFF53436","#FFFBEB56","#FF5A5A5A"]
+    var categoryData: [Category] = []
+    
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
 
     override func viewDidLoad() {
         super.viewDidLoad()
         addCategoryTableView()
-    
+        loadCategoryData()
     }
     
     func addCategoryTableView(){
@@ -45,7 +48,19 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         
     }
     
-    
+    func loadCategoryData(){
+        
+        let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
+        
+        let request = NSFetchRequest()
+        request.entity = entityDescription
+        
+        var error: NSError?
+        
+        categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Category]
+        
+        NSLog("Category results %@",categoryData)
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -61,15 +76,31 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
     
     func addCategoryBtn(){
         addCategoryButton = UIButton(frame: CGRectMake(288*ratio, 30*ratio, 24*ratio, 24*ratio))
-        addCategoryButton.setImage(UIImage(named: "setting@2x.png"), forState: UIControlState.Normal)
+        addCategoryButton.setImage(UIImage.maskColor("newPlus.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
         addCategoryButton.addTarget(self, action: Selector("newCategory"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(addCategoryButton)
     }
     
     func newCategory(){
         
-        //self.navigationController?.pushViewController(InvestViewController(), animated: true)
+        let newCategoryVC = NewCategoryViewController()
+        newCategoryVC.delegate = self
+        newCategoryVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        
+        self.navigationController?.presentViewController(newCategoryVC, animated: true, completion: { () -> Void in
+            
+        })
+    }
     
+    func needToUpdate(){
+        loadCategoryData()
+        
+        if categoryData.count != 0 {
+            selectedIndex = categoryData.count - 1
+            categoryEdited()
+        }
+        
+        categoryTableView.reloadData()
     }
     
     
@@ -84,7 +115,7 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return metaData.count
+        return categoryData.count
     }
     /*
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -101,15 +132,18 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
             view.removeFromSuperview()
         }
         
+        
+        let category:Category = categoryData[indexPath.row]
+        
         var categoryCircle = UIView(frame: CGRectMake(15*ratio, 17*ratio, 15*ratio, 15*ratio))
-        categoryCircle.backgroundColor = UIColor.colorWithHexString(colorData[indexPath.row])
+        categoryCircle.backgroundColor = UIColor.colorWithHexString(category.color)
         categoryCircle.clipsToBounds = true
         categoryCircle.layer.cornerRadius = 7.5*ratio
         cell.contentView.addSubview(categoryCircle)
         
         
         var titleLabel = UILabel(frame:CGRectMake(40*ratio, 9.5*ratio, 250*ratio, 30*ratio))
-        titleLabel.text = metaData[indexPath.row]
+        titleLabel.text = category.name
         titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
         titleLabel.textAlignment = NSTextAlignment.Left
         titleLabel.textColor = UIColor.colorWithHexString("#969696")
@@ -149,10 +183,40 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         return false
     }
     
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        
+        let category = categoryData[indexPath.row]
+        managedObjectContext?.deleteObject(category)
+        
+        var error:NSError?
+        managedObjectContext?.save(&error)
+        
+        if error == nil {
+            NSLog("삭제완료",0)
+            
+            
+            categoryData.removeAtIndex(indexPath.row)
+            selectedIndex = 0
+            
+            tableView.beginUpdates()
+            tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: selectedIndex, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:UITableViewRowAnimation.Automatic)
+            tableView.endUpdates()
+            
+        }else {
+            //삭제에러처리
+            
+        }
+        
+        
+        
+    }
+    
     func categoryEdited(){
         
-        if self.delegate.respondsToSelector("categoryEdited:title:") {
-            self.delegate.categoryEdited(UIColor.colorWithHexString(colorData[selectedIndex]), title: metaData[selectedIndex])
+        if self.delegate.respondsToSelector("categoryEdited:") {
+            self.delegate.categoryEdited(categoryData[selectedIndex])
         }
         
     }

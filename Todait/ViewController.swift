@@ -29,7 +29,6 @@ class ViewController: UIViewController , UITableViewDataSource, UITableViewDeleg
 
     
     //TableViewDelegate
-    
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
@@ -47,6 +46,5 @@ class ViewController: UIViewController , UITableViewDataSource, UITableViewDeleg
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 45
     }
-
 }
 

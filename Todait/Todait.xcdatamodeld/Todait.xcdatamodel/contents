@@ -1,154 +1,163 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7549" systemVersion="14C1514" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14C1514" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="AmountLog" representedClassName="Todait.AmountLog" syncable="YES">
-        <attribute name="after_done_amount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="archived" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="before_done_amount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="after_done_amount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="archived" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="before_done_amount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="dirty_flag" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_day_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="timestamp" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="dirty_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_day_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="timestamp" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="day_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Day" syncable="YES"/>
+        <relationship name="day_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Day" inverseName="amountLogList" inverseEntity="Day" syncable="YES"/>
     </entity>
     <entity name="Category" representedClassName="Todait.Category" syncable="YES">
         <attribute name="archived_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="dirty_flag" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="dirty_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
-        <attribute name="server_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="updated_at" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="taskList" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Task" inverseName="category_id" inverseEntity="Task" syncable="YES"/>
         <relationship name="user_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="User" syncable="YES"/>
     </entity>
     <entity name="Day" representedClassName="Todait.Day" syncable="YES">
-        <attribute name="archived_at" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="archived_at" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="date" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="day_of_week" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="dirty_flag" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="done_amount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="done_second" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="expect_amount" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_task_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="day_of_week" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="dirty_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="done_amount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="done_second" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="expect_amount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_task_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="task_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Task" syncable="YES"/>
+        <relationship name="amountLogList" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AmountLog" inverseName="day_id" inverseEntity="AmountLog" syncable="YES"/>
+        <relationship name="diaryList" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Diary" inverseName="day_id" inverseEntity="Diary" syncable="YES"/>
+        <relationship name="task_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Task" inverseName="dayList" inverseEntity="Task" syncable="YES"/>
+        <relationship name="timeHistoryList" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="TimeHistory" inverseName="day_id" inverseEntity="TimeHistory" syncable="YES"/>
+        <relationship name="timeLogList" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="TimeLog" inverseName="day_id" inverseEntity="TimeLog" syncable="YES"/>
     </entity>
     <entity name="Diary" representedClassName="Todait.Diary" syncable="YES">
-        <attribute name="archived" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="archived" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="body" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="diry_flag" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="diry_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="image_names" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="score" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="server_day_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_day_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="timestamp" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="day_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Day" syncable="YES"/>
+        <relationship name="day_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Day" inverseName="diaryList" inverseEntity="Day" syncable="YES"/>
     </entity>
     <entity name="Off_Day" representedClassName="Todait.Off_Day" syncable="YES">
-        <attribute name="archived" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="archived" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="date" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="dirty_flag" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_task_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="dirty_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_task_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="update_at" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="task_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Task" syncable="YES"/>
     </entity>
     <entity name="Review_Task" representedClassName="Todait.Review_Task" syncable="YES">
-        <attribute name="archived" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="archived" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="dirty_flag" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="end_date" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_task_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="start_date" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="dirty_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="end_date" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_task_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="start_date" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
         <relationship name="task_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Task" syncable="YES"/>
     </entity>
     <entity name="Task" representedClassName="Todait.Task" syncable="YES">
-        <attribute name="amount_type" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="archived_at" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="amount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="amount_type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="archived_at" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="dirty_flag" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="end_date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dirty_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="end_date" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="image_names" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
-        <attribute name="last_update_date" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="last_update_date" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="notification_mode" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="notification_time" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
-        <attribute name="server_category_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="start_date" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="server_category_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="start_date" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="start_point" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="unit" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="category_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Category" syncable="YES"/>
+        <relationship name="category_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Category" inverseName="taskList" inverseEntity="Category" syncable="YES"/>
+        <relationship name="dayList" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Day" inverseName="task_id" inverseEntity="Day" syncable="YES"/>
+        <relationship name="week" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Week" inverseName="task_id" inverseEntity="Week" syncable="YES"/>
     </entity>
     <entity name="TimeHistory" representedClassName="Todait.TimeHistory" syncable="YES">
-        <attribute name="archived" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="created_at" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="dirty_flag" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="done_millis" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="ended_at" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_day_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="archived" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dirty_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="done_millis" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="ended_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="server_day_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="started_at" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="day_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Day" syncable="YES"/>
+        <relationship name="day_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Day" inverseName="timeHistoryList" inverseEntity="Day" syncable="YES"/>
     </entity>
     <entity name="TimeLog" representedClassName="Todait.TimeLog" syncable="YES">
-        <attribute name="after_second" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="archived" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="before_second" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="after_second" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="archived" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="before_second" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <attribute name="dirty_flag" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="done_second" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_day_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="timestamp" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="dirty_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="done_second" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_day_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="timestamp" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="day_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Day" syncable="YES"/>
+        <relationship name="day_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Day" inverseName="timeLogList" inverseEntity="Day" syncable="YES"/>
     </entity>
     <entity name="User" representedClassName="Todait.User" syncable="YES">
         <attribute name="authenication_token" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
-        <attribute name="created_at" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="dirty_flag" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dirty_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="image_names" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
-        <attribute name="server_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="updated_at" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
     </entity>
     <entity name="Week" representedClassName="Todait.Week" syncable="YES">
-        <attribute name="archived_at" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="created_at" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="dirty_flag" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="fri_minute" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="mon_minute" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="sat_minute" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="server_task_id" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="sun_minute" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="thu_minute" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="tue_minute" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="updated_at" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <attribute name="wed_minute" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="task_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Task" syncable="YES"/>
+        <attribute name="archived_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dirty_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="fri_minute" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="mon_minute" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="sat_minute" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="server_task_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="sun_minute" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="thu_minute" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="tue_minute" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="wed_minute" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="task_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Task" inverseName="week" inverseEntity="Task" syncable="YES"/>
     </entity>
     <elements>
-        <element name="AmountLog" positionX="412" positionY="435" width="128" height="193"/>
-        <element name="Category" positionX="-387" positionY="117" width="128" height="163"/>
-        <element name="Day" positionX="241" positionY="216" width="128" height="223"/>
-        <element name="Diary" positionX="403" positionY="204" width="128" height="208"/>
+        <element name="AmountLog" positionX="396" positionY="477" width="128" height="193"/>
+        <element name="Category" positionX="-387" positionY="117" width="128" height="178"/>
+        <element name="Day" positionX="241" positionY="216" width="128" height="283"/>
+        <element name="Diary" positionX="403" positionY="216" width="128" height="208"/>
         <element name="Off_Day" positionX="-128" positionY="402" width="128" height="163"/>
         <element name="Review_Task" positionX="-405" positionY="387" width="128" height="178"/>
-        <element name="Task" positionX="-234" positionY="63" width="128" height="283"/>
-        <element name="TimeHistory" positionX="133" positionY="513" width="128" height="193"/>
-        <element name="TimeLog" positionX="396" positionY="-18" width="128" height="208"/>
+        <element name="Task" positionX="-234" positionY="63" width="128" height="343"/>
+        <element name="TimeHistory" positionX="171" positionY="531" width="128" height="193"/>
+        <element name="TimeLog" positionX="18" positionY="485" width="128" height="208"/>
         <element name="User" positionX="-585" positionY="117" width="128" height="163"/>
         <element name="Week" positionX="97" positionY="-48" width="128" height="253"/>
     </elements>

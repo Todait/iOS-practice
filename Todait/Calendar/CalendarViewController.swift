@@ -8,28 +8,67 @@
 
 import UIKit
 
-class CalendarViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate {
+class CalendarViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate,TodaitNavigationDelegate{
     
     var calendarTableView: UITableView!
+    let weekName:[String] = ["일","월","화","수","목","금","토"]
     
-    
-    
+    var calendar:NSCalendar!
+    var dayLabel:UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setupCalendar()
+        addDayLabel()
+        addWeekLabels()
         addCalendarTableView()
         
+        view.backgroundColor = UIColor.colorWithHexString("#00D2B1")
+    }
+    
+    func setupCalendar(){
+        calendar = NSCalendar(calendarIdentifier: NSCalendarIdentifierGregorian)
+    }
+    
+    func addDayLabel(){
+        dayLabel = UILabel(frame: CGRectMake(0,navigationHeight*ratio,width,22*ratio))
+        dayLabel.textAlignment = NSTextAlignment.Center
+        dayLabel.text = "2015. 06"
+        dayLabel.font = UIFont(name:"AvenirNext-Regular", size: 16*ratio)
+        dayLabel.textColor = UIColor.whiteColor()
+        view.addSubview(dayLabel)
+    }
+    
+    func addWeekLabels(){
+        
+        
+        for index in 0...6 {
+            
+            let labelWidth = width / 7
+            let originX = CGFloat(index) * labelWidth
+            let originY = navigationHeight*ratio + 22*ratio
+            let weekLabel = UILabel(frame: CGRectMake(originX,originY,labelWidth, 22*ratio))
+            weekLabel.text = weekName[index]
+            weekLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+            weekLabel.textAlignment = NSTextAlignment.Center
+            weekLabel.textColor = UIColor.whiteColor()
+            view.addSubview(weekLabel)
+            
+        }
     }
     
     func addCalendarTableView(){
         
-        calendarTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio,width,300*ratio), style: UITableViewStyle.Grouped)
-        calendarTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        calendarTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio+44*ratio,width,420*ratio), style: UITableViewStyle.Grouped)
+        calendarTableView.registerClass(CalendarTableViewCell.self, forCellReuseIdentifier: "cell")
         calendarTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
         calendarTableView.delegate = self
         calendarTableView.dataSource = self
-        calendarTableView.contentOffset.y = 0
+        calendarTableView.separatorStyle = UITableViewCellSeparatorStyle.None
         view.addSubview(calendarTableView)
+        
+        
         
     }
     
@@ -39,41 +78,147 @@ class CalendarViewController: BasicViewController,UITableViewDataSource,UITableV
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 100
+        return 1000
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 300*ratio
+        
+        let dateComponents = calendar.components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay, fromDate:NSDate())
+        dateComponents.month = dateComponents.month + indexPath.row - 500
+        //dateComponents.day = 1
+        let mainDate:NSDate! = NSCalendar.currentCalendar().dateFromComponents(dateComponents)
+        
+        
+        let firstDate:NSDate! = getFirstDate(mainDate)
+        let lastDate:NSDate! = getLastDate(mainDate)
+        
+        let weekCount:Int = getWeekCount(mainDate)
+        
+        
+        
+        return CGFloat(50*weekCount)*ratio + 30*ratio
     }
+    
+    func getWeekCount(date:NSDate)->Int{
+        
+        let firstDate = getFirstDate(date)
+        let firstDayOfWeek = getStartIndexFromDate(firstDate)
+        let lastDate = getLastDate(date)
+        let lastDay = getLastDateDay(lastDate)
+        
+        var weekCount =  Int((firstDayOfWeek + lastDay - 1)/7)
+        let weekRemainder = (firstDayOfWeek + lastDay - 1)%7
+        if weekRemainder != 0 {
+            weekCount = weekCount + 1
+        }
+        
+        return weekCount
+    }
+    
+    
+    func getFirstDate(date:NSDate)->NSDate{
+        
+        let firstDayOfMonthComp = calendar.components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitWeekday, fromDate:date)
+        firstDayOfMonthComp.day = 1
+        let firstDate:NSDate = calendar.dateFromComponents(firstDayOfMonthComp)!
+        
+        return firstDate
+    }
+    
+    func getLastDate(date:NSDate)->NSDate{
+        let lastDayOfMonthComp = calendar.components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay, fromDate:date)
+        lastDayOfMonthComp.month = lastDayOfMonthComp.month+1
+        lastDayOfMonthComp.day = 0
+        
+        let lastDate:NSDate = calendar.dateFromComponents(lastDayOfMonthComp)!
+        
+        return lastDate
+    }
+    
+    func getStartIndexFromDate(firstDate:NSDate)->Int{
+        
+        let firstDayOfWeek = getDayOfWeek(firstDate)
+        
+        return firstDayOfWeek % 7
+    }
+    
+    func getDayOfWeek(date:NSDate)->Int{
+        
+        let dayOfWeek = calendar.components(NSCalendarUnit.CalendarUnitWeekday, fromDate:date)
+        
+        return dayOfWeek.weekday
+    }
+    
+    
+    func getLastDateDay(lastDate:NSDate)->Int{
+        
+        let dayComp = calendar.components(NSCalendarUnit.CalendarUnitDay, fromDate:lastDate)
+        
+        return dayComp.day
+        
+    }
+    
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! CalendarTableViewCell
+        
+        NSLog("%f", cell.frame.size.height)
+        
+        let dateComponents = calendar.components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth, fromDate:NSDate())
+        dateComponents.month = dateComponents.month + indexPath.row - 500
+        let mainDate:NSDate! = NSCalendar.currentCalendar().dateFromComponents(dateComponents)
         
         
-        for view in cell.contentView.subviews{
-            view.removeFromSuperview()
-        }
+        cell.setupDate(mainDate)
         
-        for i in 0...42 {
-            
-            var dayButton = UIButton()
-            dayButton.frame = calculateDayCellFrame(NSDate())
-            dayButton.backgroundColor = UIColor.colorWithHexString("969696")
-            cell.contentView.addSubview(dayButton)
-            
-        }
+        let dateForm = NSDateFormatter()
+        dateForm.dateFormat = "YYYY. MM"
+        dayLabel.text = dateForm.stringFromDate(mainDate)
         
-        
-        
+        let monthForm = NSDateFormatter()
+        monthForm.dateFormat = "MMMMM"
+        cell.monthDateLabel.text = monthForm.stringFromDate(mainDate)
         
         return cell
     }
     
-    func calculateDayCellFrame(date:NSDate)->CGRect {
-        return CGRectMake(0, 0, 42, 42)
+    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return false
     }
     
+    func calculateDayCellFrame(date:NSDate)->CGRect {
+        
+        
+        
+        return CGRectMake(0, 0, width/7, 70)
+    }
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        todaitNavBar.todaitDelegate = self
+        todaitNavBar.backButton.hidden = false
+        todaitNavBar.shadowImage = UIImage()
+        self.titleLabel.text = "Calendar"
+        
+        
+        calendarTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 500, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: false)
+        
+        
+        //let currentCell = calendarTableView.cellForRowAtIndexPath(NSIndexPath(forRow: 500, inSection: 0)) as! CalendarTableViewCell
+        
+        
+        //calendarTableView.contentOffset.y = currentCell.frame.origin.y
+    }
+    
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+    }
+    
+    func backButtonClk() {
+        self.navigationController?.popViewControllerAnimated(true)
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

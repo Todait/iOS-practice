@@ -49,7 +49,7 @@ class BasicViewController: UIViewController,UIGestureRecognizerDelegate {
     }
     
     func addTitleLabel(){
-        titleLabel = UILabel(frame: CGRectMake(30*ratio, 30.5*ratio, 260*ratio, 24*ratio))
+        titleLabel = UILabel(frame: CGRectMake(30*ratio, 30.5, 260*ratio, 24*ratio))
         titleLabel.font = UIFont(name: "AvenirNext-Medium", size: 20*ratio)
         titleLabel.textColor = UIColor.whiteColor()
         titleLabel.textAlignment = NSTextAlignment.Center

@@ -91,7 +91,7 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
         completionRateLabel.textColor = UIColor.whiteColor()
         completionRateLabel.font = UIFont(name: "AvenirNext-Regular", size: 35*ratio)
         completionRateLabel.textAlignment = NSTextAlignment.Center
-        completionRateLabel.text = "80%"
+        completionRateLabel.text = "0%"
         backgroundImageView.addSubview(completionRateLabel)
     }
     
@@ -107,9 +107,9 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     func addStudyTimeLabel(){
         studyTimeLabel = UILabel(frame: CGRectMake(190*ratio, 100*ratio, 100*ratio, 50*ratio))
         studyTimeLabel.textColor = UIColor.whiteColor()
-        studyTimeLabel.font = UIFont(name: "AvenirNext-Regular", size: 35*ratio)
+        studyTimeLabel.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
         studyTimeLabel.textAlignment = NSTextAlignment.Center
-        studyTimeLabel.text = "12:34"
+        studyTimeLabel.text = "00:00"
         backgroundImageView.addSubview(studyTimeLabel)
     }
     
@@ -137,8 +137,7 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     //ScrollViewDelegate
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        NSLog("%f", scrollView.contentOffset.y)
-        
+      
         var newFrame = backgroundImageView.frame
         
         if scrollView.contentOffset.y*0.5 > 0 {
