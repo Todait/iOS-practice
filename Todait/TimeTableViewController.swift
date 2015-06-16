@@ -177,6 +177,8 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
         todaitNavBar.backButton.hidden = false
         todaitNavBar.shadowImage = UIImage()
         self.titleLabel.text = "Time Table"
+        
+        self.screenName = "TimeTable Activity"
     }
     
     override func viewWillDisappear(animated: Bool) {

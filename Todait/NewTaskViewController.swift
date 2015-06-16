@@ -641,6 +641,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         todaitNavBar.backButton.hidden = false
         self.titleLabel.text = "새로운 목표"
         
+        self.screenName = "Create Activity"
         addSaveButton()
     }
     

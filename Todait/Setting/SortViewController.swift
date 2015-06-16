@@ -150,6 +150,8 @@ class SortViewController: BasicViewController,TodaitNavigationDelegate,UITableVi
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
         self.titleLabel.text = "정렬 및 보기 설정"
+        
+        self.screenName = "Custom Sort Activity"
     }
     
     override func viewWillDisappear(animated: Bool) {

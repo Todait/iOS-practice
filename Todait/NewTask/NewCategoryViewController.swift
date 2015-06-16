@@ -159,6 +159,7 @@ class NewCategoryViewController: BasicViewController,TodaitNavigationDelegate,UI
         todaitNavBar.backButton.hidden = false
         
         addSaveCategoryBtn()
+        self.screenName = "Category Activity"
         //titleLabel.text = "Category 추가"
     }
     

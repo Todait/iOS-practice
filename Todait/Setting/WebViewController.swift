@@ -42,6 +42,8 @@ class WebViewController: BasicViewController,UIWebViewDelegate,TodaitNavigationD
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
         self.titleLabel.text = "사용설명서"
+        
+        self.screenName = "Web Activity"
     }
     
     func backButtonClk() {
