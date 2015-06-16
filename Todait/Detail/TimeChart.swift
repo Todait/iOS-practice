@@ -33,6 +33,9 @@ class TimeChart: UIView {
     var valueLabel:UILabel!
     var delegate:touchDelegate!
     
+    var yAxiss:[UILabel]! = []
+    
+    
     override init(frame: CGRect) {
         super.init(frame:frame)
         
@@ -41,8 +44,9 @@ class TimeChart: UIView {
         setupDefault()
         setupLineView()
         
-        addChart()
         
+        addYAxis(frame)
+        addChart()
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -74,7 +78,7 @@ class TimeChart: UIView {
         
         
         valueLabel = UILabel(frame: CGRectMake(0, 0, 30*ratio, 30*ratio))
-        valueLabel.text = "10"
+        valueLabel.text = "0"
         valueLabel.textColor = UIColor.whiteColor()
         valueLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
         valueLabel.layer.cornerRadius = 15*ratio
@@ -89,9 +93,33 @@ class TimeChart: UIView {
         
     }
     
+    
+    
+    func addYAxis(frame:CGRect){
+        for index in 0...3 {
+            
+            let originY = CGFloat(3-index) * (frame.size.height/4)
+            
+            let yAxis = UILabel(frame:CGRectMake(0,originY-5*ratio,40*ratio,10*ratio))
+            yAxis.textAlignment = NSTextAlignment.Left
+            yAxis.font = UIFont(name:"AvenirNext-Regular",size:7*ratio)
+            yAxis.text = "1"
+            yAxis.textColor = UIColor.grayColor()
+            addSubview(yAxis)
+            
+            
+            let lineWidth = frame.size.width - 40*ratio
+            let yLine = UIView(frame:CGRectMake(30*ratio,originY,lineWidth,0.5*ratio))
+            yLine.backgroundColor = UIColor.todaitLightGray().colorWithAlphaComponent(0.9)
+            addSubview(yLine)
+            
+            yAxiss.append(yAxis)
+        }
+    }
+    
     func addChart(){
         
-        for index in 0...41{
+        for index in 0...47{
             let chartBox = UIView()
             
             addSubview(chartBox)
@@ -105,6 +133,12 @@ class TimeChart: UIView {
         let originX = padding
         
         let maxValue = maxElement(values)
+        
+        
+        for index in 0...3 {
+            let label = yAxiss[index]
+            label.text = "\(maxValue*CGFloat(index+1)/4)"
+        }
         
         
         
@@ -121,6 +155,12 @@ class TimeChart: UIView {
             }
             
             chartBox.tag = Int(values[index])
+            
+            if chartHeight == 0{
+                chartBox.backgroundColor = UIColor.todaitGray()
+                chartHeight = 5
+            }
+            
             
             if direction == weekChartDirection.upDirection {
                 chartBox.frame = CGRectMake(originX, frame.size.height, chartWidth,0)
@@ -172,7 +212,7 @@ class TimeChart: UIView {
         
         if (touchPoint.x >= 0 && touchPoint.x <= frame.size.width) {
             lineView.hidden = false
-            lineView.center = CGPointMake(touchPoint.x, -10*ratio)
+            lineView.center = CGPointMake(touchPoint.x, -15*ratio)
             
             if subview.frame.size.width == chartWidth {
                 
