@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BasicViewController: UIViewController,UIGestureRecognizerDelegate {
+class BasicViewController: GAITrackedViewController,UIGestureRecognizerDelegate {
     
     let defaults : NSUserDefaults! = NSUserDefaults.standardUserDefaults()
     let navigationHeight : CGFloat = 64.0
@@ -21,11 +21,18 @@ class BasicViewController: UIViewController,UIGestureRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        ratio = view.frame.size.width/320
-        width = view.frame.size.width
-        height = view.frame.size.height
+        
+        setupScreen()
         
         
+    }
+    
+    func setupScreen(){
+        let screenRect = UIScreen.mainScreen().bounds
+        let screenWidth = screenRect.size.width
+        ratio = screenWidth/320
+        width = screenWidth
+        height = screenRect.size.height
     }
     
     override func viewWillAppear(animated: Bool) {
