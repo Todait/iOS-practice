@@ -18,9 +18,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
-        UITextField.appearance().tintColor = UIColor.todaitGreen()
+        
+        
+        appearanceSetup()
+        googleAnalyticsSetup()
+        
         
         return true
+    }
+    
+    func appearanceSetup(){
+        UITextField.appearance().tintColor = UIColor.todaitGreen()
+    }
+    
+    func googleAnalyticsSetup(){
+        GAI.sharedInstance().trackUncaughtExceptions = true
+        GAI.sharedInstance().dispatchInterval = 20
+        GAI.sharedInstance().logger.logLevel = GAILogLevel.Verbose
+        GAI.sharedInstance().trackerWithTrackingId("UA-57213357-3")
     }
 
     func applicationWillResignActive(application: UIApplication) {
