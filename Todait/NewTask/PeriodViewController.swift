@@ -27,16 +27,21 @@ class PeriodViewController: BasicViewController {
     var startDate: NSDate!
     var endDate: NSDate!
     var delegate: PeriodDelegate!
+    var mainColor: UIColor!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDetailDesign()
         setupDate()
         calculateDate()
+        
+        
+        completeButton.backgroundColor = mainColor
     }
     
     func setupDetailDesign(){
         periodSegmentedControl.setTitleTextAttributes([NSFontAttributeName:UIFont(name: "AvenirNext-Regular", size: 16*ratio)!], forState: UIControlState.Normal)
+        periodSegmentedControl.tintColor = mainColor
     }
     
     func setupDate(){
@@ -50,14 +55,16 @@ class PeriodViewController: BasicViewController {
         let dateform = NSDateFormatter()
         dateform.dateFormat = "M월 d일"
         periodLabel.text = "\(dateform.stringFromDate(startDate))~\(dateform.stringFromDate(endDate))"
-        
-        
+        periodLabel.textColor = mainColor
         periodDayLabel.text = "\(day)일"
+        periodDayLabel.textColor = mainColor
+        
+        
     }
     
     func getDay() -> Int{
         let time = endDate.timeIntervalSinceDate(startDate)
-        let day = Int(time / (24*60*60))
+        let day = Int(time / (24*60*60)+1)
         return day
     }
     
@@ -122,7 +129,13 @@ class PeriodViewController: BasicViewController {
         if periodSegmentedControl.selectedSegmentIndex == 0 {
             startDate = periodDatePicker.date
         }else if periodSegmentedControl.selectedSegmentIndex == 1{
-            endDate = periodDatePicker.date
+            
+            
+            let pickerDate = periodDatePicker.date
+            
+            if pickerDate.timeIntervalSinceDate(startDate) >= 0{
+                endDate = periodDatePicker.date
+            }
         }
         
         if periodSegmentedControl.selectedSegmentIndex == 0 {
