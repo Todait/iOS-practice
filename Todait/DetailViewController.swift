@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,touchDelegate{
+class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,touchDelegate,UIScrollViewDelegate,CategoryUpdateDelegate{
    
     var detailTableView: UITableView!
     var task:Task!
@@ -17,10 +17,42 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
+    
+    var c1:UIView!
+    var c2:UIView!
+    
+    var progressPercent:NSNumber!
+    var progressString:String!
+    var timeValue:[CGFloat]! = []
+    var doneCountEnabled:Bool! = true
+    var editButton:UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.whiteColor()
+        
+        setupDay()
         addDetailTable()
+    }
+    
+    func setupDay(){
+        
+        if let dayValid = task.getDay(getTodayDateNumber()) {
+            day = dayValid
+            doneCountEnabled = true
+            progressPercent = day.getProgressPercent()
+            progressString = day.getProgressString()
+            timeValue = day.getAmountLogValuePerTime() as! [CGFloat]
+        } else {
+            progressPercent = 0
+            progressString = "0%"
+            
+            doneCountEnabled = false
+            
+            for index in 0...47{
+                timeValue.append(0)
+            }
+        }
     }
     
     func addDetailTable(){
@@ -55,8 +87,9 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
-        addDoneAmount()
-        
+        if doneCountEnabled == true {
+            addDoneAmount()
+        }
         
         return false
     }
@@ -138,16 +171,15 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             let chart = CircleChart(frame: CGRectMake(100*ratio,30*ratio,50*ratio,50*ratio))
             
-            let percent:NSNumber = day.getProgressPercent()
             chart.circleColor = task.getColor()
-            chart.updatePercent(percent)
+            chart.updatePercent(progressPercent)
 
             cell.contentView.addSubview(chart)
             
             
             
             let countLabel = UILabel(frame: CGRectMake(165*ratio, 30*ratio, 120*ratio, 50*ratio))
-            countLabel.text = day.getProgressString()
+            countLabel.text = progressString
             countLabel.textColor = UIColor.colorWithHexString("#C9C9C9")
             countLabel.textAlignment = NSTextAlignment.Left
             countLabel.font = UIFont(name: "AvenirNext-Regular", size: 18*ratio)
@@ -156,27 +188,30 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             
             
-            var value:[CGFloat] = []
             
-            for index in 0...41 {
-                value.append(CGFloat(rand()%100))
-            }
-            
-            let timeChart = TimeChart(frame:CGRectMake(30*ratio, 90*ratio, 260*ratio, 80*ratio))
+            let timeChart = TimeChart(frame:CGRectMake(30*ratio, 80*ratio, 260*ratio, 70*ratio))
             timeChart.chartColor = task.getColor()
             timeChart.chartWidth = 3*ratio
-            timeChart.updateChart(value)
+            timeChart.updateChart(timeValue)
             timeChart.delegate = self
             cell.contentView.addSubview(timeChart)
             
             
+            let timeXAxis = TimeXAxis(frame:CGRectMake(15*ratio,150*ratio,290*ratio,20*ratio))
+            cell.contentView.addSubview(timeXAxis)
             
         }else if(indexPath.row == 2){
             
-            let whiteBox = UIView(frame: CGRectMake(15*ratio, 15*ratio, 290*ratio, 160*ratio))
+            let whiteBox = UIScrollView(frame: CGRectMake(15*ratio, 15*ratio, 290*ratio, 160*ratio))
             whiteBox.backgroundColor = UIColor.whiteColor()
             whiteBox.clipsToBounds = true
             whiteBox.layer.cornerRadius = 4*ratio
+            whiteBox.contentSize = CGSizeMake(290*ratio*2,160*ratio)
+            whiteBox.delegate = self
+            whiteBox.bounces = false
+            whiteBox.pagingEnabled = true
+            whiteBox.showsHorizontalScrollIndicator = false
+            
             cell.contentView.addSubview(whiteBox)
             
             
@@ -196,12 +231,22 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             let doneAmountList:[CGFloat] = task.getWeekDayDoneAmount(NSDate()) as! [CGFloat]
             
-            let weekChart = WeekChart(frame: CGRectMake(30*ratio, 50*ratio, 260*ratio, 70*ratio))
+            let weekChart = WeekChart(frame: CGRectMake(15*ratio, 35*ratio, 260*ratio, 70*ratio))
             weekChart.direction = weekChartDirection.upDirection
             weekChart.chartColor = task.getColor()
             weekChart.chartWidth = 25*ratio
-            cell.contentView.addSubview(weekChart)
+            whiteBox.addSubview(weekChart)
             weekChart.updateChart(doneAmountList)
+            
+            
+            
+            let timerWeekChart = WeekChart(frame: CGRectMake(305*ratio, 35*ratio, 260*ratio, 70*ratio))
+            timerWeekChart.direction = weekChartDirection.upDirection
+            timerWeekChart.chartColor = task.getColor()
+            timerWeekChart.chartWidth = 25*ratio
+            whiteBox.addSubview(timerWeekChart)
+            timerWeekChart.updateChart(doneAmountList)
+            
             
             
             let weekLabelString:[String] = task.getWeekDateNumberString(NSDate())
@@ -213,15 +258,15 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             
             
-            let c = UIView(frame:CGRectMake(146*ratio, 155*ratio, 10*ratio, 10*ratio))
-            c.backgroundColor = task.getColor()
-            c.clipsToBounds = true
-            c.layer.cornerRadius = 5*ratio
-            cell.contentView.addSubview(c)
+            c1 = UIView(frame:CGRectMake(146*ratio, 155*ratio, 10*ratio, 10*ratio))
+            c1.backgroundColor = task.getColor()
+            c1.clipsToBounds = true
+            c1.layer.cornerRadius = 5*ratio
+            cell.contentView.addSubview(c1)
             
             
             
-            let c2 = UIView(frame:CGRectMake(164*ratio, 155*ratio, 10*ratio, 10*ratio))
+            c2 = UIView(frame:CGRectMake(164*ratio, 155*ratio, 10*ratio, 10*ratio))
             c2.backgroundColor = UIColor.todaitLightGray()
             c2.clipsToBounds = true
             c2.layer.cornerRadius = 5*ratio
@@ -250,6 +295,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             countLabel.text = "분량"
             countLabel.textAlignment = NSTextAlignment.Left
             countLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+            countLabel.textColor = task.getColor()
             countLabel.textColor = UIColor.colorWithHexString("#969696")
             cell.contentView.addSubview(countLabel)
             
@@ -261,14 +307,14 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             cell.contentView.addSubview(dateLabel)
             
             
-            let countBackgroundView = UIView(frame: CGRectMake(60*ratio, 60*ratio, 220*ratio, 24*ratio))
+            let countBackgroundView = UIView(frame: CGRectMake(60*ratio, 60*ratio, 200*ratio, 24*ratio))
             countBackgroundView.layer.cornerRadius = 12*ratio
             countBackgroundView.backgroundColor = UIColor.todaitLightGray()
             countBackgroundView.clipsToBounds = true
             cell.contentView.addSubview(countBackgroundView)
             
             let countFrontView = UIView(frame: CGRectMake(0, 0, 0*ratio, 24*ratio))
-            countFrontView.backgroundColor = UIColor.colorWithHexString("#00D2B1")
+            countFrontView.backgroundColor = task.getColor()
             countFrontView.layer.cornerRadius = 12*ratio
             countFrontView.clipsToBounds = true
             countBackgroundView.addSubview(countFrontView)
@@ -276,7 +322,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             
             
-            let dateBackgroundView = UIView(frame: CGRectMake(60*ratio, 100*ratio, 220*ratio, 24*ratio))
+            let dateBackgroundView = UIView(frame: CGRectMake(60*ratio, 100*ratio, 200*ratio, 24*ratio))
             dateBackgroundView.layer.cornerRadius = 12*ratio
             dateBackgroundView.backgroundColor = UIColor.todaitLightGray()
             dateBackgroundView.clipsToBounds = true
@@ -298,6 +344,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             countPercentLabel.textAlignment = NSTextAlignment.Left
             countPercentLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
             countPercentLabel.textColor = UIColor.colorWithHexString("#969696")
+            countPercentLabel.adjustsFontSizeToFitWidth = true
             cell.contentView.addSubview(countPercentLabel)
             
             let datePercentLabel = UILabel(frame: CGRectMake(265*ratio, 100*ratio, 50*ratio,24*ratio))
@@ -305,11 +352,12 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             datePercentLabel.textAlignment = NSTextAlignment.Left
             datePercentLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
             datePercentLabel.textColor = UIColor.colorWithHexString("#969696")
+            datePercentLabel.adjustsFontSizeToFitWidth = true
             cell.contentView.addSubview(datePercentLabel)
             
             
-            let countWidth = 220*ratio*CGFloat(getWeekAmountPercentValue())/100
-            let dateWidth = 220*ratio*CGFloat(getWeekDatePercentValue())/100
+            let countWidth = 200*ratio*CGFloat(getWeekAmountPercentValue())/100
+            let dateWidth = 200*ratio*CGFloat(getWeekDatePercentValue())/100
             
             UIView.animateWithDuration(1.0, animations: { () -> Void in
                 
@@ -363,6 +411,44 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
         self.titleLabel.text = task.name
+        
+        self.screenName = "Detail Activity"
+        
+        todaitNavBar.setBackgroundImage(UIImage.colorImage(task.getColor(),frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
+        
+        addEditButton()
+        
+    }
+    
+    func addEditButton(){
+        editButton = UIButton(frame: CGRectMake(288*ratio,30,24,24))
+        editButton.setBackgroundImage(UIImage.maskColor("edit.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
+        editButton.addTarget(self, action: Selector("showEditTaskVC"), forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(editButton)
+    }
+    
+    func showEditTaskVC(){
+        
+        performSegueWithIdentifier("ShowEditTaskView", sender:self)
+        
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    
+        if segue.identifier == "ShowEditTaskView" {
+            
+            let editTaskVC = segue.destinationViewController as! EditTaskViewController
+            editTaskVC.editedTask = task
+            editTaskVC.delegate = self
+            editTaskVC.mainColor = task.getColor()
+            editTaskVC.category = task.category_id
+            
+        }
+    }
+    
+    
+    func updateCategory(category:Category){
+        
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -395,12 +481,24 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         }else{
             NSLog("DoneAmount 저장 및 업데이트성공",1)
         }
-
     }
+    
     
     
     func backButtonClk() {
         self.navigationController?.popViewControllerAnimated(true)
     }
     
+    
+    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+        
+        if scrollView.contentOffset.x >= 145*ratio {
+            c2.backgroundColor = task.getColor()
+            c1.backgroundColor = UIColor.todaitLightGray()
+        }else{
+            c1.backgroundColor = task.getColor()
+            c2.backgroundColor = UIColor.todaitLightGray()
+        }
+        
+    }
 }
