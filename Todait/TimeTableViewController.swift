@@ -33,6 +33,11 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
         
         loadTimeHistory()
         
+        
+        addExampleHistoryView(CGRectMake(HistoryViewOriginX*ratio,150,200,60), color: UIColor.todaitRed())
+        
+        addExampleHistoryView(CGRectMake(HistoryViewOriginX*ratio,250,200,120), color: UIColor.todaitGreen())
+        
     }
     
 
@@ -64,8 +69,8 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
             timeTableView.addSubview(timeLabel)
             
             
-            let timeLineView = UIView(frame: CGRectMake(50*ratio, TimeTableHeight * CGFloat(i)*ratio, 220*ratio, 1*ratio))
-            timeLineView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
+            let timeLineView = UIView(frame: CGRectMake(50*ratio, TimeTableHeight * CGFloat(i)*ratio, 160*ratio, 1*ratio))
+            timeLineView.backgroundColor = UIColor.todaitLightGray()
             timeTableView.addSubview(timeLineView)
         }
     }
@@ -100,6 +105,26 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
         
         addHistoryView()
     }
+    
+    func addExampleHistoryView(frame:CGRect,color:UIColor){
+        
+        
+        
+        let historyView = UIView(frame:frame)
+        historyView.backgroundColor = UIColor.todaitLightGray()
+        //historyView.alpha = 0.5
+        historyView.layer.cornerRadius = 4*ratio
+        historyView.clipsToBounds = true
+        
+        
+        
+        
+        let colorBox = UIView(frame:CGRectMake(0,0,10*ratio,height))
+        colorBox.backgroundColor = color
+        historyView.addSubview(colorBox)
+        
+        timeTableView.addSubview(historyView)
+    }
 
     func addHistoryView(){
         
@@ -112,10 +137,15 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
             let color = historyItem.getColor()
             
             let historyView = UIView(frame:CGRectMake(originX,originY,width,height))
-            historyView.backgroundColor = color
+            historyView.backgroundColor = UIColor.todaitLightGray()
             historyView.alpha = 0.5
             historyView.layer.cornerRadius = 4*ratio
             historyView.clipsToBounds = true
+            
+            let colorBox = UIView(frame:CGRectMake(0,0,10*ratio,height))
+            colorBox.backgroundColor = color
+            historyView.addSubview(colorBox)
+            
             
             timeTableView.addSubview(historyView)
             
