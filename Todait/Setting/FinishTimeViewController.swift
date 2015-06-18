@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class FinishTimeViewController: BasicViewController,TodaitNavigationDelegate {
 
@@ -17,6 +18,12 @@ class FinishTimeViewController: BasicViewController,TodaitNavigationDelegate {
     var finishDateComponents: NSDateComponents!
     
     var infoLabel: UILabel!
+    
+    
+    
+    
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,9 +92,53 @@ class FinishTimeViewController: BasicViewController,TodaitNavigationDelegate {
         defaults.setInteger(dateComponents.minute, forKey:"finishMinuteOfDay")
         
         
+        checkFinishDays()
+        
+        
         self.dismissViewControllerAnimated(true, completion: { () -> Void in
             
         })
+    }
+    
+    func checkFinishDays(){
+        
+        
+        let todayDateNumber = getTodayDateNumber()
+        
+        let dayDescription = NSEntityDescription.entityForName("Day", inManagedObjectContext:managedObjectContext!)
+        
+        let predicate:NSPredicate = NSPredicate(format: "date > %@",todayDateNumber)
+        let request = NSFetchRequest()
+        
+        request.entity = dayDescription
+        request.predicate = predicate
+        
+        var error: NSError?
+        let days:[Day] = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Day]
+        
+        
+        if days.count == 0 {
+            NSLog("삭제할 Day가 없습니다")
+            return
+        }
+        
+        for deleteDay in days {
+            managedObjectContext?.deleteObject(deleteDay)
+        }
+        
+        
+        
+        managedObjectContext?.save(&error)
+        
+        
+        if let err = error {
+            //에러처리
+            NSLog("에러발생")
+        }else{
+            NSLog("삭제성공",1)
+        }
+        
+        
     }
     
     override func didReceiveMemoryWarning() {
