@@ -54,7 +54,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         let dateForm = NSDateFormatter()
         dateForm.dateFormat = "yyyy.MM.dd"
-        parallelView.dateLabel.text = dateForm.stringFromDate(NSDate())
+        
+        var todayDate:NSDate = getDateFromDateNumber(getTodayDateNumber())
+        parallelView.dateLabel.text = dateForm.stringFromDate(todayDate)
         parallelView.studyTimeLabel.text = getTotalTimeStringOfToday()
         parallelView.completionRateLabel.text = getTotalPercentStringOfToday()
     }
