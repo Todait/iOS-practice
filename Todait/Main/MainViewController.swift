@@ -26,6 +26,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     var calendarButton: UIButton!
     var timeTableButton: UIButton!
     var statisticsButton: UIButton!
+    var photoButton: UIButton!
     
     var colorData:[String] = ["#FFFB887E","#FFF1CB67","#FFAA9DDE","#FF5694CF","#FF5A5A5A","#FFBEFCEF","#FFC6B6A7","#FF25D59B","#FFDA5A68","#FFF5A26F"]
     
@@ -387,6 +388,21 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
     }
     
+    func addPhotoButton(){
+        
+        photoButton = UIButton(frame: CGRectMake(280*ratio, 100*ratio, 24*ratio, 24*ratio))
+        photoButton.setBackgroundImage(UIImage(named: "ic_camera_button.png"), forState:UIControlState.Normal)
+        photoButton.addTarget(self, action: Selector("showPhotoVC"), forControlEvents: UIControlEvents.TouchUpInside)
+         view.addSubview(photoButton)
+        
+    }
+    
+    func showPhotoVC(){
+        
+        self.navigationController?.pushViewController(MainPhotoViewController(), animated: true)
+        
+    }
+    
     func showCalendarVC(){
         self.navigationController?.pushViewController(CalendarViewController(), animated: true)
     }
@@ -583,6 +599,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         addStatisticsButton()
         addShowCategoryButton()
         addTaskButton()
+        addPhotoButton()
         
         titleLabel.text = "Todait"
         //mainTableView.contentOffset.y = 0
@@ -597,6 +614,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             updateCategory(category)
         }
         
+        
+        needToUpdate()
         
         if self.revealViewController() != nil {
             view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
