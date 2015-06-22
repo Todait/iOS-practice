@@ -276,6 +276,9 @@ class Time {
 class DayTests: XCTestCase {
     
     
+    var finishHour:Int! = 4
+    var finishMinute:Int! = 0
+    
     var time:Time!
     
     
@@ -309,7 +312,40 @@ class DayTests: XCTestCase {
     }
     
     
+    func testGetTodayDateNumber(){
+    
+        finishHour = 11
+        finishMinute = 30
+        XCTAssertEqual(getTodayDateNumber(),20150622,"오늘(20150622 9:28 DateNumber")
+        
+        
+        finishHour = 13
+        finishMinute = 30
+        XCTAssertEqual(getTodayDateNumber(),20150623,"오늘(20150622 9:28 DateNumber")
+        
+        finishHour = 16
+        finishMinute = 27
+        XCTAssertEqual(getTodayDateNumber(),20150623,"오늘(20150622 9:28 DateNumber")
+        
+        
+        finishHour = 22
+        finishMinute = 27
+        XCTAssertEqual(getTodayDateNumber(),20150622,"오늘(20150622 9:28 DateNumber")
+        
+        
+        finishHour = 21
+        finishMinute = 29
+        XCTAssertEqual(getTodayDateNumber(),20150622,"오늘(20150622 9:28 DateNumber")
+        
+        
+    }
+    
+    
+    
     func testThemeWeekString(){
+        
+        finishHour = 4
+        finishMinute = 0
         
         time.createAt = getDate(2015, month: 5, day: 2, hour: 18, minute: 5, second: 10)
         time.date = getDateNumberFromDate(time.createAt)
@@ -354,6 +390,13 @@ class DayTests: XCTestCase {
         return date
     }
     
+    
+    func getTodayDateNumber()->NSNumber{
+        
+        return getDateNumberFromDate(NSDate())
+
+    }
+    
     func getDateNumberFromDate(date:NSDate)->NSNumber{
         
         let dateForm = NSDateFormatter()
@@ -374,8 +417,8 @@ class DayTests: XCTestCase {
         let comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate:date)
         
         
-        var finishHour:Int = 4
-        var finishMinute:Int = 0
+        var finishHour:Int = self.finishHour
+        var finishMinute:Int = self.finishMinute
         
         if comp.hour < 12 && finishHour < 12 {
             let nowTotalMinute = 60*comp.hour + comp.minute
