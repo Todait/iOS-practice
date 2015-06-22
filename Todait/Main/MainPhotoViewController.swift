@@ -9,7 +9,7 @@
 import UIKit
 import Photos
 
-class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
+class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,TodaitNavigationDelegate{
    
     var photoCollectionView:UICollectionView!
     var photoCollectionViewLayout:UICollectionViewFlowLayout!
@@ -124,7 +124,7 @@ class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICo
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        //todaitNavBar.todaitDelegate = self
+        todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
         self.titleLabel.text = "Photo"
         self.screenName = "Photo Activity"
