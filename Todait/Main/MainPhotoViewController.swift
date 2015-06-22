@@ -19,10 +19,33 @@ class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICo
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        
+        setupSelectIndexPath()
         addPhotoCollectionView()
         getPhotos()
         
         
+    }
+    
+    func setupSelectIndexPath(){
+        
+        var find:Bool = false
+        var index:Int = 0
+        for asset in photos {
+            
+            let assetItem:PHAsset = asset as PHAsset
+            
+            if assetItem.localIdentifier == defaults.objectForKey("mainPhoto") as! String {
+                find == true
+            
+                selectIndexPath = NSIndexPath(forItem:index, inSection: 0)
+            }
+            index = index + 1
+        }
+        
+        if find == false {
+            selectIndexPath = NSIndexPath(forItem: 0, inSection: 0)
+        }
     }
     
     
@@ -78,21 +101,20 @@ class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICo
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("photoCell", forIndexPath: indexPath) as! MainPhotoCell
         
-        for view in cell.contentView.subviews{
-            view.removeFromSuperview()
-        }
         
         
         let asset = photos[indexPath.row] as PHAsset
-        let identifier = asset.localIdentifier
-        let scale = UIScreen.mainScreen().scale
-        let imageManager = PHCachingImageManager()
+        cell.updateImage(asset)
         
         
-        imageManager.requestImageForAsset(asset, targetSize: CGSizeMake(106*ratio*scale,106*ratio*scale), contentMode: PHImageContentMode.AspectFill, options: nil) { (image, info) -> Void in
-            cell.photoImage.image = image
         
+        if selectIndexPath == indexPath {
+            cell.checkImage.hidden = false
+        }else{
+            cell.checkImage.hidden = true
         }
+        
+        
         return cell
         
     }
@@ -102,6 +124,10 @@ class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICo
         let asset = photos[indexPath.row] as PHAsset
         
         defaults.setValue(asset.localIdentifier, forKey:"mainPhoto")
+        
+        
+        selectIndexPath = indexPath
+        collectionView.reloadData()
         
         return false
     }

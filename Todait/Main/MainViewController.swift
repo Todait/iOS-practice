@@ -794,6 +794,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
         
+        
         performSegueWithIdentifier("ShowDetailView", sender:indexPath)
         
         tableView.reloadData()
