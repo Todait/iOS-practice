@@ -9,5 +9,9 @@
 import Foundation
 
 public extension NSDate {
-    
+    func addDay(day:Int)->NSDate{
+        
+        return self.dateByAddingTimeInterval(24*60*60*NSTimeInterval(day))
+        
+    }
 }

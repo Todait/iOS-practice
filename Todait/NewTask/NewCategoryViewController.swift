@@ -11,6 +11,7 @@ import CoreData
 
 protocol UpdateDelegate: NSObjectProtocol {
     func needToUpdate()
+
 }
 
 
@@ -23,6 +24,7 @@ class NewCategoryViewController: BasicViewController,TodaitNavigationDelegate,UI
     
     var colorCollectionView: UICollectionView!
     var colorCollectionViewLayout: UICollectionViewFlowLayout!
+    
     var colorData:[String] = ["#FFFB887E","#FFF1CB67","#FFAA9DDE","#FF5694CF","#FF5A5A5A","#FFBEFCEF","#FFC6B6A7","#FF25D59B","#FFDA5A68","#FFF5A26F"]
     var selectedIndex = 0
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
@@ -164,7 +166,7 @@ class NewCategoryViewController: BasicViewController,TodaitNavigationDelegate,UI
     }
     
     func addSaveCategoryBtn(){
-        saveCategoryButton = UIButton(frame: CGRectMake(288*ratio, 30*ratio, 24*ratio, 24*ratio))
+        saveCategoryButton = UIButton(frame: CGRectMake(288*ratio, 30, 24, 24))
         saveCategoryButton.setImage(UIImage.maskColor("newPlus.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
         saveCategoryButton.addTarget(self, action: Selector("saveCategory"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(saveCategoryButton)

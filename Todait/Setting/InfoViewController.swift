@@ -10,6 +10,12 @@ import UIKit
 
 class InfoViewController: BasicTableViewController,TodaitNavigationDelegate{
     
+    
+    
+    
+    var iconNames = ["ic_fragment_daily_statistics_achievement_rate.png","ic_setting_open_source_license.png"]
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         sectionTitles = ["Todait 정보"]
@@ -39,16 +45,38 @@ class InfoViewController: BasicTableViewController,TodaitNavigationDelegate{
         return 2
     }
 
+
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = super.tableView(tableView, cellForRowAtIndexPath: indexPath)
         
-        //let cell = tableView.dequeueReusableCellWithIdentifier("basic", forIndexPath: indexPath) as! UITableViewCell
-
+        let cell = tableView.dequeueReusableCellWithIdentifier("basic", forIndexPath: indexPath) as! UITableViewCell
+        
+        
+        
+        for temp in cell.contentView.subviews {
+            temp.removeFromSuperview()
+        }
+        
+        
+        let iconImage = UIImageView(frame:CGRectMake(15*ratio,5*ratio,25*ratio,25*ratio))
+        iconImage.image = UIImage(named:iconNames[indexPath.row])
+        
+        cell.contentView.addSubview(iconImage)
+        
+        
+        
+        let titleLabel = UILabel(frame: CGRectMake(50*ratio, 0*ratio, 270*ratio, 35*ratio))
+        titleLabel.textAlignment = NSTextAlignment.Left
+        titleLabel.textColor = UIColor.colorWithHexString("#606060")
+        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 11*ratio)
+        titleLabel.text = cellTitles[indexPath.section][indexPath.row]
+        cell.contentView.addSubview(titleLabel)
+        
+        
         return cell
+        
     }
-
     
 
     override func viewWillAppear(animated: Bool) {

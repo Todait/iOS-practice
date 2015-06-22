@@ -24,14 +24,17 @@ class Day: NSManagedObject {
     @NSManaged var server_task_id: NSNumber
     @NSManaged var updated_at: NSDate
     @NSManaged var task_id: Task
-    @NSManaged var diary: NSOrderedSet
-    @NSManaged var timeHistory: NSOrderedSet
-    @NSManaged var timeLog: NSOrderedSet
-    @NSManaged var amountLog: NSOrderedSet
+    @NSManaged var diaryList: NSOrderedSet
+    @NSManaged var timeHistoryList: NSOrderedSet
+    @NSManaged var timeLogList: NSOrderedSet
+    @NSManaged var amountLogList: NSOrderedSet
+    
+    let defaults:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
     
     func getColor()->UIColor{
         return task_id.getColor()
     }
+    
     
     func getProgressPercent()->NSNumber{
         return done_amount.floatValue/expect_amount.floatValue
@@ -39,6 +42,45 @@ class Day: NSManagedObject {
     
     func getProgressString()->String{
         return "\(done_amount) / \(expect_amount) \(task_id.unit)"
+    }
+        
+    func getAmountLogValuePerTime()->[NSNumber]{
+        
+        var amounts:[NSNumber] = []
+        
+        for index in 0...47{
+            amounts.append(0)
+        }
+        
+        
+        
+        let startComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitDay, fromDate: created_at)
+        startComp.hour = self.defaults.integerForKey("finishHourOfDay")
+        startComp.minute = self.defaults.integerForKey("finishMinuteOfDay") + 5
+        
+        let dayStartDate:NSDate! = NSCalendar.currentCalendar().dateFromComponents(startComp)
+        
+        for log in amountLogList {
+            
+            
+            let amountLog:AmountLog = log as! AmountLog
+            let date:NSDate! = log.created_at
+            let diff = date.timeIntervalSinceDate(dayStartDate)
+            var index = Int(diff / (30*60))
+            
+            if index > 47 {
+                index = 47
+            }
+            
+            if (index < 0){
+                index = 0
+            }
+            NSLog("%lu",index)
+            amounts[index] = amounts[index].integerValue + amountLog.getDoneAmount().integerValue
+        }
+        
+        
+        return amounts
     }
     
 }

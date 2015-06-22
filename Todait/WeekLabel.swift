@@ -45,6 +45,7 @@ class WeekLabel: UIView{
             label.font = UIFont(name:"AvenirNext-Regular", size: 10*ratio)
             label.textColor = UIColor.todaitLightGray()
             label.textAlignment = NSTextAlignment.Center
+            label.adjustsFontSizeToFitWidth = true
             addSubview(label)
             
             weekLabels.append(label)

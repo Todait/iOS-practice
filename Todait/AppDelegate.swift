@@ -24,6 +24,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         googleAnalyticsSetup()
         
         
+        let notiTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
+        let settings = UIUserNotificationSettings(forTypes: notiTypes, categories: nil)
+        
+        application.registerUserNotificationSettings(settings)
+        
+        
         return true
     }
     
@@ -38,6 +44,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         GAI.sharedInstance().trackerWithTrackingId("UA-57213357-3")
     }
 
+    
+    
+    func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
+        
+        NSLog("%@",notification)
+        
+        /*
+        notification.alertBody = "Todait Alarm"
+        notification.hasAction = true
+        notification.fireDate = NSDate().dateByAddingTimeInterval(5)
+        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+           */
+    }
+    
+    
+    
     func applicationWillResignActive(application: UIApplication) {
         
         

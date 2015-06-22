@@ -93,11 +93,12 @@ class CircleChart: UIView {
         let centerX = frame.size.width/2
         let centerY = frame.size.height/2
         percentLabel = UILabel(frame: CGRectMake(0, 0, self.frame.size.width, self.frame.size.height))
-        percentLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+        percentLabel.font = UIFont(name: "AvenirNext-Medium", size: 12*ratio)
         percentLabel.text = "55%"
         percentLabel.textAlignment = NSTextAlignment.Center
         percentLabel.textColor = circleColor
         percentLabel.center = CGPointMake(centerX, centerY)
+        percentLabel.adjustsFontSizeToFitWidth = true
         self.addSubview(percentLabel)
     }
 

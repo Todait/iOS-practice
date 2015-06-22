@@ -20,6 +20,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     var c1:UIView!
     var c2:UIView!
+    var c3:UIView!
+    var c4:UIView!
     
     var progressPercent:NSNumber!
     var progressString:String!
@@ -76,7 +78,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         switch indexPath.row {
             case 0: return 150*ratio
-            case 1: return 180*ratio
+            case 1: return 220*ratio
             case 2: return 180*ratio
             default: return 200*ratio
         }
@@ -154,14 +156,19 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
         }else if(indexPath.row == 1){
             
-            let whiteBox = UIView(frame: CGRectMake(15*ratio, 15*ratio, 290*ratio, 155*ratio))
+            let whiteBox = UIScrollView(frame: CGRectMake(15*ratio, 15*ratio, 290*ratio, 180*ratio))
             whiteBox.backgroundColor = UIColor.whiteColor()
             whiteBox.clipsToBounds = true
             whiteBox.layer.cornerRadius = 4*ratio
+            whiteBox.contentSize = CGSizeMake(290*ratio*2,160*ratio)
+            whiteBox.delegate = self
+            whiteBox.bounces = false
+            whiteBox.pagingEnabled = true
+            whiteBox.showsHorizontalScrollIndicator = false
             cell.contentView.addSubview(whiteBox)
             
             let infoLabel = UILabel(frame: CGRectMake(30*ratio, 20*ratio, 200*ratio, 30*ratio))
-            infoLabel.text = "하루 진행도"
+            infoLabel.text = "오늘 진행도"
             infoLabel.textAlignment = NSTextAlignment.Left
             infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
             infoLabel.textColor = UIColor.colorWithHexString("#969696")
@@ -169,7 +176,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             
             
-            let chart = CircleChart(frame: CGRectMake(100*ratio,30*ratio,50*ratio,50*ratio))
+            let chart = CircleChart(frame: CGRectMake(230*ratio,30*ratio,50*ratio,50*ratio))
             
             chart.circleColor = task.getColor()
             chart.updatePercent(progressPercent)
@@ -178,9 +185,9 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             
             
-            let countLabel = UILabel(frame: CGRectMake(165*ratio, 30*ratio, 120*ratio, 50*ratio))
+            let countLabel = UILabel(frame: CGRectMake(125*ratio, 20*ratio, 120*ratio, 30*ratio))
             countLabel.text = progressString
-            countLabel.textColor = UIColor.colorWithHexString("#C9C9C9")
+            countLabel.textColor = task.getColor()
             countLabel.textAlignment = NSTextAlignment.Left
             countLabel.font = UIFont(name: "AvenirNext-Regular", size: 18*ratio)
             cell.contentView.addSubview(countLabel)
@@ -189,7 +196,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             
             
-            let timeChart = TimeChart(frame:CGRectMake(30*ratio, 80*ratio, 260*ratio, 70*ratio))
+            let timeChart = TimeChart(frame:CGRectMake(30*ratio, 90*ratio, 260*ratio, 60*ratio))
             timeChart.chartColor = task.getColor()
             timeChart.chartWidth = 3*ratio
             timeChart.updateChart(timeValue)
@@ -199,6 +206,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             let timeXAxis = TimeXAxis(frame:CGRectMake(15*ratio,150*ratio,290*ratio,20*ratio))
             cell.contentView.addSubview(timeXAxis)
+            
             
         }else if(indexPath.row == 2){
             
@@ -254,23 +262,24 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             weekLabel.weekColor = UIColor.colorWithHexString("#969696")
             weekLabel.weekFont = UIFont(name: "AvenirNext-Regular", size: 8*ratio)
             weekLabel.updateLabelText(weekLabelString)
+            weekLabel.userInteractionEnabled = false
             cell.contentView.addSubview(weekLabel)
             
             
             
-            c1 = UIView(frame:CGRectMake(146*ratio, 155*ratio, 10*ratio, 10*ratio))
-            c1.backgroundColor = task.getColor()
-            c1.clipsToBounds = true
-            c1.layer.cornerRadius = 5*ratio
-            cell.contentView.addSubview(c1)
+            c3 = UIView(frame:CGRectMake(146*ratio, 155*ratio, 10*ratio, 10*ratio))
+            c3.backgroundColor = task.getColor()
+            c3.clipsToBounds = true
+            c3.layer.cornerRadius = 5*ratio
+            cell.contentView.addSubview(c3)
             
             
             
-            c2 = UIView(frame:CGRectMake(164*ratio, 155*ratio, 10*ratio, 10*ratio))
-            c2.backgroundColor = UIColor.todaitLightGray()
-            c2.clipsToBounds = true
-            c2.layer.cornerRadius = 5*ratio
-            cell.contentView.addSubview(c2)
+            c4 = UIView(frame:CGRectMake(164*ratio, 155*ratio, 10*ratio, 10*ratio))
+            c4.backgroundColor = UIColor.todaitLightGray()
+            c4.clipsToBounds = true
+            c4.layer.cornerRadius = 5*ratio
+            cell.contentView.addSubview(c4)
             
         }else if(indexPath.row == 3){
             
@@ -414,6 +423,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         self.screenName = "Detail Activity"
         
+        detailTableView.reloadData()
+        
         todaitNavBar.setBackgroundImage(UIImage.colorImage(task.getColor(),frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
         
         addEditButton()
@@ -493,11 +504,11 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
         
         if scrollView.contentOffset.x >= 145*ratio {
-            c2.backgroundColor = task.getColor()
-            c1.backgroundColor = UIColor.todaitLightGray()
+            c4.backgroundColor = task.getColor()
+            c3.backgroundColor = UIColor.todaitLightGray()
         }else{
-            c1.backgroundColor = task.getColor()
-            c2.backgroundColor = UIColor.todaitLightGray()
+            c3.backgroundColor = task.getColor()
+            c4.backgroundColor = UIColor.todaitLightGray()
         }
         
     }

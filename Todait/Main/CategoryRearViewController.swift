@@ -29,6 +29,15 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         addCategoryTableView()
     }
     
+    func needToUpdate(category:Category){
+        
+        loadCategoryData()
+        
+        let index = find(categoryData, category)
+        selectedIndexPath = NSIndexPath(forRow: index!, inSection: 1)
+        categoryTableView.reloadData()
+        
+    }
     
     func addCategoryTableView(){
         
@@ -49,6 +58,8 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
     
     func loadCategoryData(){
         
+        categoryData.removeAll(keepCapacity: false)
+        
         let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
         
         let request = NSFetchRequest()
@@ -60,34 +71,7 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         NSLog("Category results %@",categoryData)
     }
     
-   
-    
-    /*
-    
-    func addCategoryBtn(){
-        addCategoryButton = UIButton(frame: CGRectMake(288*ratio, 30*ratio, 24*ratio, 24*ratio))
-        addCategoryButton.setImage(UIImage.maskColor("newPlus.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
-        addCategoryButton.addTarget(self, action: Selector("newCategory"), forControlEvents: UIControlEvents.TouchUpInside)
-        view.addSubview(addCategoryButton)
-    }
-    
-    */
-
-    
-    /*
-    func needToUpdate(){
-        loadCategoryData()
-        
-        if categoryData.count != 0 {
-            selectedIndex = categoryData.count - 1
-            categoryEdited()
-        }
-        
-        categoryTableView.reloadData()
-    }
-    */
-    
-    
+       
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 2
@@ -172,9 +156,6 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
 
         
         
-        
-        
-        
         return cell
     }
     
@@ -208,15 +189,15 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         
         if indexPath.section == 0 {
             let mainVC = revealViewController().frontViewController as! MainViewController
-            if mainVC.respondsToSelector(Selector("showAllCategory")){
-                mainVC.showAllCategory()
+            if mainVC.respondsToSelector(Selector("updateAllCategory")){
+                mainVC.updateAllCategory()
             }
         } else {
             let mainVC = revealViewController().frontViewController as! MainViewController
             
             
-            if mainVC.respondsToSelector(Selector("showCategory:")){
-                mainVC.showCategory(categoryData[selectedIndexPath.row])
+            if mainVC.respondsToSelector(Selector("updateCategory:")){
+                mainVC.updateCategory(categoryData[selectedIndexPath.row])
             }
         }
         

@@ -8,12 +8,11 @@
 
 import UIKit
 
-class SortViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDataSource,UITableViewDelegate{
+class SortViewController: BasicTableViewController,TodaitNavigationDelegate,UITableViewDataSource,UITableViewDelegate{
 
     
-    let sectionTitle:[String] = ["정렬 설정","보기 설정"]
     let sortTitle:[[String]] = [["기본 정렬","이름 정렬","카테고리 정렬","사용자 정렬"],["오늘 목표","오늘 쉬는 목표","완료 목표","미완료 목표","시작전 목표"]]
-    var sortTableView:UITableView!
+    //var sortTableView:UITableView!
     
     var sortIndex = 1
     var showIndex = 7
@@ -22,11 +21,11 @@ class SortViewController: BasicViewController,TodaitNavigationDelegate,UITableVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        sectionTitles = ["정렬 설정","보기 설정"]
         
         setupIndex()
      
-        addSortTableView()
+        //addSortTableView()
     }
     
     func setupIndex(){
@@ -35,22 +34,9 @@ class SortViewController: BasicViewController,TodaitNavigationDelegate,UITableVi
     }
     
     
-    func addSortTableView(){
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        sortTableView = UITableView(frame: CGRectMake(0,64*ratio, width, height-64*ratio), style: UITableViewStyle.Grouped)
-        sortTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier:"sortCell")
-        sortTableView.contentInset = UIEdgeInsetsMake(-15*ratio, 0, 0, 0)
-        sortTableView.sectionFooterHeight = 0.0
-        sortTableView.delegate = self
-        sortTableView.dataSource = self
-        
-        view.addSubview(sortTableView)
-        
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCellWithIdentifier("sortCell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("basic", forIndexPath: indexPath) as! UITableViewCell
         
         for view in cell.contentView.subviews{
             view.removeFromSuperview()
@@ -107,35 +93,13 @@ class SortViewController: BasicViewController,TodaitNavigationDelegate,UITableVi
         return false
     }
     
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        let headerView = UIView()
-        
-        let sectionTitleLabel = UILabel(frame: CGRectMake(15*ratio,23*ratio, 250*ratio, 13*ratio))
-        sectionTitleLabel.text = sectionTitle[section]
-        sectionTitleLabel.textAlignment = NSTextAlignment.Left
-        sectionTitleLabel.font = UIFont(name: "AvenirNext-Regular", size: 11*ratio)
-        sectionTitleLabel.textColor = UIColor.colorWithHexString("#595959")
-        
-        headerView.addSubview(sectionTitleLabel)
-        
-        return headerView
-        
-    }
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return sortTitle.count
     }
 
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 35*ratio
-    }
     
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 45*ratio
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return sortTitle[section].count
     }
     

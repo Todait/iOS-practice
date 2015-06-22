@@ -51,6 +51,7 @@ class WeekChart: UIView {
         chartColor = UIColor.todaitLightGray()
     }
     
+    
     func addChart(){
         
         for index in 0...6{
@@ -78,6 +79,15 @@ class WeekChart: UIView {
             
             if maxValue != 0 {
                 chartHeight = (values[index]*frame.size.height)/maxValue
+            }else{
+                chartHeight = 5
+            }
+            
+            
+            if chartHeight == 0 {
+                
+                chartHeight = 5
+                chartBox.backgroundColor = UIColor.todaitGray()
             }
             
             if direction == weekChartDirection.upDirection {
@@ -134,8 +144,13 @@ class WeekChart: UIView {
         
         if subview.frame.size.width == chartWidth {
             
-            subview.backgroundColor = UIColor.todaitRed()
-            
+            UIView.animateWithDuration(0.8, animations: { () -> Void in
+                subview.transform = CGAffineTransformMakeScale(1.2,1.2)
+            }, completion: { (Bool) -> Void in
+                UIView.animateWithDuration(1.5, animations: { () -> Void in
+                    subview.transform = CGAffineTransformMakeScale(1,1)
+                })
+            })
         }
         
         

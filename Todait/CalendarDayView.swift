@@ -8,7 +8,9 @@
 
 import UIKit
 protocol CalendarDayViewDelegate: NSObjectProtocol {
+    
     func dayViewClk(date:NSDate)
+    
 }
 
 
@@ -61,7 +63,7 @@ class CalendarDayView: UIView {
     func dayViewClk(){
         
         if selected == 1 {
-            dayLabel.textColor = UIColor.colorWithHexString("#969696")
+            dayLabel.textColor = UIColor.todaitGray()
             dayLabel.backgroundColor = UIColor.whiteColor()
             selected = 0
         }else{

@@ -23,6 +23,7 @@ class TimerBlurViewController: BasicViewController,TodaitNavigationDelegate {
     var timerDate: NSDate!
     
     var infoLabel: UILabel!
+    var mainColor: UIColor!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,7 +47,7 @@ class TimerBlurViewController: BasicViewController,TodaitNavigationDelegate {
         infoLabel = UILabel(frame: CGRectMake(30*ratio,100*ratio, 260*ratio, 80*ratio))
         infoLabel.text = "시작 시간"
         infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 30*ratio)
-        infoLabel.textColor = UIColor.colorWithHexString("#00D2B1")
+        infoLabel.textColor = mainColor
         infoLabel.textAlignment = NSTextAlignment.Center
         view.addSubview(infoLabel)
         
@@ -63,7 +64,7 @@ class TimerBlurViewController: BasicViewController,TodaitNavigationDelegate {
     func addDoneButton(){
         doneButton = UIButton(frame: CGRectMake(0, height-50*ratio, width, 50*ratio))
         doneButton.setTitle("완료", forState: UIControlState.Normal)
-        doneButton.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("#27DB9F"), frame: CGRectMake(0, 0, width, 50*ratio)), forState:UIControlState.Normal)
+        doneButton.setBackgroundImage(UIImage.colorImage(mainColor, frame: CGRectMake(0, 0, width, 50*ratio)), forState:UIControlState.Normal)
         doneButton.addTarget(self, action: Selector("doneButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         doneButton.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
         

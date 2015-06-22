@@ -18,13 +18,13 @@ protocol CategoryDelegate : NSObjectProtocol {
 class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,UpdateDelegate{
     
     
+    var category:Category!
     var categoryTableView: UITableView!
     var addCategoryButton: UIButton!
     var delegate: CategoryDelegate!
     var selectedIndex: Int! = 0
     let headerHeight: CGFloat = 220
-    let metaData: [String] = ["영어","수학","국어","회화","운동"]
-    let colorData: [String] = ["#FF969696","#FF00D2B1","#FFF53436","#FFFBEB56","#FF5A5A5A"]
+    
     var categoryData: [Category] = []
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
@@ -32,21 +32,14 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        addCategoryTableView()
         loadCategoryData()
+        setSelectedIndex()
+        
+        addCategoryTableView()
+        
     }
     
-    func addCategoryTableView(){
-        
-        categoryTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio,width,height - navigationHeight*ratio), style: UITableViewStyle.Grouped)
-        categoryTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        categoryTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
-        categoryTableView.delegate = self
-        categoryTableView.dataSource = self
-        categoryTableView.contentOffset.y = 0
-        view.addSubview(categoryTableView)
-        
-    }
+    
     
     func loadCategoryData(){
         
@@ -62,35 +55,24 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         NSLog("Category results %@",categoryData)
     }
     
-    override func viewWillAppear(animated: Bool) {
-        super.viewWillAppear(animated)
-        todaitNavBar.todaitDelegate = self
-        todaitNavBar.backButton.hidden = false
-        addCategoryBtn()
-        titleLabel.text = "Category"
+    func setSelectedIndex(){
+        selectedIndex = find(categoryData,category)
     }
     
-    func backButtonClk() {
-        self.navigationController?.popViewControllerAnimated(true)
-    }
-    
-    func addCategoryBtn(){
-        addCategoryButton = UIButton(frame: CGRectMake(288*ratio, 30*ratio, 24*ratio, 24*ratio))
-        addCategoryButton.setImage(UIImage.maskColor("newPlus.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
-        addCategoryButton.addTarget(self, action: Selector("newCategory"), forControlEvents: UIControlEvents.TouchUpInside)
-        view.addSubview(addCategoryButton)
-    }
-    
-    func newCategory(){
+    func addCategoryTableView(){
         
-        let newCategoryVC = NewCategoryViewController()
-        newCategoryVC.delegate = self
-        newCategoryVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        categoryTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio,width,height - navigationHeight*ratio), style: UITableViewStyle.Grouped)
+        categoryTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        categoryTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
+        categoryTableView.delegate = self
+        categoryTableView.dataSource = self
+        categoryTableView.contentOffset.y = 0
+        view.addSubview(categoryTableView)
         
-        self.navigationController?.presentViewController(newCategoryVC, animated: true, completion: { () -> Void in
-            
-        })
     }
+    
+    
+    
     
     func needToUpdate(){
         loadCategoryData()
@@ -134,15 +116,18 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         
         
         let category:Category = categoryData[indexPath.row]
+        let categoryColor = UIColor.colorWithHexString(category.color)
         
-        var categoryCircle = UIView(frame: CGRectMake(15*ratio, 17*ratio, 15*ratio, 15*ratio))
-        categoryCircle.backgroundColor = UIColor.colorWithHexString(category.color)
+        
+        
+        var categoryCircle = UIView(frame: CGRectMake(15*ratio, 14.5*ratio, 20*ratio, 20*ratio))
+        categoryCircle.backgroundColor = categoryColor
         categoryCircle.clipsToBounds = true
-        categoryCircle.layer.cornerRadius = 7.5*ratio
+        categoryCircle.layer.cornerRadius = 6*ratio
         cell.contentView.addSubview(categoryCircle)
         
         
-        var titleLabel = UILabel(frame:CGRectMake(40*ratio, 9.5*ratio, 250*ratio, 30*ratio))
+        var titleLabel = UILabel(frame:CGRectMake(50*ratio, 9.5*ratio, 250*ratio, 30*ratio))
         titleLabel.text = category.name
         titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
         titleLabel.textAlignment = NSTextAlignment.Left
@@ -152,7 +137,7 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         if indexPath.row == selectedIndex {
             
             var checkImage = UIImageView(frame: CGRectMake(283*ratio, 13.5*ratio, 22*ratio, 22*ratio))
-            checkImage.image = UIImage(named: "done@3x.png")
+            checkImage.image = UIImage.maskColor("done@3x.png", color:categoryColor)
             cell.contentView.addSubview(checkImage)
         }
         
@@ -179,6 +164,7 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         tableView.reloadData()
         
         categoryEdited()
+        
         
         return false
     }
@@ -216,7 +202,12 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
     func categoryEdited(){
         
         if self.delegate.respondsToSelector("categoryEdited:") {
-            self.delegate.categoryEdited(categoryData[selectedIndex])
+            
+            let category = categoryData[selectedIndex]
+            
+            self.delegate.categoryEdited(category)
+            
+            setNavigationBarColor(UIColor.colorWithHexString(category.color))
         }
         
     }
@@ -228,6 +219,41 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
             return y
         }
     }
+    
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        todaitNavBar.todaitDelegate = self
+        todaitNavBar.backButton.hidden = false
+        addCategoryBtn()
+        titleLabel.text = "Category"
+        self.screenName = "Category Activity"
+        
+        todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString(category.color),frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
+    }
+    
+    func backButtonClk() {
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    func addCategoryBtn(){
+        addCategoryButton = UIButton(frame: CGRectMake(288*ratio, 30, 24, 24))
+        addCategoryButton.setImage(UIImage.maskColor("newPlus.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
+        addCategoryButton.addTarget(self, action: Selector("newCategory"), forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(addCategoryButton)
+    }
+    
+    func newCategory(){
+        
+        let newCategoryVC = NewCategoryViewController()
+        newCategoryVC.delegate = self
+        newCategoryVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        
+        self.navigationController?.presentViewController(newCategoryVC, animated: true, completion: { () -> Void in
+            
+        })
+    }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

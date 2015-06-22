@@ -68,7 +68,7 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     }
     
     func addDateLabel(){
-        dateLabel = UILabel(frame: CGRectMake(30*ratio, 15*ratio, 260*ratio, 30*ratio))
+        dateLabel = UILabel(frame: CGRectMake(30*ratio, 5*ratio, 260*ratio, 30*ratio))
         dateLabel.textColor = UIColor.whiteColor()
         dateLabel.font = UIFont(name: "AvenirNext-Regular", size: 16*ratio)
         dateLabel.textAlignment = NSTextAlignment.Center
@@ -78,7 +78,7 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     }
     
     func addCompletionInfoLabel(){
-        completionInfoLabel = UILabel(frame: CGRectMake(30*ratio, 80*ratio, 100*ratio, 22*ratio))
+        completionInfoLabel = UILabel(frame: CGRectMake(30*ratio, 60*ratio, 100*ratio, 22*ratio))
         completionInfoLabel.textColor = UIColor.whiteColor()
         completionInfoLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
         completionInfoLabel.textAlignment = NSTextAlignment.Center
@@ -87,16 +87,17 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     }
     
     func addCompletionRateLabel(){
-        completionRateLabel = UILabel(frame: CGRectMake(30*ratio, 100*ratio, 100*ratio, 50*ratio))
+        completionRateLabel = UILabel(frame: CGRectMake(30*ratio, 80*ratio, 100*ratio, 50*ratio))
         completionRateLabel.textColor = UIColor.whiteColor()
         completionRateLabel.font = UIFont(name: "AvenirNext-Regular", size: 35*ratio)
         completionRateLabel.textAlignment = NSTextAlignment.Center
         completionRateLabel.text = "0%"
+        completionRateLabel.adjustsFontSizeToFitWidth = true
         backgroundImageView.addSubview(completionRateLabel)
     }
     
     func addStudyInfoLabel(){
-        studyInfoLabel = UILabel(frame: CGRectMake(190*ratio, 80*ratio, 100*ratio, 22*ratio))
+        studyInfoLabel = UILabel(frame: CGRectMake(190*ratio, 60*ratio, 100*ratio, 22*ratio))
         studyInfoLabel.textColor = UIColor.whiteColor()
         studyInfoLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
         studyInfoLabel.textAlignment = NSTextAlignment.Center
@@ -105,7 +106,7 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     }
     
     func addStudyTimeLabel(){
-        studyTimeLabel = UILabel(frame: CGRectMake(190*ratio, 100*ratio, 100*ratio, 50*ratio))
+        studyTimeLabel = UILabel(frame: CGRectMake(190*ratio, 80*ratio, 100*ratio, 50*ratio))
         studyTimeLabel.textColor = UIColor.whiteColor()
         studyTimeLabel.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
         studyTimeLabel.textAlignment = NSTextAlignment.Center
@@ -114,7 +115,7 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     }
     
     func addRemainingTimeLabel(){
-        remainingTimeLabel = UILabel(frame: CGRectMake(60*ratio, 180*ratio, 200*ratio, 20*ratio))
+        remainingTimeLabel = UILabel(frame: CGRectMake(60*ratio, 150*ratio, 200*ratio, 20*ratio))
         remainingTimeLabel.textAlignment = NSTextAlignment.Center
         remainingTimeLabel.textColor = UIColor.whiteColor()
         remainingTimeLabel.text = "오늘 남은 시간 12:33:39"
@@ -123,7 +124,7 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     }
     
     func addCenterLine(){
-        let line = UIView(frame: CGRectMake(159.75*ratio, 60*ratio, 0.5*ratio, 100*ratio))
+        let line = UIView(frame: CGRectMake(159.75*ratio, 40*ratio, 0.5*ratio, 100*ratio))
         line.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
         backgroundImageView.addSubview(line)
     }

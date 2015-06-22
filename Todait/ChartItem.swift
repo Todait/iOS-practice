@@ -18,3 +18,20 @@ class ChartItem: NSObject {
         self.value = value
     }
 }
+
+
+class CategoryItem: NSObject {
+    
+    var color: UIColor!
+    var value: NSNumber!
+    var category: Category!
+    
+    init(color:UIColor,value:NSNumber,category:Category){
+        
+        self.color = color
+        self.value = value
+        self.category = category
+    }
+    
+    
+}

@@ -38,8 +38,59 @@ class Task: NSManagedObject {
     let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     let defaults:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
     
+    
+    
+    
+    func getProgressPercentAtDateNumber(dateNumber:NSNumber)->NSNumber{
+        
+        let day = getDay(dateNumber)
+        
+        if day != nil {
+            return day!.getProgressPercent()
+        }
+        
+        return 0
+        
+    }
+    
+    
+    
+    func updateDay(){
+        
+        var startDate = start_date
+        let todayDate = getTodayDateNumber()
+        var endDate = end_date
+        
+        var dayArray = dayList
+        
+        while startDate.integerValue < todayDate.integerValue {
+            
+            getDay(startDate)!
+            
+            let nextDate = getDateFromDateNumber(startDate).addDay(1)
+            startDate = getDateNumberFromDate(nextDate)
+        }
+        
+        dayList = dayArray
+        
+    }
+    
+    
     func getColor()->UIColor{
         return UIColor.colorWithHexString(category_id.color)
+    }
+    
+    func getWeekDayDoneTime(date:NSDate)->NSNumber{
+        
+        let dateNumberList:[NSNumber] = getWeekDateNumberList(date)
+        var totalTime = 0
+        
+        for dateNumber in dateNumberList {
+            let doneSecond = getDayDoneSecond(dateNumber)
+            totalTime = totalTime + Int(doneSecond)
+        }
+        
+        return totalTime
     }
     
     func getWeekDayDoneAmount(date:NSDate)->[NSNumber]{
@@ -71,6 +122,9 @@ class Task: NSManagedObject {
         
         return dateNumberList
     }
+    
+    
+    //date와 오늘마감시간에 따라 에러발생가능성 있음
     
     func getDateNumberFromDate(date:NSDate)->NSNumber{
         
@@ -124,7 +178,8 @@ class Task: NSManagedObject {
         return 0
     }
     
-    func geyDayDoneSecond(dateNumber:NSNumber)->NSNumber{
+    
+    func getDayDoneSecond(dateNumber:NSNumber)->NSNumber{
         var day:Day!
         
         for dayItem in dayList {
@@ -178,8 +233,9 @@ class Task: NSManagedObject {
         day.done_amount = 0
         day.done_second = 0
         day.date = dateNumber
-        day.expect_amount = Int(calculateExpectedAmount(day))
         day.day_of_week = getDayOfWeekFromDateNumber(dateNumber)
+        day.expect_amount = Int(calculateExpectedAmount(day))
+        
         
         var error: NSError?
         context?.save(&error)
@@ -222,6 +278,10 @@ class Task: NSManagedObject {
             
         }
         
+        if totalAmount == 0 {
+            return 0
+        }
+        
         
         return todayAmount.floatValue / totalAmount.floatValue
     }
@@ -236,8 +296,10 @@ class Task: NSManagedObject {
         let date = getDateFromDateNumber(dateNumber)
         let dayOfWeek = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitWeekday, fromDate:date)
         
-        return dayOfWeek.weekday
+        
+        return dayOfWeek.weekday - 1
     }
+    
     
     //유틸
     func getDateFromDateNumber(dateNumber:NSNumber)->NSDate{
@@ -371,6 +433,8 @@ class Task: NSManagedObject {
         return false
     }
     
+    
+    
     func getDoneTimeString()->String{
         let totalSeconds = getTotalDoneTime()
         return totalSeconds.toTimeString()
@@ -403,7 +467,11 @@ class Task: NSManagedObject {
         let totalAmount = amount
         let remainder = totalAmount.integerValue - doneAmount.integerValue
         
-        return "\(doneAmount)/\(totalAmount) \(unit) (\(remainder)\(unit) 남음)"
+        if remainder <= 0 {
+            return "\(doneAmount)/\(totalAmount) \(unit)"
+        }else{
+            return "\(doneAmount)/\(totalAmount) \(unit) (\(remainder)\(unit) 남음)"
+        }
     }
     
     func getTotalDoneAmount()->NSNumber{

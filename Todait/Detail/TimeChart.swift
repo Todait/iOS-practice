@@ -30,6 +30,7 @@ class TimeChart: UIView {
     var padding:CGFloat = 2
     
     var lineView:UIView!
+    var line:UIView!
     var valueLabel:UILabel!
     var delegate:touchDelegate!
     
@@ -42,11 +43,11 @@ class TimeChart: UIView {
         
         setupRatio()
         setupDefault()
-        setupLineView()
-        
-        
         addYAxis(frame)
         addChart()
+        
+        setupLineView()
+    
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -66,25 +67,27 @@ class TimeChart: UIView {
     
     func setupLineView(){
         
-        lineView = UIView(frame: CGRectMake(0, 0, 30*ratio, frame.size.height-30*ratio))
+        lineView = UIView(frame: CGRectMake(0, -20*ratio, 25*ratio, 15*ratio))
         lineView.backgroundColor = UIColor.clearColor()
         lineView.hidden = true
-        lineView.layer.cornerRadius = 15*ratio
+        lineView.layer.cornerRadius = 5*ratio
         
-        let line = UIView(frame: CGRectMake(14.75*ratio, 30*ratio, 0.5*ratio,frame.size.height+5*ratio))
+        line = UIView(frame: CGRectMake(12.25*ratio, 15*ratio, 0.5*ratio,frame.size.height))
         line.backgroundColor = UIColor.todaitPurple()
         line.alpha = 0.9
         lineView.addSubview(line)
         
         
-        valueLabel = UILabel(frame: CGRectMake(0, 0, 30*ratio, 30*ratio))
+        valueLabel = UILabel(frame: CGRectMake(0*ratio, 0*ratio, 25*ratio, 15*ratio))
         valueLabel.text = "0"
         valueLabel.textColor = UIColor.whiteColor()
-        valueLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
-        valueLabel.layer.cornerRadius = 15*ratio
+        valueLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+        valueLabel.layer.cornerRadius = 10*ratio
         valueLabel.clipsToBounds = true
-        valueLabel.backgroundColor = UIColor.todaitPurple()
+        valueLabel.backgroundColor = UIColor.clearColor()
         valueLabel.textAlignment = NSTextAlignment.Center
+        valueLabel.adjustsFontSizeToFitWidth = true
+        
         lineView.addSubview(valueLabel)
         
         
@@ -140,6 +143,7 @@ class TimeChart: UIView {
             label.text = "\(maxValue*CGFloat(index+1)/4)"
         }
         
+        lineView.backgroundColor = chartColor
         
         
         for index in 0...values.count-1 {
@@ -208,11 +212,15 @@ class TimeChart: UIView {
         let touchPoint:CGPoint! = touch?.locationInView(self)
         let subview:UIView! = hitTest(CGPointMake(touchPoint.x, frame.size.height-1), withEvent: event)
         
+        
+        lineView.backgroundColor = chartColor
+        line.backgroundColor = chartColor
+        
         NSLog("%f %f",touchPoint.x,touchPoint.y)
         
         if (touchPoint.x >= 0 && touchPoint.x <= frame.size.width) {
             lineView.hidden = false
-            lineView.center = CGPointMake(touchPoint.x, -15*ratio)
+            lineView.center = CGPointMake(touchPoint.x, lineView.center.y)
             
             if subview.frame.size.width == chartWidth {
                 

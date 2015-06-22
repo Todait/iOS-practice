@@ -31,7 +31,7 @@ class TaskTableViewCell: UITableViewCell {
     
     let DEFAULT_START_ANGLE : CGFloat = -89.0
     let DEFAULT_END_ANGLE : CGFloat = -89.00001
-    let DEFAULT_LINE_WIDTH : CGFloat = 2.0
+    let DEFAULT_LINE_WIDTH : CGFloat = 3.0
     
     
     
@@ -70,12 +70,12 @@ class TaskTableViewCell: UITableViewCell {
     }
     
     func addTimerButton(){
-        timerButton = UIButton(frame: CGRectMake(15*ratio, 9.5*ratio, 30*ratio, 30*ratio))
+        timerButton = UIButton(frame: CGRectMake(15*ratio, 7.5*ratio, 34*ratio, 34*ratio))
         
         timerButton.clipsToBounds = true
-        timerButton.layer.cornerRadius = 15*ratio
-        timerButton.layer.borderWidth = 2.0*ratio
-        timerButton.layer.borderColor = UIColor.colorWithHexString("#C0C0C0").CGColor
+        timerButton.layer.cornerRadius = 17*ratio
+        timerButton.layer.borderWidth = 3.0*ratio
+        timerButton.layer.borderColor = UIColor.todaitLightGray().CGColor
         timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         self.addSubview(timerButton)
         
@@ -91,7 +91,7 @@ class TaskTableViewCell: UITableViewCell {
     
     func setPercentBezierPath(){
         let timerButtonRect = timerButton.frame
-        percentBezierPath = UIBezierPath(arcCenter: timerButton.center, radius:timerButtonRect.size.width/2 - DEFAULT_LINE_WIDTH/2, startAngle: degreeToRadians(DEFAULT_START_ANGLE), endAngle: degreeToRadians(DEFAULT_END_ANGLE), clockwise: true) as UIBezierPath!
+        percentBezierPath = UIBezierPath(arcCenter: timerButton.center, radius:timerButtonRect.size.width/2 - DEFAULT_LINE_WIDTH*ratio/2, startAngle: degreeToRadians(DEFAULT_START_ANGLE), endAngle: degreeToRadians(DEFAULT_END_ANGLE), clockwise: true) as UIBezierPath!
         
     }
     
@@ -113,11 +113,11 @@ class TaskTableViewCell: UITableViewCell {
     }
     
     func addPercentLabel(){
-        percentLabel = UILabel(frame: CGRectMake(15*ratio, 9*ratio, 30*ratio, 30*ratio))
+        percentLabel = UILabel(frame: CGRectMake(15*ratio, 7.5*ratio, 34*ratio, 34*ratio))
         percentLabel.font = UIFont(name: "AvenirNext-Regular", size: 8*ratio)
         percentLabel.text = "%"
         percentLabel.textAlignment = NSTextAlignment.Center
-        percentLabel.textColor = UIColor.colorWithHexString("#00D2B1")
+        percentLabel.textColor = UIColor.todaitLightGray()
         self.addSubview(percentLabel)
     }
     
@@ -126,6 +126,7 @@ class TaskTableViewCell: UITableViewCell {
         colorBoxView.backgroundColor = UIColor.clearColor()
         self.addSubview(colorBoxView)
     }
+    
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

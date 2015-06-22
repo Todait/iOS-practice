@@ -7,6 +7,13 @@
 //
 
 import UIKit
+import CoreData
+
+protocol CalendarDayDelegate:NSObjectProtocol {
+    
+    func daySelected(dateNumber:NSNumber);
+    
+}
 
 class CalendarTableViewCell: UITableViewCell,CalendarDayViewDelegate{
     
@@ -18,6 +25,10 @@ class CalendarTableViewCell: UITableViewCell,CalendarDayViewDelegate{
     var monthDateLabel:UILabel!
     var calendarDate: NSDate!
     var calendar: NSCalendar!
+    var delegate:CalendarDayDelegate!
+    
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -48,7 +59,11 @@ class CalendarTableViewCell: UITableViewCell,CalendarDayViewDelegate{
     
     
     func dayViewClk(date:NSDate){
-        NSLog("%@",date)
+        
+        
+        if self.delegate.respondsToSelector(Selector("daySelected:")){
+            self.delegate.daySelected(getDateNumberFromDate(date))
+        }
     }
     
     func setupRatio(){
@@ -107,6 +122,15 @@ class CalendarTableViewCell: UITableViewCell,CalendarDayViewDelegate{
                 dayView.date = calendar.dateFromComponents(comp)
                 
                 
+                let colors:[String:UIColor] = getMainColorFromDate(dayView.date)
+                
+                dayView.dayLabel.backgroundColor = colors["background"]
+                dayView.dayLabel.textColor = colors["text"]
+                
+                dayView.selected = 1
+
+                
+                /*
                 if index % 8 == 0 {
                     dayView.dayLabel.backgroundColor = UIColor.todaitPurple()
                     dayView.dayLabel.textColor = UIColor.whiteColor()
@@ -120,18 +144,15 @@ class CalendarTableViewCell: UITableViewCell,CalendarDayViewDelegate{
                     //dayView.dayLabel.textColor = UIColor.colorWithHexString("#969696")
                     //dayView.selected = 0
                 }
-                
+                */
             }
             
             
         }
         
-        
-        
-        
-        
-        
     }
+    
+    
     
     func getFirstDate(date:NSDate)->NSDate{
         
@@ -175,6 +196,36 @@ class CalendarTableViewCell: UITableViewCell,CalendarDayViewDelegate{
         
     }
     
+    
+    func getMainColorFromDate(date:NSDate)->[String:UIColor]{
+        
+        var mainColor:[String:UIColor] = [:]
+        
+        let dateNumber = getDateNumberFromDate(date)
+        
+        let entityDescription = NSEntityDescription.entityForName("Day", inManagedObjectContext: managedObjectContext!)
+        let predicate:NSPredicate = NSPredicate(format: "date == %@",dateNumber)
+        
+        let request = NSFetchRequest()
+        request.entity = entityDescription
+        request.predicate = predicate
+        
+        var error: NSError?
+        let data:[Day] = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Day]
+        
+        if data.count != 0 {
+            let day:Day = data[0]
+            
+            mainColor["text"] = UIColor.whiteColor()
+            mainColor["background"] = day.getColor()
+            
+        }else{
+            mainColor["text"] = UIColor.todaitGray()
+            mainColor["background"] = UIColor.whiteColor()
+        }
+        
+        return mainColor
+    }
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

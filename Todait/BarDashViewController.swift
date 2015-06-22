@@ -11,7 +11,7 @@ import UIKit
 class BarDashViewController: UITableViewController {
 
     
-    var dataSource:[ChartItem] = []
+    var dataSource:[[String:AnyObject]] = []
     var ratio:CGFloat!
     
     override func viewDidLoad() {
@@ -19,6 +19,8 @@ class BarDashViewController: UITableViewController {
 
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "reuseIdentifier")
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        tableView.backgroundColor = UIColor.whiteColor()
+        view.backgroundColor = UIColor.whiteColor()
         
         let screenRect = UIScreen.mainScreen().bounds
         let screenWidth = screenRect.size.width
@@ -55,27 +57,54 @@ class BarDashViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath) as! UITableViewCell
         cell.backgroundColor = UIColor.whiteColor()
         
-        let backgroundView = UIView(frame:CGRectMake(5*ratio,5*ratio,110*ratio,24*ratio))
+        let backgroundView = UIView(frame:CGRectMake(10*ratio,5*ratio,90*ratio,18*ratio))
         backgroundView.clipsToBounds = true
-        backgroundView.layer.cornerRadius = 12*ratio
+        backgroundView.layer.cornerRadius = 9*ratio
         backgroundView.backgroundColor = UIColor.todaitLightGray()
         cell.contentView.addSubview(backgroundView)
         
-        let data:ChartItem! = dataSource[indexPath.row]
         
-        let frontWidth = CGFloat(data.value)
-        let frontView = UIView(frame:CGRectMake(0,0,0,24*ratio))
-        frontView.backgroundColor = data.color
-        frontView.layer.cornerRadius = 12*ratio
+        
+        let data = dataSource[indexPath.row]
+        let category = data["category"] as! Category
+        let value:CGFloat = data["value"] as! CGFloat
+        let color = UIColor.colorWithHexString(category.color)
+        
+        
+        
+        
+        let frontWidth = CGFloat(value)
+        let frontView = UIView(frame:CGRectMake(0,0,0,18*ratio))
+        frontView.backgroundColor = color
+        frontView.layer.cornerRadius = 9*ratio
         frontView.clipsToBounds = true
         backgroundView.addSubview(frontView)
         
         UIView.animateWithDuration(1.5, animations: { () -> Void in
-            frontView.frame = CGRectMake(0,0,frontWidth,24*self.ratio)
+            frontView.frame = CGRectMake(0,0,frontWidth,18*self.ratio)
         })
         
         
+        let titleLabel = UILabel(frame: CGRectMake(15*ratio, 5*ratio, 40*ratio, 18*ratio))
+        titleLabel.text = category.name
+        titleLabel.textColor = UIColor.whiteColor()
+        titleLabel.textAlignment = NSTextAlignment.Left
+        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 8*ratio)
+        cell.contentView.addSubview(titleLabel)
+        
+        
+        let percentLabel = UILabel(frame:CGRectMake(109*ratio, 5*ratio, 20*ratio, 18*ratio))
+        percentLabel.adjustsFontSizeToFitWidth = true
+        percentLabel.text = String(format: "%.0f%",value)
+        percentLabel.textColor = color
+        percentLabel.font = UIFont(name: "AvenirNext-Regular", size: 8*ratio)
+        cell.contentView.addSubview(percentLabel)
+        
         return cell
+    }
+    
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 30*ratio
     }
     
     

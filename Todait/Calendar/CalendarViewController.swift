@@ -7,14 +7,19 @@
 //
 
 import UIKit
+import CoreData
 
-class CalendarViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate,TodaitNavigationDelegate{
+class CalendarViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate,TodaitNavigationDelegate,CalendarDayDelegate{
     
     var calendarTableView: UITableView!
     let weekName:[String] = ["일","월","화","수","목","금","토"]
     
     var calendar:NSCalendar!
     var dayLabel:UILabel!
+    var currentIndexPath:NSIndexPath!
+    
+    var taskTableVC:TaskTableViewController!
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +28,7 @@ class CalendarViewController: BasicViewController,UITableViewDataSource,UITableV
         addDayLabel()
         addWeekLabels()
         addCalendarTableView()
+        addTaskTableView()
         
         view.backgroundColor = UIColor.colorWithHexString("#00D2B1")
     }
@@ -60,7 +66,7 @@ class CalendarViewController: BasicViewController,UITableViewDataSource,UITableV
     
     func addCalendarTableView(){
         
-        calendarTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio+44*ratio,width,420*ratio), style: UITableViewStyle.Grouped)
+        calendarTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio+44*ratio,width,340*ratio), style: UITableViewStyle.Grouped)
         calendarTableView.registerClass(CalendarTableViewCell.self, forCellReuseIdentifier: "cell")
         calendarTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
         calendarTableView.delegate = self
@@ -72,6 +78,48 @@ class CalendarViewController: BasicViewController,UITableViewDataSource,UITableV
         
     }
     
+    
+    func addTaskTableView(){
+        
+        taskTableVC = TaskTableViewController()
+        addChildViewController(taskTableVC)
+        
+        taskTableVC.view.frame = CGRectMake(0,453*ratio,width,height-458*ratio)
+        taskTableVC.taskData = getTaskData(getTodayDateNumber())
+        
+        view.addSubview(taskTableVC.view)
+        
+        
+    }
+    
+    func getTaskData(dateNumber:NSNumber)->[Task]{
+        
+        //클릭된 날의 Task
+        
+        var taskData:[Task] = []
+        
+        let entityDescription = NSEntityDescription.entityForName("Task",inManagedObjectContext:managedObjectContext!)
+        
+        let predicate:NSPredicate = NSPredicate(format: "start_date <= %@ && %@ <= end_date", dateNumber,dateNumber)
+        
+        let request = NSFetchRequest()
+        request.entity = entityDescription
+        request.predicate = predicate
+        
+        var error: NSError?
+        taskData = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Task]
+        
+        
+        
+        return taskData
+    }
+    
+    func daySelected(dateNumber:NSNumber){
+        
+        taskTableVC.taskData = getTaskData(dateNumber)
+        taskTableVC.tableView.reloadData()
+        
+    }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -158,10 +206,43 @@ class CalendarViewController: BasicViewController,UITableViewDataSource,UITableV
         
     }
     
+    func tableView(tableView: UITableView, didEndDisplayingCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        
+        if indexPath.row != currentIndexPath.row {
+            
+            let dateComponents = calendar.components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth, fromDate:NSDate())
+            dateComponents.month = dateComponents.month + currentIndexPath.row - 500
+            let mainDate:NSDate! = NSCalendar.currentCalendar().dateFromComponents(dateComponents)
+            
+            let dateForm = NSDateFormatter()
+            dateForm.dateFormat = "YYYY. MM"
+            dayLabel.text = dateForm.stringFromDate(mainDate)
+            
+            
+        }else{
+            
+            let cell = tableView.visibleCells().first as! UITableViewCell
+            let path = tableView.indexPathForCell(cell)!
+            
+            let dateComponents = calendar.components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth, fromDate:NSDate())
+            dateComponents.month = dateComponents.month + path.row - 500
+            let mainDate:NSDate! = NSCalendar.currentCalendar().dateFromComponents(dateComponents)
+            
+            let dateForm = NSDateFormatter()
+            dateForm.dateFormat = "YYYY. MM"
+            dayLabel.text = dateForm.stringFromDate(mainDate)
+        }
+        
+    }
+    
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! CalendarTableViewCell
+        cell.delegate = self
+        
+        currentIndexPath = indexPath
         
         NSLog("%f", cell.frame.size.height)
         
@@ -200,6 +281,7 @@ class CalendarViewController: BasicViewController,UITableViewDataSource,UITableV
         todaitNavBar.backButton.hidden = false
         todaitNavBar.shadowImage = UIImage()
         self.titleLabel.text = "Calendar"
+        self.screenName = "Calendar Activity"
         
         
         calendarTableView.scrollToRowAtIndexPath(NSIndexPath(forRow: 500, inSection: 0), atScrollPosition: UITableViewScrollPosition.Top, animated: false)

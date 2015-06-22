@@ -54,6 +54,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
         addCompleteButton()
         
         addTimeSettingView()
+        //startTimer()
     }
     
     
@@ -156,6 +157,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
     
     func recordTime(){
         
+        endDate = NSDate()
+        stopTimer()
         
         saveTimeLog()
         saveTimeHistory()
@@ -243,8 +246,12 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
         completeButton.setTitleColor(task.getColor(), forState: UIControlState.Normal)
         completeButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Highlighted)
         completeButton.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 18*ratio)
-        
+        completeButton.addTarget(self, action: Selector("recordTime"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(completeButton)
+        
+        
+        self.navigationController?.popViewControllerAnimated(true)
+        
     }
     
     func countDown(){

@@ -15,14 +15,14 @@ class TodaitRevealViewController: SWRevealViewController {
 
         
         
-        rearViewRevealWidth = 80
+        rearViewRevealWidth = 100
         rearViewRevealOverdraw = 30
         bounceBackOnOverdraw = false
         bounceBackOnLeftOverdraw = true
         //bounceBackOnLeftOverdraw = false
         //stableDragOnLeftOverdraw = true
         
-        setFrontViewPosition(FrontViewPosition.Right, animated: false)
+        //setFrontViewPosition(FrontViewPosition.Right, animated: false)
         
         // Do any additional setup after loading the view.
     }

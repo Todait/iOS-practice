@@ -39,14 +39,19 @@ class BasicViewController: GAITrackedViewController,UIGestureRecognizerDelegate 
         super.viewWillAppear(animated)
         
         //__weak id weakSelf = self;
-        //self.navigationController?.interactivePopGestureRecognizer.delegate = self
         self.navigationController?.interactivePopGestureRecognizer.delegate = self
         styleNavBar()
         addTitleLabel()
+        
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+    }
+    
+    func setNavigationBarColor(color:UIColor){
+        
+        todaitNavBar.setBackgroundImage(UIImage.colorImage(color,frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
     }
     
     func styleNavBar(){
@@ -63,15 +68,17 @@ class BasicViewController: GAITrackedViewController,UIGestureRecognizerDelegate 
         view.addSubview(titleLabel)
     }
     
+    override func preferredStatusBarStyle() -> UIStatusBarStyle {
+        return UIStatusBarStyle.LightContent
+    }
+
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return UIStatusBarStyle.LightContent
-    }
-
+    
     
     /*
     // MARK: - Navigation
