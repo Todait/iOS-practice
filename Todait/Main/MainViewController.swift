@@ -61,7 +61,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func updateAllCategory(){
         
-        self.titleLabel.text = "Todaits"
+        self.titleLabel.text = "Todait"
         
         timeChart.chartColor = UIColor.todaitGreen()
         timeChart.updateChart(timeValue)
