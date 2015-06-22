@@ -92,8 +92,8 @@ public func checkDayLastTime(date:NSDate)->Int{
     
     let defaults = NSUserDefaults.standardUserDefaults()
     
-    var finishHour:Int = defaults.integerForKey("finisiHourOfDay")
-    var finishMinute:Int = defaults.integerForKey("finisiMinuteOfDay")
+    var finishHour:Int = defaults.integerForKey("finishHourOfDay")
+    var finishMinute:Int = defaults.integerForKey("finishMinuteOfDay")
     
     
     if comp.hour < 12 && finishHour < 12 {

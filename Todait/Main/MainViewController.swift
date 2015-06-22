@@ -26,6 +26,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     var calendarButton: UIButton!
     var timeTableButton: UIButton!
     var statisticsButton: UIButton!
+    var photoButton: UIButton!
     
     var colorData:[String] = ["#FFFB887E","#FFF1CB67","#FFAA9DDE","#FF5694CF","#FF5A5A5A","#FFBEFCEF","#FFC6B6A7","#FF25D59B","#FFDA5A68","#FFF5A26F"]
     
@@ -46,7 +47,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func needToUpdate(){
         
+        loadTaskData()
         loadDayData()
+        mainTableView.reloadData()
+        
         updateText()
     }
     
@@ -54,7 +58,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         let dateForm = NSDateFormatter()
         dateForm.dateFormat = "yyyy.MM.dd"
-        parallelView.dateLabel.text = dateForm.stringFromDate(NSDate())
+        
+        var todayDate:NSDate = getDateFromDateNumber(getTodayDateNumber())
+        parallelView.dateLabel.text = dateForm.stringFromDate(todayDate)
         parallelView.studyTimeLabel.text = getTotalTimeStringOfToday()
         parallelView.completionRateLabel.text = getTotalPercentStringOfToday()
     }
@@ -79,7 +85,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         isShowAllCategory = true
         todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(),frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
         
+        loadTaskData()
         loadDayData()
+        mainTableView.reloadData()
         updateText()
         
     }
@@ -108,7 +116,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         todaitNavBar.setBackgroundImage(UIImage.colorImage(categoryColor,frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
         
         
+        loadTaskData()
         loadDayData()
+        mainTableView.reloadData()
+        
         updateText()
         
         
@@ -127,12 +138,13 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         addMainTableView()
         
         
-        setupTimer()
         timerStart()
         calculateRemainingTime()
         setupCoreDataInit()
-        loadDayData()
         
+        loadTaskData()
+        loadDayData()
+        mainTableView.reloadData()
         
         
     }
@@ -376,6 +388,21 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
     }
     
+    func addPhotoButton(){
+        
+        photoButton = UIButton(frame: CGRectMake(280*ratio, 100*ratio, 24*ratio, 24*ratio))
+        photoButton.setBackgroundImage(UIImage(named: "ic_camera_button.png"), forState:UIControlState.Normal)
+        photoButton.addTarget(self, action: Selector("showPhotoVC"), forControlEvents: UIControlEvents.TouchUpInside)
+         view.addSubview(photoButton)
+        
+    }
+    
+    func showPhotoVC(){
+        
+        self.navigationController?.pushViewController(MainPhotoViewController(), animated: true)
+        
+    }
+    
     func showCalendarVC(){
         self.navigationController?.pushViewController(CalendarViewController(), animated: true)
     }
@@ -516,8 +543,6 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func loadDayData(){
         
-        loadTaskData()
-        
         
         dayData.removeAll(keepCapacity: true)
         
@@ -531,8 +556,6 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             }
         }
         
-        
-        mainTableView.reloadData()
     }
     
     
@@ -576,6 +599,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         addStatisticsButton()
         addShowCategoryButton()
         addTaskButton()
+        addPhotoButton()
         
         titleLabel.text = "Todait"
         //mainTableView.contentOffset.y = 0
@@ -590,6 +614,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             updateCategory(category)
         }
         
+        
+        needToUpdate()
         
         if self.revealViewController() != nil {
             view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
@@ -804,6 +830,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             tableView.beginUpdates()
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:UITableViewRowAnimation.Automatic)
             tableView.endUpdates()
+            
+            
+            loadTaskData()
+            loadDayData()
+            updateText()
             
         }else {
             //삭제에러처리
