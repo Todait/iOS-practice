@@ -46,7 +46,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func needToUpdate(){
         
+        loadTaskData()
         loadDayData()
+        mainTableView.reloadData()
+        
         updateText()
     }
     
@@ -81,7 +84,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         isShowAllCategory = true
         todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(),frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
         
+        loadTaskData()
         loadDayData()
+        mainTableView.reloadData()
         updateText()
         
     }
@@ -110,7 +115,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         todaitNavBar.setBackgroundImage(UIImage.colorImage(categoryColor,frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
         
         
+        loadTaskData()
         loadDayData()
+        mainTableView.reloadData()
+        
         updateText()
         
         
@@ -129,12 +137,13 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         addMainTableView()
         
         
-        setupTimer()
         timerStart()
         calculateRemainingTime()
         setupCoreDataInit()
-        loadDayData()
         
+        loadTaskData()
+        loadDayData()
+        mainTableView.reloadData()
         
         
     }
@@ -518,8 +527,6 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func loadDayData(){
         
-        loadTaskData()
-        
         
         dayData.removeAll(keepCapacity: true)
         
@@ -533,8 +540,6 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             }
         }
         
-        
-        mainTableView.reloadData()
     }
     
     
@@ -806,6 +811,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             tableView.beginUpdates()
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:UITableViewRowAnimation.Automatic)
             tableView.endUpdates()
+            
+            
+            loadTaskData()
+            loadDayData()
+            updateText()
             
         }else {
             //삭제에러처리
