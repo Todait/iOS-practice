@@ -90,7 +90,7 @@ class CategorySortViewController: BasicViewController,UITableViewDelegate,UITabl
         }else{
             
             var path = UIBezierPath()
-            path.addLineToPoint(CGPointMake(8*ratio, 0*ratio))
+            path.moveToPoint(CGPointMake(8*ratio, 0*ratio))
             path.addLineToPoint(CGPointMake(width - filterOringinX - 10*ratio, 0*ratio))
             path.addLineToPoint(CGPointMake(width - filterOringinX - 10*ratio, 49*ratio))
             path.addLineToPoint(CGPointMake(8*ratio, 49*ratio))
