@@ -102,8 +102,6 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         view.addSubview(taskTableView)
         
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: Selector("resignAllTextResponder"))
-        taskTableView.addGestureRecognizer(tapGesture)
     }
     
     func setupCategory(){
@@ -159,6 +157,8 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         
         return cell
     }
+    
+    
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
@@ -218,6 +218,8 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         
         headerView.addSubview(titleLabel)
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: Selector("resignAllTextResponder"))
+        headerView.addGestureRecognizer(tapGesture)
         
         
         return headerView
