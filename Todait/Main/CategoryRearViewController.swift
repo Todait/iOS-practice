@@ -18,6 +18,7 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     var categoryData: [Category] = []
     
+    var sortButton:UIButton!
     var addButton:UIButton!
     
     override func viewDidLoad() {
@@ -29,6 +30,7 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         loadCategoryData()
         addCategoryTableView()
         addCategoryButton()
+        addSortButton()
     }
     
     func needToUpdate(category:Category){
@@ -73,6 +75,28 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         categoryVC.category = categoryData[selectedIndexPath.row]
         
         self.revealViewController().setFrontViewController(categoryVC, animated: true)
+        
+    }
+    
+    func addSortButton(){
+        
+        sortButton = UIButton(frame: CGRectMake(20*ratio, 25*ratio, 40*ratio, 25*ratio))
+        sortButton.setTitle("정렬", forState: UIControlState.Normal)
+        sortButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        sortButton.addTarget(self, action: Selector("showSortVC"), forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(sortButton)
+        
+    }
+    
+    func showSortVC(){
+        
+        var sortVC = CategorySortViewController()
+        sortVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        sortVC.filterOringinX = self.revealViewController().rearViewRevealWidth
+        
+        self.navigationController?.presentViewController(sortVC, animated: false, completion: { () -> Void in
+            
+        })
         
     }
     
