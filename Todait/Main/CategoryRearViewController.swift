@@ -18,6 +18,7 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     var categoryData: [Category] = []
     
+    var addButton:UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,6 +28,7 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         
         loadCategoryData()
         addCategoryTableView()
+        addCategoryButton()
     }
     
     func needToUpdate(category:Category){
@@ -55,6 +57,25 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         view.addSubview(categoryTableView)
         
     }
+    
+    func addCategoryButton(){
+        
+        addButton = UIButton(frame: CGRectMake(30*ratio, 430*ratio, 24*ratio, 24*ratio))
+        addButton.setBackgroundImage(UIImage(named: "newPlus.png"), forState: UIControlState.Normal)
+        addButton.addTarget(self, action: Selector("showNewCategoryVC"), forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(addButton)
+    }
+    
+    
+    func showNewCategoryVC(){
+        
+        var categoryVC = CategoryViewController()
+        categoryVC.category = categoryData[selectedIndexPath.row]
+        
+        self.revealViewController().setFrontViewController(categoryVC, animated: true)
+        
+    }
+    
     
     func loadCategoryData(){
         
@@ -117,14 +138,14 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         }
         
         
-        var categoryBand = UIView(frame:CGRectMake(0,7*ratio,0*ratio,35*ratio))
+        var categoryBand = UIView(frame:CGRectMake(0,0*ratio,0*ratio,55*ratio))
         
         cell.contentView.addSubview(categoryBand)
         
         
-        var titleLabel = UILabel(frame:CGRectMake(20*ratio, 9.5*ratio, 250*ratio, 30*ratio))
+        var titleLabel = UILabel(frame:CGRectMake(25*ratio, 12.5*ratio, 250*ratio, 30*ratio))
         
-        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 15*ratio)
         titleLabel.textAlignment = NSTextAlignment.Left
         titleLabel.textColor = UIColor.whiteColor()
         cell.contentView.addSubview(titleLabel)
@@ -147,11 +168,11 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         if indexPath == selectedIndexPath {
             
             UIView.animateWithDuration(0.5, animations: { () -> Void in
-                categoryBand.frame = CGRectMake(0,7*self.ratio,200*self.ratio,35*self.ratio)
+                categoryBand.frame = CGRectMake(0,0,200*self.ratio,55*self.ratio)
             })
             
         }else{
-            categoryBand.frame = CGRectMake(0,7*ratio,10*ratio,35*ratio)
+            categoryBand.frame = CGRectMake(0,0,6*ratio,55*ratio)
         }
 
         
@@ -179,7 +200,7 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 49*ratio
+        return 55*ratio
     }
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -188,13 +209,17 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         
         
         if indexPath.section == 0 {
-            let mainVC = revealViewController().frontViewController as! MainViewController
+            
+            var mainVC = MainViewController()
+            self.revealViewController().setFrontViewController(mainVC, animated: true)
+            
             if mainVC.respondsToSelector(Selector("updateAllCategory")){
                 mainVC.updateAllCategory()
             }
         } else {
-            let mainVC = revealViewController().frontViewController as! MainViewController
             
+            var mainVC = MainViewController()
+            self.revealViewController().setFrontViewController(mainVC, animated: true)
             
             if mainVC.respondsToSelector(Selector("updateCategory:")){
                 mainVC.updateCategory(categoryData[selectedIndexPath.row])
