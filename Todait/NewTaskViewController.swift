@@ -341,11 +341,24 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         taskTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         taskTextField.text = aimString
         taskTextField.tintColor = mainColor
+        taskTextField.delegate = self
         
         currentTextField = taskTextField
         cell.contentView.addSubview(taskTextField)
         
         addLineView(cell)
+    }
+    
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        
+        if textField == taskTextField {
+            unitTextField.becomeFirstResponder()
+        }else if textField == unitTextField {
+            totalTextField.becomeFirstResponder()
+        }
+        
+        return false
     }
     
     func updateAllEvents(textField:UITextField){
@@ -373,7 +386,9 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         unitTextField.addTarget(self, action: Selector("unitTextFieldClk:"), forControlEvents: UIControlEvents.AllEvents)
         unitTextField.text = unitString
         unitTextField.addTarget(self, action: Selector("updateUnitAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        unitTextField.delegate = self
         currentTextField = unitTextField
+        
         
         cell.contentView.addSubview(unitTextField)
     }
@@ -579,6 +594,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         totalTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
         totalTextField.textColor = UIColor.colorWithHexString("#969696")
         totalTextField.keyboardType = UIKeyboardType.NumberPad
+        totalTextField.returnKeyType = UIReturnKeyType.Done
         totalTextField.backgroundColor = UIColor.whiteColor()
         totalTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         
