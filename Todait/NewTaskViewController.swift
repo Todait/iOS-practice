@@ -16,7 +16,7 @@ protocol CategoryUpdateDelegate {
 
 
 
-class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavigationDelegate,CategoryDelegate,UITableViewDelegate,UITableViewDataSource,settingTimeDelegate,PeriodDelegate,InvestDelegate,UnitInputViewDelegate{
+class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavigationDelegate,CategoryDelegate,UITableViewDelegate,UITableViewDataSource,settingTimeDelegate,PeriodDelegate,InvestDelegate,UnitInputViewDelegate,RepeatViewDelegate{
     
     
     var mainColor: UIColor!
@@ -95,7 +95,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     
     func addUnitView(){
         
-        unitView = UnitInputView(frame: CGRectMake(0, height-40*ratio, width, 40*ratio))
+        unitView = UnitInputView(frame: CGRectMake(0, height, width, 40*ratio))
         unitView.backgroundColor = mainColor
         unitView.delegate = self
         
@@ -138,7 +138,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         
         if currentTextField == unitTextField {
             UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-                self.unitView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height)
+                self.unitView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-40*self.ratio)
                 }, completion: nil)
         }
     }
@@ -237,32 +237,12 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         }else if(indexPath.row == 1 && indexPath.section == 2){
             showInvestVC()
             
-            /*
-            
-            if showInvest == 1 {
-                showInvest = 0
-                
-                let cell:UITableViewCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 2))!
-                for subView in cell.contentView.subviews{
-                    subView.removeFromSuperview()
-                }
-                
-                tableView.beginUpdates()
-                tableView.deleteRowsAtIndexPaths([NSIndexPath(forRow:2, inSection:2)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                tableView.endUpdates()
-            }else{
-                showInvest = 1
-                tableView.beginUpdates()
-                tableView.insertRowsAtIndexPaths([NSIndexPath(forRow:2, inSection:2)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                tableView.endUpdates()
-            }
-            
-            */
-            
         }else if(indexPath.row == 2+showInvest && indexPath.section == 2){
             showTimeBlurVC()
         }else if(indexPath.row == 0 && indexPath.section == 2){
             showPeriodVC()
+        }else if(indexPath.row == 3 && indexPath.section == 2){
+            showRepeatVC()
         }
         
         NSLog("%lu", showInvest)
@@ -552,13 +532,23 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         self.navigationController?.presentViewController(timerBlurVC, animated: true, completion: { () -> Void in
             
         })
-
-        
     }
     
     func showPeriodVC(){
-        
         performSegueWithIdentifier("ShowPeriodView", sender:self)
+    }
+    
+    func showRepeatVC(){
+        
+        let repeatVC = RepeatViewcontroller()
+        repeatVC.mainColor = mainColor
+        repeatVC.delegate = self
+        repeatVC.count = 1
+        repeatVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+
+        self.navigationController?.presentViewController(repeatVC, animated: true, completion: { () -> Void in
+            
+        })
         
     }
     
