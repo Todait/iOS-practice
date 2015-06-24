@@ -458,7 +458,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     }
     
     
-    func updateCategory(category:Category){
+    func updateCategory(category:Category,from:String){
         
     }
     

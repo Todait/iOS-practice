@@ -39,8 +39,10 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         
         let index = find(categoryData, category)
         selectedIndexPath = NSIndexPath(forRow: index!, inSection: 1)
-        categoryTableView.reloadData()
         
+        if let check = categoryTableView {
+             categoryTableView.reloadData()
+        }
     }
     
     func addCategoryTableView(){

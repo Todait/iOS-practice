@@ -178,7 +178,51 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
                     rearVC.needToUpdate(category)
                 }
             }
+            
+            showCompleteAddPopup()
         }
+    }
+    
+    func showCompleteAddPopup(){
+        
+        
+        let popCircle = UIView(frame: CGRectMake(0, 0, 80*ratio, 80*ratio))
+        popCircle.backgroundColor = UIColor.colorWithHexString(category.color)
+        popCircle.center = view.center
+        popCircle.clipsToBounds = true
+        popCircle.layer.cornerRadius = 40*ratio
+        
+        view.addSubview(popCircle)
+        
+        
+        let popUp = UILabel(frame: CGRectMake(0, 0, 80*ratio,80*ratio))
+        popUp.backgroundColor = UIColor.clearColor()
+        popUp.textColor = UIColor.whiteColor()
+        popUp.textAlignment = NSTextAlignment.Center
+        popUp.text = "추가되었다"
+        popUp.font = UIFont(name: "AvenirNext-Regular", size: 4*ratio)
+        popUp.center = view.center
+        
+        view.addSubview(popUp)
+        
+        
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
+            
+            popCircle.transform = CGAffineTransformMakeScale(1.2, 1.2)
+            popUp.font = UIFont(name: "AvenirNext-Regular", size: 16*self.ratio)
+            
+            }) { (Bool) -> Void in
+                
+                
+                UIView.animateWithDuration(1.5, animations: { () -> Void in
+                    
+                    }, completion: { (Bool) -> Void in
+                        
+                        popCircle.removeFromSuperview()
+                        popUp.removeFromSuperview()
+                })
+        }
+        
     }
     
     override func viewDidLoad() {
@@ -327,7 +371,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func addMainTableView(){
         
-        mainTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio,width,height - navigationHeight*ratio), style: UITableViewStyle.Grouped)
+        mainTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio,width,height - navigationHeight*ratio - 47*ratio), style: UITableViewStyle.Grouped)
         mainTableView.registerClass(TaskTableViewCell.self, forCellReuseIdentifier: "cell")
         mainTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
         mainTableView.delegate = self
