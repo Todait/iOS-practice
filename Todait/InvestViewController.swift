@@ -34,10 +34,14 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
         
         addInfoTitleView()
         addInfoContentsView()
-        addCompleteButton()
         addInvestView()
         
+        
+        
+        addCompleteButton()
         addTimeYAxis()
+        
+        updateTotalTime()
         
     }
     
@@ -49,16 +53,22 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
             let originX = CGFloat(index)*(width/7)
             let investWidth = (width/7)
             
-            let investView = InvestView(frame:CGRectMake(originX,height-139*ratio,investWidth,24*ratio))
+            let investView = InvestView(frame:CGRectMake(originX,height-110*ratio,investWidth,-3*ratio*CGFloat(timeData[index]/900)))
             investView.mainColor = mainColor
             investView.update()
-            investView.index = Int(index)
             investView.delegate = self
+            investView.index = Int(index)
             
             view.addSubview(investView)
             investViews.append(investView)
         }
         
+        
+        for index in 0...6{
+            if timeData[index] > 0 {
+                investViews[index].investViewSelect()
+            }
+        }
     }
     
     
@@ -89,13 +99,22 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
     func addInvestTotalTimeLabel(){
         totalTimeLabel = UILabel(frame: CGRectMake(15*ratio, 140*ratio, 290*ratio, 30*ratio))
         totalTimeLabel.textAlignment = NSTextAlignment.Center
-        totalTimeLabel.text = "일주일 총 14시간 00분"
         totalTimeLabel.textColor = mainColor
         totalTimeLabel.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
         
         view.addSubview(totalTimeLabel)
     }
     
+    func updateTotalTime(){
+        totalTimeLabel.text = getTotalTimeString()
+    }
+    
+    func getTotalTimeString()->String{
+        
+        var time = getTotalTime()
+        
+        return "일주일 총 " + getTimeString(time)
+    }
     
     
     func addInfoContentsView(){
@@ -124,11 +143,17 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
             
             
             
-            let timeLabel = UILabel(frame: CGRectMake(originX, height-140*ratio, dayWidth, 20*ratio))
+            var originY:CGFloat = height-133*ratio-1*CGFloat(timeData[index]/(900))*3*ratio
+            
+            let timeLabel = UILabel(frame: CGRectMake(originX, originY, dayWidth, 20*ratio))
+            
             timeLabel.textAlignment = NSTextAlignment.Center
             timeLabel.textColor = mainColor.colorWithAlphaComponent(0.1)
             timeLabel.font = UIFont(name: "AvenirNext-Regular",size: 12*ratio)
             timeLabel.adjustsFontSizeToFitWidth = true
+            
+            timeLabel.text = getTimeString(timeData[index])
+            
             view.addSubview(timeLabel)
             
             timeLabels.append(timeLabel)
@@ -165,7 +190,20 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
         
         
         if self.delegate.respondsToSelector("updateInvestData:"){
-            self.delegate.updateInvestData(timeData)
+            
+            var adjustData:[Int] = []
+            
+            for index in 0...6 {
+                
+                if investViews[index].selected == true {
+                    adjustData.append(timeData[index])
+                }else{
+                    adjustData.append(0)
+                }
+                
+            }
+            
+            self.delegate.updateInvestData(adjustData)
         }
         
         
@@ -208,10 +246,7 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
         timeLabel.textColor = color
         
         
-        
-        let totalTime = getTotalTime()
-        totalTimeLabel.text = "일주일 총 "+" "+getTimeString(totalTime)
-        
+        updateTotalTime()
     }
     
     
@@ -262,7 +297,7 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
         let timeIndex = Int(investHeight/4*ratio)
         
         
-        investView.frame = CGRectMake(CGFloat(touchIndex)*(width/7),height-110*ratio,investView.frame.size.width,-1*CGFloat(timeIndex)*3*ratio)
+        investView.frame = CGRectMake(CGFloat(touchIndex)*(width/7),height-110*ratio,investView.frame.size.width,-3*CGFloat(timeIndex)*ratio)
         
         
         
@@ -275,13 +310,10 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
         timeData[touchIndex] = 15*timeIndex*60
         
         
-        
-        
-        let totalTime = getTotalTime()
-        totalTimeLabel.text = "일주일 총 "+" "+getTimeString(totalTime)
-        
+        updateTotalTime()
     }
     
+
     func getTotalTime()->Int{
         
         var time = 0

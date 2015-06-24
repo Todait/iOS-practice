@@ -63,7 +63,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     var category:Category!
     var delegate: CategoryUpdateDelegate!
     var showInvest:Int = 0
-    var investData:[Int]! = [0,0,0,0,0,0,0]
+    var investData:[Int]! = [3600,3600,3600,3600,3600,3600,3600]
     var investLabel:UILabel!
     
     override func viewDidLoad() {
@@ -532,7 +532,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         
         
         investLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
-        investLabel.text = "주 8시간"
+        investLabel.text = "주 7시간"
         investLabel.textAlignment = NSTextAlignment.Right
         investLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
         investLabel.textColor = mainColor
@@ -743,6 +743,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         investVC.mainColor = mainColor
         investVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         investVC.delegate = self
+        investVC.timeData = investData
         
         self.navigationController?.presentViewController(investVC, animated: true, completion: { () -> Void in
             
