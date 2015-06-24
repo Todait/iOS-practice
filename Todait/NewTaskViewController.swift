@@ -105,6 +105,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         unitView = UnitInputView(frame: CGRectMake(0, height, width, 40*ratio))
         unitView.backgroundColor = mainColor
         unitView.delegate = self
+        unitView.hidden = true
         
         view.addSubview(unitView)
         
@@ -144,10 +145,13 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         }
         
         if currentTextField == unitTextField {
-            UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-                self.unitView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-40*self.ratio)
-                }, completion: nil)
+            unitView.hidden = false
         }
+        
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            self.unitView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-40*self.ratio)
+            }, completion: nil)
+        
     }
     
     func keyboardWillBeHidden(aNotification:NSNotification){
@@ -157,13 +161,12 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         taskTableView.scrollIndicatorInsets = contentInsets
         
         
-        if currentTextField == unitTextField {
-            UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-                self.unitView.transform = CGAffineTransformMakeTranslation(0, 40*self.ratio)
-                }, completion: nil)
-        }
         
-    
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            self.unitView.transform = CGAffineTransformMakeTranslation(0, 40*self.ratio)
+        }) { (Bool) -> Void in
+            self.unitView.hidden = true
+        }
         
     }
     
@@ -425,6 +428,12 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         
         currentTextField = textField
         
+        if currentTextField == unitTextField {
+            unitView.hidden = false
+        }else{
+            unitView.hidden = true
+        }
+        
         return true
     }
     
@@ -432,14 +441,26 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         
         if textField == taskTextField {
             
+            unitView.hidden = false
             currentTextField = unitTextField
-            unitTextField.becomeFirstResponder()
             
         }else if textField == unitTextField {
             
-            currentTextField = totalTextField
-            totalTextField.becomeFirstResponder()
+            if rangeSelectedIndex == 0 {
+                unitView.hidden = true
+                currentTextField = totalTextField
+                
+            }else if rangeSelectedIndex == 1 {
+                unitView.hidden = true
+                currentTextField = startRangeTextField
+            }else if rangeSelectedIndex == 2 {
+                unitView.hidden = true
+                currentTextField = dayTextField
+            }
+            
         }
+        
+        currentTextField.becomeFirstResponder()
         
         return false
     }
@@ -466,7 +487,6 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         unitTextField.textColor = UIColor.colorWithHexString("#969696")
         unitTextField.returnKeyType = UIReturnKeyType.Next
         unitTextField.backgroundColor = UIColor.whiteColor()
-        unitTextField.addTarget(self, action: Selector("unitTextFieldClk:"), forControlEvents: UIControlEvents.AllEvents)
         unitTextField.text = unitString
         unitTextField.addTarget(self, action: Selector("updateUnitAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         unitTextField.delegate = self
@@ -478,9 +498,6 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         unitString = textField.text
     }
     
-    func unitTextFieldClk(textField:UITextField){
-        
-    }
     
     func addRangeSegment(cell:UITableViewCell){
         
@@ -690,6 +707,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         totalTextField.returnKeyType = UIReturnKeyType.Done
         totalTextField.backgroundColor = UIColor.whiteColor()
         totalTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        totalTextField.delegate = self
         
         if aimAmount != 0 {
             totalTextField.text = "\(aimAmount)"
@@ -723,6 +741,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         startRangeTextField.keyboardType = UIKeyboardType.NumberPad
         startRangeTextField.backgroundColor = UIColor.whiteColor()
         startRangeTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        startRangeTextField.delegate = self
         
         if startRangeAmount != 0 {
             startRangeTextField.text = "\(startRangeAmount)"
@@ -743,6 +762,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         endRangeTextField.keyboardType = UIKeyboardType.NumberPad
         endRangeTextField.backgroundColor = UIColor.whiteColor()
         endRangeTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        endRangeTextField.delegate = self
         
         if endRangeAmount != 0 {
             endRangeTextField.text = "\(endRangeAmount)"
@@ -762,6 +782,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         dayTextField.keyboardType = UIKeyboardType.NumberPad
         dayTextField.backgroundColor = UIColor.whiteColor()
         dayTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        dayTextField.delegate = self
         
         if dayAmount != 0 {
             dayTextField.text = "\(dayAmount)"

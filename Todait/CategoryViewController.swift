@@ -295,7 +295,7 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
             }) { (Bool) -> Void in
             
                 
-            UIView.animateWithDuration(0.5, animations: { () -> Void in
+            UIView.animateWithDuration(1.1, animations: { () -> Void in
                 
             }, completion: { (Bool) -> Void in
                 
