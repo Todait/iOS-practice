@@ -113,7 +113,7 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         var error: NSError?
         
         categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Category]
-        NSLog("Category results %@",categoryData)
+   
     }
     
        
@@ -231,22 +231,26 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         
         selectedIndexPath = indexPath
         
+        var storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
         
         if indexPath.section == 0 {
             
-            var mainVC = MainViewController()
+            var mainVC = storyboard.instantiateViewControllerWithIdentifier("mainVC") as! MainViewController
             self.revealViewController().setFrontViewController(mainVC, animated: true)
+            
             
             if mainVC.respondsToSelector(Selector("updateAllCategory")){
                 mainVC.updateAllCategory()
             }
         } else {
             
-            var mainVC = MainViewController()
+            var mainVC = storyboard.instantiateViewControllerWithIdentifier("mainVC") as! MainViewController
             self.revealViewController().setFrontViewController(mainVC, animated: true)
+            mainVC.isShowAllCategory = false
             
-            if mainVC.respondsToSelector(Selector("updateCategory:")){
-                mainVC.updateCategory(categoryData[selectedIndexPath.row])
+            if mainVC.respondsToSelector(Selector("updateCategory:from:")){
+                mainVC.updateCategory(categoryData[selectedIndexPath.row],from:"RearVC")
             }
         }
         

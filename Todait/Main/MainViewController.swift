@@ -94,78 +94,105 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func updateAllCategory(){
         
-        self.titleLabel.text = "Todait"
+        if let check = self.title {
+            self.titleLabel.text = "Todait"
+
+        }
         
-        timeChart.chartColor = UIColor.todaitGreen()
-        timeChart.updateChart(timeValue)
-        parallelView.backgroundColor = UIColor.todaitGreen()
+        if let check = timeChart {
+            timeChart.chartColor = UIColor.todaitGreen()
+            timeChart.updateChart(timeValue)
+            parallelView.backgroundColor = UIColor.todaitGreen()
+        }
         
-        let backgroundImage = UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 50*ratio, 50*ratio))
-        createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
-        
-        //homeButton.backgroundColor = UIColor.todaitGreen()
-        //calendarButton.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.5)
-        //timeTableButton.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.5)
-        //statisticsButton.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.5)
-        
+        if let check = createTaskButton {
+            let backgroundImage = UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 50*ratio, 50*ratio))
+            createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
+        }
+    
         
         isShowAllCategory = true
-        //todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(),frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
-        
+       
         loadTaskData()
         loadDayData()
-        mainTableView.reloadData()
-        updateText()
+        
+        if let check = mainTableView {
+            mainTableView.reloadData()
+        }
+        
+        if let check = parallelView {
+            updateText()
+        }
+       
         
     }
     
-    func updateCategory(category:Category){
+    func updateCategory(category:Category,from:String){
         
         self.category = category
         isShowAllCategory = false
-        self.titleLabel.text = category.name
+        
         
         let categoryColor = UIColor.colorWithHexString(category.color)
         
-        timeChart.chartColor = categoryColor
-        timeChart.updateChart(timeValue)
-        parallelView.backgroundColor = categoryColor
         
-        //homeButton.backgroundColor = categoryColor
-        //calendarButton.backgroundColor = categoryColor.colorWithAlphaComponent(0.5)
-        //timeTableButton.backgroundColor = categoryColor.colorWithAlphaComponent(0.5)
-        //statisticsButton.backgroundColor = categoryColor.colorWithAlphaComponent(0.5)
+        if let check = timeChart {
+            timeChart.chartColor = categoryColor
+            timeChart.updateChart(timeValue)
+            homeButton.backgroundColor = categoryColor
+        }
         
-        let backgroundImage = UIImage.colorImage(categoryColor, frame: CGRectMake(0, 0, 50*ratio, 50*ratio))
-        createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
+        if let check = parallelView {
+            parallelView.backgroundColor = categoryColor
+        }
+        
+        
+        if let check = createTaskButton {
+            let backgroundImage = UIImage.colorImage(categoryColor, frame: CGRectMake(0, 0, 50*ratio, 50*ratio))
+            createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
+        }
+        
+        
+        if let check = todaitNavBar {
+             todaitNavBar.setBackgroundImage(UIImage.colorImage(categoryColor,frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
+        }
 
-        
-        todaitNavBar.setBackgroundImage(UIImage.colorImage(categoryColor,frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
-        
-        
         loadTaskData()
         loadDayData()
-        mainTableView.reloadData()
         
-        updateText()
+        if let check = mainTableView {
+            mainTableView.reloadData()
+        }
         
+        if let check = parallelView {
+            updateText()
+        }
         
-        let rearVC =  revealViewController().rearViewController as! CategoryRearViewController
-        
-        if rearVC.respondsToSelector("needToUpdate:"){
-            rearVC.needToUpdate(category)
-        }        
+        if from == "NewTaskVC" {
+            if let check = revealViewController(){
+                
+                
+                let rearVC =  revealViewController().rearViewController as! CategoryRearViewController
+                
+                if rearVC.respondsToSelector("needToUpdate:"){
+                    rearVC.needToUpdate(category)
+                }
+            }
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.clearColor()
         
+        
+        
+        
         addParallelView()
         addMainTableView()
         
         
-        timerStart()
+        
         calculateRemainingTime()
         setupCoreDataInit()
         
@@ -632,6 +659,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         addTaskButton()
         addPhotoButton()
         addProfileButton()
+        timerStart()
         
         titleLabel.text = "Todait"
         //mainTableView.contentOffset.y = 0
@@ -643,8 +671,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         if isShowAllCategory == true {
             updateAllCategory()
         }else{
-            updateCategory(category)
+            updateCategory(category,from:"MainVC")
+            self.titleLabel.text = category.name
         }
+        
         
         
         needToUpdate()
@@ -656,6 +686,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        stopTimer()
     }
     
     func addSettingBtn(){

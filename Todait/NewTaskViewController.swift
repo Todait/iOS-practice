@@ -11,7 +11,7 @@ import CoreData
 
 
 protocol CategoryUpdateDelegate : NSObjectProtocol{
-    func updateCategory(category:Category)
+    func updateCategory(category:Category,from:String)
 }
 
 
@@ -59,7 +59,13 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     
     var aimString:String! = ""
     var unitString:String! = ""
+    
     var aimAmount:Int! = 0
+    var startRangeAmount:Int! = 0
+    var endRangeAmount:Int! = 0
+    var dayAmount:Int! = 0
+    
+    
     
     var category:Category!
     var delegate: CategoryUpdateDelegate!
@@ -213,6 +219,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
             addRangeSegment(cell)
         }else if(indexPath.row == 2 && indexPath.section == 1){
             addRangeTextField(cell)
+            rangeSegmentClk(rangeSegment)
         }else if(indexPath.row == 0 && indexPath.section == 2){
             addAimDateSubView(cell)
         }else if(indexPath.row == 1 && indexPath.section == 2){
@@ -373,10 +380,10 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     func categoryEdited(editedCategory:Category) {
         
         
-        mainColor = UIColor.colorWithHexString(category.color)
+        mainColor = UIColor.colorWithHexString(editedCategory.color)
         
         category = editedCategory
-        categoryLabel.text = category.name
+        categoryLabel.text = editedCategory.name
         categoryLabel.sizeToFit()
         categoryCircle.frame = CGRectMake(width - 33*ratio - categoryLabel.frame.size.width, 20.5*ratio, 8*ratio, 8*ratio)
         categoryCircle.backgroundColor = mainColor
@@ -389,7 +396,8 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         endRangeTextField.tintColor = mainColor
         dayTextField.tintColor = mainColor
         
-        UnitInputView.backgroundColor = mainColor
+        unitView.backgroundColor = mainColor
+        
         
     }
     
@@ -691,7 +699,15 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     }
     
     func updateAmountAllEvents(textField:UITextField){
-        aimAmount = textField.text.toInt()
+        
+        switch textField {
+        case totalTextField : aimAmount = textField.text.toInt()
+        case startRangeTextField : startRangeAmount = textField.text.toInt()
+        case endRangeTextField : endRangeAmount = textField.text.toInt()
+        case dayTextField : dayAmount = textField.text.toInt()
+        default: textField.text = ""
+        }
+        
     }
     
 
@@ -702,11 +718,19 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         startRangeTextField.placeholder = "시작"
         startRangeTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
         startRangeTextField.textColor = UIColor.colorWithHexString("#969696")
+        startRangeTextField.tintColor = mainColor
         startRangeTextField.hidden = true
         startRangeTextField.keyboardType = UIKeyboardType.NumberPad
         startRangeTextField.backgroundColor = UIColor.whiteColor()
+        startRangeTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        
+        if startRangeAmount != 0 {
+            startRangeTextField.text = "\(startRangeAmount)"
+        }
+        
         cell.contentView.addSubview(startRangeTextField)
     }
+
     
     func addEndRangeTextField(cell:UITableViewCell){
         endRangeTextField = UITextField(frame: CGRectMake(175*ratio, 9.5*ratio, 130*ratio, 30*ratio))
@@ -714,9 +738,16 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         endRangeTextField.placeholder = "종료"
         endRangeTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
         endRangeTextField.textColor = UIColor.colorWithHexString("#969696")
+        endRangeTextField.tintColor = mainColor
         endRangeTextField.hidden = true
         endRangeTextField.keyboardType = UIKeyboardType.NumberPad
         endRangeTextField.backgroundColor = UIColor.whiteColor()
+        endRangeTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        
+        if endRangeAmount != 0 {
+            endRangeTextField.text = "\(endRangeAmount)"
+        }
+        
         cell.contentView.addSubview(endRangeTextField)
     }
     
@@ -726,9 +757,16 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         dayTextField.placeholder = "분량을 입력하세요"
         dayTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
         dayTextField.textColor = UIColor.colorWithHexString("#969696")
+        dayTextField.tintColor = mainColor
         dayTextField.hidden = true
         dayTextField.keyboardType = UIKeyboardType.NumberPad
         dayTextField.backgroundColor = UIColor.whiteColor()
+        dayTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        
+        if dayAmount != 0 {
+            dayTextField.text = "\(dayAmount)"
+        }
+        
         cell.contentView.addSubview(dayTextField)
     }
     
@@ -896,8 +934,8 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     func needToUpdate() {
        
        
-        if self.delegate.respondsToSelector("updateCategory:"){
-            self.delegate.updateCategory(category)
+        if self.delegate.respondsToSelector("updateCategory:from:"){
+            self.delegate.updateCategory(category,from:"NewTaskVC")
         }
         
     }

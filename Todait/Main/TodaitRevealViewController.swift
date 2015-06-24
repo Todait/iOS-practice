@@ -20,12 +20,8 @@ class TodaitRevealViewController: SWRevealViewController {
         rearViewRevealOverdraw = 30*ratio
         bounceBackOnOverdraw = false
         bounceBackOnLeftOverdraw = true
-        //bounceBackOnLeftOverdraw = false
-        //stableDragOnLeftOverdraw = true
         
-        //setFrontViewPosition(FrontViewPosition.Right, animated: false)
         
-        // Do any additional setup after loading the view.
     }
 
     func setupRatio(){

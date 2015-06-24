@@ -162,9 +162,11 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
         selectedIndex = indexPath.row
+        categoryEdited()
+        
         tableView.reloadData()
         
-        categoryEdited()
+        
         
         
         return false
