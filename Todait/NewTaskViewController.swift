@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 
-protocol CategoryUpdateDelegate {
+protocol CategoryUpdateDelegate : NSObjectProtocol{
     func updateCategory(category:Category)
 }
 
@@ -33,7 +33,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     var unitView: UnitInputView!
     
     var rangeSegment: UISegmentedControl!
-    
+    var rangeSelectedIndex:Int = 0
     
     
     var totalTextField: UITextField!
@@ -53,6 +53,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     var periodStartDate:NSDate!
     var periodEndDate:NSDate!
     var periodDayLabel:UILabel!
+    var periodDayString:String = "30일"
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
@@ -370,14 +371,25 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     }
     
     func categoryEdited(editedCategory:Category) {
+        
+        
+        mainColor = UIColor.colorWithHexString(category.color)
+        
         category = editedCategory
         categoryLabel.text = category.name
         categoryLabel.sizeToFit()
         categoryCircle.frame = CGRectMake(width - 33*ratio - categoryLabel.frame.size.width, 20.5*ratio, 8*ratio, 8*ratio)
-        categoryCircle.backgroundColor = UIColor.colorWithHexString(category.color)
+        categoryCircle.backgroundColor = mainColor
         
-        mainColor = UIColor.colorWithHexString(category.color)
-        setNavigationBarColor(UIColor.colorWithHexString(category.color))
+        
+        setNavigationBarColor(mainColor)
+        
+        totalTextField.tintColor = mainColor
+        startRangeTextField.tintColor = mainColor
+        endRangeTextField.tintColor = mainColor
+        dayTextField.tintColor = mainColor
+        
+        UnitInputView.backgroundColor = mainColor
         
     }
     
@@ -466,7 +478,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         
         rangeSegment = UISegmentedControl(items: ["전체","범위","하루"])
         rangeSegment.frame = CGRectMake(-1*ratio, 7.5*ratio, 322*ratio, 34*ratio)
-        rangeSegment.selectedSegmentIndex = 0
+        rangeSegment.selectedSegmentIndex = rangeSelectedIndex
         rangeSegment.tintColor = mainColor
         rangeSegment.setTitleTextAttributes([NSFontAttributeName:UIFont(name: "AvenirNext-Regular", size: 14*ratio)!], forState: UIControlState.Normal)
         rangeSegment.addTarget(self, action: Selector("rangeSegmentClk:"), forControlEvents: UIControlEvents.AllEvents)
@@ -492,7 +504,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         
         
         periodDayLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
-        periodDayLabel.text = "30일"
+        periodDayLabel.text = periodDayString
         periodDayLabel.textAlignment = NSTextAlignment.Right
         periodDayLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
         periodDayLabel.textColor = mainColor
@@ -575,6 +587,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     
     func updatePeriodDay(day: String) {
         periodDayLabel.text = day
+        periodDayString = day
     }
     
     func settingTime(date:NSDate){
@@ -630,9 +643,10 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     
     
     func rangeSegmentClk(segment:UISegmentedControl){
-        let selectedIndex = segment.selectedSegmentIndex
         
-        switch selectedIndex {
+        rangeSelectedIndex = segment.selectedSegmentIndex
+        
+        switch rangeSelectedIndex {
             case 0:
                 totalTextField.hidden = false
                 startRangeTextField.hidden = true
@@ -882,13 +896,10 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     func needToUpdate() {
        
        
-        self.delegate.updateCategory(category)
-        
-        /*
         if self.delegate.respondsToSelector("updateCategory:"){
-            self.delegate.updateCategory(category4)
+            self.delegate.updateCategory(category)
         }
-        */
+        
     }
     
     func setupTextField(){
