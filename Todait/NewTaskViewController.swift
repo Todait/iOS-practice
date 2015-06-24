@@ -16,7 +16,7 @@ protocol CategoryUpdateDelegate {
 
 
 
-class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavigationDelegate,CategoryDelegate,UITableViewDelegate,UITableViewDataSource,settingTimeDelegate,PeriodDelegate,InvestDelegate{
+class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavigationDelegate,CategoryDelegate,UITableViewDelegate,UITableViewDataSource,settingTimeDelegate,PeriodDelegate,InvestDelegate,UnitInputViewDelegate{
     
     
     var mainColor: UIColor!
@@ -30,6 +30,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     var taskTextField: UITextField!
     var unitSegment: UISegmentedControl!
     var unitTextField: UITextField!
+    var unitView: UnitInputView!
     
     var rangeSegment: UISegmentedControl!
     
@@ -71,6 +72,8 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         view.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
         setupTaskViewController()
         addTaskTableView()
+        addUnitView()
+        registerForKeyboardNotification()
         //setupCategory()
         
         if delegate == nil {
@@ -87,8 +90,75 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         dateForm = NSDateFormatter()
         dateForm.dateFormat = "a h시 m분"
         
+        
     }
     
+    func addUnitView(){
+        
+        unitView = UnitInputView(frame: CGRectMake(0, height-40*ratio, width, 40*ratio))
+        unitView.backgroundColor = mainColor
+        unitView.delegate = self
+        
+        view.addSubview(unitView)
+        
+    }
+    
+    func updateUnit(unit:String){
+        
+        unitTextField.text = unit
+        
+    }
+    
+    func registerForKeyboardNotification(){
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWasShown:"), name: UIKeyboardWillShowNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillBeHidden:"), name: UIKeyboardWillHideNotification, object: nil)
+        
+    }
+    
+    func keyboardWasShown(aNotification:NSNotification){
+        
+        var info:[NSObject:AnyObject] = aNotification.userInfo!
+        var kbSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)!.CGRectValue().size as CGSize
+        
+        var contentInsets = UIEdgeInsetsMake(0, 0, kbSize.height, 0)
+        taskTableView.contentInset = contentInsets
+        taskTableView.scrollIndicatorInsets = contentInsets
+        
+        var aRect = self.view.frame
+        aRect.size.height = aRect.size.height - kbSize.height
+        
+        if (!CGRectContainsPoint(aRect, currentTextField.frame.origin)) {
+            
+            taskTableView.scrollRectToVisible(currentTextField.frame, animated: true)
+            
+        }
+        
+        if currentTextField == unitTextField {
+            UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+                self.unitView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height)
+                }, completion: nil)
+        }
+    }
+    
+    func keyboardWillBeHidden(aNotification:NSNotification){
+        
+        var contentInsets = UIEdgeInsetsZero
+        taskTableView.contentInset = contentInsets
+        taskTableView.scrollIndicatorInsets = contentInsets
+        
+        
+        if currentTextField == unitTextField {
+            UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+                self.unitView.transform = CGAffineTransformMakeTranslation(0, 40*self.ratio)
+                }, completion: nil)
+        }
+        
+    
+        
+    }
     
     
     func addTaskTableView(){
@@ -344,7 +414,6 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         taskTextField.text = aimString
         taskTextField.tintColor = mainColor
         taskTextField.delegate = self
-        
         currentTextField = taskTextField
         cell.contentView.addSubview(taskTextField)
         
@@ -352,11 +421,23 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     }
     
     
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+        
+        currentTextField = textField
+        
+        return true
+    }
+    
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
         if textField == taskTextField {
+            
+            currentTextField = unitTextField
             unitTextField.becomeFirstResponder()
+            
         }else if textField == unitTextField {
+            
+            currentTextField = totalTextField
             totalTextField.becomeFirstResponder()
         }
         
@@ -389,8 +470,6 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         unitTextField.text = unitString
         unitTextField.addTarget(self, action: Selector("updateUnitAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         unitTextField.delegate = self
-        currentTextField = unitTextField
-        
         
         cell.contentView.addSubview(unitTextField)
     }
