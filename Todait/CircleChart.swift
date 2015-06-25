@@ -13,12 +13,14 @@ class CircleChart: UIView {
     var percentLabel:UILabel!
     var backgroundLayer: CAShapeLayer!
     var percentLayer: CAShapeLayer!
+    var maskLayer: CALayer!
+    
     var percentBezierPath: UIBezierPath!
     var ratio : CGFloat!
     
     let DEFAULT_START_ANGLE : CGFloat = -89.0
     let DEFAULT_END_ANGLE : CGFloat = -89.00001
-    let DEFAULT_LINE_WIDTH : CGFloat = 5.0
+    let DEFAULT_LINE_WIDTH : CGFloat = 2.5
     
     var circleColor:UIColor!
     
@@ -29,6 +31,7 @@ class CircleChart: UIView {
         addBackgroundLayer()
         setupCircleColor()
         addPercentLayer()
+        addMaskLayer()
         addPercentLabel()
     }
     
@@ -82,17 +85,35 @@ class CircleChart: UIView {
         
     }
     
+    
+    func addMaskLayer(){
+        
+        var background:UIImage = UIImage(named: "graph_bg.png")!
+        
+        maskLayer = CALayer()
+        maskLayer.contents = background
+        maskLayer.frame = frame
+        //maskLayer.mask = percentLayer
+       // maskLayer.
+        
+        //layer.addSublayer(maskLayer)
+        
+        
+    }
+    
     func updatePercent(percent:NSNumber){
         percentLayer.strokeEnd = CGFloat(percent)
         percentLabel.text = "\(Int(percent.floatValue*100))%"
         percentLabel.textColor = circleColor
         percentLayer.strokeColor = circleColor.CGColor
+        percentLayer.strokeEnd = CGFloat(percent)
     }
     
     func addPercentLabel(){
         let centerX = frame.size.width/2
         let centerY = frame.size.height/2
         percentLabel = UILabel(frame: CGRectMake(0, 0, self.frame.size.width, self.frame.size.height))
+        percentLabel.backgroundColor = UIColor.clearColor()
         percentLabel.font = UIFont(name: "AvenirNext-Medium", size: 12*ratio)
         percentLabel.text = "55%"
         percentLabel.textAlignment = NSTextAlignment.Center
@@ -118,6 +139,7 @@ class CircleChart: UIView {
     func updateBezierPath(){
         backgroundLayer.path = percentBezierPath.CGPath
         percentLayer.path = percentBezierPath.CGPath
+        
     }
     
 
