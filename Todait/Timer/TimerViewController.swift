@@ -12,14 +12,14 @@ import CoreData
 class TimerViewController: BasicViewController,TodaitNavigationDelegate {
     
     
+    @IBOutlet weak var mainTimerLabel: UILabel!
+    @IBOutlet weak var backgroundImageView: UIImageView!
+    
     var timer : NSTimer!
-    var backgroundImageView : UIImageView!
+    
     var backgroundImage : UIImage!
     
-    @IBOutlet weak var mainTimerLabel: UILabel!
     
-    
-    var subTimerLabel : UILabel!
     var contentsLabel : UILabel!
     var timerButton : UIButton!
     
@@ -49,12 +49,15 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
         super.viewDidLoad()
         view.backgroundColor = UIColor.whiteColor()
         
-        addAmountChartView()
-        addTimerView()
-        addCompleteButton()
         
-        addTimeSettingView()
-        //startTimer()
+        addAmountChartView()
+        //addTimerView()
+        addCompleteButton()
+        setMainTimerLabel()
+        addTimerButton()
+        //addTimeSettingView()
+        startTimer()
+        
     }
     
     
@@ -82,24 +85,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
         backgroundImage = UIImage(named:"track.jpg")
     }
     
-    func addBackgroundImageView(){
-        backgroundImageView = UIImageView(frame: view.frame)
-        backgroundImageView.image = backgroundImage
-        view.addSubview(backgroundImageView)
+    func setMainTimerLabel(){
         
-        addFilterImageView(backgroundImageView, alpha: 0.5)
-    }
-    
-    func addFilterImageView(imageView:UIImageView,alpha:CGFloat){
-        
-        let filterView : UIImageView = UIImageView(frame: CGRectMake(0, 0, imageView.frame.size.width, imageView.frame.size.height))
-        //filterView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
-        imageView.addSubview(filterView)
-    }
-    
-    func addMainTimerLabel(){
-        mainTimerLabel = UILabel(frame:CGRectMake(0, 0,260*ratio, 100*ratio))
-        mainTimerLabel.font = UIFont(name: "AvenirNext-Regular", size: 50*ratio)
+        mainTimerLabel.font = UIFont(name: "AvenirNext-Regular", size: 25*ratio)
         mainTimerLabel.text = "00:00:00"
         mainTimerLabel.textColor = UIColor.whiteColor()
         mainTimerLabel.textAlignment = NSTextAlignment.Center
@@ -109,6 +97,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
         
     }
     
+    /*
     func addSubTimerLabel(){
         subTimerLabel = UILabel(frame: CGRectMake(0,0,200*ratio, 30*ratio))
         subTimerLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
@@ -127,31 +116,45 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
         view.addConstraint(subRightConstraint)
         
     }
+*/
     
     func addTimerButton(){
-        timerButton = UIButton(frame: CGRectMake(0, 0, 100*ratio, 100*ratio))
-        timerButton.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.25)
-        timerButton.clipsToBounds = true
-        timerButton.layer.cornerRadius = 10*ratio
+        
+        timerButton = UIButton(frame: CGRectMake(100*ratio, 205*ratio, 120*ratio, 120*ratio))
+        timerButton.setBackgroundImage(UIImage(named: "ic_fragment_stopwatch_start_pressed"), forState: UIControlState.Normal)
+        timerButton.setBackgroundImage(UIImage(named: "ic_fragment_stopwatch_pause_pressed"), forState: UIControlState.Highlighted)
         timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        timerButton.center = view.center
         view.addSubview(timerButton)
+        
     }
     
+    
+    
     func timerButtonClk(){
+        
         if timer.valid {
             
+            timerButton.setBackgroundImage(UIImage(named: "ic_fragment_stopwatch_start_pressed"), forState: UIControlState.Normal)
+            timerButton.setBackgroundImage(UIImage(named: "ic_fragment_stopwatch_pause_pressed"), forState: UIControlState.Highlighted)
+            
+            timer.invalidate()
+            
+            /*
             endDate = NSDate()
             stopTimer()
             
             recordTime()
-            
-            
-            
+            */
         }else{
+            //startTimer()
+            
             startTimer()
             
+            timerButton.setBackgroundImage(UIImage(named: "ic_fragment_stopwatch_pause_pressed"), forState: UIControlState.Normal)
+            timerButton.setBackgroundImage(UIImage(named: "ic_fragment_stopwatch_start_pressed"), forState: UIControlState.Highlighted)
+            
         }
+
     }
     
     
@@ -250,7 +253,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
         view.addSubview(completeButton)
         
         
-        self.navigationController?.popViewControllerAnimated(true)
+        //self.navigationController?.popViewControllerAnimated(true)
         
     }
     
@@ -270,7 +273,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
     func updateTimeLabel(){
         
         mainTimerLabel.text = getTimeStringFromSeconds(currentTime)
-        subTimerLabel.text = getTimeStringFromSeconds(totalTime)
+        //subTimerLabel.text = getTimeStringFromSeconds(totalTime)
     }
     
     func getTimeStringFromSeconds(seconds : NSTimeInterval ) -> String {
@@ -298,7 +301,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate {
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
         
-        self.titleLabel.text = task.name
+        self.titleLabel.text = task.category_id.name + " - " + task.name
         
         todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(),frame:todaitNavBar.frame), forBarMetrics: UIBarMetrics.Default)
         todaitNavBar.shadowImage = UIImage()
