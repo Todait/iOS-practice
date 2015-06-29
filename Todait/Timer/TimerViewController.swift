@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDelegate{
+class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDelegate,TimeLogDelegate{
     
     @IBOutlet weak var amountLabel: UILabel!
     @IBOutlet weak var subAmountLabel: UILabel!
@@ -138,12 +138,16 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     func timeButtonClk(){
         
         var timeLogVC = TimeLogViewController()
-        //amountVC.delegate = self
+        timeLogVC.delegate = self
         timeLogVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         
         self.navigationController?.presentViewController(timeLogVC, animated: false, completion: { () -> Void in
             
         })
+        
+    }
+    
+    func saveTimeLog(time: NSTimeInterval) {
         
     }
     
