@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import Photos
 
-class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CategoryUpdateDelegate,CalendarDelegate{
+class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CategoryUpdateDelegate,CalendarDelegate,TimeLogDelegate{
     
     
     private var headerView:DetailHeaderView!
@@ -175,7 +175,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
                 
             }
             
-            let line = UIView(frame:CGRectMake(0, 42.5*ratio, width, 0.5*ratio))
+            let line = UIView(frame:CGRectMake(0, 65.5*ratio, width, 0.5*ratio))
             line.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
             headerView.addSubview(line)
             
@@ -185,7 +185,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             weekCalendarVC = DetailWeekCalendarViewController()
             addChildViewController(weekCalendarVC)
             weekCalendarVC.view.backgroundColor = UIColor.whiteColor()
-            weekCalendarVC.view.frame = CGRectMake(0,24.5*ratio,width,60*ratio)
+            weekCalendarVC.view.frame = CGRectMake(0,43.5*ratio,width,60*ratio)
             weekCalendarVC.dateNumber = selectedDateNumber
             weekCalendarVC.delegate = self
             headerView.addSubview(weekCalendarVC.view)
@@ -291,6 +291,15 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             timerLabel.textColor = UIColor.todaitOrange()
             cell.contentView.addSubview(timerLabel)
             
+            
+            
+            var timeLogButton = UIButton(frame: CGRectMake(15*ratio, 70*ratio, 130*ratio, 45*ratio))
+            timeLogButton.backgroundColor = UIColor.clearColor()
+            timeLogButton.addTarget(self, action: Selector("timeButtonClk"), forControlEvents: UIControlEvents.TouchDown)
+            cell.contentView.addSubview(timeLogButton)
+            
+            
+            
             var middleLine = UIView(frame:CGRectMake(159.75*ratio,0,0.5*ratio,115*ratio))
             middleLine.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
             cell.contentView.addSubview(middleLine)
@@ -327,6 +336,44 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         return cell
     }
     
+    func timeButtonClk(){
+        
+        var timeLogVC = TimeLogViewController()
+        timeLogVC.delegate = self
+        timeLogVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        
+        self.navigationController?.presentViewController(timeLogVC, animated: false, completion: { () -> Void in
+            
+        })
+    }
+    
+    func saveTimeLog(time: NSTimeInterval) {
+        
+        let entityDescription = NSEntityDescription.entityForName("TimeLog", inManagedObjectContext:managedObjectContext!)
+        let timeLog = TimeLog(entity: entityDescription!, insertIntoManagedObjectContext:managedObjectContext)
+        timeLog.dirty_flag = 0
+        timeLog.day_id = day
+        timeLog.timestamp = NSDate().timeIntervalSince1970
+        timeLog.created_at = NSDate()
+        timeLog.server_id = 0
+        timeLog.before_second = day.done_second
+        timeLog.after_second = day.done_second.integerValue + Int(time)
+        timeLog.done_second = Int(time)
+        timeLog.created_at = NSDate()
+        timeLog.updated_at = NSDate()
+        
+        var error: NSError?
+        managedObjectContext?.save(&error)
+        
+        
+        refreshView()
+    }
+    
+    func refreshView(){
+        
+        detailTableView.reloadData()
+        
+    }
     
     func getWeekAmountPercentString()->String{
         
