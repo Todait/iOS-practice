@@ -10,15 +10,16 @@ import UIKit
 import CoreData
 import Photos
 
-class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CategoryUpdateDelegate{
+class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CategoryUpdateDelegate,CalendarDelegate{
     
     
     private var headerView:DetailHeaderView!
-    
+    var weekCalendarVC:DetailWeekCalendarViewController!
     
     var detailTableView: UITableView!
     var task:Task!
     var day:Day!
+    var dateLabel:UILabel!
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
@@ -32,11 +33,13 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     var graphButton:UIButton!
     
     
-    var weekCalendarVC:WeekCalendarViewController!
+    var selectedDateNumber:NSNumber!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.whiteColor()
+        
+        selectedDateNumber = getDateNumberFromDate(NSDate())
         
         setupDay()
         addHeaderView()
@@ -139,22 +142,56 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         if section == 0 {
         
-            var memoHeaderLabel = UILabel(frame: CGRectMake(0, 0, width, 24.5*ratio))
-            memoHeaderLabel.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
-            memoHeaderLabel.textColor = UIColor.todaitGray()
-            memoHeaderLabel.textAlignment = NSTextAlignment.Center
-            memoHeaderLabel.text = "2015.06"
-            memoHeaderLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
-            headerView.addSubview(memoHeaderLabel)
+            
+            
+            headerView = UIView(frame: CGRectMake(0, 64, width, 43*ratio))
+            headerView.backgroundColor = UIColor.todaitLightGray()
+            //view.addSubview(headerView)
+            
+            dateLabel = UILabel(frame: CGRectMake(15*ratio, 0, 290*ratio, 23*ratio))
+            dateLabel.textColor = UIColor.todaitGray()
+            dateLabel.font = UIFont(name:"AppleSDGothicNeo-UltraLight", size: 10*ratio)
+            dateLabel.textAlignment = NSTextAlignment.Center
+            headerView.addSubview(dateLabel)
+            
+            updateDateLabel(getDateFromDateNumber(getTodayDateNumber()))
+            
+            
+            let weekTitle = ["SUN","MON","TUE","WED","THU","FRI","SAT"]
+            let weekWidth = 320*ratio / 7
+            
+            
+            for index in 0...6 {
+                let weekDayLabel = UILabel(frame: CGRectMake(CGFloat(index)*weekWidth, 23*ratio, weekWidth, 20*ratio))
+                weekDayLabel.textAlignment = NSTextAlignment.Center
+                weekDayLabel.text = weekTitle[index]
+                weekDayLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 7.5*ratio)
+                weekDayLabel.textColor = UIColor.todaitGray()
+                headerView.addSubview(weekDayLabel)
+                
+                if index == 0 {
+                    weekDayLabel.textColor = UIColor.todaitRed()
+                }
+                
+            }
+            
+            let line = UIView(frame:CGRectMake(0, 42.5*ratio, width, 0.5*ratio))
+            line.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
+            headerView.addSubview(line)
             
             
             
-            weekCalendarVC = WeekCalendarViewController()
+            
+            weekCalendarVC = DetailWeekCalendarViewController()
             addChildViewController(weekCalendarVC)
             weekCalendarVC.view.backgroundColor = UIColor.whiteColor()
-            weekCalendarVC.view.frame = CGRectMake(0,24.5*ratio,width,48*ratio)
+            weekCalendarVC.view.frame = CGRectMake(0,24.5*ratio,width,60*ratio)
+            weekCalendarVC.dateNumber = selectedDateNumber
+            weekCalendarVC.delegate = self
             headerView.addSubview(weekCalendarVC.view)
             headerView.clipsToBounds = true
+            
+            
             
             
         
@@ -189,6 +226,23 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     }
     
     
+    func updateDateLabel(date:NSDate){
+        let dateForm = NSDateFormatter()
+        dateForm.dateFormat = "yyyy.MM"
+        dateLabel.text = dateForm.stringFromDate(date)
+    }
+
+    
+    
+    
+    func updateDate(date:NSDate,from:String){
+        
+        NSLog("Receive Date %@", date)
+        updateDateLabel(date)
+        selectedDateNumber = getDateNumberFromDate(date)
+        weekCalendarVC.setSelectedDateNumber(selectedDateNumber)
+        
+    }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
@@ -263,6 +317,11 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             cell.contentView.addSubview(amountTextView)
             
             
+            var amountInputButton = UIButton(frame:CGRectMake(160*ratio, 0*ratio, 160*ratio, 115*ratio))
+            amountInputButton.backgroundColor = UIColor.clearColor()
+            amountInputButton.addTarget(self, action: Selector("showAmountInputVC"), forControlEvents: UIControlEvents.TouchDown)
+            cell.contentView.addSubview(amountInputButton)
+            
         }
         
         return cell
@@ -290,6 +349,18 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         return task.getPercentOfPeriodProgress()
     }
     
+    
+    func showAmountInputVC(){
+        
+        var amountInputVC = AmountInputViewController()
+        amountInputVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        
+        self.navigationController?.presentViewController(amountInputVC, animated: false, completion: { () -> Void in
+            
+        })
+        
+    }
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -303,7 +374,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(),frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
         
         addEditButton()
-        
+        addGraphButton()
     }
     
     func addEditButton(){
@@ -316,6 +387,25 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     func showEditTaskVC(){
         
         performSegueWithIdentifier("ShowEditTaskView", sender:self)
+        
+    }
+    
+    func addGraphButton(){
+        
+        graphButton = UIButton(frame: CGRectMake(258*ratio,30,24,24))
+        graphButton.setBackgroundImage(UIImage.maskColor("ic_drawer_statistics.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
+        graphButton.addTarget(self, action: Selector("showGraphVC"), forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(graphButton)
+        
+    }
+    
+    func showGraphVC(){
+        
+        var graphVC = GraphViewController()
+        graphVC.mainColor = task.getColor()
+        graphVC.task = task
+        
+        self.navigationController?.pushViewController(graphVC, animated: true)
         
     }
     
