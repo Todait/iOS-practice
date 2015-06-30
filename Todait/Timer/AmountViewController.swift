@@ -1,5 +1,5 @@
 //
-//  AmountViewController.swift
+//  TimeLogViewController.swift
 //  Todait
 //
 //  Created by CruzDiary on 2015. 6. 29..
@@ -8,14 +8,25 @@
 
 import UIKit
 
-class AmountViewController: BasicViewController {
+protocol AmountLogDelegate : NSObjectProtocol {
+    func saveAmountLog(time:NSTimeInterval)
+}
+
+class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerViewDelegate{
     
     var filterView:UIImageView!
     var resetView:UIView!
     var resetButton:UIButton!
-    var saveButton:UIButton!
-    var closeButton:UIButton!
-    var delegate:ResetDelegate!
+    var confirmButton:UIButton!
+    var delegate:AmountLogDelegate!
+    
+    var startPicker:UIPickerView!
+    var endPicker:UIPickerView!
+    var donePicker:UIPickerView!
+    
+    
+    var amount_type:NSNumber! = 0
+    var unit:String! = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,7 +34,11 @@ class AmountViewController: BasicViewController {
         addFilterView()
         addResetView()
         addInfoView()
-        addButtons()
+        addconfirmButton()
+        
+        
+        addPickerViews()
+        
         
         
     }
@@ -38,7 +53,7 @@ class AmountViewController: BasicViewController {
     
     func addResetView(){
         
-        resetView = UIView(frame: CGRectMake(13.5*ratio, height, 294*ratio,160*ratio))
+        resetView = UIView(frame: CGRectMake(13.5*ratio, height, 294*ratio,275*ratio))
         resetView.backgroundColor = UIColor.clearColor()
         view.addSubview(resetView)
         
@@ -55,91 +70,166 @@ class AmountViewController: BasicViewController {
         infoLabel.textAlignment = NSTextAlignment.Left
         infoLabel.textColor = UIColor.whiteColor()
         infoLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        infoLabel.text = "나가기"
+        infoLabel.text = "공부한 양을 입력해주세요"
         resetView.addSubview(infoLabel)
         
         
-        let whiteView = UIView(frame: CGRectMake(0, 33*ratio, 294*ratio, 75*ratio))
+        let whiteView = UIView(frame: CGRectMake(0, 33*ratio, 294*ratio, 192*ratio))
         whiteView.backgroundColor = UIColor.whiteColor()
         resetView.addSubview(whiteView)
         
         
-        let messageLabel = UILabel(frame: CGRectMake(0, 33*ratio, 294*ratio, 75*ratio))
-        messageLabel.textAlignment = NSTextAlignment.Center
-        messageLabel.textColor = UIColor.todaitGray()
-        messageLabel.text = "방금 공부하신 시간을 저장하시겠습니까?"
-        messageLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 15*ratio)
-        resetView.addSubview(messageLabel)
         
-    }
-    
-    func addButtons(){
         
-        addCloseButton()
-        addResetButton()
-        addSaveButton()
         
         
     }
     
-    func addCloseButton(){
-        closeButton = UIButton(frame: CGRectMake(252*ratio, 9*ratio, 30*ratio, 17.5*ratio))
-        closeButton.setTitle("닫기", forState: UIControlState.Normal)
-        closeButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        closeButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
-        closeButton.layer.cornerRadius = 8.75*ratio
-        closeButton.clipsToBounds = true
-        closeButton.layer.borderWidth = 0.5*ratio
-        closeButton.layer.borderColor = UIColor.whiteColor().CGColor
-        
-        closeButton.addTarget(self, action: Selector("closeButtonClk"), forControlEvents: UIControlEvents.TouchDown)
-        resetView.addSubview(closeButton)
-    }
     
     func closeButtonClk(){
         
-        
-        self.dismissViewControllerAnimated(false, completion: { () -> Void in
-            
+        UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            self.resetView.transform = CGAffineTransformMakeTranslation(0, 0)
+            }, completion: { (Bool) -> Void in
+                
+                self.dismissViewControllerAnimated(false, completion: { () -> Void in
+                    
+                })
         })
-        
     }
     
-    func addResetButton(){
-        
-        resetButton = UIButton(frame: CGRectMake(0, 117*ratio, 147*ratio, 43*ratio))
-        resetButton.setTitle("저장안함(초기화)", forState: UIControlState.Normal)
-        resetButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        resetButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitRed(), frame: CGRectMake(0, 0, 147*ratio, 43*ratio)), forState: UIControlState.Normal)
-        resetButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo", size: 15*ratio)
-        resetButton.addTarget(self, action: Selector("resetButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        resetView.addSubview(resetButton)
-    }
     
     func resetButtonClk(){
-        func saveButtonClk(){
-            if self.delegate.respondsToSelector("resetTimeLog"){
-                self.delegate.resetTimeLog()
+        
+    }
+    
+    func getTimeLog()->NSTimeInterval{
+        
+        //var hour = hourPicker.selectedRowInComponent(0) * 3600
+        //var minute = minutePicker.selectedRowInComponent(0) * 60
+        //var second = secondPicker.selectedRowInComponent(0)
+        
+        return NSTimeInterval(1) //hour + minute + second)
+    }
+    
+    
+    func addconfirmButton(){
+        confirmButton = UIButton(frame: CGRectMake(0, 232*ratio, 294*ratio, 43*ratio))
+        confirmButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        confirmButton.setTitle("확인", forState: UIControlState.Normal)
+        confirmButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 294*ratio, 43*ratio)), forState: UIControlState.Normal)
+        confirmButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo", size: 15*ratio)
+        confirmButton.addTarget(self, action: Selector("confirmButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        resetView.addSubview(confirmButton)
+    }
+    
+    func confirmButtonClk(){
+        if self.delegate.respondsToSelector("saveAmountLog:"){
+            
+            
+            let time = getTimeLog()
+            self.delegate.saveAmountLog(time)
+            
+            closeButtonClk()
+        }
+    }
+    
+    
+    func addPickerViews(){
+        
+        if amount_type.integerValue == 1 {
+            addRangePickerViews()
+        }else{
+            addDonePickerViews()
+        }
+        
+    }
+    
+    func addRangePickerViews(){
+        
+        startPicker = UIPickerView(frame: CGRectMake(35*ratio, 48*ratio, 62*ratio, 162*ratio))
+        startPicker.delegate = self
+        startPicker.selectRow(1, inComponent: 0, animated: false)
+        resetView.addSubview(startPicker)
+        
+        
+        let rangeView = UIView(frame: CGRectMake(124*ratio, 120*ratio, 9*ratio, 2*ratio))
+        rangeView.backgroundColor = UIColor.todaitGray()
+        resetView.addSubview(rangeView)
+        
+        
+        endPicker = UIPickerView(frame:CGRectMake(156*ratio, 48*ratio, 62*ratio, 162*ratio))
+        endPicker.delegate = self
+        endPicker.selectRow(1, inComponent: 0, animated: false)
+        resetView.addSubview(endPicker)
+        
+        
+        let unitLabel = UILabel(frame: CGRectMake(240*ratio, 121*ratio, 62*ratio, 12*ratio))
+        unitLabel.text = unit
+        unitLabel.textColor = UIColor.todaitGray()
+        unitLabel.textAlignment = NSTextAlignment.Left
+        unitLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
+        resetView.addSubview(unitLabel)
+        
+    }
+
+    func addDonePickerViews(){
+        
+        
+        donePicker = UIPickerView(frame: CGRectMake(89*ratio, 48*ratio, 62*ratio, 162*ratio))
+        donePicker.delegate = self
+        donePicker.selectRow(1, inComponent: 0, animated: false)
+        resetView.addSubview(donePicker)
+        let unitLabel = UILabel(frame: CGRectMake(185*ratio, 121*ratio, 62*ratio, 12*ratio))
+        unitLabel.text = unit
+        unitLabel.textColor = UIColor.todaitGray()
+        unitLabel.textAlignment = NSTextAlignment.Left
+        unitLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
+        resetView.addSubview(unitLabel)
+        
+    }
+    
+    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        
+        var parastyle = NSMutableParagraphStyle()
+        parastyle.alignment = NSTextAlignment.Center
+        
+        var font:UIFont! = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 32.5*ratio)
+        
+        var attributes = [NSFontAttributeName:font , NSForegroundColorAttributeName:UIColor.todaitGray(),NSParagraphStyleAttributeName:parastyle]
+        
+        var attributeString = NSMutableAttributedString(string:"\(row)", attributes:attributes)
+        
+        return attributeString
+    }
+    
+    
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        
+        
+        if amount_type.integerValue == 1 {
+            if pickerView == startPicker {
+                return 24
+            }else if pickerView == endPicker {
+                return 60
+            }
+        }else{
+            if pickerView == donePicker {
+                return 60
             }
         }
+        
+        
+        return 0
     }
     
-    func addSaveButton(){
-        saveButton = UIButton(frame: CGRectMake(147*ratio, 117*ratio, 147*ratio, 43*ratio))
-        saveButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        saveButton.setTitle("저장", forState: UIControlState.Normal)
-        saveButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 147*ratio, 43*ratio)), forState: UIControlState.Normal)
-        saveButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo", size: 15*ratio)
-        saveButton.addTarget(self, action: Selector("saveButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        resetView.addSubview(saveButton)
+    func pickerView(pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 54*ratio
     }
     
-    func saveButtonClk(){
-        if self.delegate.respondsToSelector("saveTimeLog"){
-            self.delegate.saveTimeLog()
-        }
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
     }
-    
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         closeButtonClk()
     }
@@ -149,7 +239,7 @@ class AmountViewController: BasicViewController {
         todaitNavBar.hidden = true
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut , animations: { () -> Void in
-            self.resetView.transform = CGAffineTransformMakeTranslation(0, -160*self.ratio)
+            self.resetView.transform = CGAffineTransformMakeTranslation(0, -275*self.ratio)
             
             }) { (Bool) -> Void in
                 

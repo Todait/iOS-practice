@@ -181,6 +181,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         
         var amountVC = AmountViewController()
         //amountVC.delegate = self
+        amountVC.amount_type = task.amount_type
+        amountVC.unit = task.unit
         amountVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         
         self.navigationController?.presentViewController(amountVC, animated: false, completion: { () -> Void in
@@ -379,7 +381,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         completeButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Highlighted)
         completeButton.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 18*ratio)
         completeButton.addTarget(self, action: Selector("recordTime"), forControlEvents: UIControlEvents.TouchUpInside)
-        view.addSubview(completeButton)
+        //view.addSubview(completeButton)
         
         
         //self.navigationController?.popViewControllerAnimated(true)
