@@ -64,7 +64,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         addAmountButton()
         addDoneButton()
         
-        addAmountChartView()
+        //addAmountChartView()
         //addTimerView()
         addCompleteButton()
         setMainTimerLabel()
@@ -148,6 +148,22 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     }
     
     func saveTimeLog(time: NSTimeInterval) {
+        
+        let entityDescription = NSEntityDescription.entityForName("TimeLog", inManagedObjectContext:managedObjectContext!)
+        let timeLog = TimeLog(entity: entityDescription!, insertIntoManagedObjectContext:managedObjectContext)
+        timeLog.dirty_flag = 0
+        timeLog.day_id = day
+        timeLog.timestamp = NSDate().timeIntervalSince1970
+        timeLog.created_at = NSDate()
+        timeLog.server_id = 0
+        timeLog.before_second = day.done_second
+        timeLog.after_second = day.done_second.integerValue + Int(time)
+        timeLog.done_second = Int(totalTime)
+        timeLog.created_at = NSDate()
+        timeLog.updated_at = NSDate()
+        
+        var error: NSError?
+        managedObjectContext?.save(&error)
         
     }
     
@@ -425,6 +441,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         super.viewWillDisappear(animated)
     }
     
+    
+    /*
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         
         let touch: AnyObject? = (touches as NSSet).anyObject()
@@ -502,7 +520,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
                 pointLabel.removeFromSuperview()
         }
     }
-    
+    */
     func addAmountCount(point:Int){
         amountCount = amountCount + point
     }

@@ -172,9 +172,12 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
     
     func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         
+        var parastyle = NSMutableParagraphStyle()
+        parastyle.alignment = NSTextAlignment.Center
+        
         var font:UIFont! = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 32.5*ratio)
         
-        var attributes = [NSFontAttributeName:font , NSForegroundColorAttributeName:UIColor.todaitGray()]
+        var attributes = [NSFontAttributeName:font , NSForegroundColorAttributeName:UIColor.todaitGray(),NSParagraphStyleAttributeName:parastyle]
         
         var attributeString = NSMutableAttributedString(string:"\(row)", attributes:attributes)
         
