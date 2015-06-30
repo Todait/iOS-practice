@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,touchDelegate,UIScrollViewDelegate,CategoryUpdateDelegate{
+class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,touchDelegate,UIScrollViewDelegate,CategoryUpdateDelegate{
    
     var detailTableView: UITableView!
     var task:Task!
@@ -180,7 +180,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             chart.circleColor = task.getColor()
             chart.updatePercent(progressPercent)
-
+            chart.percentLayer.strokeEnd = CGFloat(progressPercent)
+            
             cell.contentView.addSubview(chart)
             
             
