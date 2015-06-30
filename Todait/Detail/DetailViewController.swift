@@ -437,6 +437,50 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
     }
     
+    func showCompletePopup(){
+        
+        
+        let popCircle = UIView(frame: CGRectMake(0, 0, 80*ratio, 80*ratio))
+        popCircle.backgroundColor = task.getColor()
+        popCircle.center = view.center
+        popCircle.clipsToBounds = true
+        popCircle.layer.cornerRadius = 40*ratio
+        
+        view.addSubview(popCircle)
+        
+        
+        let popUp = UILabel(frame: CGRectMake(0, 0, 80*ratio,80*ratio))
+        popUp.backgroundColor = UIColor.clearColor()
+        popUp.textColor = UIColor.whiteColor()
+        popUp.textAlignment = NSTextAlignment.Center
+        popUp.text = "수정되었다"
+        popUp.font = UIFont(name: "AvenirNext-Regular", size: 4*ratio)
+        popUp.center = view.center
+        
+        view.addSubview(popUp)
+        
+        
+        UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            popCircle.transform = CGAffineTransformMakeScale(1.2, 1.2)
+            popUp.font = UIFont(name: "AvenirNext-Regular", size: 16*self.ratio)
+            
+            }) { (Bool) -> Void in
+                
+                
+                UIView.animateWithDuration(1.1, animations: { () -> Void in
+                    
+                    }, completion: { (Bool) -> Void in
+                        
+                        popCircle.removeFromSuperview()
+                        popUp.removeFromSuperview()
+                })
+                
+        }
+        
+    }
+    
+    
+    
     func addGraphButton(){
         
         graphButton = UIButton(frame: CGRectMake(258*ratio,30,24,24))
@@ -471,6 +515,10 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     
     func updateCategory(category:Category,from:String){
+        
+        
+        
+        showCompletePopup()
         
     }
     
