@@ -271,6 +271,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             timerButton.layer.cornerRadius = 29*ratio
             timerButton.layer.borderWidth = 1*ratio
             timerButton.layer.borderColor = UIColor.todaitGray().CGColor
+            timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
             
             cell.contentView.addSubview(timerButton)
             
@@ -282,6 +283,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             timerAimLabel.textAlignment = NSTextAlignment.Center
             timerAimLabel.textColor = UIColor.todaitGray()
             cell.contentView.addSubview(timerAimLabel)
+            
             
             
             var timerLabel = UILabel(frame:CGRectMake(15*ratio,89*ratio,130*ratio,22*ratio))
@@ -326,15 +328,64 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             cell.contentView.addSubview(amountTextView)
             
             
-            var amountInputButton = UIButton(frame:CGRectMake(160*ratio, 0*ratio, 160*ratio, 115*ratio))
-            amountInputButton.backgroundColor = UIColor.clearColor()
-            amountInputButton.addTarget(self, action: Selector("showAmountInputVC"), forControlEvents: UIControlEvents.TouchDown)
-            cell.contentView.addSubview(amountInputButton)
+            var amountButton = UIButton(frame:CGRectMake(160*ratio, 0*ratio, 160*ratio, 115*ratio))
+            amountButton.backgroundColor = UIColor.clearColor()
+            amountButton.addTarget(self, action: Selector("amountButtonClk"), forControlEvents: UIControlEvents.TouchDown)
+            cell.contentView.addSubview(amountButton)
             
         }
         
         return cell
     }
+    
+    func timerButtonClk(){
+        
+        //var timer
+        
+        performSegueWithIdentifier("ShowTimerView", sender: self)
+        
+        
+        
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        //let destination = segue.destinationViewController as! NewTaskViewController
+        
+        
+        if segue.identifier == "ShowTimerView" {
+            let timerVC = segue.destinationViewController as! TimerViewController
+            
+            let day:Day! = task.getDay(getTodayDateNumber())
+            timerVC.task = task
+            timerVC.day = day
+            
+            
+        }
+        
+        if segue.identifier == "ShowEditTaskView" {
+            
+            let editTaskVC = segue.destinationViewController as! EditTaskViewController
+            editTaskVC.editedTask = task
+            editTaskVC.delegate = self
+            editTaskVC.mainColor = task.getColor()
+            editTaskVC.category = task.category_id
+            
+        }
+    
+    }
+    
+    
+    func amountButtonClk(){
+        
+        var amountVC = AmountViewController()
+        //amountVC.delegate = self
+        amountVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        
+        self.navigationController?.presentViewController(amountVC, animated: false, completion: { () -> Void in
+            
+        })
+    }
+    
     
     func timeButtonClk(){
         
@@ -362,6 +413,9 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         timeLog.created_at = NSDate()
         timeLog.updated_at = NSDate()
         
+        timeLog.day_id.done_second = timeLog.day_id.done_second.integerValue + Int(time)
+        
+        
         var error: NSError?
         managedObjectContext?.save(&error)
         
@@ -371,7 +425,19 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func refreshView(){
         
+        setupDay()
+        refreshHeaderText()
         detailTableView.reloadData()
+        
+    }
+    
+    func refreshHeaderText(){
+        
+        headerView.dateLabel.text = task.getStringOfPeriodProgress()
+        headerView.timeLabel.text = task.getDoneTimeString()
+        headerView.amountLabel.text = task.getDoneAmountString()
+        headerView.categoryLabel.text = task.category_id.name
+        headerView.categoryCircle.backgroundColor = task.getColor()
         
     }
     
@@ -396,17 +462,6 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         return task.getPercentOfPeriodProgress()
     }
     
-    
-    func showAmountInputVC(){
-        
-        var amountInputVC = AmountInputViewController()
-        amountInputVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
-        
-        self.navigationController?.presentViewController(amountInputVC, animated: false, completion: { () -> Void in
-            
-        })
-        
-    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -500,25 +555,13 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        if segue.identifier == "ShowEditTaskView" {
-            
-            let editTaskVC = segue.destinationViewController as! EditTaskViewController
-            editTaskVC.editedTask = task
-            editTaskVC.delegate = self
-            editTaskVC.mainColor = task.getColor()
-            editTaskVC.category = task.category_id
-            
-        }
-    }
-    
     
     func updateCategory(category:Category,from:String){
         
         
-        
+        refreshView()
         showCompletePopup()
+        
         
     }
     

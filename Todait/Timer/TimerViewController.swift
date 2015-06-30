@@ -158,9 +158,11 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         timeLog.server_id = 0
         timeLog.before_second = day.done_second
         timeLog.after_second = day.done_second.integerValue + Int(time)
-        timeLog.done_second = Int(totalTime)
+        timeLog.done_second = Int(time)
         timeLog.created_at = NSDate()
         timeLog.updated_at = NSDate()
+        
+        timeLog.day_id.done_second = timeLog.day_id.done_second.integerValue + Int(time)
         
         var error: NSError?
         managedObjectContext?.save(&error)
@@ -266,9 +268,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     func addTimerButton(){
         
-        timerButton = UIButton(frame: CGRectMake(100*ratio, 205*ratio, 120*ratio, 120*ratio))
-        timerButton.setBackgroundImage(UIImage(named: "ic_fragment_stopwatch_start_pressed"), forState: UIControlState.Normal)
-        timerButton.setBackgroundImage(UIImage(named: "ic_fragment_stopwatch_pause_pressed"), forState: UIControlState.Highlighted)
+        timerButton = UIButton(frame: CGRectMake(117.5*ratio, 205*ratio, 85*ratio, 110*ratio))
+        timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_stop@3x.png"), forState: UIControlState.Normal)
+        timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_play@3x.png"), forState: UIControlState.Highlighted)
         timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(timerButton)
         
@@ -280,8 +282,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         
         if timer.valid {
             
-            timerButton.setBackgroundImage(UIImage(named: "ic_fragment_stopwatch_start_pressed"), forState: UIControlState.Normal)
-            timerButton.setBackgroundImage(UIImage(named: "ic_fragment_stopwatch_pause_pressed"), forState: UIControlState.Highlighted)
+            timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_play@3x.png"), forState: UIControlState.Normal)
+            timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_stop@3x.png"), forState: UIControlState.Highlighted)
             
             timer.invalidate()
             
@@ -296,8 +298,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
             
             startTimer()
             
-            timerButton.setBackgroundImage(UIImage(named: "ic_fragment_stopwatch_pause_pressed"), forState: UIControlState.Normal)
-            timerButton.setBackgroundImage(UIImage(named: "ic_fragment_stopwatch_start_pressed"), forState: UIControlState.Highlighted)
+            timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_stop@3x.png"), forState: UIControlState.Normal)
+            timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_play@3x.png"), forState: UIControlState.Highlighted)
             
         }
 
