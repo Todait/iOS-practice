@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDelegate,TimeLogDelegate{
+class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDelegate,TimeLogDelegate,AmountLogDelegate{
     
     @IBOutlet weak var amountLabel: UILabel!
     @IBOutlet weak var subAmountLabel: UILabel!
@@ -184,10 +184,39 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         amountVC.amount_type = task.amount_type
         amountVC.unit = task.unit
         amountVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
-        
+        amountVC.delegate = self
         self.navigationController?.presentViewController(amountVC, animated: false, completion: { () -> Void in
             
         })
+    }
+    
+    func saveAmountLog(amount:Int){
+        
+        let entityDescription = NSEntityDescription.entityForName("AmountLog", inManagedObjectContext:managedObjectContext!)
+        
+        let amountLog = AmountLog(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
+        
+        amountLog.day_id = day
+        amountLog.before_done_amount = day.done_amount
+        amountLog.updated_at = NSDate()
+        amountLog.dirty_flag = 0
+        day.done_amount = Int(day.done_amount) + Int(amount)
+        amountLog.after_done_amount = day.done_amount
+        amountLog.created_at = NSDate()
+        amountLog.timestamp = NSDate().timeIntervalSince1970
+        amountLog.server_id = 0
+        amountLog.server_day_id = 0
+        amountLog.archived = 0
+        
+        var error: NSError?
+        managedObjectContext?.save(&error)
+        
+        if let err = error {
+            //에러처리
+        }else{
+            NSLog("AmountLog 저장 및 업데이트성공",1)
+        }
+
     }
     
     func addDoneButton(){

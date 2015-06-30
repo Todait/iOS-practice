@@ -9,7 +9,7 @@
 import UIKit
 
 protocol AmountLogDelegate : NSObjectProtocol {
-    func saveAmountLog(time:NSTimeInterval)
+    func saveAmountLog(amount:Int)
 }
 
 class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerViewDelegate{
@@ -124,14 +124,25 @@ class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
     }
     
     func confirmButtonClk(){
+        
         if self.delegate.respondsToSelector("saveAmountLog:"){
             
             
-            let time = getTimeLog()
+            let time = getAmountLog()
             self.delegate.saveAmountLog(time)
             
             closeButtonClk()
         }
+    }
+    
+    func getAmountLog()->Int{
+        
+        //var hour = hourPicker.selectedRowInComponent(0) * 3600
+        //var minute = minutePicker.selectedRowInComponent(0) * 60
+        //var second = secondPicker.selectedRowInComponent(0)
+        
+        
+        return donePicker.selectedRowInComponent(0)
     }
     
     
@@ -215,7 +226,7 @@ class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
             }
         }else{
             if pickerView == donePicker {
-                return 60
+                return 1000
             }
         }
         

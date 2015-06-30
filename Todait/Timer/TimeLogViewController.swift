@@ -73,11 +73,6 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
         whiteView.backgroundColor = UIColor.whiteColor()
         resetView.addSubview(whiteView)
         
-        
-        
-        
-        
-        
     }
     
     
