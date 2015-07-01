@@ -31,7 +31,6 @@ class Task: NSManagedObject {
     @NSManaged var updated_at: NSDate
     @NSManaged var category_id: Category
     @NSManaged var dayList: NSOrderedSet
-    
     @NSManaged var week:Week
 
     
@@ -39,6 +38,59 @@ class Task: NSManagedObject {
     let defaults:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
     
     
+    func getWeekAmountProgressData(date:NSDate)->[[String:CGFloat]]{
+        var datas:[[String:CGFloat]] = []
+        var adjustDate:NSDate! = getAdjustDate(date)
+        
+        for dayOfWeek in 0...6 {
+            
+            let dayOfWeekComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitWeekday|NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitMonth, fromDate: adjustDate)
+            dayOfWeekComp.day = dayOfWeekComp.day - 6 + dayOfWeek
+            let dayOfWeekDate:NSDate! = NSCalendar.currentCalendar().dateFromComponents(dayOfWeekComp)
+            
+            let day:Day? = getDay(getDateNumberFromDate(dayOfWeekDate))
+            
+            if let check = day {
+                var data:[String:CGFloat] = [:]
+                data["expectAmount"] = CGFloat(day!.expect_amount.floatValue)
+                data["doneAmount"] = CGFloat(day!.done_amount.floatValue)
+                
+                datas.append(data)
+            }else{
+                var data:[String:CGFloat] = [:]
+                data["expectAmount"] = 0
+                data["doneAmount"] = 0
+                
+                datas.append(data)
+            }
+        }
+        
+        return datas
+    }
+    
+    
+    func getAverageFocusScore()->NSNumber{
+        
+        var day:Day?
+        var score:CGFloat = 0
+        
+        for dayItem in dayList {
+            
+            let item:Day! = dayItem as! Day
+            
+            score = score + CGFloat(item.score.floatValue)
+            
+            
+        }
+        
+        if dayList.count == 0 {
+            return  0
+        }
+        
+        
+        return score/CGFloat(dayList.count)
+        
+    }
     
     
     func getProgressPercentAtDateNumber(dateNumber:NSNumber)->NSNumber{
@@ -68,10 +120,20 @@ class Task: NSManagedObject {
             getDay(startDate)!
             
             let nextDate = getDateFromDateNumber(startDate).addDay(1)
-            startDate = getDateNumberFromDate(nextDate)
+            startDate = getDateNumberFromDate2(nextDate)
         }
         
         dayList = dayArray
+        
+    }
+    
+    func getDateNumberFromDate2(date:NSDate)->NSNumber{
+        
+        let dateForm = NSDateFormatter()
+        dateForm.dateFormat = "yyyyMMdd"
+        let dateNumber = dateForm.stringFromDate(date).toInt()
+        
+        return dateForm.stringFromDate(date).toInt()!
         
     }
     
@@ -124,24 +186,19 @@ class Task: NSManagedObject {
     }
     
     
-    //date와 오늘마감시간에 따라 에러발생가능성 있음
     
-    func getDateNumberFromDate(date:NSDate)->NSNumber{
-        
-        let dateForm = NSDateFormatter()
-        dateForm.dateFormat = "yyyyMMdd"
-        
-        let dateNumber:NSNumber! = dateForm.stringFromDate(date).toInt()
-        
-        return dateNumber
-    }
     
     func getWeekDateNumberString(date:NSDate)->[String]{
+        
+        
+        
+        var adjustDate:NSDate! = getAdjustDate(date)
         var dateStringList:[String] = []
+        
         
         for dayOfWeek in 0...6 {
             
-            let dayOfWeekComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitWeekday|NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitMonth, fromDate: date)
+            let dayOfWeekComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitWeekday|NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitMonth, fromDate: adjustDate)
             dayOfWeekComp.day = dayOfWeekComp.day - 6 + dayOfWeek
             let dayOfWeekDate = NSCalendar.currentCalendar().dateFromComponents(dayOfWeekComp)
             
@@ -155,8 +212,31 @@ class Task: NSManagedObject {
         return dateStringList
     }
     
+    func getWeekDateNumberShortString(date:NSDate)->[String]{
+        var dateStringList:[String] = []
+        var adjustDate:NSDate! = getAdjustDate(date)
+        
+        for dayOfWeek in 0...6 {
+            
+            let dayOfWeekComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitWeekday|NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitMonth, fromDate: adjustDate)
+            dayOfWeekComp.day = dayOfWeekComp.day - 6 + dayOfWeek
+            let dayOfWeekDate = NSCalendar.currentCalendar().dateFromComponents(dayOfWeekComp)
+            
+            let dateForm = NSDateFormatter()
+            dateForm.dateFormat = "d일"
+            
+            let dateString = dateForm.stringFromDate(dayOfWeekDate!)
+            dateStringList.append(dateString)
+        }
+        
+        return dateStringList
+    }
     
     
+    func getAdjustDate(date:NSDate)->NSDate{
+        
+        return getDateFromDateNumber(getDateNumberFromDate(date))
+    }
     
     func getDayDoneAmount(dateNumber:NSNumber)->NSNumber{
     

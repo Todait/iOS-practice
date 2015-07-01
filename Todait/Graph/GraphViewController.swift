@@ -180,6 +180,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
     }
     
     
+    
     func addWeekAmountChart(){
         
         
@@ -189,7 +190,11 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         weekChart.backColor = UIColor.colorWithHexString("#F9EAEA")
         weekChart.chartWidth = 10*ratio
         weekChart.chartFont = UIFont(name: "AppleSDGothicNeo-UltraLight", size: 7.5*ratio)
-        weekChart.updateChart([["doneAmount":15,"expectAmount":50],["doneAmount":15,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":10,"expectAmount":35],["doneAmount":20,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":30,"expectAmount":55]])
+        
+        
+        //weekChart.updateChart([["doneAmount":15,"expectAmount":50],["doneAmount":15,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":10,"expectAmount":35],["doneAmount":20,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":30,"expectAmount":55]])
+        
+        weekChart.updateChart(task.getWeekAmountProgressData(NSDate()))
         
         weekDashView.addSubview(weekChart)
         
@@ -243,6 +248,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
     func addBarDashTableView(){
         
         
+        var focus:CGFloat = CGFloat(task.getAverageFocusScore().floatValue)
         
         let titleLabel = UILabel(frame:CGRectMake(15*ratio, 23*ratio, 80*ratio, 20*ratio))
         titleLabel.text = "집중도"
@@ -253,15 +259,13 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         
         
         let focusLabel = UILabel(frame: CGRectMake(15*ratio, 53*ratio, 80*ratio, 60*ratio))
-        focusLabel.text = "3.5"
+        focusLabel.text = String(format: "%.1f", focus)
         focusLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 52.5*ratio)
         focusLabel.textAlignment = NSTextAlignment.Center
         focusLabel.textColor = UIColor.todaitGray()
         focusDashView.addSubview(focusLabel)
         
         
-        
-        var focusScore:CGFloat = 3.4
         
         for index in 0...4 {
             
@@ -271,12 +275,12 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
             focusDashView.addSubview(imageView)
             
             
-            if index > Int(focusScore) {
+            if index > Int(focus) {
                 
-            }else if index == Int(focusScore){
+            }else if index == Int(focus){
                 
                 //imageView.image = UIImage(named: "ic_fragment_diary_rating_disabled.png")
-                var percent = focusScore - CGFloat(index)
+                var percent = focus - CGFloat(index)
                 
                 var path = UIBezierPath()
                 path.moveToPoint(CGPointMake(0*ratio,7*ratio))
