@@ -336,12 +336,14 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         var trendChart = TrendChartView(frame:CGRectMake(30*ratio,45*ratio,280*ratio,155*ratio))
         trendChart.backgroundColor = UIColor.whiteColor()
         trendChart.width = 40*ratio
-        trendChart.updateChart(
-            [["color":UIColor.todaitBlue(),"value":[0.5,0.3,0.8,0.9,0,0.3,0.6,0.7,0.9,0.5,0.3,0.8,0.9,0,0.3,0.6,0.7,0.9]],
-            ["color":UIColor.todaitRed(),"value":[0.7,0.9,0.5,0.3,0.8,0.5,0.3,0.8,0.9,0,0.3,0.6,0.9,0.3,0.6,0.7,0.9,0.5]]])
+        trendChart.updateChart(task.getTrendData())
         
         
         trendDashView.addSubview(trendChart)
+        
+        
+        
+        
         
     }
     

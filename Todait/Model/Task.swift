@@ -38,12 +38,79 @@ class Task: NSManagedObject {
     let defaults:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
     
     
+    func getTrendData()->[[String:AnyObject]]{
+    
+        var datas:[[String:AnyObject]] = []
+        
+        var timeData:[String:AnyObject] = [:]
+        var amountData:[String:AnyObject] = [:]
+        
+        var timeValue:[NSNumber] = []
+        var amountValue:[NSNumber] = []
+        var expectedTimes = week.getExpectedTime()
+        
+        var maxPercent:CGFloat = 0
+        
+        for dayItem in dayList {
+            var day = dayItem as! Day
+            
+            var expectAmount = CGFloat(day.expect_amount.floatValue)
+            var doneAmount = CGFloat(day.done_amount.floatValue)
+            
+            var amountPercent:CGFloat = 0
+            if expectAmount != 0 {
+                amountPercent = CGFloat(doneAmount)/CGFloat(expectAmount)
+            }
+            amountValue.append(amountPercent)
+            
+            
+            
+            
+            var expectTime = CGFloat(expectedTimes[Int(day.day_of_week)])
+            var doneTime = CGFloat(day.done_second.floatValue)
+            var timePercent:CGFloat = 0
+            
+            if expectTime != 0{
+                timePercent = CGFloat(doneTime)/CGFloat(expectTime)
+            }
+            timeValue.append(timePercent)
+            
+            
+            if maxPercent < amountPercent {
+                maxPercent = amountPercent
+            }
+            
+            if maxPercent < timePercent {
+                maxPercent = timePercent
+            }
+            
+        }
+        
+        
+        timeData["color"] = UIColor.todaitBlue()
+        timeData["value"] = timeValue
+        timeData["max"] = maxPercent
+        
+        amountData["color"] = UIColor.todaitRed()
+        amountData["value"] = amountValue
+        amountData["max"] = maxPercent
+        
+        datas.append(timeData)
+        datas.append(amountData)
+        
+        
+        
+        
+        return datas
+        
+    }
+    
+    
+    
     func getWeekTimeProgressData(date:NSDate)->[[String:NSNumber]]{
         
         var datas:[[String:NSNumber]] = []
         var adjustDate:NSDate! = getAdjustDate(date)
-        
-        
         var expectedTimes = week.getExpectedTime()
         
         for dayOfWeek in 0...6 {
@@ -56,8 +123,11 @@ class Task: NSManagedObject {
             
             
             if let check = day {
+                
+                var dayOfWeekIndex:Int = Int(day!.day_of_week)
+                
                 var data:[String:NSNumber] = [:]
-                data["expect"] = Int(expectedTimes[dayOfWeek])
+                data["expect"] = Int(expectedTimes[dayOfWeekIndex])
                 data["done"] = Int(day!.done_second)
                 
                 datas.append(data)
@@ -73,6 +143,7 @@ class Task: NSManagedObject {
         return datas
         
     }
+    
     
     
     func getWeekAmountProgressData(date:NSDate)->[[String:NSNumber]]{
@@ -137,9 +208,7 @@ class Task: NSManagedObject {
         if day != nil {
             return day!.getProgressPercent()
         }
-        
         return 0
-        
     }
     
     
