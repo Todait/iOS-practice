@@ -54,7 +54,6 @@ class TrendChartView: UIScrollView {
         }
         
         addXAxisLabel(data)
-        addYAxisLabel(maxValue)
     }
     
     func getMaxValue(data:[[String:AnyObject]])->CGFloat{
@@ -135,9 +134,6 @@ class TrendChartView: UIScrollView {
         }
     }
     
-    func addYAxisLabel(data:[[String:AnyObject]]){
-        
-        
-        
-    }
+    
+    
 }

@@ -333,8 +333,10 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         
         
         
-        var trendChart = TrendChartView(frame:CGRectMake(30*ratio,45*ratio,280*ratio,155*ratio))
-        trendChart.backgroundColor = UIColor.whiteColor()
+        addYAxisLabel()
+        
+        var trendChart = TrendChartView(frame:CGRectMake(40*ratio,45*ratio,270*ratio,155*ratio))
+        trendChart.backgroundColor = UIColor.clearColor()
         trendChart.width = 40*ratio
         trendChart.updateChart(task.getTrendData())
         
@@ -345,6 +347,37 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         
         
         
+        
+    }
+    
+    
+    func addYAxisLabel(){
+        
+        for index in 0...5 {
+            
+            let yAxixLabel = UILabel(frame: CGRectMake(15*ratio, 55*ratio + CGFloat(index)*CGFloat(20*ratio), 50*ratio, 12*ratio))
+            yAxixLabel.text = "\(120-CGFloat(index)*20)%"
+            yAxixLabel.textAlignment = NSTextAlignment.Left
+            yAxixLabel.textColor = UIColor.todaitGray()
+            yAxixLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 6*ratio)
+            
+            trendDashView.addSubview(yAxixLabel)
+            
+            
+            var count = CGFloat(task.dayList.count)
+            let line = UIView(frame:CGRectMake(40*ratio, 55*ratio + CGFloat(index)*CGFloat(18*ratio) , 270*ratio, 0.5*ratio))
+            line.backgroundColor = UIColor.todaitLightGray()
+            trendDashView.addSubview(line)
+            
+            
+        }
+        
+    }
+    
+    func getYAxisValue(maxValue:CGFloat)->[String]{
+        
+        
+        return ["20%","40%","60%","80%","100%","120%"]
     }
     
     
