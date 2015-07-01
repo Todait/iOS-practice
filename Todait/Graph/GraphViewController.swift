@@ -217,7 +217,9 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         weekChart.chartWidth = 10*ratio
         weekChart.chartFont = UIFont(name: "AppleSDGothicNeo-UltraLight", size: 7.5*ratio)
         
-        weekChart.updateChart([["doneAmount":15,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":60,"expectAmount":70],["doneAmount":40,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":80,"expectAmount":60]])
+        //weekChart.updateChart([["doneAmount":15,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":60,"expectAmount":70],["doneAmount":40,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":80,"expectAmount":60]])
+        
+        weekChart.updateTimeChart(task.getWeekTimeProgressData(NSDate()))
         
         weekDashView.addSubview(weekChart)
         

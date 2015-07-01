@@ -38,8 +38,45 @@ class Task: NSManagedObject {
     let defaults:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
     
     
-    func getWeekAmountProgressData(date:NSDate)->[[String:CGFloat]]{
-        var datas:[[String:CGFloat]] = []
+    func getWeekTimeProgressData(date:NSDate)->[[String:NSNumber]]{
+        
+        var datas:[[String:NSNumber]] = []
+        var adjustDate:NSDate! = getAdjustDate(date)
+        
+        
+        var expectedTimes = week.getExpectedTime()
+        
+        for dayOfWeek in 0...6 {
+            
+            let dayOfWeekComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitWeekday|NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitMonth, fromDate: adjustDate)
+            dayOfWeekComp.day = dayOfWeekComp.day - 6 + dayOfWeek
+            let dayOfWeekDate:NSDate! = NSCalendar.currentCalendar().dateFromComponents(dayOfWeekComp)
+            
+            let day:Day? = getDay(getDateNumberFromDate(dayOfWeekDate))
+            
+            
+            if let check = day {
+                var data:[String:NSNumber] = [:]
+                data["expect"] = Int(expectedTimes[dayOfWeek])
+                data["done"] = Int(day!.done_second)
+                
+                datas.append(data)
+            }else{
+                var data:[String:NSNumber] = [:]
+                data["expect"] = Int(expectedTimes[dayOfWeek])
+                data["done"] = 0
+                
+                datas.append(data)
+            }
+        }
+        
+        return datas
+        
+    }
+    
+    
+    func getWeekAmountProgressData(date:NSDate)->[[String:NSNumber]]{
+        var datas:[[String:NSNumber]] = []
         var adjustDate:NSDate! = getAdjustDate(date)
         
         for dayOfWeek in 0...6 {
@@ -51,15 +88,15 @@ class Task: NSManagedObject {
             let day:Day? = getDay(getDateNumberFromDate(dayOfWeekDate))
             
             if let check = day {
-                var data:[String:CGFloat] = [:]
-                data["expectAmount"] = CGFloat(day!.expect_amount.floatValue)
-                data["doneAmount"] = CGFloat(day!.done_amount.floatValue)
+                var data:[String:NSNumber] = [:]
+                data["expect"] = CGFloat(day!.expect_amount.floatValue)
+                data["done"] = CGFloat(day!.done_amount.floatValue)
                 
                 datas.append(data)
             }else{
-                var data:[String:CGFloat] = [:]
-                data["expectAmount"] = 0
-                data["doneAmount"] = 0
+                var data:[String:NSNumber] = [:]
+                data["expect"] = 0
+                data["done"] = 0
                 
                 datas.append(data)
             }
