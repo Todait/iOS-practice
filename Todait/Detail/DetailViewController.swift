@@ -10,13 +10,21 @@ import UIKit
 import CoreData
 import Photos
 
-class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CategoryUpdateDelegate,CalendarDelegate,TimeLogDelegate,AmountLogDelegate{
+class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CategoryUpdateDelegate,CalendarDelegate,TimeLogDelegate,AmountLogDelegate,FocusDelegate{
     
     
-    private var headerView:DetailHeaderView!
+    var detailView:DetailView!
+    
+    var memoHeaderView:UIView!
+    var monthView:UIView!
+    var memoView:UIView!
+    
     var weekCalendarVC:DetailWeekCalendarViewController!
     
     var detailTableView: UITableView!
+    var detailScrollView: UIScrollView!
+    
+    
     var task:Task!
     var day:Day!
     var dateLabel:UILabel!
@@ -35,7 +43,14 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     var selectedDateNumber:NSNumber!
     
-    override func viewDidLoad() {
+    
+    let headerMinHeight:CGFloat = 100
+    let hederMaxHeight:CGFloat = 215
+    var showCalendarHeight:CGFloat = 48
+    var isCalendarScroll:Bool = true
+    
+    
+    override func viewDidLoad(){
         super.viewDidLoad()
         view.backgroundColor = UIColor.whiteColor()
         
@@ -44,8 +59,11 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         setupDay()
         addHeaderView()
         addCalendarView()
-        addDetailTable()
+        addInfoView()
         
+        
+        //addDetailTable()
+        addDetailScrollView()
     }
     
     func setupDay(){
@@ -70,18 +88,36 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func addHeaderView(){
         
-        headerView = DetailHeaderView(frame: CGRectMake(0, 0, width, 215*ratio))
-        headerView.dateLabel.text = task.getStringOfPeriodProgress()
-        headerView.timeLabel.text = task.getDoneTimeString()
-        headerView.amountLabel.text = task.getDoneAmountString()
-        headerView.categoryLabel.text = task.category_id.name
-        headerView.categoryCircle.backgroundColor = task.getColor()
-        view.addSubview(headerView)
+        addDetailView()
+        addMonthView()
+        addMemoView()
+    }
+    
+    func addDetailView(){
+        detailView = DetailView(frame: CGRectMake(0, 0, width, 215*ratio))
+        detailView.dateLabel.text = task.getStringOfPeriodProgress()
+        detailView.timeLabel.text = task.getDoneTimeString()
+        detailView.amountLabel.text = task.getDoneAmountString()
+        detailView.categoryLabel.text = task.category_id.name
+        detailView.categoryCircle.backgroundColor = task.getColor()
+        detailView.mainImageView.image = UIImage(named: "track.jpg")
+    }
+    
+    func addMonthView(){
+        monthView = UIView(frame: CGRectMake(0, 0, 320*ratio, 48*6*ratio))
+        monthView.backgroundColor = UIColor.yellowColor()
+    }
+    
+    func addMemoView(){
+        
+        memoView = UIView(frame: CGRectMake(0, 318*ratio, 320*ratio, 186*ratio))
+        //memoView.backgroundColor = UIColor.orangeColor()
         
     }
     
     
     func addCalendarView(){
+        
         
         
         var headerView = UIView(frame: CGRectMake(0, 215*ratio, width, 103*ratio))
@@ -116,7 +152,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         let line = UIView(frame:CGRectMake(0, 65.5*ratio, width, 0.5*ratio))
         line.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
-        headerView.addSubview(line)
+        detailView.addSubview(line)
         
         
         
@@ -131,12 +167,177 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         headerView.clipsToBounds = true
         
         
-        view.addSubview(headerView)
+        detailView.addSubview(headerView)
+    }
+    
+    func addInfoView(){
+        
+        
+        var memoHeaderLabel = UILabel(frame: CGRectMake(0, 116*ratio, width, 24.5*ratio))
+        memoHeaderLabel.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
+        memoHeaderLabel.textColor = UIColor.todaitGray()
+        memoHeaderLabel.textAlignment = NSTextAlignment.Center
+        memoHeaderLabel.text = "공부메모"
+        memoHeaderLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+        memoView.addSubview(memoHeaderLabel)
+        
+        
+        var diaryButton = UIButton(frame:CGRectMake(18*ratio,116*ratio+39*ratio,16*ratio,16*ratio))
+        diaryButton.setBackgroundImage(UIImage(named: "detail_basic_27@3x.png"), forState: UIControlState.Normal)
+        diaryButton.addTarget(self, action: Selector("diaryButtonClk"), forControlEvents: UIControlEvents.TouchDown)
+        
+        memoView.addSubview(diaryButton)
+        
+        var memoInfoLabel = UILabel(frame: CGRectMake(37*ratio, 116*ratio+24.5*ratio, 180*ratio, 45.5*ratio))
+        memoInfoLabel.textColor = UIColor.todaitGray()
+        memoInfoLabel.textAlignment = NSTextAlignment.Left
+        memoInfoLabel.text = "공부 일기를 추가하세요."
+        memoInfoLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+        
+        memoView.addSubview(memoInfoLabel)
+        
+        
+        var focusScore:CGFloat = CGFloat(day.score.floatValue)
+        
+        
+        for index in 0...4 {
+            
+            var imageView = UIImageView(frame: CGRectMake(200*ratio + 17*ratio * CGFloat(index), 116*ratio+39*ratio, 14*ratio, 14*ratio))
+            imageView.image = UIImage(named: "detail_basic_30@3x.png")
+            
+            
+            memoView.addSubview(imageView)
+            
+            if index > Int(focusScore) {
+                
+            }else if index == Int(focusScore){
+                
+                
+                var percent = focusScore - CGFloat(index)
+                
+                var path = UIBezierPath()
+                path.moveToPoint(CGPointMake(0*ratio,7*ratio))
+                path.addLineToPoint(CGPointMake(14*ratio,7*ratio))
+                
+                
+                var colorLayer = CAShapeLayer()
+                colorLayer.path = path.CGPath
+                colorLayer.fillColor = UIColor.todaitGreen().CGColor
+                colorLayer.strokeColor = UIColor.todaitRed().CGColor
+                colorLayer.strokeStart = 0
+                colorLayer.strokeEnd = percent
+                colorLayer.lineWidth = 14*ratio
+                
+                
+                var maskLayer = CALayer()
+                maskLayer.contents = UIImage(named: "detail_diary_input_star@3x.png")!.CGImage
+                maskLayer.frame = CGRectMake(200*ratio + 17*ratio * CGFloat(index), 116*ratio+39*ratio, 14*ratio, 14*ratio)
+                maskLayer.mask = colorLayer
+                
+                memoView.layer.addSublayer(maskLayer)
+                
+            }else{
+                
+                var imageView = UIImageView(frame: CGRectMake(200*ratio + 17*ratio * CGFloat(index), 116*ratio+39*ratio, 14*ratio, 14*ratio))
+                imageView.image = UIImage(named: "detail_diary_input_star@3x.png")
+                
+                memoView.addSubview(imageView)
+            }
+        }
+        
+        
+        let focusButton = UIButton(frame: CGRectMake(200*ratio , 70*ratio+24.5*ratio, 90*ratio, 45.5*ratio))
+        focusButton.backgroundColor = UIColor.clearColor()
+        focusButton.addTarget(self, action: Selector("focusButtonClk"), forControlEvents: UIControlEvents.TouchDown)
+        
+        memoView.addSubview(focusButton)
+        
+        
+        
+        
+        //
+        
+        var upperLine = UIView(frame:CGRectMake(0,0*ratio,width,0.5*ratio))
+        upperLine.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
+        memoView.addSubview(upperLine)
+        
+        
+        var timerButton = UIButton(frame:CGRectMake(50*ratio, 0*ratio+12.5*ratio, 58*ratio, 58*ratio))
+        
+        timerButton.setBackgroundImage(UIImage(named: "detail_basic_23@3x.png"), forState: UIControlState.Normal)
+        timerButton.clipsToBounds = true
+        timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        memoView.addSubview(timerButton)
+        
+        
+        
+        var timerAimLabel = UILabel(frame:CGRectMake(15*ratio,0*ratio+77*ratio,130*ratio,12*ratio))
+        timerAimLabel.text = "목표시간 01:30:00"
+        timerAimLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
+        timerAimLabel.textAlignment = NSTextAlignment.Center
+        timerAimLabel.textColor = UIColor.todaitGray()
+       
+        memoView.addSubview(timerAimLabel)
+        
+        
+        var timerLabel = UILabel(frame:CGRectMake(15*ratio,0*ratio+89*ratio,130*ratio,22*ratio))
+        timerLabel.text = "00:00:00"
+        timerLabel.font = UIFont(name: "AppleSDGothicNeo-Light",size:20*ratio)
+        timerLabel.textAlignment = NSTextAlignment.Center
+        timerLabel.textColor = UIColor.todaitOrange()
+       
+        memoView.addSubview(timerLabel)
+        
+        
+        var timeLogButton = UIButton(frame: CGRectMake(15*ratio, 0*ratio+70*ratio, 130*ratio, 45*ratio))
+        timeLogButton.backgroundColor = UIColor.clearColor()
+        timeLogButton.addTarget(self, action: Selector("timeButtonClk"), forControlEvents: UIControlEvents.TouchDown)
+      
+        memoView.addSubview(timeLogButton)
+        
+        
+        var middleLine = UIView(frame:CGRectMake(159.75*ratio,0*ratio,0.5*ratio,115*ratio))
+        middleLine.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
+        
+        memoView.addSubview(middleLine)
+        
+        var circleChart = CircleChart(frame: CGRectMake(210*ratio, 0*ratio+12.5*ratio, 58*ratio, 58*ratio))
+        circleChart.circleColor = UIColor.todaitOrange()
+        circleChart.updatePercent(progressPercent)
+        circleChart.percentLabel.frame = CGRectMake(5*ratio,5*ratio,48*ratio,48*ratio)
+        circleChart.percentLabel.font = UIFont(name: "AppleSDGothicNeo-Light",size: 25*ratio)
+        circleChart.percentLabel.adjustsFontSizeToFitWidth = true
+        
+        memoView.addSubview(circleChart)
+        
+        var background:UIImage = UIImage(named: "graph_bg.png")!
+        var maskLayer:CALayer = CALayer()
+        maskLayer.contents = background.CGImage
+        maskLayer.frame = CGRectMake(0,0,58*ratio,58*ratio)
+        maskLayer.mask = circleChart.percentLayer
+        circleChart.layer.addSublayer(maskLayer)
+        
+        
+        
+        
+        var amountTextView = AmountTextView(frame: CGRectMake(175*ratio,0*ratio+74*ratio, 130*ratio, 25*ratio))
+        amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+        amountTextView.userInteractionEnabled = false
+        
+         memoView.addSubview(amountTextView)
+        
+        
+        var amountButton = UIButton(frame:CGRectMake(160*ratio, 0*ratio, 160*ratio, 115*ratio))
+        amountButton.backgroundColor = UIColor.clearColor()
+        amountButton.addTarget(self, action: Selector("amountButtonClk"), forControlEvents: UIControlEvents.TouchDown)
+        
+         memoView.addSubview(amountButton)
     }
     
     
     func addDetailTable(){
-        detailTableView = UITableView(frame: CGRectMake(0,318*ratio,width,height-318*ratio), style: UITableViewStyle.Grouped)
+        detailTableView = UITableView(frame: CGRectMake(0,0,width,height), style: UITableViewStyle.Grouped)
         detailTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         detailTableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
         detailTableView.delegate = self
@@ -144,13 +345,122 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         detailTableView.contentOffset.y = 0
         detailTableView.sectionFooterHeight = 0
         detailTableView.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
+        detailTableView.backgroundColor = UIColor.yellowColor()
         detailTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        view.addSubview(detailTableView)
+        detailTableView.contentOffset.y = 20*ratio
+        //view.addSubview(detailTableView)
+    }
+    
+    func addDetailScrollView(){
+        
+        detailScrollView = UIScrollView(frame: CGRectMake(0, 0, 320*ratio, 568*ratio))
+        detailScrollView.contentSize = CGSizeMake(320*ratio, 1500*ratio)
+        //detailScrollView.backgroundColor = UIColor.magentaColor()
+        detailScrollView.delegate = self
+        
+        view.addSubview(detailScrollView)
+        
+        
+        detailScrollView.addSubview(monthView)
+        detailScrollView.addSubview(detailView)
+        detailScrollView.addSubview(memoView)
+        
+    }
+    
+    
+    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        
+        NSLog("놓앗다", 1)
+        
+        
+    }
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        
+        NSLog("SCROLL Y %f originY %f",scrollView.contentOffset.y,detailView.frame.origin.y)
+        
+        
+        let offset = scrollView.contentOffset.y
+        
+        scrollView.contentOffset.x = 0
+        
+        
+        if isCalendarScroll {
+            
+            //detailView.transform = CGAffineTransformMakeTranslation(0, offset)
+            
+            if offset > 115*ratio {
+                detailView.transform = CGAffineTransformMakeTranslation(0, offset-115*ratio)
+            }else if offset <= 0{
+                
+                //detailView.transform = CGAffineTransformMakeTranslation(0, 2*offset)
+                
+                
+                if 2*offset < -230*ratio {
+                    detailView.transform = CGAffineTransformMakeTranslation(0, -115*ratio+offset)
+                }else{
+                    detailView.transform = CGAffineTransformMakeTranslation(0, 2*offset)
+                
+                    
+                }
+                
+                
+                detailScrollView.contentSize = CGSizeMake(320*ratio, 1500*ratio + detailView.frame.size.height)
+                NSLog("Height", detailView.frame.size.height + 1500*ratio)
+                
+            }
+            
+            
+        }else{
+            
+            if offset > 115*ratio {
+                detailView.transform = CGAffineTransformMakeTranslation(0, offset-115*ratio)
+                memoView.transform = CGAffineTransformMakeTranslation(0, offset-115*ratio)
+                monthView.transform = CGAffineTransformMakeTranslation(0, offset-115*ratio)
+
+            }else if offset <= 0 {
+                
+                //detailView.frame = CGRectMake(0, -offset, 320*ratio,215*ratio)
+                
+                
+                detailView.transform = CGAffineTransformMakeTranslation(0, offset)
+                memoView.transform = CGAffineTransformMakeTranslation(0, offset)
+                monthView.transform = CGAffineTransformMakeTranslation(0, offset)
+                
+            }
+            
+            //detailView.transform = CGAffineTransformMakeTranslation(0, -offset)
+        }
+        
+        
+    }
+    
+    
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        
+        var location = scrollView.panGestureRecognizer.locationInView(view)
+        NSLog("VIEW%@",NSStringFromCGPoint(location))
+        
+        
+        var location2 = scrollView.panGestureRecognizer.locationInView(detailScrollView)
+        NSLog("Detail%@",NSStringFromCGPoint(location2))
+        
+        
+        if location2.y > 258*ratio && location2.y < 258*ratio + showCalendarHeight {
+            
+            isCalendarScroll = true
+            
+        }else {
+            isCalendarScroll = false
+        }
+        
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
         if section == 0 {
+            return 308*ratio
+        }else if section == 1 {
             return 0*ratio
         }else{
             return 70*ratio
@@ -158,13 +468,13 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
     }
     
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0
+    }
+    
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
-        if indexPath.section == 0 {
-            return 116*ratio
-        }else{
-            return 58*ratio
-        }
+        return 58*ratio
         
     }
     
@@ -181,11 +491,12 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        
+        return 15
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -193,34 +504,51 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         var headerView = UIView()
         headerView.backgroundColor = UIColor.whiteColor()
         
-        if section == 1 {
-            
-            var memoHeaderLabel = UILabel(frame: CGRectMake(0, 0, width, 24.5*ratio))
-            memoHeaderLabel.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
-            memoHeaderLabel.textColor = UIColor.todaitGray()
-            memoHeaderLabel.textAlignment = NSTextAlignment.Center
-            memoHeaderLabel.text = "공부메모"
-            memoHeaderLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
-            headerView.addSubview(memoHeaderLabel)
-            
-            
-            var memoImageView = UIImageView(frame:CGRectMake(18*ratio,39*ratio,16*ratio,16*ratio))
-            memoImageView.image = UIImage(named: "ic_fragment_diary_pencil")
-            headerView.addSubview(memoImageView)
-            
-            var memoInfoLabel = UILabel(frame: CGRectMake(37*ratio, 24.5*ratio, 180*ratio, 45.5*ratio))
-            memoInfoLabel.textColor = UIColor.todaitGray()
-            memoInfoLabel.textAlignment = NSTextAlignment.Left
-            memoInfoLabel.text = "공부 일기를 추가하세요."
-            memoInfoLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
-            headerView.addSubview(memoInfoLabel)
-            
-            
-        }
-        
-    
+        headerView.addSubview(monthView)
+        headerView.addSubview(memoView)
+        headerView.addSubview(detailView)
         
         return headerView
+    }
+    
+    func diaryButtonClk(){
+        
+        
+        
+    }
+    
+    func focusButtonClk(){
+    
+        var focusVC = FocusViewController()
+        focusVC.delegate = self
+        focusVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        focusVC.day = day
+        
+        
+        self.navigationController?.presentViewController(focusVC, animated: false, completion: { () -> Void in
+            
+        })
+        
+        
+    }
+    
+    
+    func saveFocus(focus:CGFloat){
+        
+        day.score = focus
+        
+        
+        var error: NSError?
+        managedObjectContext?.save(&error)
+        
+        if let err = error {
+            //에러처리
+        }else{
+            NSLog("집중도 저장",1)
+        }
+        
+        
+        //detailTableView.reloadData()
     }
     
     
@@ -242,7 +570,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         
         day = task.getDay(getDateNumberFromDate(date))
-        detailTableView.reloadData()
+        //detailTableView.reloadData()
         
     }
     
@@ -255,84 +583,6 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             view.removeFromSuperview()
         }
         
-        
-        if indexPath.section == 0 && indexPath.row == 0 {
-            
-            
-            
-            var upperLine = UIView(frame:CGRectMake(0,0,width,0.5*ratio))
-            upperLine.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
-            cell.contentView.addSubview(upperLine)
-            
-            
-            
-            var timerButton = UIButton(frame:CGRectMake(50*ratio, 12.5*ratio, 58*ratio, 58*ratio))
-            
-            timerButton.setBackgroundImage(UIImage(named: "detail_basic_23@3x.png"), forState: UIControlState.Normal)
-            timerButton.clipsToBounds = true
-            timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-            
-            cell.contentView.addSubview(timerButton)
-            
-            
-            
-            var timerAimLabel = UILabel(frame:CGRectMake(15*ratio,77*ratio,130*ratio,12*ratio))
-            timerAimLabel.text = "목표시간 01:30:00"
-            timerAimLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
-            timerAimLabel.textAlignment = NSTextAlignment.Center
-            timerAimLabel.textColor = UIColor.todaitGray()
-            cell.contentView.addSubview(timerAimLabel)
-            
-            
-            
-            var timerLabel = UILabel(frame:CGRectMake(15*ratio,89*ratio,130*ratio,22*ratio))
-            timerLabel.text = "00:00:00"
-            timerLabel.font = UIFont(name: "AppleSDGothicNeo-Light",size:20*ratio)
-            timerLabel.textAlignment = NSTextAlignment.Center
-            timerLabel.textColor = UIColor.todaitOrange()
-            cell.contentView.addSubview(timerLabel)
-            
-            
-            
-            var timeLogButton = UIButton(frame: CGRectMake(15*ratio, 70*ratio, 130*ratio, 45*ratio))
-            timeLogButton.backgroundColor = UIColor.clearColor()
-            timeLogButton.addTarget(self, action: Selector("timeButtonClk"), forControlEvents: UIControlEvents.TouchDown)
-            cell.contentView.addSubview(timeLogButton)
-            
-            
-            
-            var middleLine = UIView(frame:CGRectMake(159.75*ratio,0,0.5*ratio,115*ratio))
-            middleLine.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
-            cell.contentView.addSubview(middleLine)
-            
-            var circleChart = CircleChart(frame: CGRectMake(210*ratio, 12.5*ratio, 58*ratio, 58*ratio))
-            circleChart.circleColor = UIColor.todaitOrange()
-            circleChart.updatePercent(progressPercent)
-            circleChart.percentLabel.frame = CGRectMake(5*ratio,5*ratio,48*ratio,48*ratio)
-            circleChart.percentLabel.font = UIFont(name: "AppleSDGothicNeo-Light",size: 25*ratio)
-            circleChart.percentLabel.adjustsFontSizeToFitWidth = true
-            
-            cell.contentView.addSubview(circleChart)
-            
-            
-            var background:UIImage = UIImage(named: "graph_bg.png")!
-            var maskLayer:CALayer = CALayer()
-            maskLayer.contents = background.CGImage
-            maskLayer.frame = CGRectMake(0,0,58*ratio,58*ratio)
-            maskLayer.mask = circleChart.percentLayer
-            circleChart.layer.addSublayer(maskLayer)
-            
-            var amountTextView = AmountTextView(frame: CGRectMake(175*ratio,74*ratio, 130*ratio, 25*ratio))
-            amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
-            cell.contentView.addSubview(amountTextView)
-            
-            
-            var amountButton = UIButton(frame:CGRectMake(160*ratio, 0*ratio, 160*ratio, 115*ratio))
-            amountButton.backgroundColor = UIColor.clearColor()
-            amountButton.addTarget(self, action: Selector("amountButtonClk"), forControlEvents: UIControlEvents.TouchDown)
-            cell.contentView.addSubview(amountButton)
-            
-        }
         
         return cell
     }
@@ -443,13 +693,11 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         timeLog.created_at = NSDate()
         timeLog.server_id = 0
         timeLog.before_second = day.done_second
-        timeLog.after_second = day.done_second.integerValue + Int(time)
+        day.done_second = Int(day.done_second) + Int(time)
+        timeLog.after_second = day.done_second.integerValue
         timeLog.done_second = Int(time)
         timeLog.created_at = NSDate()
         timeLog.updated_at = NSDate()
-        
-        timeLog.day_id.done_second = timeLog.day_id.done_second.integerValue + Int(time)
-        
         
         var error: NSError?
         managedObjectContext?.save(&error)
@@ -462,17 +710,17 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         setupDay()
         refreshHeaderText()
-        detailTableView.reloadData()
+        //detailTableView.reloadData()
         
     }
     
     func refreshHeaderText(){
         
-        headerView.dateLabel.text = task.getStringOfPeriodProgress()
-        headerView.timeLabel.text = task.getDoneTimeString()
-        headerView.amountLabel.text = task.getDoneAmountString()
-        headerView.categoryLabel.text = task.category_id.name
-        headerView.categoryCircle.backgroundColor = task.getColor()
+        detailView.dateLabel.text = task.getStringOfPeriodProgress()
+        detailView.timeLabel.text = task.getDoneTimeString()
+        detailView.amountLabel.text = task.getDoneAmountString()
+        detailView.categoryLabel.text = task.category_id.name
+        detailView.categoryCircle.backgroundColor = task.getColor()
         
     }
     
@@ -568,8 +816,6 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         }
         
     }
-    
-    
     
     func addGraphButton(){
         

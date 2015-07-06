@@ -44,9 +44,9 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
         var layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Horizontal
         
-        weekView = UICollectionView(frame: CGRectMake(0, 0, width, 48*ratio), collectionViewLayout:layout)
+        weekView = UICollectionView(frame: CGRectMake(0, 0, width, 60*ratio), collectionViewLayout:layout)
         
-        weekView.registerClass(WeekCalendarCell.self, forCellWithReuseIdentifier: "weekCell")
+        weekView.registerClass(DetailWeekCalendarCell.self, forCellWithReuseIdentifier: "weekCell")
         weekView.backgroundColor = UIColor.clearColor()
         weekView.delegate = self
         weekView.dataSource = self
@@ -75,12 +75,12 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
         
         
         
-        var cell = weekView.cellForItemAtIndexPath(selectedIndex) as! WeekCalendarCell
+        var cell = weekView.cellForItemAtIndexPath(selectedIndex) as! DetailWeekCalendarCell
         
         for index in 0...6 {
             var button = cell.buttons[index]
             if button.dateNumber == dateNumber {
-                button.backgroundColor = UIColor.grayColor()
+                button.backgroundColor = UIColor.colorWithHexString("#FAFAFA")
             }else{
                 button.backgroundColor = UIColor.whiteColor()
             }
@@ -138,7 +138,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("weekCell", forIndexPath: indexPath) as! WeekCalendarCell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("weekCell", forIndexPath: indexPath) as! DetailWeekCalendarCell
         
         var monthDate = getCurrentDate(indexPath)
         
@@ -164,10 +164,20 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
             button.setTitle(dateForm.stringFromDate(currentDate), forState: UIControlState.Normal)
             
             if dateNumber == button.dateNumber {
-                button.backgroundColor = UIColor.grayColor()
+                button.backgroundColor = UIColor.colorWithHexString("#FAFAFA")
             }else{
                 button.backgroundColor = UIColor.whiteColor()
             }
+            
+            
+            let amountView = UILabel(frame: CGRectMake(160*ratio/7 - 8*ratio, -19*ratio, 16*ratio, 16*ratio))
+            amountView.text = "9"
+            amountView.textColor = UIColor.whiteColor()
+            amountView.textAlignment = NSTextAlignment.Center
+            amountView.backgroundColor = UIColor.todaitRed()
+            amountView.clipsToBounds = true
+            amountView.layer.cornerRadius = 8*ratio
+            button.addSubview(amountView)
             
         }
         
@@ -180,7 +190,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
     func getCurrentDate(indexPath:NSIndexPath)->NSDate{
         
         var adjustDate = getAdjustDate(NSDate())
-        NSLog("Week %@",adjustDate.addWeek(Int(indexPath.row - 500)))
+        //NSLog("Week %@",adjustDate.addWeek(Int(indexPath.row - 500)))
         return adjustDate.addWeek(Int(indexPath.row - 500))
     }
     
@@ -198,7 +208,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
-        return CGSizeMake(width, 48*ratio)
+        return CGSizeMake(width, 60*ratio)
         
     }
     

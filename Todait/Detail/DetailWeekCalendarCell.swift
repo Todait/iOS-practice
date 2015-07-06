@@ -47,7 +47,7 @@ class DetailWeekCalendarCell: UICollectionViewCell {
             
             let originX = CGFloat(i%7)*width
             
-            let button = DateButton(frame:CGRectMake(originX, 0, width, height))
+            let button = DateButton(frame:CGRectMake(originX, 32*ratio, width, 20*ratio))
             button.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
             button.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Light", size: 19*ratio)
             buttons.append(button)
