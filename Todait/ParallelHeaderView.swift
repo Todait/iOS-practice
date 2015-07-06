@@ -68,9 +68,9 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     }
     
     func addDateLabel(){
-        dateLabel = UILabel(frame: CGRectMake(30*ratio, 5*ratio, 260*ratio, 30*ratio))
+        dateLabel = UILabel(frame: CGRectMake(30*ratio, 24*ratio, 260*ratio, 16*ratio))
         dateLabel.textColor = UIColor.whiteColor()
-        dateLabel.font = UIFont(name: "AvenirNext-Regular", size: 16*ratio)
+        dateLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12.5*ratio)
         dateLabel.textAlignment = NSTextAlignment.Center
         dateLabel.text = "2015.06.03"
         backgroundImageView.addSubview(dateLabel)
@@ -78,18 +78,18 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     }
     
     func addCompletionInfoLabel(){
-        completionInfoLabel = UILabel(frame: CGRectMake(30*ratio, 60*ratio, 100*ratio, 22*ratio))
+        completionInfoLabel = UILabel(frame: CGRectMake(30*ratio, 70*ratio, 100*ratio, 16*ratio))
         completionInfoLabel.textColor = UIColor.whiteColor()
-        completionInfoLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+        completionInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 12.5*ratio)
         completionInfoLabel.textAlignment = NSTextAlignment.Center
         completionInfoLabel.text = "성취율"
         backgroundImageView.addSubview(completionInfoLabel)
     }
     
     func addCompletionRateLabel(){
-        completionRateLabel = UILabel(frame: CGRectMake(30*ratio, 80*ratio, 100*ratio, 50*ratio))
+        completionRateLabel = UILabel(frame: CGRectMake(30*ratio, 95*ratio, 100*ratio, 45*ratio))
         completionRateLabel.textColor = UIColor.whiteColor()
-        completionRateLabel.font = UIFont(name: "AvenirNext-Regular", size: 35*ratio)
+        completionRateLabel.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 35*ratio)
         completionRateLabel.textAlignment = NSTextAlignment.Center
         completionRateLabel.text = "0%"
         completionRateLabel.adjustsFontSizeToFitWidth = true
@@ -97,36 +97,54 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     }
     
     func addStudyInfoLabel(){
-        studyInfoLabel = UILabel(frame: CGRectMake(190*ratio, 60*ratio, 100*ratio, 22*ratio))
+        studyInfoLabel = UILabel(frame: CGRectMake(190*ratio, 70*ratio, 100*ratio, 16*ratio))
         studyInfoLabel.textColor = UIColor.whiteColor()
-        studyInfoLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+        studyInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 12.5*ratio)
         studyInfoLabel.textAlignment = NSTextAlignment.Center
         studyInfoLabel.text = "오늘 공부한 시간"
         backgroundImageView.addSubview(studyInfoLabel)
     }
     
     func addStudyTimeLabel(){
-        studyTimeLabel = UILabel(frame: CGRectMake(190*ratio, 80*ratio, 100*ratio, 50*ratio))
+        studyTimeLabel = UILabel(frame: CGRectMake(170*ratio, 95*ratio, 140*ratio, 45*ratio))
         studyTimeLabel.textColor = UIColor.whiteColor()
-        studyTimeLabel.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
+        studyTimeLabel.font = UIFont(name: "AppleSDGothicNeo-Bold", size: 35*ratio)
         studyTimeLabel.textAlignment = NSTextAlignment.Center
         studyTimeLabel.text = "00:00"
         backgroundImageView.addSubview(studyTimeLabel)
     }
     
     func addRemainingTimeLabel(){
-        remainingTimeLabel = UILabel(frame: CGRectMake(60*ratio, 150*ratio, 200*ratio, 20*ratio))
+        remainingTimeLabel = UILabel(frame: CGRectMake(60*ratio, 172*ratio, 200*ratio, 17*ratio))
         remainingTimeLabel.textAlignment = NSTextAlignment.Center
         remainingTimeLabel.textColor = UIColor.whiteColor()
         remainingTimeLabel.text = "오늘 남은 시간 12:33:39"
-        remainingTimeLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        remainingTimeLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
         backgroundImageView.addSubview(remainingTimeLabel)
     }
     
     func addCenterLine(){
-        let line = UIView(frame: CGRectMake(159.75*ratio, 40*ratio, 0.5*ratio, 100*ratio))
+        /*
+        let line = UIView(frame: CGRectMake(159.75*ratio, 60*ratio, 0.5*ratio, 100*ratio))
         line.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
         backgroundImageView.addSubview(line)
+        */
+
+        let path = UIBezierPath()
+        path.moveToPoint(CGPointMake(175*ratio, 56*ratio))
+        path.addLineToPoint(CGPointMake(143*ratio, 152*ratio))
+        
+        let line = CAShapeLayer()
+        line.path = path.CGPath
+        line.lineWidth = 1*ratio
+        line.strokeColor = UIColor.whiteColor().CGColor
+        line.strokeStart = 0
+        line.strokeEnd = 1
+        
+        
+        backgroundImageView.layer.addSublayer(line)
+        
+        
     }
     
     
