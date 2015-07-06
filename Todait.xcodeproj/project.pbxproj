@@ -167,6 +167,8 @@
 		4C27DD4F1B33ABA500D4911F /* StatisticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C27DD4E1B33ABA500D4911F /* StatisticsTests.swift */; };
 		4C27DD511B33F4FB00D4911F /* TaskStatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C27DD501B33F4FB00D4911F /* TaskStatisticsViewController.swift */; };
 		4C27DD531B340B4C00D4911F /* TaskBarDashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C27DD521B340B4C00D4911F /* TaskBarDashViewController.swift */; };
+		4C79032E1B383F1900B48656 /* MainPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C79032D1B383F1900B48656 /* MainPhotoViewController.swift */; };
+		4C7903301B3842F800B48656 /* MainPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C79032F1B3842F800B48656 /* MainPhotoCell.swift */; };
 		4C7AF8EC1B1EE9BF005A0185 /* CalendarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7AF8EB1B1EE9BF005A0185 /* CalendarTableViewCell.swift */; };
 		4C7AF8EE1B1EE9DB005A0185 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7AF8ED1B1EE9DB005A0185 /* CalendarViewController.swift */; };
 		4C7AF8F01B1EEF8A005A0185 /* Add.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C7AF8EF1B1EEF8A005A0185 /* Add.png */; };
@@ -438,6 +440,8 @@
 		4C27DD4E1B33ABA500D4911F /* StatisticsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatisticsTests.swift; sourceTree = "<group>"; };
 		4C27DD501B33F4FB00D4911F /* TaskStatisticsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TaskStatisticsViewController.swift; path = Statistics/TaskStatisticsViewController.swift; sourceTree = "<group>"; };
 		4C27DD521B340B4C00D4911F /* TaskBarDashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TaskBarDashViewController.swift; path = Statistics/TaskBarDashViewController.swift; sourceTree = "<group>"; };
+		4C79032D1B383F1900B48656 /* MainPhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainPhotoViewController.swift; path = Main/MainPhotoViewController.swift; sourceTree = "<group>"; };
+		4C79032F1B3842F800B48656 /* MainPhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainPhotoCell.swift; path = Main/MainPhotoCell.swift; sourceTree = "<group>"; };
 		4C7AF8EB1B1EE9BF005A0185 /* CalendarTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CalendarTableViewCell.swift; path = Calendar/CalendarTableViewCell.swift; sourceTree = "<group>"; };
 		4C7AF8ED1B1EE9DB005A0185 /* CalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CalendarViewController.swift; path = Calendar/CalendarViewController.swift; sourceTree = "<group>"; };
 		4C7AF8EF1B1EEF8A005A0185 /* Add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Add.png; sourceTree = "<group>"; };
@@ -1011,6 +1015,8 @@
 				4CB353A01B1C2A0D00E36245 /* TaskTableViewCell.swift */,
 				4CD3C5671B2FB7A6000AFDA3 /* TodaitRevealViewController.swift */,
 				4CD3C5691B2FB7C1000AFDA3 /* MainViewController.swift */,
+				4C79032D1B383F1900B48656 /* MainPhotoViewController.swift */,
+				4C79032F1B3842F800B48656 /* MainPhotoCell.swift */,
 				4CD3C56F1B2FC98D000AFDA3 /* CategoryRearViewController.swift */,
 			);
 			name = Main;
@@ -1389,6 +1395,7 @@
 				4C7CC0791B26A096000E271D /* Diary.swift in Sources */,
 				4CB353AD1B1C500F00E36245 /* ParallelHeaderView.swift in Sources */,
 				4C7CC0A61B282866000E271D /* String.swift in Sources */,
+				4C79032E1B383F1900B48656 /* MainPhotoViewController.swift in Sources */,
 				4CD3C5651B2FB625000AFDA3 /* SWRevealViewController.m in Sources */,
 				4CD3C5311B2EB757000AFDA3 /* TimeXAxis.swift in Sources */,
 				4C7AF8EC1B1EE9BF005A0185 /* CalendarTableViewCell.swift in Sources */,
@@ -1415,6 +1422,7 @@
 				4C7CC07F1B26A096000E271D /* TimeLog.swift in Sources */,
 				4C7CC0BB1B294685000E271D /* BarDashViewController.swift in Sources */,
 				4C7CC0811B26A096000E271D /* Week.swift in Sources */,
+				4C7903301B3842F800B48656 /* MainPhotoCell.swift in Sources */,
 				4CD3C5331B2ECC4A000AFDA3 /* TimerView.swift in Sources */,
 				4CD3C5681B2FB7A6000AFDA3 /* TodaitRevealViewController.swift in Sources */,
 				4C7CC0891B26A097000E271D /* TimeHistory.swift in Sources */,

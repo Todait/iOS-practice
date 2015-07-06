@@ -51,7 +51,33 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         loadDayData()
         mainTableView.reloadData()
         
+        updateMainPhoto()
         updateText()
+    }
+    
+    func updateMainPhoto(){
+        let localIdentifier = defaults.objectForKey("mainPhoto")
+        
+        if let check = localIdentifier {
+            
+            let assetResult = PHAsset.fetchAssetsWithLocalIdentifiers([localIdentifier!], options: nil)
+            let imageManager = PHCachingImageManager()
+            
+            
+            if assetResult.count != 0 {
+                assetResult.enumerateObjectsUsingBlock { (object, Int, Bool) -> Void in
+                    
+                    
+                    let asset:PHAsset = object as! PHAsset
+                    
+                    
+                    imageManager.requestImageForAsset(asset, targetSize: CGSizeMake(self.width,250*self.ratio), contentMode: PHImageContentMode.AspectFill, options: nil) {(image, info) -> Void in
+                        self.parallelView.backgroundImageView.image = image
+                    }
+                    
+                }
+            }
+        }
     }
     
     func updateText(){
@@ -157,43 +183,6 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         parallelView.backgroundImageView.clipsToBounds = true
         parallelView.backgroundImageView.contentMode = UIViewContentMode.ScaleAspectFill
        
-        
-        //imageView.image =
-        //fetchAssetsWithLocalIdentifiers(localIdentifier, options: nil)
-        
-        let localIdentifier = defaults.objectForKey("mainPhoto")
-        
-        if let check = localIdentifier {
-            
-            let assetResult = PHAsset.fetchAssetsWithLocalIdentifiers([localIdentifier!], options: nil)
-            let imageManager = PHCachingImageManager()
-            
-            
-            if assetResult.count != 0 {
-                assetResult.enumerateObjectsUsingBlock { (object, Int, Bool) -> Void in
-                   
-
-                    let asset:PHAsset = object as! PHAsset
-                    
-                    
-                    imageManager.requestImageForAsset(asset, targetSize: CGSizeMake(self.width,250*self.ratio), contentMode: PHImageContentMode.AspectFill, options: nil) {(image, info) -> Void in
-                        self.parallelView.backgroundImageView.image = image
-                    }
-                    
-                }
-            }
-        }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
         
         
@@ -803,6 +792,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     }
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        
         
         
         performSegueWithIdentifier("ShowDetailView", sender:indexPath)
