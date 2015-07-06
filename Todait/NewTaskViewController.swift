@@ -893,9 +893,11 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         
         setupTextField()
         
+        task.amount_type = rangeSegment.selectedSegmentIndex
         
         switch rangeSegment.selectedSegmentIndex {
         case 0:
+            
             task.amount = totalTextField.text.toInt()!
             task.start_point = 0
         case 1:
