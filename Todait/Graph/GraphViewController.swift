@@ -355,7 +355,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         
         for index in 0...5 {
             
-            let yAxixLabel = UILabel(frame: CGRectMake(15*ratio, 55*ratio + CGFloat(index)*CGFloat(20*ratio), 50*ratio, 12*ratio))
+            let yAxixLabel = UILabel(frame: CGRectMake(15*ratio, 65*ratio + CGFloat(index)*CGFloat(16*ratio), 50*ratio, 8*ratio))
             yAxixLabel.text = "\(120-CGFloat(index)*20)%"
             yAxixLabel.textAlignment = NSTextAlignment.Left
             yAxixLabel.textColor = UIColor.todaitGray()
@@ -365,7 +365,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
             
             
             var count = CGFloat(task.dayList.count)
-            let line = UIView(frame:CGRectMake(40*ratio, 55*ratio + CGFloat(index)*CGFloat(18*ratio) , 270*ratio, 0.5*ratio))
+            let line = UIView(frame:CGRectMake(40*ratio, 70*ratio + CGFloat(index)*CGFloat(16*ratio) , 270*ratio, 0.5*ratio))
             line.backgroundColor = UIColor.todaitLightGray()
             trendDashView.addSubview(line)
             

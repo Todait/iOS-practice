@@ -76,7 +76,7 @@ class TrendChartView: UIScrollView {
         
         for index in 0...dataCount {
             
-            var nextPoint = CGPointMake(CGFloat(index) * 40*ratio+5*ratio, CGFloat(frame.size.height-30*ratio)*(1-chartData[index]/(maxValue*1.5)))
+            var nextPoint = CGPointMake(CGFloat(index) * 40*ratio+15*ratio, CGFloat(frame.size.height-30*ratio)*(1-chartData[index]/(maxValue*1.5)))
             dataPoints.append(nextPoint)
             
             
@@ -126,7 +126,7 @@ class TrendChartView: UIScrollView {
             addSubview(xAxisLabel)
             
             
-            xAxisLabel.center = CGPointMake(CGFloat(index) * 40*ratio+5*ratio, frame.size.height - 15*ratio)
+            xAxisLabel.center = CGPointMake(CGFloat(index) * 40*ratio+15*ratio, frame.size.height - 15*ratio)
             
             if dataCount-1 == index {
                 break

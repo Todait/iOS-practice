@@ -115,7 +115,7 @@ class WeekMaxChart: UIView {
             backChart.backgroundColor = backColor
             valueLabel.textColor = frontColor
             valueLabel.font = chartFont
-            valueLabel.text = String(format: "%.0f", doneAmount)
+            valueLabel.text = getTimeStringFromSeconds(NSTimeInterval(doneAmount))
             
             var doneHeight:CGFloat! = 0
             var expectHeight:CGFloat! = 0
