@@ -1,5 +1,5 @@
 //
-//  PeriodViewController.swift
+//  CategorySettingViewController.swift
 //  Todait
 //
 //  Created by CruzDiary on 2015. 7. 8..
@@ -8,6 +8,6 @@
 
 import UIKit
 
-class PeriodViewController: BasicViewController {
+class CategorySettingViewController: BasicViewController {
    
 }
