@@ -10,13 +10,14 @@ import UIKit
 import CoreData
 
 
+/*
 protocol CategoryUpdateDelegate : NSObjectProtocol{
     func updateCategory(category:Category,from:String)
 }
+*/
 
 
-
-class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavigationDelegate,CategoryDelegate,UITableViewDelegate,UITableViewDataSource,settingTimeDelegate,PeriodDelegate,InvestDelegate,UnitInputViewDelegate,RepeatViewDelegate{
+class NewTaskViewControllerOld: BasicViewController,UITextFieldDelegate,TodaitNavigationDelegate,CategoryDelegate,UITableViewDelegate,UITableViewDataSource,settingTimeDelegate,PeriodDelegate,InvestDelegate,UnitInputViewDelegate,RepeatViewDelegate{
     
     
     var mainColor: UIColor!
