@@ -17,6 +17,8 @@ class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
     var filterView:UIImageView!
     var resetView:UIView!
     var resetButton:UIButton!
+    
+    var cancelButton:UIButton!
     var confirmButton:UIButton!
     var delegate:AmountLogDelegate!
     
@@ -34,7 +36,9 @@ class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
         addFilterView()
         addResetView()
         addInfoView()
-        addconfirmButton()
+        
+        addCancelButton()
+        addConfirmButton()
         
         
         addPickerViews()
@@ -108,13 +112,25 @@ class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
         //var hour = hourPicker.selectedRowInComponent(0) * 3600
         //var minute = minutePicker.selectedRowInComponent(0) * 60
         //var second = secondPicker.selectedRowInComponent(0)
-        
         return NSTimeInterval(1) //hour + minute + second)
+    
     }
     
     
-    func addconfirmButton(){
-        confirmButton = UIButton(frame: CGRectMake(0, 232*ratio, 294*ratio, 43*ratio))
+    func addCancelButton(){
+        confirmButton = UIButton(frame: CGRectMake(0, 232*ratio, 147*ratio, 43*ratio))
+        confirmButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        confirmButton.setTitle("취소", forState: UIControlState.Normal)
+        confirmButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitLightGray(), frame: CGRectMake(0, 0, 294*ratio, 43*ratio)), forState: UIControlState.Normal)
+        confirmButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo", size: 15*ratio)
+        confirmButton.addTarget(self, action: Selector("closeButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        resetView.addSubview(confirmButton)
+    }
+    
+    
+    
+    func addConfirmButton(){
+        confirmButton = UIButton(frame: CGRectMake(147*ratio, 232*ratio, 147*ratio, 43*ratio))
         confirmButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         confirmButton.setTitle("확인", forState: UIControlState.Normal)
         confirmButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 294*ratio, 43*ratio)), forState: UIControlState.Normal)
@@ -200,19 +216,31 @@ class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
         
     }
     
-    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+    
+    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView!) -> UIView {
+        
+        
+        var background = UIView(frame: CGRectMake(0, 0, 60*ratio, 52.5*ratio))
+        
         
         var parastyle = NSMutableParagraphStyle()
         parastyle.alignment = NSTextAlignment.Center
         
-        var font:UIFont! = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 32.5*ratio)
+        var font:UIFont! = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 32*ratio)
         
         var attributes = [NSFontAttributeName:font , NSForegroundColorAttributeName:UIColor.todaitGray(),NSParagraphStyleAttributeName:parastyle]
         
         var attributeString = NSMutableAttributedString(string:"\(row)", attributes:attributes)
         
-        return attributeString
+        
+        var label = UILabel(frame: CGRectMake(0, 8*ratio, 60*ratio, 40*ratio))
+        label.attributedText = attributeString
+        background.addSubview(label)
+        
+        return background
     }
+    
+    
     
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {

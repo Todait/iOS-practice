@@ -131,7 +131,7 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
         hourPicker.delegate = self
         resetView.addSubview(hourPicker)
         
-        let hourLabel = UILabel(frame: CGRectMake(22.5*ratio, 200*ratio, 62*ratio, 12*ratio))
+        let hourLabel = UILabel(frame: CGRectMake(22.5*ratio, 195*ratio, 62*ratio, 12*ratio))
         hourLabel.text = "시간"
         hourLabel.textColor = UIColor.todaitGray()
         hourLabel.textAlignment = NSTextAlignment.Center
@@ -142,7 +142,7 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
         minutePicker.delegate = self
         resetView.addSubview(minutePicker)
         
-        let minuteLabel = UILabel(frame: CGRectMake(115*ratio, 200*ratio, 62*ratio, 12*ratio))
+        let minuteLabel = UILabel(frame: CGRectMake(115*ratio, 195*ratio, 62*ratio, 12*ratio))
         minuteLabel.text = "분"
         minuteLabel.textAlignment = NSTextAlignment.Center
         minuteLabel.textColor = UIColor.todaitGray()
@@ -154,7 +154,7 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
         secondPicker.delegate = self
         resetView.addSubview(secondPicker)
         
-        let secondLabel = UILabel(frame: CGRectMake(207*ratio, 200*ratio, 62*ratio, 12*ratio))
+        let secondLabel = UILabel(frame: CGRectMake(207*ratio, 195*ratio, 62*ratio, 12*ratio))
         secondLabel.text = "초"
         secondLabel.textAlignment = NSTextAlignment.Center
         secondLabel.textColor = UIColor.todaitGray()
@@ -165,20 +165,28 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
         
     }
     
-    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+    func pickerView(pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusingView view: UIView!) -> UIView {
+        
+        
+        var background = UIView(frame: CGRectMake(0, 0, 60*ratio, 52.5*ratio))
+        
         
         var parastyle = NSMutableParagraphStyle()
         parastyle.alignment = NSTextAlignment.Center
         
-        var font:UIFont! = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 32.5*ratio)
+        var font:UIFont! = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 32*ratio)
         
         var attributes = [NSFontAttributeName:font , NSForegroundColorAttributeName:UIColor.todaitGray(),NSParagraphStyleAttributeName:parastyle]
         
         var attributeString = NSMutableAttributedString(string:"\(row)", attributes:attributes)
         
-        return attributeString
+        
+        var label = UILabel(frame: CGRectMake(0, 8*ratio, 60*ratio, 40*ratio))
+        label.attributedText = attributeString
+        background.addSubview(label)
+        
+        return background
     }
-
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         

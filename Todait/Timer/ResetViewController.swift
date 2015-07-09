@@ -60,7 +60,7 @@ class ResetViewController: BasicViewController {
         infoLabel.textAlignment = NSTextAlignment.Left
         infoLabel.textColor = UIColor.whiteColor()
         infoLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        infoLabel.text = "나가기"
+        infoLabel.text = "초기화"
         resetView.addSubview(infoLabel)
         
         
@@ -72,8 +72,8 @@ class ResetViewController: BasicViewController {
         let messageLabel = UILabel(frame: CGRectMake(0, 33*ratio, 294*ratio, 75*ratio))
         messageLabel.textAlignment = NSTextAlignment.Center
         messageLabel.textColor = UIColor.todaitGray()
-        messageLabel.text = "방금 공부하신 시간을 저장하시겠습니까?"
-        messageLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 15*ratio)
+        messageLabel.text = "공부한 시간을 초기화 하시겠습니까?"
+        messageLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 13*ratio)
         resetView.addSubview(messageLabel)
         
     }
@@ -98,35 +98,48 @@ class ResetViewController: BasicViewController {
         closeButton.layer.borderColor = UIColor.whiteColor().CGColor
         
         closeButton.addTarget(self, action: Selector("closeButtonClk"), forControlEvents: UIControlEvents.TouchDown)
-        resetView.addSubview(closeButton)
+        
+        //resetView.addSubview(closeButton)
     }
     
     func closeButtonClk(){
         
         
-        self.dismissViewControllerAnimated(false, completion: { () -> Void in
+        UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut , animations: { () -> Void in
+            self.resetView.transform = CGAffineTransformMakeTranslation(0, 0*self.ratio)
+            
+            }) { (Bool) -> Void in
+                
+                self.dismissViewControllerAnimated(false, completion: { () -> Void in
+                    
+                })
+        }
         
-        })
+        
+        
         
     }
     
     func addResetButton(){
         
         resetButton = UIButton(frame: CGRectMake(0, 117*ratio, 147*ratio, 43*ratio))
-        resetButton.setTitle("저장안함(초기화)", forState: UIControlState.Normal)
+        resetButton.setTitle("초기화", forState: UIControlState.Normal)
         resetButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         resetButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitRed(), frame: CGRectMake(0, 0, 147*ratio, 43*ratio)), forState: UIControlState.Normal)
         resetButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo", size: 15*ratio)
         resetButton.addTarget(self, action: Selector("resetButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        
         resetView.addSubview(resetButton)
     }
     
     func resetButtonClk(){
-        func saveButtonClk(){
+        
+        
+        dismissViewControllerAnimated(false, completion: { () -> Void in
             if self.delegate.respondsToSelector("resetTimeLog"){
                 self.delegate.resetTimeLog()
             }
-        }
+        })
     }
     
     func addSaveButton(){
@@ -153,7 +166,7 @@ class ResetViewController: BasicViewController {
         super.viewWillAppear(animated)
         todaitNavBar.hidden = true
         
-        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut , animations: { () -> Void in
+        UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut , animations: { () -> Void in
             self.resetView.transform = CGAffineTransformMakeTranslation(0, -160*self.ratio)
             
         }) { (Bool) -> Void in

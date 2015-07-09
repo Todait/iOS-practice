@@ -11,10 +11,17 @@ import CoreData
 
 class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDelegate,TimeLogDelegate,AmountLogDelegate{
     
-    @IBOutlet weak var amountLabel: UILabel!
-    @IBOutlet weak var subAmountLabel: UILabel!
-    @IBOutlet weak var mainTimerLabel: UILabel!
-    @IBOutlet weak var backgroundImageView: UIImageView!
+    var amountLabel: UILabel!
+    var subAmountLabel: UILabel!
+    var backgroundImageView: UIImageView!
+    
+    
+    
+    var mainTimerLabel:UILabel!
+    var subTimerLabel:UILabel!
+    
+    var amountTextView:AmountTextView!
+    var totalTimeLabel:UILabel!
     
     var resetButton: UIButton!
     var timeLogButton: UIButton!
@@ -56,9 +63,11 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         super.viewDidLoad()
         view.backgroundColor = UIColor.whiteColor()
         
+        addAmountTextView()
         
-        updateAmountLabel()
-        //updateButtons()
+        
+        addTotalTimeLabel()
+        
         addResetButton()
         addTimeButton()
         addAmountButton()
@@ -68,21 +77,53 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         //addTimerView()
         addCompleteButton()
         setMainTimerLabel()
+        setSubTimerLabel()
         addTimerButton()
-        //addTimeSettingView()
+        
+        
+        
+        
         startTimer()
         
     }
     
-    func updateAmountLabel(){
+    func addAmountTextView(){
+        
+        amountTextView = AmountTextView(frame: CGRectMake(95*ratio,105*ratio, 130*ratio, 44*ratio))
+        amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+        amountTextView.userInteractionEnabled = false
+        amountTextView.amountFont = UIFont(name: "AppleSDGothicNeo-Light", size: 34*ratio)
+        amountTextView.unitFont = UIFont(name: "AppleSDGothicNeo-Light", size: 34*ratio)
+        amountTextView.amountColor = UIColor.whiteColor()
+        amountTextView.unitColor = UIColor.whiteColor()
+        
+        var paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = NSTextAlignment.Center
+        amountTextView.paragraphStyle = paragraphStyle
+        
+        view.addSubview(amountTextView)
+        
+        amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+    }
+    
+    
+    
+    func addTotalTimeLabel(){
+        
+        totalTimeLabel = UILabel(frame: CGRectMake(95*ratio, height - 120*ratio, 130*ratio, 25*ratio))
+        totalTimeLabel.text = ""
+        totalTimeLabel.textAlignment = NSTextAlignment.Center
+        totalTimeLabel.textColor = UIColor.whiteColor()
+        totalTimeLabel.font = UIFont(name: "AppleSDGothicNeo", size: 12*ratio)
         
         
+        view.addSubview(totalTimeLabel)
         
     }
     
     func addResetButton(){
-        resetButton = UIButton(frame: CGRectMake(0, height-48*ratio, 80*ratio, 48*ratio))
-        resetButton.setImage(UIImage(named: "stopwatch_stop_15@3x.png"), forState: UIControlState.Normal)
+        resetButton = UIButton(frame: CGRectMake(0, height, 80*ratio, 48*ratio))
+        resetButton.setImage(UIImage(named: "stopwatch_bottom_02@3x.png"), forState: UIControlState.Normal)
         resetButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         resetButton.addTarget(self, action: Selector("resetButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(resetButton)
@@ -109,29 +150,57 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         timeLog.created_at = NSDate()
         timeLog.server_id = 0
         timeLog.before_second = day.done_second
-        timeLog.after_second = day.done_second.integerValue + Int(totalTime)
+        day.done_second = Int(day.done_second) + Int(totalTime)
+        timeLog.after_second = day.done_second.integerValue
         timeLog.done_second = Int(totalTime)
         timeLog.created_at = NSDate()
         timeLog.updated_at = NSDate()
         
+        
         var error: NSError?
         managedObjectContext?.save(&error)
         
+        
+        
+        updateTimeLabel()
+        amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
     }
     
     func resetTimeLog() {
+        totalTime = totalTime - currentTime
+        currentTime = 0
         
+        updateTimeLabel()
     }
     
     
+    func showButtons(show:Bool){
+        
+        var transform = 48*ratio
+        
+        if show {
+            transform = transform * -1
+        }
+        
+        UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            self.timeLogButton.transform = CGAffineTransformMakeTranslation(0, transform)
+            self.resetButton.transform = CGAffineTransformMakeTranslation(0, transform)
+            self.amountLogButton.transform = CGAffineTransformMakeTranslation(0, transform)
+            }, completion: { (Bool) -> Void in
+                
+        })
+        
+        
+    }
     
     
     
     func addTimeButton(){
-        timeLogButton = UIButton(frame: CGRectMake(80*ratio, height-48*ratio, 80*ratio, 48*ratio))
-        timeLogButton.setImage(UIImage(named: "stopwatch_stop_12@3x.png"), forState: UIControlState.Normal)
+        timeLogButton = UIButton(frame: CGRectMake(80*ratio, height, 80*ratio, 48*ratio))
+        timeLogButton.setBackgroundImage(UIImage(named: "stopwatch_bottom_03@3x.png"), forState: UIControlState.Normal)
         timeLogButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         timeLogButton.addTarget(self, action: Selector("timeButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        timeLogButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         view.addSubview(timeLogButton)
     }
     
@@ -157,7 +226,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         timeLog.created_at = NSDate()
         timeLog.server_id = 0
         timeLog.before_second = day.done_second
-        timeLog.after_second = day.done_second.integerValue + Int(time)
+        day.done_second = Int(day.done_second.integerValue) + Int(time)
+        timeLog.after_second = day.done_second.integerValue
         timeLog.done_second = Int(time)
         timeLog.created_at = NSDate()
         timeLog.updated_at = NSDate()
@@ -167,11 +237,16 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         var error: NSError?
         managedObjectContext?.save(&error)
         
+        totalTime = totalTime + time
+        
+        updateTimeLabel()
+        amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+
     }
     
     func addAmountButton(){
-        amountLogButton = UIButton(frame: CGRectMake(160*ratio, height-48*ratio, 80*ratio, 48*ratio))
-        amountLogButton.setImage(UIImage(named: "stopwatch_stop_07@3x.png"), forState: UIControlState.Normal)
+        amountLogButton = UIButton(frame: CGRectMake(160*ratio, height, 80*ratio, 48*ratio))
+        amountLogButton.setImage(UIImage(named: "stopwatch_bottom_04@3x.png"), forState: UIControlState.Normal)
         amountLogButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         amountLogButton.addTarget(self, action: Selector("amountButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(amountLogButton)
@@ -207,6 +282,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         amountLog.server_id = 0
         amountLog.server_day_id = 0
         amountLog.archived = 0
+    
         
         var error: NSError?
         managedObjectContext?.save(&error)
@@ -216,24 +292,34 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         }else{
             NSLog("AmountLog 저장 및 업데이트성공",1)
         }
-
+        
+        amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
     }
+    
+    
     
     func addDoneButton(){
         doneButton = UIButton(frame: CGRectMake(240*ratio, height-48*ratio, 80*ratio, 48*ratio))
-        doneButton.setImage(UIImage(named: "stopwatch_stop_09@3x.png"), forState: UIControlState.Normal)
+        doneButton.setBackgroundImage(UIImage(named: "stopwatch_bottom_05@3x.png"), forState: UIControlState.Normal)
         doneButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
         doneButton.addTarget(self, action: Selector("doneButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(doneButton)
     }
     
+    func doneButtonClk(){
+        
+        
+        
+    }
+    
+    
     func updateButtons(){
         
         
-        resetButton.setBackgroundImage(UIImage(named: "stopwatch_stop_15@3x.png"), forState: UIControlState.Normal)
-        timeLogButton.setBackgroundImage(UIImage(named: "stopwatch_stop_12@3x.png"), forState: UIControlState.Normal)
-        amountLogButton.setBackgroundImage(UIImage(named: "stopwatch_stop_07@3x.png"), forState: UIControlState.Normal)
-        doneButton.setBackgroundImage(UIImage(named: "stopwatch_stop_09@3x.png"), forState: UIControlState.Normal)
+        resetButton.setBackgroundImage(UIImage(named: "stopwatch_bottom_02@3x.png"), forState: UIControlState.Normal)
+        timeLogButton.setBackgroundImage(UIImage(named: "stopwatch_bottom_03@3x.png"), forState: UIControlState.Normal)
+        amountLogButton.setBackgroundImage(UIImage(named: "stopwatch_bottom_04@3x.png"), forState: UIControlState.Normal)
+        doneButton.setBackgroundImage(UIImage(named: "stopwatch_bottom_05@3x.png"), forState: UIControlState.Normal)
 
         
         
@@ -266,40 +352,30 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     func setMainTimerLabel(){
         
-        mainTimerLabel.font = UIFont(name: "AvenirNext-Regular", size: 25*ratio)
+        mainTimerLabel = UILabel(frame: CGRectMake(15*ratio, 380*ratio, 290*ratio, 50*ratio))
+        mainTimerLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 38*ratio)
         mainTimerLabel.text = "00:00:00"
         mainTimerLabel.textColor = UIColor.whiteColor()
         mainTimerLabel.textAlignment = NSTextAlignment.Center
-        mainTimerLabel.sizeToFit()
-        mainTimerLabel.center = view.center
         view.addSubview(mainTimerLabel)
         
     }
     
-    /*
-    func addSubTimerLabel(){
-        subTimerLabel = UILabel(frame: CGRectMake(0,0,200*ratio, 30*ratio))
-        subTimerLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
-        subTimerLabel.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
-        subTimerLabel.text = "00:00:00"
+    
+    func setSubTimerLabel(){
+        subTimerLabel = UILabel(frame: CGRectMake(15*ratio, 425*ratio,290*ratio, 24*ratio))
+        subTimerLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 14*ratio)
+        subTimerLabel.text = "누적 공부 시간 00:00:00"
         subTimerLabel.textColor = UIColor.whiteColor()
-        subTimerLabel.textAlignment = NSTextAlignment.Right
+        subTimerLabel.textAlignment = NSTextAlignment.Center
         view.addSubview(subTimerLabel)
         
-        
-        var subTopConstraint = NSLayoutConstraint(item: subTimerLabel, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: mainTimerLabel, attribute: NSLayoutAttribute.Top, multiplier: ratio, constant: -25*ratio)
-        view.addConstraint(subTopConstraint)
-        
-        
-        var subRightConstraint = NSLayoutConstraint(item: subTimerLabel, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: mainTimerLabel, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: 0)
-        view.addConstraint(subRightConstraint)
-        
     }
-*/
+
     
     func addTimerButton(){
         
-        timerButton = UIButton(frame: CGRectMake(117.5*ratio, 205*ratio, 85*ratio, 110*ratio))
+        timerButton = UIButton(frame: CGRectMake(113*ratio, 209*ratio, 94*ratio, 122*ratio))
         timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_stop@3x.png"), forState: UIControlState.Normal)
         timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_play@3x.png"), forState: UIControlState.Highlighted)
         timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
@@ -312,6 +388,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     func timerButtonClk(){
         
         if timer.valid {
+            
+            showButtons(true)
             
             timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_play@3x.png"), forState: UIControlState.Normal)
             timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_stop@3x.png"), forState: UIControlState.Highlighted)
@@ -327,6 +405,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         }else{
             //startTimer()
             
+            showButtons(false)
             startTimer()
             
             timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_stop@3x.png"), forState: UIControlState.Normal)
@@ -381,6 +460,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     func startTimer(){
         timer = NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: Selector("countDown"), userInfo: nil, repeats: true)
         countDown()
+        
+        
+        
     }
     
     
@@ -432,8 +514,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     func updateTimeLabel(){
         
+        
         mainTimerLabel.text = getTimeStringFromSeconds(currentTime)
-        //subTimerLabel.text = getTimeStringFromSeconds(totalTime)
+        subTimerLabel.text = "누적 공부 시간 " + getTimeStringFromSeconds(totalTime)
     }
     
     func getTimeStringFromSeconds(seconds : NSTimeInterval ) -> String {
