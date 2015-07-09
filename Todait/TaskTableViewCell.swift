@@ -35,7 +35,7 @@ class TaskTableViewCell: UITableViewCell {
     
     let DEFAULT_START_ANGLE : CGFloat = -89.0
     let DEFAULT_END_ANGLE : CGFloat = -89.00001
-    let DEFAULT_LINE_WIDTH : CGFloat = 3
+    let DEFAULT_LINE_WIDTH : CGFloat = 2
     
     
     
@@ -60,7 +60,7 @@ class TaskTableViewCell: UITableViewCell {
     
     func addTitleLabel(){
         titleLabel = UILabel(frame: CGRectMake(75*ratio, 11*ratio, 250*ratio, 14*ratio))
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10*ratio)
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
         titleLabel.textColor = UIColor.todaitGray()
         titleLabel.textAlignment = NSTextAlignment.Left
         self.addSubview(titleLabel)
@@ -97,8 +97,8 @@ class TaskTableViewCell: UITableViewCell {
         timerButton = UIButton(frame: CGRectMake(23*ratio, 11*ratio, 36*ratio, 36*ratio))
         
         timerButton.clipsToBounds = true
-        timerButton.layer.cornerRadius = 17*ratio
-        timerButton.layer.borderWidth = 1.0*ratio
+        timerButton.layer.cornerRadius = 18*ratio
+        timerButton.layer.borderWidth = 1.0
         timerButton.layer.borderColor = UIColor.todaitLightGray().CGColor
         timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         self.addSubview(timerButton)
@@ -137,7 +137,7 @@ class TaskTableViewCell: UITableViewCell {
     }
     
     func addPercentLabel(){
-        percentLabel = UILabel(frame: CGRectMake(23*ratio, 11*ratio, 36*ratio, 36*ratio))
+        percentLabel = UILabel(frame: CGRectMake(23*ratio, 12*ratio, 36*ratio, 36*ratio))
         percentLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
         percentLabel.text = "%"
         percentLabel.textAlignment = NSTextAlignment.Center
