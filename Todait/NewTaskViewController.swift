@@ -10,13 +10,13 @@ import UIKit
 import CoreData
 
 
-protocol CategoryUpdateDelegate {
-    func updateCategory(category:Category)
+protocol CategoryUpdateDelegate : NSObjectProtocol{
+    func updateCategory(category:Category,from:String)
 }
 
 
 
-class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavigationDelegate,CategoryDelegate,UITableViewDelegate,UITableViewDataSource,settingTimeDelegate,PeriodDelegate,InvestDelegate{
+class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavigationDelegate,CategoryDelegate,UITableViewDelegate,UITableViewDataSource,settingTimeDelegate,PeriodDelegate,InvestDelegate,UnitInputViewDelegate,RepeatViewDelegate{
     
     
     var mainColor: UIColor!
@@ -30,9 +30,10 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     var taskTextField: UITextField!
     var unitSegment: UISegmentedControl!
     var unitTextField: UITextField!
+    var unitView: UnitInputView!
     
     var rangeSegment: UISegmentedControl!
-    
+    var rangeSelectedIndex:Int = 0
     
     
     var totalTextField: UITextField!
@@ -52,17 +53,24 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     var periodStartDate:NSDate!
     var periodEndDate:NSDate!
     var periodDayLabel:UILabel!
+    var periodDayString:String = "30일"
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var aimString:String! = ""
     var unitString:String! = ""
+    
     var aimAmount:Int! = 0
+    var startRangeAmount:Int! = 0
+    var endRangeAmount:Int! = 0
+    var dayAmount:Int! = 0
+    
+    
     
     var category:Category!
     var delegate: CategoryUpdateDelegate!
     var showInvest:Int = 0
-    var investData:[Int]! = [0,0,0,0,0,0,0]
+    var investData:[Int]! = [3600,3600,3600,3600,3600,3600,3600]
     var investLabel:UILabel!
     
     override func viewDidLoad() {
@@ -71,6 +79,8 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         view.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
         setupTaskViewController()
         addTaskTableView()
+        addUnitView()
+        registerForKeyboardNotification()
         //setupCategory()
         
         if delegate == nil {
@@ -87,8 +97,78 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         dateForm = NSDateFormatter()
         dateForm.dateFormat = "a h시 m분"
         
+        
     }
     
+    func addUnitView(){
+        
+        unitView = UnitInputView(frame: CGRectMake(0, height, width, 40*ratio))
+        unitView.backgroundColor = mainColor
+        unitView.delegate = self
+        unitView.hidden = true
+        
+        view.addSubview(unitView)
+        
+    }
+    
+    func updateUnit(unit:String){
+        
+        unitTextField.text = unit
+        
+    }
+    
+    func registerForKeyboardNotification(){
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWasShown:"), name: UIKeyboardWillShowNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillBeHidden:"), name: UIKeyboardWillHideNotification, object: nil)
+        
+    }
+    
+    func keyboardWasShown(aNotification:NSNotification){
+        
+        var info:[NSObject:AnyObject] = aNotification.userInfo!
+        var kbSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)!.CGRectValue().size as CGSize
+        
+        var contentInsets = UIEdgeInsetsMake(0, 0, kbSize.height, 0)
+        taskTableView.contentInset = contentInsets
+        taskTableView.scrollIndicatorInsets = contentInsets
+        
+        var aRect = self.view.frame
+        aRect.size.height = aRect.size.height - kbSize.height
+        
+        if (!CGRectContainsPoint(aRect, currentTextField.frame.origin)) {
+            
+            taskTableView.scrollRectToVisible(currentTextField.frame, animated: true)
+            
+        }
+        
+        if currentTextField == unitTextField {
+            unitView.hidden = false
+        }
+        
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            self.unitView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-40*self.ratio)
+            }, completion: nil)
+        
+    }
+    
+    func keyboardWillBeHidden(aNotification:NSNotification){
+        
+        var contentInsets = UIEdgeInsetsZero
+        taskTableView.contentInset = contentInsets
+        taskTableView.scrollIndicatorInsets = contentInsets
+        
+        
+        
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            self.unitView.transform = CGAffineTransformMakeTranslation(0, 40*self.ratio)
+        }) { (Bool) -> Void in
+            self.unitView.hidden = true
+        }
+        
+    }
     
     
     func addTaskTableView(){
@@ -102,8 +182,6 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         view.addSubview(taskTableView)
         
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: Selector("resignAllTextResponder"))
-        taskTableView.addGestureRecognizer(tapGesture)
     }
     
     func setupCategory(){
@@ -144,6 +222,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
             addRangeSegment(cell)
         }else if(indexPath.row == 2 && indexPath.section == 1){
             addRangeTextField(cell)
+            rangeSegmentClk(rangeSegment)
         }else if(indexPath.row == 0 && indexPath.section == 2){
             addAimDateSubView(cell)
         }else if(indexPath.row == 1 && indexPath.section == 2){
@@ -160,6 +239,8 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         return cell
     }
     
+    
+    
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
         if indexPath.row == 1 && indexPath.section == 0 {
@@ -167,32 +248,12 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         }else if(indexPath.row == 1 && indexPath.section == 2){
             showInvestVC()
             
-            /*
-            
-            if showInvest == 1 {
-                showInvest = 0
-                
-                let cell:UITableViewCell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 2, inSection: 2))!
-                for subView in cell.contentView.subviews{
-                    subView.removeFromSuperview()
-                }
-                
-                tableView.beginUpdates()
-                tableView.deleteRowsAtIndexPaths([NSIndexPath(forRow:2, inSection:2)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                tableView.endUpdates()
-            }else{
-                showInvest = 1
-                tableView.beginUpdates()
-                tableView.insertRowsAtIndexPaths([NSIndexPath(forRow:2, inSection:2)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                tableView.endUpdates()
-            }
-            
-            */
-            
         }else if(indexPath.row == 2+showInvest && indexPath.section == 2){
             showTimeBlurVC()
         }else if(indexPath.row == 0 && indexPath.section == 2){
             showPeriodVC()
+        }else if(indexPath.row == 3 && indexPath.section == 2){
+            showRepeatVC()
         }
         
         NSLog("%lu", showInvest)
@@ -218,6 +279,8 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         
         headerView.addSubview(titleLabel)
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: Selector("resignAllTextResponder"))
+        headerView.addGestureRecognizer(tapGesture)
         
         
         return headerView
@@ -318,14 +381,26 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     }
     
     func categoryEdited(editedCategory:Category) {
+        
+        
+        mainColor = UIColor.colorWithHexString(editedCategory.color)
+        
         category = editedCategory
-        categoryLabel.text = category.name
+        categoryLabel.text = editedCategory.name
         categoryLabel.sizeToFit()
         categoryCircle.frame = CGRectMake(width - 33*ratio - categoryLabel.frame.size.width, 20.5*ratio, 8*ratio, 8*ratio)
-        categoryCircle.backgroundColor = UIColor.colorWithHexString(category.color)
+        categoryCircle.backgroundColor = mainColor
         
-        mainColor = UIColor.colorWithHexString(category.color)
-        setNavigationBarColor(UIColor.colorWithHexString(category.color))
+        
+        setNavigationBarColor(mainColor)
+        
+        totalTextField.tintColor = mainColor
+        startRangeTextField.tintColor = mainColor
+        endRangeTextField.tintColor = mainColor
+        dayTextField.tintColor = mainColor
+        
+        unitView.backgroundColor = mainColor
+        
         
     }
     
@@ -341,11 +416,53 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         taskTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         taskTextField.text = aimString
         taskTextField.tintColor = mainColor
-        
+        taskTextField.delegate = self
         currentTextField = taskTextField
         cell.contentView.addSubview(taskTextField)
         
         addLineView(cell)
+    }
+    
+    
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+        
+        currentTextField = textField
+        
+        if currentTextField == unitTextField {
+            unitView.hidden = false
+        }else{
+            unitView.hidden = true
+        }
+        
+        return true
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        
+        if textField == taskTextField {
+            
+            unitView.hidden = false
+            currentTextField = unitTextField
+            
+        }else if textField == unitTextField {
+            
+            if rangeSelectedIndex == 0 {
+                unitView.hidden = true
+                currentTextField = totalTextField
+                
+            }else if rangeSelectedIndex == 1 {
+                unitView.hidden = true
+                currentTextField = startRangeTextField
+            }else if rangeSelectedIndex == 2 {
+                unitView.hidden = true
+                currentTextField = dayTextField
+            }
+            
+        }
+        
+        currentTextField.becomeFirstResponder()
+        
+        return false
     }
     
     func updateAllEvents(textField:UITextField){
@@ -370,10 +487,9 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         unitTextField.textColor = UIColor.colorWithHexString("#969696")
         unitTextField.returnKeyType = UIReturnKeyType.Next
         unitTextField.backgroundColor = UIColor.whiteColor()
-        unitTextField.addTarget(self, action: Selector("unitTextFieldClk:"), forControlEvents: UIControlEvents.AllEvents)
         unitTextField.text = unitString
         unitTextField.addTarget(self, action: Selector("updateUnitAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        currentTextField = unitTextField
+        unitTextField.delegate = self
         
         cell.contentView.addSubview(unitTextField)
     }
@@ -382,15 +498,12 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         unitString = textField.text
     }
     
-    func unitTextFieldClk(textField:UITextField){
-        
-    }
     
     func addRangeSegment(cell:UITableViewCell){
         
         rangeSegment = UISegmentedControl(items: ["전체","범위","하루"])
         rangeSegment.frame = CGRectMake(-1*ratio, 7.5*ratio, 322*ratio, 34*ratio)
-        rangeSegment.selectedSegmentIndex = 0
+        rangeSegment.selectedSegmentIndex = rangeSelectedIndex
         rangeSegment.tintColor = mainColor
         rangeSegment.setTitleTextAttributes([NSFontAttributeName:UIFont(name: "AvenirNext-Regular", size: 14*ratio)!], forState: UIControlState.Normal)
         rangeSegment.addTarget(self, action: Selector("rangeSegmentClk:"), forControlEvents: UIControlEvents.AllEvents)
@@ -416,7 +529,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         
         
         periodDayLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
-        periodDayLabel.text = "30일"
+        periodDayLabel.text = periodDayString
         periodDayLabel.textAlignment = NSTextAlignment.Right
         periodDayLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
         periodDayLabel.textColor = mainColor
@@ -436,7 +549,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         
         
         investLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
-        investLabel.text = "주 8시간"
+        investLabel.text = "주 7시간"
         investLabel.textAlignment = NSTextAlignment.Right
         investLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
         investLabel.textColor = mainColor
@@ -456,13 +569,23 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         self.navigationController?.presentViewController(timerBlurVC, animated: true, completion: { () -> Void in
             
         })
-
-        
     }
     
     func showPeriodVC(){
-        
         performSegueWithIdentifier("ShowPeriodView", sender:self)
+    }
+    
+    func showRepeatVC(){
+        
+        let repeatVC = RepeatViewcontroller()
+        repeatVC.mainColor = mainColor
+        repeatVC.delegate = self
+        repeatVC.count = 1
+        repeatVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+
+        self.navigationController?.presentViewController(repeatVC, animated: true, completion: { () -> Void in
+            
+        })
         
     }
     
@@ -489,6 +612,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     
     func updatePeriodDay(day: String) {
         periodDayLabel.text = day
+        periodDayString = day
     }
     
     func settingTime(date:NSDate){
@@ -544,9 +668,10 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     
     
     func rangeSegmentClk(segment:UISegmentedControl){
-        let selectedIndex = segment.selectedSegmentIndex
         
-        switch selectedIndex {
+        rangeSelectedIndex = segment.selectedSegmentIndex
+        
+        switch rangeSelectedIndex {
             case 0:
                 totalTextField.hidden = false
                 startRangeTextField.hidden = true
@@ -579,8 +704,10 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         totalTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
         totalTextField.textColor = UIColor.colorWithHexString("#969696")
         totalTextField.keyboardType = UIKeyboardType.NumberPad
+        totalTextField.returnKeyType = UIReturnKeyType.Done
         totalTextField.backgroundColor = UIColor.whiteColor()
         totalTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        totalTextField.delegate = self
         
         if aimAmount != 0 {
             totalTextField.text = "\(aimAmount)"
@@ -590,7 +717,15 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     }
     
     func updateAmountAllEvents(textField:UITextField){
-        aimAmount = textField.text.toInt()
+        
+        switch textField {
+        case totalTextField : aimAmount = textField.text.toInt()
+        case startRangeTextField : startRangeAmount = textField.text.toInt()
+        case endRangeTextField : endRangeAmount = textField.text.toInt()
+        case dayTextField : dayAmount = textField.text.toInt()
+        default: textField.text = ""
+        }
+        
     }
     
 
@@ -601,11 +736,20 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         startRangeTextField.placeholder = "시작"
         startRangeTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
         startRangeTextField.textColor = UIColor.colorWithHexString("#969696")
+        startRangeTextField.tintColor = mainColor
         startRangeTextField.hidden = true
         startRangeTextField.keyboardType = UIKeyboardType.NumberPad
         startRangeTextField.backgroundColor = UIColor.whiteColor()
+        startRangeTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        startRangeTextField.delegate = self
+        
+        if startRangeAmount != 0 {
+            startRangeTextField.text = "\(startRangeAmount)"
+        }
+        
         cell.contentView.addSubview(startRangeTextField)
     }
+
     
     func addEndRangeTextField(cell:UITableViewCell){
         endRangeTextField = UITextField(frame: CGRectMake(175*ratio, 9.5*ratio, 130*ratio, 30*ratio))
@@ -613,9 +757,17 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         endRangeTextField.placeholder = "종료"
         endRangeTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
         endRangeTextField.textColor = UIColor.colorWithHexString("#969696")
+        endRangeTextField.tintColor = mainColor
         endRangeTextField.hidden = true
         endRangeTextField.keyboardType = UIKeyboardType.NumberPad
         endRangeTextField.backgroundColor = UIColor.whiteColor()
+        endRangeTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        endRangeTextField.delegate = self
+        
+        if endRangeAmount != 0 {
+            endRangeTextField.text = "\(endRangeAmount)"
+        }
+        
         cell.contentView.addSubview(endRangeTextField)
     }
     
@@ -625,9 +777,17 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         dayTextField.placeholder = "분량을 입력하세요"
         dayTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
         dayTextField.textColor = UIColor.colorWithHexString("#969696")
+        dayTextField.tintColor = mainColor
         dayTextField.hidden = true
         dayTextField.keyboardType = UIKeyboardType.NumberPad
         dayTextField.backgroundColor = UIColor.whiteColor()
+        dayTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        dayTextField.delegate = self
+        
+        if dayAmount != 0 {
+            dayTextField.text = "\(dayAmount)"
+        }
+        
         cell.contentView.addSubview(dayTextField)
     }
     
@@ -646,6 +806,7 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
         investVC.mainColor = mainColor
         investVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         investVC.delegate = self
+        investVC.timeData = investData
         
         self.navigationController?.presentViewController(investVC, animated: true, completion: { () -> Void in
             
@@ -794,13 +955,10 @@ class NewTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavig
     func needToUpdate() {
        
        
-        self.delegate.updateCategory(category)
-        
-        /*
-        if self.delegate.respondsToSelector("updateCategory:"){
-            self.delegate.updateCategory(category4)
+        if self.delegate.respondsToSelector("updateCategory:from:"){
+            self.delegate.updateCategory(category,from:"NewTaskVC")
         }
-        */
+        
     }
     
     func setupTextField(){

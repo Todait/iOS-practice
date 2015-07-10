@@ -11,6 +11,14 @@ import UIKit
 public extension UIColor {
     
     
+    class func todaitBlue()->UIColor! {
+        return colorWithHexString("#77c4f0")
+    }
+    
+    class func todaitOrange()->UIColor! {
+        return colorWithHexString("#FF9381")
+    }
+    
     class func todaitRed()->UIColor! {
         return colorWithHexString("#FD8878")
     }
@@ -25,6 +33,10 @@ public extension UIColor {
     
     class func todaitGray()->UIColor! {
         return colorWithHexString("#C9C9C9")
+    }
+    
+    class func todaitNewGray()->UIColor! {
+        return colorWithHexString("#929292")
     }
     
     class func todaitLightGray()->UIColor! {

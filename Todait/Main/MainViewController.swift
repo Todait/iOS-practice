@@ -27,6 +27,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     var timeTableButton: UIButton!
     var statisticsButton: UIButton!
     var photoButton: UIButton!
+    var profileButton: UIButton!
     
     var colorData:[String] = ["#FFFB887E","#FFF1CB67","#FFAA9DDE","#FF5694CF","#FF5A5A5A","#FFBEFCEF","#FFC6B6A7","#FF25D59B","#FFDA5A68","#FFF5A26F"]
     
@@ -93,78 +94,149 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func updateAllCategory(){
         
-        self.titleLabel.text = "Todait"
+        if let check = self.title {
+            self.titleLabel.text = "Todait"
+
+        }
         
-        timeChart.chartColor = UIColor.todaitGreen()
-        timeChart.updateChart(timeValue)
-        parallelView.backgroundColor = UIColor.todaitGreen()
+        if let check = timeChart {
+            timeChart.chartColor = UIColor.todaitGreen()
+            timeChart.updateChart(timeValue)
+            parallelView.backgroundColor = UIColor.todaitGreen()
+        }
         
-        let backgroundImage = UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 50*ratio, 50*ratio))
-        createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
-        
-        homeButton.backgroundColor = UIColor.todaitGreen()
-        calendarButton.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.5)
-        timeTableButton.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.5)
-        statisticsButton.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.5)
-        
+        if let check = createTaskButton {
+            let backgroundImage = UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 50*ratio, 50*ratio))
+            createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
+        }
+    
         
         isShowAllCategory = true
-        todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(),frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
-        
+       
         loadTaskData()
         loadDayData()
-        mainTableView.reloadData()
-        updateText()
+        
+        if let check = mainTableView {
+            mainTableView.reloadData()
+        }
+        
+        if let check = parallelView {
+            updateText()
+        }
+       
         
     }
     
-    func updateCategory(category:Category){
+    func updateCategory(category:Category,from:String){
         
         self.category = category
         isShowAllCategory = false
-        self.titleLabel.text = category.name
+        
         
         let categoryColor = UIColor.colorWithHexString(category.color)
         
-        timeChart.chartColor = categoryColor
-        timeChart.updateChart(timeValue)
-        parallelView.backgroundColor = categoryColor
         
-        homeButton.backgroundColor = categoryColor
-        calendarButton.backgroundColor = categoryColor.colorWithAlphaComponent(0.5)
-        timeTableButton.backgroundColor = categoryColor.colorWithAlphaComponent(0.5)
-        statisticsButton.backgroundColor = categoryColor.colorWithAlphaComponent(0.5)
+        if let check = timeChart {
+            timeChart.chartColor = categoryColor
+            timeChart.updateChart(timeValue)
+            homeButton.backgroundColor = categoryColor
+        }
         
-        let backgroundImage = UIImage.colorImage(categoryColor, frame: CGRectMake(0, 0, 50*ratio, 50*ratio))
-        createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
+        if let check = parallelView {
+            parallelView.backgroundColor = categoryColor
+        }
+        
+        
+        if let check = createTaskButton {
+            let backgroundImage = UIImage.colorImage(categoryColor, frame: CGRectMake(0, 0, 50*ratio, 50*ratio))
+            createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
+        }
+        
+        
+        if let check = todaitNavBar {
+             todaitNavBar.setBackgroundImage(UIImage.colorImage(categoryColor,frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
+        }
 
-        
-        todaitNavBar.setBackgroundImage(UIImage.colorImage(categoryColor,frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
-        
-        
         loadTaskData()
         loadDayData()
-        mainTableView.reloadData()
         
-        updateText()
+        if let check = mainTableView {
+            mainTableView.reloadData()
+        }
+        
+        if let check = parallelView {
+            updateText()
+        }
+        
+        if from == "NewTaskVC" {
+            if let check = revealViewController(){
+                
+                
+                let rearVC =  revealViewController().rearViewController as! CategoryRearViewController
+                
+                if rearVC.respondsToSelector("needToUpdate:"){
+                    rearVC.needToUpdate(category)
+                }
+            }
+            
+            showCompleteAddPopup()
+        }
+    }
+    
+    func showCompleteAddPopup(){
         
         
-        let rearVC =  revealViewController().rearViewController as! CategoryRearViewController
+        let popCircle = UIView(frame: CGRectMake(0, 0, 80*ratio, 80*ratio))
+        popCircle.backgroundColor = UIColor.colorWithHexString(category.color)
+        popCircle.center = view.center
+        popCircle.clipsToBounds = true
+        popCircle.layer.cornerRadius = 40*ratio
         
-        if rearVC.respondsToSelector("needToUpdate:"){
-            rearVC.needToUpdate(category)
-        }        
+        view.addSubview(popCircle)
+        
+        
+        let popUp = UILabel(frame: CGRectMake(0, 0, 80*ratio,80*ratio))
+        popUp.backgroundColor = UIColor.clearColor()
+        popUp.textColor = UIColor.whiteColor()
+        popUp.textAlignment = NSTextAlignment.Center
+        popUp.text = "추가되었다"
+        popUp.font = UIFont(name: "AvenirNext-Regular", size: 4*ratio)
+        popUp.center = view.center
+        
+        view.addSubview(popUp)
+        
+        
+        UIView.animateWithDuration(0.5, animations: { () -> Void in
+            
+            popCircle.transform = CGAffineTransformMakeScale(1.2, 1.2)
+            popUp.font = UIFont(name: "AvenirNext-Regular", size: 16*self.ratio)
+            
+            }) { (Bool) -> Void in
+                
+                
+                UIView.animateWithDuration(1.5, animations: { () -> Void in
+                    
+                    }, completion: { (Bool) -> Void in
+                        
+                        popCircle.removeFromSuperview()
+                        popUp.removeFromSuperview()
+                })
+        }
+        
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.clearColor()
         
+        
+        
+        
         addParallelView()
         addMainTableView()
         
         
-        timerStart()
+        
         calculateRemainingTime()
         setupCoreDataInit()
         
@@ -299,7 +371,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func addMainTableView(){
         
-        mainTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio,width,height - navigationHeight*ratio), style: UITableViewStyle.Grouped)
+        mainTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio,width,height - navigationHeight*ratio - 47*ratio), style: UITableViewStyle.Grouped)
         mainTableView.registerClass(TaskTableViewCell.self, forCellReuseIdentifier: "cell")
         mainTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
         mainTableView.delegate = self
@@ -312,15 +384,15 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func addTaskButton(){
         
         
-        let backgroundImage = UIImage.colorImage(UIColor.colorWithHexString("#00D2B1"), frame: CGRectMake(0, 0, 50*ratio, 50*ratio))
+        let backgroundImage = UIImage.colorImage(UIColor.colorWithHexString("#00D2B1"), frame: CGRectMake(0, 0, 30*ratio, 30*ratio))
         
-        createTaskButton = UIButton(frame: CGRectMake(135*ratio,height-70*ratio, 50*ratio, 50*ratio))
+        createTaskButton = UIButton(frame: CGRectMake(145*ratio,height-39.5*ratio, 30*ratio, 30*ratio))
         createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
         createTaskButton.setTitle("+", forState: UIControlState.Normal)
         createTaskButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        createTaskButton.titleLabel?.font = UIFont(name: "AvenirNext-UltraLight", size: 30*ratio)
+        createTaskButton.titleLabel?.font = UIFont(name: "AvenirNext-Medium", size: 30*ratio)
         createTaskButton.clipsToBounds = true
-        createTaskButton.layer.cornerRadius = 25*ratio
+        createTaskButton.layer.cornerRadius = 15*ratio
         createTaskButton.layer.borderColor = UIColor.whiteColor().CGColor
         createTaskButton.layer.borderWidth = 1*ratio
         createTaskButton.addTarget(self, action: Selector("showNewTaskVC"), forControlEvents: UIControlEvents.TouchUpInside)
@@ -329,36 +401,45 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     }
     
     
+    func addTabbarView(){
+        
+        let tabbarView = UIView(frame: CGRectMake(0, height-47*ratio, width, 47*ratio))
+        tabbarView.backgroundColor = UIColor.whiteColor()
+        view.addSubview(tabbarView)
+        
+    }
+    
     func addHomeButton(){
         
-        homeButton = UIButton(frame: CGRectMake(0*ratio, height-45*ratio,80*ratio, 45*ratio))
+        homeButton = UIButton(frame: CGRectMake(0*ratio, height-47*ratio,(width/5), 47*ratio))
         homeButton.backgroundColor = UIColor.todaitGreen()
         homeButton.addTarget(self, action: Selector("showCalendarVC"), forControlEvents: UIControlEvents.TouchDown)
-        homeButton.setTitle("Home", forState: UIControlState.Normal)
+        homeButton.setTitle("메인", forState: UIControlState.Normal)
         homeButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         homeButton.titleLabel?.font = UIFont(name:"AvenirNext-Regular",size:12*ratio)
         view.addSubview(homeButton)
         
     }
     
-    
+    /*
     func addCalendarButton(){
-        calendarButton = UIButton(frame: CGRectMake(80*ratio, height-45*ratio,80*ratio, 45*ratio))
-        calendarButton.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.5)
+        calendarButton = UIButton(frame: CGRectMake((width/5), height-47*ratio,(width/5), 47*ratio))
+        calendarButton.backgroundColor = UIColor.whiteColor()
         calendarButton.addTarget(self, action: Selector("showCalendarVC"), forControlEvents: UIControlEvents.TouchDown)
         calendarButton.setTitle("Calendar", forState: UIControlState.Normal)
-        calendarButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        calendarButton.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
         calendarButton.titleLabel?.font = UIFont(name:"AvenirNext-Regular",size:12*ratio)
         view.addSubview(calendarButton)
         
     }
-    
+    */
+
     func addTimeTableButton(){
-        timeTableButton = UIButton(frame: CGRectMake(160*ratio, height-45*ratio, 80*ratio, 45*ratio))
-        timeTableButton.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.5)
+        timeTableButton = UIButton(frame: CGRectMake((width/5), height-47*ratio, (width/5), 47*ratio))
+        timeTableButton.backgroundColor = UIColor.whiteColor()
         timeTableButton.addTarget(self, action: Selector("showTimeTableVC"), forControlEvents: UIControlEvents.TouchDown)
-        timeTableButton.setTitle("TimeTable", forState: UIControlState.Normal)
-        timeTableButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        timeTableButton.setTitle("시간표", forState: UIControlState.Normal)
+        timeTableButton.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
         timeTableButton.titleLabel?.font = UIFont(name:"AvenirNext-Regular",size:12*ratio)
         view.addSubview(timeTableButton)
         
@@ -366,11 +447,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func addStatisticsButton(){
         
-        statisticsButton = UIButton(frame: CGRectMake(240*ratio, height-45*ratio, 80*ratio, 45*ratio))
-        statisticsButton.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.5)
+        statisticsButton = UIButton(frame: CGRectMake((width/5)*3, height-47*ratio, (width/5), 47*ratio))
+        statisticsButton.backgroundColor = UIColor.whiteColor()
         statisticsButton.addTarget(self, action: Selector("showStatisticsVC"), forControlEvents: UIControlEvents.TouchDown)
-        statisticsButton.setTitle("Statistics", forState: UIControlState.Normal)
-        statisticsButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        statisticsButton.setTitle("통계", forState: UIControlState.Normal)
+        statisticsButton.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
         statisticsButton.titleLabel?.font = UIFont(name:"AvenirNext-Regular",size:12*ratio)
         
         view.addSubview(statisticsButton)
@@ -386,9 +467,39 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
     }
     
+    func addProfileButton(){
+        
+        profileButton = UIButton(frame: CGRectMake((width/5)*4, height-47*ratio, (width/5), 47*ratio))
+        profileButton.backgroundColor = UIColor.whiteColor()
+        profileButton.addTarget(self, action: Selector("showProfileVC"), forControlEvents: UIControlEvents.TouchDown)
+        profileButton.setTitle("프로필", forState: UIControlState.Normal)
+        profileButton.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
+        profileButton.titleLabel?.font = UIFont(name:"AvenirNext-Regular",size:12*ratio)
+        
+        view.addSubview(profileButton)
+        
+    }
+    
+    
+    func showProfileVC(){
+        
+        self.navigationController?.pushViewController(ProfileViewController(), animated: true)
+        
+    }
+    
+    
     func showPhotoVC(){
         
-        self.navigationController?.pushViewController(MainPhotoViewController(), animated: true)
+        let mainPhotoVC = MainPhotoViewController()
+        
+        if isShowAllCategory == true {
+            mainPhotoVC.mainColor = UIColor.todaitGreen()
+        }else {
+            mainPhotoVC.mainColor = UIColor.colorWithHexString(category.color)
+        }
+        
+        
+        self.navigationController?.pushViewController(mainPhotoVC, animated: true)
         
     }
     
@@ -582,13 +693,17 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         super.viewWillAppear(animated)
         addSettingBtn()
         
+        
+        addTabbarView()
         addHomeButton()
-        addCalendarButton()
+        //addCalendarButton()
         addTimeTableButton()
         addStatisticsButton()
         addShowCategoryButton()
         addTaskButton()
         addPhotoButton()
+        addProfileButton()
+        timerStart()
         
         titleLabel.text = "Todait"
         //mainTableView.contentOffset.y = 0
@@ -600,8 +715,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         if isShowAllCategory == true {
             updateAllCategory()
         }else{
-            updateCategory(category)
+            updateCategory(category,from:"MainVC")
+            self.titleLabel.text = category.name
         }
+        
         
         
         needToUpdate()
@@ -613,6 +730,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        stopTimer()
     }
     
     func addSettingBtn(){
@@ -791,8 +910,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         calculateRemainingTime()
     }
     
+    
+    
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        
         
         
         performSegueWithIdentifier("ShowDetailView", sender:indexPath)

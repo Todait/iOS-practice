@@ -11,21 +11,93 @@ import Photos
 
 class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,TodaitNavigationDelegate{
    
+    
+    var currentImageView:UIImageView!
+    var blurImageView:UIVisualEffectView!
+
+    var mainColor:UIColor!
+    
+    var infoLabel:UILabel!
     var photoCollectionView:UICollectionView!
     var photoCollectionViewLayout:UICollectionViewFlowLayout!
     var selectIndexPath:NSIndexPath!
     var photos:[PHAsset] = []
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = mainColor
         
         setupSelectIndexPath()
+        
+        
+        addCurrentImageView()
+        getFilterView()
+        
+        addInfoLabel()
         addPhotoCollectionView()
         getPhotos()
         
         
     }
+    
+    
+    func addCurrentImageView(){
+        
+        currentImageView = UIImageView(frame: CGRectMake(0, 64, width, 250*ratio - 64))
+        currentImageView.contentMode = UIViewContentMode.ScaleAspectFill
+        currentImageView.clipsToBounds = true
+        
+        getMainImage()
+
+        view.addSubview(currentImageView)
+        
+    }
+    
+    func getMainImage(){
+        
+        
+        let localIdentifier:String! = defaults.objectForKey("mainPhoto") as! String
+        var image:UIImage!
+        
+        if let check = localIdentifier {
+            getMainImageFromPhotos(check as String)
+        }else{
+            
+        }
+    }
+    
+    
+    
+    func getMainImageFromPhotos(localIdentifier:String){
+        
+        let assetResult = PHAsset.fetchAssetsWithLocalIdentifiers([localIdentifier], options: nil)
+        let imageManager = PHCachingImageManager()
+        
+        
+        if assetResult.count != 0 {
+            assetResult.enumerateObjectsUsingBlock { (object, Int, Bool) -> Void in
+                
+                
+                let asset:PHAsset = object as! PHAsset
+                
+                
+                imageManager.requestImageForAsset(asset, targetSize: CGSizeMake(self.width,250*self.ratio), contentMode: PHImageContentMode.AspectFill, options: nil) {(image, info) -> Void in
+                    self.currentImageView.image = image
+                }
+            }
+        }
+    }
+    
+    func getFilterView(){
+        
+        let filterView = UIImageView(frame: CGRectMake(0, 0, width, 250*ratio - 64))
+        filterView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        currentImageView.addSubview(filterView)
+    }
+    
     
     func setupSelectIndexPath(){
         
@@ -76,10 +148,20 @@ class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICo
     }
     
     
+    func addInfoLabel(){
+    
+        infoLabel = UILabel(frame: CGRectMake(15*ratio, 250*ratio, 200*ratio, 22*ratio))
+        infoLabel.textAlignment = NSTextAlignment.Left
+        infoLabel.textColor = UIColor.whiteColor()
+        infoLabel.text = "Photo"
+        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+        view.addSubview(infoLabel)
+    }
+    
     func addPhotoCollectionView(){
         
         photoCollectionViewLayout = UICollectionViewFlowLayout()
-        photoCollectionView = UICollectionView(frame: CGRectMake(0,64,width,height-64), collectionViewLayout:photoCollectionViewLayout)
+        photoCollectionView = UICollectionView(frame: CGRectMake(0,272*ratio,width,height-272*ratio), collectionViewLayout:photoCollectionViewLayout)
         photoCollectionView.registerClass(MainPhotoCell.self, forCellWithReuseIdentifier: "photoCell")
         photoCollectionView.backgroundColor = UIColor.clearColor()
         photoCollectionView.delegate = self
@@ -94,14 +176,13 @@ class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICo
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return photos.count
+        
+       return photos.count
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("photoCell", forIndexPath: indexPath) as! MainPhotoCell
-        
-        
         
         let asset = photos[indexPath.row] as PHAsset
         cell.updateImage(asset)
@@ -124,7 +205,7 @@ class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICo
         let asset = photos[indexPath.row] as PHAsset
         
         defaults.setValue(asset.localIdentifier, forKey:"mainPhoto")
-        
+        getMainImage()
         
         selectIndexPath = indexPath
         collectionView.reloadData()
@@ -133,6 +214,8 @@ class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICo
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
+        
+        
         
         return CGSizeMake(106*ratio, 106*ratio)
         
@@ -155,7 +238,7 @@ class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICo
         self.titleLabel.text = "Photo"
         self.screenName = "Photo Activity"
         
-        //setNavigationBarColor(mainColor)
+        setNavigationBarColor(mainColor)
     }
     
     

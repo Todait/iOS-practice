@@ -83,6 +83,7 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         }
         
         categoryTableView.reloadData()
+        showCompleteAddPopup()
     }
     
     
@@ -161,9 +162,11 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
         selectedIndex = indexPath.row
+        categoryEdited()
+        
         tableView.reloadData()
         
-        categoryEdited()
+        
         
         
         return false
@@ -261,5 +264,46 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
     }
     
     
+    func showCompleteAddPopup(){
+        
+        
+        let popCircle = UIView(frame: CGRectMake(0, 0, 80*ratio, 80*ratio))
+        popCircle.backgroundColor = UIColor.colorWithHexString(category.color)
+        popCircle.center = view.center
+        popCircle.clipsToBounds = true
+        popCircle.layer.cornerRadius = 40*ratio
+        
+        view.addSubview(popCircle)
+        
+        
+        let popUp = UILabel(frame: CGRectMake(0, 0, 80*ratio,80*ratio))
+        popUp.backgroundColor = UIColor.clearColor()
+        popUp.textColor = UIColor.whiteColor()
+        popUp.textAlignment = NSTextAlignment.Center
+        popUp.text = "추가되었다"
+        popUp.font = UIFont(name: "AvenirNext-Regular", size: 4*ratio)
+        popUp.center = view.center
+        
+        view.addSubview(popUp)
+        
+        
+        UIView.animateWithDuration(0.3, animations: { () -> Void in
+            
+            popCircle.transform = CGAffineTransformMakeScale(1.2, 1.2)
+            popUp.font = UIFont(name: "AvenirNext-Regular", size: 16*self.ratio)
+        
+            }) { (Bool) -> Void in
+            
+                
+            UIView.animateWithDuration(1.1, animations: { () -> Void in
+                
+            }, completion: { (Bool) -> Void in
+                
+                popCircle.removeFromSuperview()
+                popUp.removeFromSuperview()
+            })
+        }
+        
+    }
     
 }

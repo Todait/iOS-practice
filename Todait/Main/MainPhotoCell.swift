@@ -18,6 +18,7 @@ class MainPhotoCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        backgroundColor = UIColor.whiteColor()
         setupRatio()
         addPhotoImageView()
         addCheckImageView()

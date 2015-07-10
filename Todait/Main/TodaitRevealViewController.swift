@@ -10,23 +10,25 @@ import UIKit
 
 class TodaitRevealViewController: SWRevealViewController {
 
+    var ratio:CGFloat! = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        setupRatio()
         
-        
-        rearViewRevealWidth = 100
-        rearViewRevealOverdraw = 30
+        rearViewRevealWidth = 77*ratio
+        rearViewRevealOverdraw = 30*ratio
         bounceBackOnOverdraw = false
         bounceBackOnLeftOverdraw = true
-        //bounceBackOnLeftOverdraw = false
-        //stableDragOnLeftOverdraw = true
         
-        //setFrontViewPosition(FrontViewPosition.Right, animated: false)
         
-        // Do any additional setup after loading the view.
     }
 
+    func setupRatio(){
+        let screenRect = UIScreen.mainScreen().bounds
+        let screenWidth = screenRect.size.width
+        ratio = screenWidth/320
+    }
     
     
     
