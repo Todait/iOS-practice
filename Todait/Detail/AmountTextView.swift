@@ -20,7 +20,7 @@ class AmountTextView: UITextView {
     var unitColor:UIColor!
     
     var ratio:CGFloat! = 0
-    
+    var baseLine:CGFloat! = 3.5
     
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
@@ -28,12 +28,16 @@ class AmountTextView: UITextView {
         
         setupRatio()
         setupStyle()
+        backgroundColor = UIColor.clearColor()
+        userInteractionEnabled = false
     }
 
     func setupRatio(){
         let screenRect = UIScreen.mainScreen().bounds
         let screenWidth = screenRect.size.width
         ratio = screenWidth/320
+        
+
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -49,7 +53,7 @@ class AmountTextView: UITextView {
     
     func setupParagraphStyle(){
         paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = NSTextAlignment.Center
+        paragraphStyle.alignment = NSTextAlignment.Left
     }
     
     func setupFont(){
@@ -97,7 +101,7 @@ class AmountTextView: UITextView {
     
     func getUnitAttributedString(unit:String)->NSMutableAttributedString{
         
-        let attributes = [NSForegroundColorAttributeName:unitColor,NSFontAttributeName:unitFont,NSParagraphStyleAttributeName:paragraphStyle,NSBaselineOffsetAttributeName:3.5*ratio]
+        let attributes = [NSForegroundColorAttributeName:unitColor,NSFontAttributeName:unitFont,NSParagraphStyleAttributeName:paragraphStyle,NSBaselineOffsetAttributeName:baseLine]
         
         return NSMutableAttributedString(string:unit, attributes:attributes)
     }

@@ -55,14 +55,25 @@ class BasicViewController: GAITrackedViewController,UIGestureRecognizerDelegate 
     }
     
     func styleNavBar(){
+        
+        if let check = todaitNavBar{
+            return
+        }
+        
         self.navigationController?.setNavigationBarHidden(true, animated: false)
-        todaitNavBar = TodaitNavigationBar(frame: CGRectMake(0, 0, width, navigationHeight*ratio))
+        todaitNavBar = TodaitNavigationBar(frame: CGRectMake(0, 0, width, navigationHeight))
         view.addSubview(todaitNavBar)
     }
     
     func addTitleLabel(){
-        titleLabel = UILabel(frame: CGRectMake(30*ratio, 30.5, 260*ratio, 24*ratio))
-        titleLabel.font = UIFont(name: "AvenirNext-Medium", size: 20*ratio)
+        
+        if let check = titleLabel{
+            return
+        }
+        
+        
+        titleLabel = UILabel(frame: CGRectMake(30*ratio, 30.5, 260*ratio, 24))
+        titleLabel.font = UIFont(name: "AvenirNext-Medium", size: 20)
         titleLabel.textColor = UIColor.whiteColor()
         titleLabel.textAlignment = NSTextAlignment.Center
         view.addSubview(titleLabel)

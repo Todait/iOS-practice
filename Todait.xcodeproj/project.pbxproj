@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C0B89E01B3C049C0069ED7A /* AmountTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0B89DF1B3C049C0069ED7A /* AmountTextView.swift */; };
+		4C0B89E31B3C0D990069ED7A /* GraphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0B89E21B3C0D990069ED7A /* GraphViewController.swift */; };
+		4C0B89E51B3C14FE0069ED7A /* ReverseCircleChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0B89E41B3C14FE0069ED7A /* ReverseCircleChart.swift */; };
+		4C0B89E71B3C29030069ED7A /* WeekMaxChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0B89E61B3C29030069ED7A /* WeekMaxChart.swift */; };
+		4C0B89E91B3C340C0069ED7A /* TrendChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0B89E81B3C340C0069ED7A /* TrendChartView.swift */; };
 		4C2329641B342005006CA462 /* ic_ab_back_holo_dark_am.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C2328C71B342005006CA462 /* ic_ab_back_holo_dark_am.png */; };
 		4C2329651B342005006CA462 /* ic_actionbar_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C2328C81B342005006CA462 /* ic_actionbar_icon.png */; };
 		4C2329661B342005006CA462 /* ic_actionbar_menu.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C2328C91B342005006CA462 /* ic_actionbar_menu.png */; };
@@ -167,8 +172,39 @@
 		4C27DD4F1B33ABA500D4911F /* StatisticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C27DD4E1B33ABA500D4911F /* StatisticsTests.swift */; };
 		4C27DD511B33F4FB00D4911F /* TaskStatisticsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C27DD501B33F4FB00D4911F /* TaskStatisticsViewController.swift */; };
 		4C27DD531B340B4C00D4911F /* TaskBarDashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C27DD521B340B4C00D4911F /* TaskBarDashViewController.swift */; };
+		4C30D8BD1B40176000598ADE /* MonthCalendarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C30D8BC1B40176000598ADE /* MonthCalendarTests.swift */; };
+		4C30D8BF1B4017C200598ADE /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C30D8BE1B4017C200598ADE /* Date.swift */; };
+		4C30D8C11B4019CE00598ADE /* Utill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C30D8C01B4019CE00598ADE /* Utill.swift */; };
+		4C30D8C31B401BF900598ADE /* MonthCalendarViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C30D8C21B401BF900598ADE /* MonthCalendarViewController2.swift */; };
+		4C30D8C51B401C3C00598ADE /* MonthCalendarCell2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C30D8C41B401C3C00598ADE /* MonthCalendarCell2.swift */; };
+		4C30D8C71B40375900598ADE /* DateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C30D8C61B40375900598ADE /* DateButton.swift */; };
+		4C4B710E1B3D4DB100BF1F02 /* AmountInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4B710D1B3D4DB100BF1F02 /* AmountInputViewController.swift */; };
+		4C4B71101B3D70DA00BF1F02 /* MonthCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4B710F1B3D70DA00BF1F02 /* MonthCalendarViewController.swift */; };
+		4C4B71121B3D70EE00BF1F02 /* MonthCalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4B71111B3D70EE00BF1F02 /* MonthCalendarCell.swift */; };
+		4C4B71141B3D7AC700BF1F02 /* HorizontalCollectionViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4B71131B3D7AC700BF1F02 /* HorizontalCollectionViewLayout.swift */; };
+		4C5042281B4A757A0050A501 /* MainTabbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5042271B4A757A0050A501 /* MainTabbarViewController.swift */; };
+		4C50422B1B4A77360050A501 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C50422A1B4A77360050A501 /* ProfileViewController.swift */; };
+		4C50422D1B4A79620050A501 /* MainViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C50422C1B4A79620050A501 /* MainViewControllerOld.swift */; };
+		4C5042331B4A7B740050A501 /* 01_main_basic_gray@3x_03.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C50422F1B4A7B740050A501 /* 01_main_basic_gray@3x_03.png */; };
+		4C5042341B4A7B740050A501 /* 01_main_basic_gray@3x_05.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C5042301B4A7B740050A501 /* 01_main_basic_gray@3x_05.png */; };
+		4C5042351B4A7B740050A501 /* 01_main_basic_gray@3x_07.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C5042311B4A7B740050A501 /* 01_main_basic_gray@3x_07.png */; };
+		4C5042361B4A7B740050A501 /* 01_main_basic_gray@3x_09.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C5042321B4A7B740050A501 /* 01_main_basic_gray@3x_09.png */; };
+		4C5042381B4A7E0E0050A501 /* 01_main_basic_gray@3x_12.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C5042371B4A7E0E0050A501 /* 01_main_basic_gray@3x_12.png */; };
+		4C50423A1B4A84650050A501 /* MainTabbarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C5042391B4A84650050A501 /* MainTabbarButton.swift */; };
+		4C5F69E81B4388A500F66A75 /* detail_basic_30@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C5F69E71B4388A500F66A75 /* detail_basic_30@3x.png */; };
+		4C5F69EB1B43CC0D00F66A75 /* detail_basic_03@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C5F69EA1B43CC0D00F66A75 /* detail_basic_03@3x.png */; };
+		4C5F69ED1B43CC5900F66A75 /* detail_basic_27@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C5F69EC1B43CC5900F66A75 /* detail_basic_27@3x.png */; };
+		4C5F69F11B43CDC300F66A75 /* detail_diary_input_star@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C5F69F01B43CDC300F66A75 /* detail_diary_input_star@3x.png */; };
 		4C79032E1B383F1900B48656 /* MainPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C79032D1B383F1900B48656 /* MainPhotoViewController.swift */; };
 		4C7903301B3842F800B48656 /* MainPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C79032F1B3842F800B48656 /* MainPhotoCell.swift */; };
+		4C7903361B395CCB00B48656 /* CategorySortViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7903351B395CCB00B48656 /* CategorySortViewController.swift */; };
+		4C79033D1B3A4F7600B48656 /* UnitInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C79033C1B3A4F7600B48656 /* UnitInputView.swift */; };
+		4C79033F1B3A5EC700B48656 /* RepeatViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C79033E1B3A5EC700B48656 /* RepeatViewcontroller.swift */; };
+		4C7903411B3A8A6000B48656 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7903401B3A8A6000B48656 /* DetailViewController.swift */; };
+		4C7903431B3A8D5400B48656 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7903421B3A8D5400B48656 /* DetailView.swift */; };
+		4C7903451B3AA0AD00B48656 /* graph_bg.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C7903441B3AA0AD00B48656 /* graph_bg.png */; };
+		4C79037C1B3AB16500B48656 /* WeekCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C79037B1B3AB16500B48656 /* WeekCalendarViewController.swift */; };
+		4C79037E1B3ABA7B00B48656 /* WeekCalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C79037D1B3ABA7B00B48656 /* WeekCalendarCell.swift */; };
 		4C7AF8EC1B1EE9BF005A0185 /* CalendarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7AF8EB1B1EE9BF005A0185 /* CalendarTableViewCell.swift */; };
 		4C7AF8EE1B1EE9DB005A0185 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7AF8ED1B1EE9DB005A0185 /* CalendarViewController.swift */; };
 		4C7AF8F01B1EEF8A005A0185 /* Add.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C7AF8EF1B1EEF8A005A0185 /* Add.png */; };
@@ -186,7 +222,7 @@
 		4C7CBFCE1B218373000E271D /* TimeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7CBFCD1B218373000E271D /* TimeTableViewController.swift */; };
 		4C7CBFD01B219D2C000E271D /* TimerBlurViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7CBFCF1B219D2C000E271D /* TimerBlurViewController.swift */; };
 		4C7CC0511B254101000E271D /* PaddingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7CC0501B254101000E271D /* PaddingTextField.swift */; };
-		4C7CC0531B25473A000E271D /* PeriodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7CC0521B25473A000E271D /* PeriodViewController.swift */; };
+		4C7CC0531B25473A000E271D /* PeriodViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7CC0521B25473A000E271D /* PeriodViewControllerOld.swift */; };
 		4C7CC0561B25750D000E271D /* InvestTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7CC0541B25750D000E271D /* InvestTableViewCell.swift */; };
 		4C7CC0731B269A44000E271D /* TaskLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7CC0721B269A44000E271D /* TaskLogic.swift */; };
 		4C7CC0751B26A095000E271D /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7CC0741B26A095000E271D /* Category.swift */; };
@@ -210,7 +246,30 @@
 		4C7CC0A61B282866000E271D /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7CC0A51B282866000E271D /* String.swift */; };
 		4C7CC0A91B28915B000E271D /* WeekLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7CC0A81B28915B000E271D /* WeekLabel.swift */; };
 		4C7CC0BB1B294685000E271D /* BarDashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7CC0BA1B294685000E271D /* BarDashViewController.swift */; };
-		4C969A321B1D618B00712AB0 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C969A311B1D618B00712AB0 /* DetailViewController.swift */; };
+		4C9085D61B4CD25200BC080B /* stopwatch_bottom_02@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D21B4CD25200BC080B /* stopwatch_bottom_02@3x.png */; };
+		4C9085D71B4CD25200BC080B /* stopwatch_bottom_03@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D31B4CD25200BC080B /* stopwatch_bottom_03@3x.png */; };
+		4C9085D81B4CD25200BC080B /* stopwatch_bottom_04@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D41B4CD25200BC080B /* stopwatch_bottom_04@3x.png */; };
+		4C9085D91B4CD25200BC080B /* stopwatch_bottom_05@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D51B4CD25200BC080B /* stopwatch_bottom_05@3x.png */; };
+		4C9085DB1B4CD87B00BC080B /* ios in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085DA1B4CD87B00BC080B /* ios */; };
+		4C9085E01B4CDABD00BC080B /* detail_basic_06@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085DC1B4CDABD00BC080B /* detail_basic_06@3x.png */; };
+		4C9085E11B4CDABD00BC080B /* detail_basic_11@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085DD1B4CDABD00BC080B /* detail_basic_11@3x.png */; };
+		4C9085E21B4CDABD00BC080B /* detail_basic_14@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085DE1B4CDABD00BC080B /* detail_basic_14@3x.png */; };
+		4C9085E31B4CDABD00BC080B /* detail_basic_19@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085DF1B4CDABD00BC080B /* detail_basic_19@3x.png */; };
+		4C9085E51B4CE12800BC080B /* NewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9085E41B4CE12800BC080B /* NewTaskViewController.swift */; };
+		4C9085E91B4CF87800BC080B /* category_wt@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085E71B4CF87800BC080B /* category_wt@3x.png */; };
+		4C9085EA1B4CF87800BC080B /* category@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085E81B4CF87800BC080B /* category@3x.png */; };
+		4C9085EC1B4CFA2700BC080B /* CategorySettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9085EB1B4CFA2700BC080B /* CategorySettingViewController.swift */; };
+		4C9085EE1B4CFF8A00BC080B /* CategorySettingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9085ED1B4CFF8A00BC080B /* CategorySettingTableViewCell.swift */; };
+		4C9085F71B4D188700BC080B /* icon_alarm_wt@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085EF1B4D188700BC080B /* icon_alarm_wt@3x.png */; };
+		4C9085F81B4D188700BC080B /* icon_alarm@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085F01B4D188700BC080B /* icon_alarm@3x.png */; };
+		4C9085F91B4D188700BC080B /* icon_reread_wt@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085F11B4D188700BC080B /* icon_reread_wt@3x.png */; };
+		4C9085FA1B4D188700BC080B /* icon_reread@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085F21B4D188700BC080B /* icon_reread@3x.png */; };
+		4C9085FC1B4D188700BC080B /* icon_review@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085F41B4D188700BC080B /* icon_review@3x.png */; };
+		4C9085FD1B4D188700BC080B /* icon_week_wt@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085F51B4D188700BC080B /* icon_week_wt@3x.png */; };
+		4C9085FE1B4D188700BC080B /* icon_week@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085F61B4D188700BC080B /* icon_week@3x.png */; };
+		4C9086001B4D292400BC080B /* icon_review_wt@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085FF1B4D292400BC080B /* icon_review_wt@3x.png */; };
+		4C9086021B4D30AA00BC080B /* PeriodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C9086011B4D30AA00BC080B /* PeriodViewController.swift */; };
+		4C969A321B1D618B00712AB0 /* DetailViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C969A311B1D618B00712AB0 /* DetailViewControllerOld.swift */; };
 		4C969A3B1B1D65EC00712AB0 /* track.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4C969A3A1B1D65EC00712AB0 /* track.jpg */; };
 		4C969A611B1EBFDF00712AB0 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C969A601B1EBFDF00712AB0 /* CategoryViewController.swift */; };
 		4C969A631B1ECC6C00712AB0 /* done@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C969A621B1ECC6C00712AB0 /* done@3x.png */; };
@@ -225,7 +284,6 @@
 		4CB3537E1B1C030F00E36245 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4CB3537D1B1C030F00E36245 /* Images.xcassets */; };
 		4CB353811B1C030F00E36245 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CB3537F1B1C030F00E36245 /* LaunchScreen.xib */; };
 		4CB3538D1B1C030F00E36245 /* TodaitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB3538C1B1C030F00E36245 /* TodaitTests.swift */; };
-		4CB353971B1C056D00E36245 /* ios in Resources */ = {isa = PBXBuildFile; fileRef = 4CB353961B1C056D00E36245 /* ios */; };
 		4CB353991B1C079200E36245 /* BasicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB353981B1C079200E36245 /* BasicViewController.swift */; };
 		4CB3539D1B1C0ADB00E36245 /* TodaitNavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB3539C1B1C0ADB00E36245 /* TodaitNavigationBar.swift */; };
 		4CB353A11B1C2A0D00E36245 /* TaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB353A01B1C2A0D00E36245 /* TaskTableViewCell.swift */; };
@@ -235,7 +293,24 @@
 		4CB353AB1B1C48C100E36245 /* back@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CB353AA1B1C48C100E36245 /* back@3x.png */; };
 		4CB353AD1B1C500F00E36245 /* ParallelHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB353AC1B1C500F00E36245 /* ParallelHeaderView.swift */; };
 		4CB353AF1B1C544000E36245 /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CB353AE1B1C544000E36245 /* test.png */; };
-		4CB353B11B1C562100E36245 /* NewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB353B01B1C562100E36245 /* NewTaskViewController.swift */; };
+		4CB353B11B1C562100E36245 /* NewTaskViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CB353B01B1C562100E36245 /* NewTaskViewControllerOld.swift */; };
+		4CC44BA21B4100DA002F155B /* WeekCalendarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC44BA11B4100DA002F155B /* WeekCalendarTests.swift */; };
+		4CC44BAF1B41528F002F155B /* track.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 4CC44BAE1B41528F002F155B /* track.jpg */; };
+		4CC44BB11B41529C002F155B /* wwdc.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC44BB01B41529C002F155B /* wwdc.png */; };
+		4CC44BB71B4176DE002F155B /* stopwatch_stop_03@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC44BB21B4176DE002F155B /* stopwatch_stop_03@3x.png */; };
+		4CC44BB81B4176DE002F155B /* stopwatch_stop_07@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC44BB31B4176DE002F155B /* stopwatch_stop_07@3x.png */; };
+		4CC44BB91B4176DE002F155B /* stopwatch_stop_09@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC44BB41B4176DE002F155B /* stopwatch_stop_09@3x.png */; };
+		4CC44BBA1B4176DE002F155B /* stopwatch_stop_12@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC44BB51B4176DE002F155B /* stopwatch_stop_12@3x.png */; };
+		4CC44BBB1B4176DE002F155B /* stopwatch_stop_15@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC44BB61B4176DE002F155B /* stopwatch_stop_15@3x.png */; };
+		4CC44BBD1B4178AF002F155B /* ResetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC44BBC1B4178AF002F155B /* ResetViewController.swift */; };
+		4CC44BC11B41820B002F155B /* AmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC44BC01B41820B002F155B /* AmountViewController.swift */; };
+		4CC44BC31B4182EA002F155B /* TimeLogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC44BC21B4182EA002F155B /* TimeLogViewController.swift */; };
+		4CC44BC51B4257D3002F155B /* DetailWeekCalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC44BC41B4257D3002F155B /* DetailWeekCalendarViewController.swift */; };
+		4CC44BC71B425810002F155B /* DetailWeekCalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC44BC61B425810002F155B /* DetailWeekCalendarCell.swift */; };
+		4CC44BCA1B42ADBB002F155B /* 02_stopwatch_play@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC44BC81B42ADBB002F155B /* 02_stopwatch_play@3x.png */; };
+		4CC44BCB1B42ADBB002F155B /* 02_stopwatch_stop@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC44BC91B42ADBB002F155B /* 02_stopwatch_stop@3x.png */; };
+		4CC44BCE1B42B150002F155B /* detail_basic_23@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CC44BCD1B42B150002F155B /* detail_basic_23@3x.png */; };
+		4CC44BD01B42CD83002F155B /* FocusViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CC44BCF1B42CD83002F155B /* FocusViewController.swift */; };
 		4CD3C52D1B2E975C000AFDA3 /* TaskTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3C52C1B2E975C000AFDA3 /* TaskTableViewController.swift */; };
 		4CD3C52F1B2E995C000AFDA3 /* Utill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3C52E1B2E995C000AFDA3 /* Utill.swift */; };
 		4CD3C5311B2EB757000AFDA3 /* TimeXAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3C5301B2EB757000AFDA3 /* TimeXAxis.swift */; };
@@ -265,6 +340,8 @@
 		4CD3C5A11B326F2F000AFDA3 /* TodaitScore.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD3C5A01B326F2F000AFDA3 /* TodaitScore.png */; };
 		4CD3C5A31B32AF4A000AFDA3 /* ProgressListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3C5A21B32AF4A000AFDA3 /* ProgressListViewController.swift */; };
 		4CD3C5A51B32C8C2000AFDA3 /* PhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3C5A41B32C8C2000AFDA3 /* PhotoViewController.swift */; };
+		4CD697911B4E705A00E6B9B8 /* TimeTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD697901B4E705A00E6B9B8 /* TimeTaskViewController.swift */; };
+		4CD697931B4E707100E6B9B8 /* AmountTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD697921B4E707100E6B9B8 /* AmountTaskViewController.swift */; };
 		52F34C7E666D7EE1EBC4808D /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25FE91F48DFA8E9A4CAE9A19 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -280,6 +357,11 @@
 
 /* Begin PBXFileReference section */
 		25FE91F48DFA8E9A4CAE9A19 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		4C0B89DF1B3C049C0069ED7A /* AmountTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AmountTextView.swift; path = Detail/AmountTextView.swift; sourceTree = "<group>"; };
+		4C0B89E21B3C0D990069ED7A /* GraphViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GraphViewController.swift; path = Graph/GraphViewController.swift; sourceTree = "<group>"; };
+		4C0B89E41B3C14FE0069ED7A /* ReverseCircleChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReverseCircleChart.swift; path = Graph/ReverseCircleChart.swift; sourceTree = "<group>"; };
+		4C0B89E61B3C29030069ED7A /* WeekMaxChart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeekMaxChart.swift; path = Graph/WeekMaxChart.swift; sourceTree = "<group>"; };
+		4C0B89E81B3C340C0069ED7A /* TrendChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrendChartView.swift; path = Graph/TrendChartView.swift; sourceTree = "<group>"; };
 		4C2328C71B342005006CA462 /* ic_ab_back_holo_dark_am.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ic_ab_back_holo_dark_am.png; path = "drawable-xxhdpi/ic_ab_back_holo_dark_am.png"; sourceTree = "<group>"; };
 		4C2328C81B342005006CA462 /* ic_actionbar_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ic_actionbar_icon.png; path = "drawable-xxhdpi/ic_actionbar_icon.png"; sourceTree = "<group>"; };
 		4C2328C91B342005006CA462 /* ic_actionbar_menu.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ic_actionbar_menu.png; path = "drawable-xxhdpi/ic_actionbar_menu.png"; sourceTree = "<group>"; };
@@ -440,8 +522,40 @@
 		4C27DD4E1B33ABA500D4911F /* StatisticsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatisticsTests.swift; sourceTree = "<group>"; };
 		4C27DD501B33F4FB00D4911F /* TaskStatisticsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TaskStatisticsViewController.swift; path = Statistics/TaskStatisticsViewController.swift; sourceTree = "<group>"; };
 		4C27DD521B340B4C00D4911F /* TaskBarDashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TaskBarDashViewController.swift; path = Statistics/TaskBarDashViewController.swift; sourceTree = "<group>"; };
+		4C30D8BC1B40176000598ADE /* MonthCalendarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonthCalendarTests.swift; sourceTree = "<group>"; };
+		4C30D8BE1B4017C200598ADE /* Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		4C30D8C01B4019CE00598ADE /* Utill.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utill.swift; sourceTree = "<group>"; };
+		4C30D8C21B401BF900598ADE /* MonthCalendarViewController2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MonthCalendarViewController2.swift; path = Calendar/MonthCalendarViewController2.swift; sourceTree = "<group>"; };
+		4C30D8C41B401C3C00598ADE /* MonthCalendarCell2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MonthCalendarCell2.swift; path = Calendar/MonthCalendarCell2.swift; sourceTree = "<group>"; };
+		4C30D8C61B40375900598ADE /* DateButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DateButton.swift; path = Calendar/DateButton.swift; sourceTree = "<group>"; };
+		4C4B710D1B3D4DB100BF1F02 /* AmountInputViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AmountInputViewController.swift; sourceTree = "<group>"; };
+		4C4B710F1B3D70DA00BF1F02 /* MonthCalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MonthCalendarViewController.swift; path = Calendar/MonthCalendarViewController.swift; sourceTree = "<group>"; };
+		4C4B71111B3D70EE00BF1F02 /* MonthCalendarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MonthCalendarCell.swift; path = Calendar/MonthCalendarCell.swift; sourceTree = "<group>"; };
+		4C4B71131B3D7AC700BF1F02 /* HorizontalCollectionViewLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HorizontalCollectionViewLayout.swift; path = TimeTable/HorizontalCollectionViewLayout.swift; sourceTree = "<group>"; };
+		4C5042271B4A757A0050A501 /* MainTabbarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainTabbarViewController.swift; path = Main/MainTabbarViewController.swift; sourceTree = "<group>"; };
+		4C50422A1B4A77360050A501 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProfileViewController.swift; path = Profile/ProfileViewController.swift; sourceTree = "<group>"; };
+		4C50422C1B4A79620050A501 /* MainViewControllerOld.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainViewControllerOld.swift; path = Main/MainViewControllerOld.swift; sourceTree = "<group>"; };
+		4C50422F1B4A7B740050A501 /* 01_main_basic_gray@3x_03.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "01_main_basic_gray@3x_03.png"; sourceTree = "<group>"; };
+		4C5042301B4A7B740050A501 /* 01_main_basic_gray@3x_05.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "01_main_basic_gray@3x_05.png"; sourceTree = "<group>"; };
+		4C5042311B4A7B740050A501 /* 01_main_basic_gray@3x_07.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "01_main_basic_gray@3x_07.png"; sourceTree = "<group>"; };
+		4C5042321B4A7B740050A501 /* 01_main_basic_gray@3x_09.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "01_main_basic_gray@3x_09.png"; sourceTree = "<group>"; };
+		4C5042371B4A7E0E0050A501 /* 01_main_basic_gray@3x_12.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "01_main_basic_gray@3x_12.png"; sourceTree = "<group>"; };
+		4C5042391B4A84650050A501 /* MainTabbarButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainTabbarButton.swift; path = Main/MainTabbarButton.swift; sourceTree = "<group>"; };
+		4C5F69E71B4388A500F66A75 /* detail_basic_30@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "detail_basic_30@3x.png"; sourceTree = "<group>"; };
+		4C5F69E91B438A9300F66A75 /* Todait 4.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Todait 4.xcdatamodel"; sourceTree = "<group>"; };
+		4C5F69EA1B43CC0D00F66A75 /* detail_basic_03@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "detail_basic_03@3x.png"; sourceTree = "<group>"; };
+		4C5F69EC1B43CC5900F66A75 /* detail_basic_27@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "detail_basic_27@3x.png"; sourceTree = "<group>"; };
+		4C5F69F01B43CDC300F66A75 /* detail_diary_input_star@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "detail_diary_input_star@3x.png"; sourceTree = "<group>"; };
 		4C79032D1B383F1900B48656 /* MainPhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainPhotoViewController.swift; path = Main/MainPhotoViewController.swift; sourceTree = "<group>"; };
 		4C79032F1B3842F800B48656 /* MainPhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainPhotoCell.swift; path = Main/MainPhotoCell.swift; sourceTree = "<group>"; };
+		4C7903351B395CCB00B48656 /* CategorySortViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CategorySortViewController.swift; path = Main/CategorySortViewController.swift; sourceTree = "<group>"; };
+		4C79033C1B3A4F7600B48656 /* UnitInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = UnitInputView.swift; path = NewTask/UnitInputView.swift; sourceTree = "<group>"; };
+		4C79033E1B3A5EC700B48656 /* RepeatViewcontroller.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RepeatViewcontroller.swift; path = NewTask/RepeatViewcontroller.swift; sourceTree = "<group>"; };
+		4C7903401B3A8A6000B48656 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailViewController.swift; path = Detail/DetailViewController.swift; sourceTree = "<group>"; };
+		4C7903421B3A8D5400B48656 /* DetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailView.swift; path = Detail/DetailView.swift; sourceTree = "<group>"; };
+		4C7903441B3AA0AD00B48656 /* graph_bg.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = graph_bg.png; sourceTree = "<group>"; };
+		4C79037B1B3AB16500B48656 /* WeekCalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeekCalendarViewController.swift; path = Calendar/WeekCalendarViewController.swift; sourceTree = "<group>"; };
+		4C79037D1B3ABA7B00B48656 /* WeekCalendarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WeekCalendarCell.swift; path = Calendar/WeekCalendarCell.swift; sourceTree = "<group>"; };
 		4C7AF8EB1B1EE9BF005A0185 /* CalendarTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CalendarTableViewCell.swift; path = Calendar/CalendarTableViewCell.swift; sourceTree = "<group>"; };
 		4C7AF8ED1B1EE9DB005A0185 /* CalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CalendarViewController.swift; path = Calendar/CalendarViewController.swift; sourceTree = "<group>"; };
 		4C7AF8EF1B1EEF8A005A0185 /* Add.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Add.png; sourceTree = "<group>"; };
@@ -460,7 +574,7 @@
 		4C7CBFCD1B218373000E271D /* TimeTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeTableViewController.swift; sourceTree = "<group>"; };
 		4C7CBFCF1B219D2C000E271D /* TimerBlurViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerBlurViewController.swift; sourceTree = "<group>"; };
 		4C7CC0501B254101000E271D /* PaddingTextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PaddingTextField.swift; path = Category/PaddingTextField.swift; sourceTree = "<group>"; };
-		4C7CC0521B25473A000E271D /* PeriodViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PeriodViewController.swift; path = NewTask/PeriodViewController.swift; sourceTree = "<group>"; };
+		4C7CC0521B25473A000E271D /* PeriodViewControllerOld.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PeriodViewControllerOld.swift; path = NewTask/PeriodViewControllerOld.swift; sourceTree = "<group>"; };
 		4C7CC0541B25750D000E271D /* InvestTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InvestTableViewCell.swift; sourceTree = "<group>"; };
 		4C7CC0721B269A44000E271D /* TaskLogic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskLogic.swift; sourceTree = "<group>"; };
 		4C7CC0741B26A095000E271D /* Category.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Category.swift; path = Model/Category.swift; sourceTree = "<group>"; };
@@ -485,7 +599,30 @@
 		4C7CC0A51B282866000E271D /* String.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		4C7CC0A81B28915B000E271D /* WeekLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeekLabel.swift; sourceTree = "<group>"; };
 		4C7CC0BA1B294685000E271D /* BarDashViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarDashViewController.swift; sourceTree = "<group>"; };
-		4C969A311B1D618B00712AB0 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		4C9085D21B4CD25200BC080B /* stopwatch_bottom_02@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_02@3x.png"; sourceTree = "<group>"; };
+		4C9085D31B4CD25200BC080B /* stopwatch_bottom_03@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_03@3x.png"; sourceTree = "<group>"; };
+		4C9085D41B4CD25200BC080B /* stopwatch_bottom_04@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_04@3x.png"; sourceTree = "<group>"; };
+		4C9085D51B4CD25200BC080B /* stopwatch_bottom_05@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_05@3x.png"; sourceTree = "<group>"; };
+		4C9085DA1B4CD87B00BC080B /* ios */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ios; sourceTree = "<group>"; };
+		4C9085DC1B4CDABD00BC080B /* detail_basic_06@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "detail_basic_06@3x.png"; sourceTree = "<group>"; };
+		4C9085DD1B4CDABD00BC080B /* detail_basic_11@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "detail_basic_11@3x.png"; sourceTree = "<group>"; };
+		4C9085DE1B4CDABD00BC080B /* detail_basic_14@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "detail_basic_14@3x.png"; sourceTree = "<group>"; };
+		4C9085DF1B4CDABD00BC080B /* detail_basic_19@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "detail_basic_19@3x.png"; sourceTree = "<group>"; };
+		4C9085E41B4CE12800BC080B /* NewTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NewTaskViewController.swift; path = NewTask/NewTaskViewController.swift; sourceTree = "<group>"; };
+		4C9085E71B4CF87800BC080B /* category_wt@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category_wt@3x.png"; sourceTree = "<group>"; };
+		4C9085E81B4CF87800BC080B /* category@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "category@3x.png"; sourceTree = "<group>"; };
+		4C9085EB1B4CFA2700BC080B /* CategorySettingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CategorySettingViewController.swift; path = NewTask/CategorySettingViewController.swift; sourceTree = "<group>"; };
+		4C9085ED1B4CFF8A00BC080B /* CategorySettingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CategorySettingTableViewCell.swift; path = NewTask/CategorySettingTableViewCell.swift; sourceTree = "<group>"; };
+		4C9085EF1B4D188700BC080B /* icon_alarm_wt@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_alarm_wt@3x.png"; sourceTree = "<group>"; };
+		4C9085F01B4D188700BC080B /* icon_alarm@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_alarm@3x.png"; sourceTree = "<group>"; };
+		4C9085F11B4D188700BC080B /* icon_reread_wt@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_reread_wt@3x.png"; sourceTree = "<group>"; };
+		4C9085F21B4D188700BC080B /* icon_reread@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_reread@3x.png"; sourceTree = "<group>"; };
+		4C9085F41B4D188700BC080B /* icon_review@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_review@3x.png"; sourceTree = "<group>"; };
+		4C9085F51B4D188700BC080B /* icon_week_wt@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_week_wt@3x.png"; sourceTree = "<group>"; };
+		4C9085F61B4D188700BC080B /* icon_week@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_week@3x.png"; sourceTree = "<group>"; };
+		4C9085FF1B4D292400BC080B /* icon_review_wt@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_review_wt@3x.png"; sourceTree = "<group>"; };
+		4C9086011B4D30AA00BC080B /* PeriodViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PeriodViewController.swift; path = NewTask/PeriodViewController.swift; sourceTree = "<group>"; };
+		4C969A311B1D618B00712AB0 /* DetailViewControllerOld.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewControllerOld.swift; sourceTree = "<group>"; };
 		4C969A3A1B1D65EC00712AB0 /* track.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = track.jpg; sourceTree = "<group>"; };
 		4C969A5F1B1EA96900712AB0 /* Todait 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Todait 2.xcdatamodel"; sourceTree = "<group>"; };
 		4C969A601B1EBFDF00712AB0 /* CategoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
@@ -505,7 +642,6 @@
 		4CB353861B1C030F00E36245 /* TodaitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TodaitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CB3538B1B1C030F00E36245 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4CB3538C1B1C030F00E36245 /* TodaitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodaitTests.swift; sourceTree = "<group>"; };
-		4CB353961B1C056D00E36245 /* ios */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ios; sourceTree = "<group>"; };
 		4CB353981B1C079200E36245 /* BasicViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BasicViewController.swift; sourceTree = "<group>"; };
 		4CB3539C1B1C0ADB00E36245 /* TodaitNavigationBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodaitNavigationBar.swift; sourceTree = "<group>"; };
 		4CB353A01B1C2A0D00E36245 /* TaskTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TaskTableViewCell.swift; sourceTree = "<group>"; };
@@ -515,7 +651,24 @@
 		4CB353AA1B1C48C100E36245 /* back@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "back@3x.png"; sourceTree = "<group>"; };
 		4CB353AC1B1C500F00E36245 /* ParallelHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParallelHeaderView.swift; sourceTree = "<group>"; };
 		4CB353AE1B1C544000E36245 /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test.png; sourceTree = "<group>"; };
-		4CB353B01B1C562100E36245 /* NewTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTaskViewController.swift; sourceTree = "<group>"; tabWidth = 5; };
+		4CB353B01B1C562100E36245 /* NewTaskViewControllerOld.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewTaskViewControllerOld.swift; sourceTree = "<group>"; tabWidth = 5; };
+		4CC44BA11B4100DA002F155B /* WeekCalendarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeekCalendarTests.swift; sourceTree = "<group>"; };
+		4CC44BAE1B41528F002F155B /* track.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = track.jpg; sourceTree = "<group>"; };
+		4CC44BB01B41529C002F155B /* wwdc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = wwdc.png; sourceTree = "<group>"; };
+		4CC44BB21B4176DE002F155B /* stopwatch_stop_03@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_stop_03@3x.png"; sourceTree = "<group>"; };
+		4CC44BB31B4176DE002F155B /* stopwatch_stop_07@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_stop_07@3x.png"; sourceTree = "<group>"; };
+		4CC44BB41B4176DE002F155B /* stopwatch_stop_09@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_stop_09@3x.png"; sourceTree = "<group>"; };
+		4CC44BB51B4176DE002F155B /* stopwatch_stop_12@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_stop_12@3x.png"; sourceTree = "<group>"; };
+		4CC44BB61B4176DE002F155B /* stopwatch_stop_15@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_stop_15@3x.png"; sourceTree = "<group>"; };
+		4CC44BBC1B4178AF002F155B /* ResetViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ResetViewController.swift; path = Timer/ResetViewController.swift; sourceTree = "<group>"; };
+		4CC44BC01B41820B002F155B /* AmountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AmountViewController.swift; path = Timer/AmountViewController.swift; sourceTree = "<group>"; };
+		4CC44BC21B4182EA002F155B /* TimeLogViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeLogViewController.swift; path = Timer/TimeLogViewController.swift; sourceTree = "<group>"; };
+		4CC44BC41B4257D3002F155B /* DetailWeekCalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailWeekCalendarViewController.swift; path = Detail/DetailWeekCalendarViewController.swift; sourceTree = "<group>"; };
+		4CC44BC61B425810002F155B /* DetailWeekCalendarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailWeekCalendarCell.swift; path = Detail/DetailWeekCalendarCell.swift; sourceTree = "<group>"; };
+		4CC44BC81B42ADBB002F155B /* 02_stopwatch_play@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "02_stopwatch_play@3x.png"; sourceTree = "<group>"; };
+		4CC44BC91B42ADBB002F155B /* 02_stopwatch_stop@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "02_stopwatch_stop@3x.png"; sourceTree = "<group>"; };
+		4CC44BCD1B42B150002F155B /* detail_basic_23@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "detail_basic_23@3x.png"; sourceTree = "<group>"; };
+		4CC44BCF1B42CD83002F155B /* FocusViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FocusViewController.swift; path = Detail/FocusViewController.swift; sourceTree = "<group>"; };
 		4CD3C52C1B2E975C000AFDA3 /* TaskTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TaskTableViewController.swift; path = Calendar/TaskTableViewController.swift; sourceTree = "<group>"; };
 		4CD3C52E1B2E995C000AFDA3 /* Utill.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Utill.swift; path = Extension/Utill.swift; sourceTree = "<group>"; };
 		4CD3C5301B2EB757000AFDA3 /* TimeXAxis.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeXAxis.swift; path = Detail/TimeXAxis.swift; sourceTree = "<group>"; };
@@ -556,6 +709,8 @@
 		4CD3C5A01B326F2F000AFDA3 /* TodaitScore.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TodaitScore.png; sourceTree = "<group>"; };
 		4CD3C5A21B32AF4A000AFDA3 /* ProgressListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgressListViewController.swift; path = Statistics/ProgressListViewController.swift; sourceTree = "<group>"; };
 		4CD3C5A41B32C8C2000AFDA3 /* PhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PhotoViewController.swift; path = Setting/PhotoViewController.swift; sourceTree = "<group>"; };
+		4CD697901B4E705A00E6B9B8 /* TimeTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeTaskViewController.swift; path = NewTask/TimeTaskViewController.swift; sourceTree = "<group>"; };
+		4CD697921B4E707100E6B9B8 /* AmountTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AmountTaskViewController.swift; path = NewTask/AmountTaskViewController.swift; sourceTree = "<group>"; };
 		66D88894DEDFF780E7BEE49B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		DBE6F36FCDD9F74176815EBD /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -584,9 +739,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4C0B89E11B3C0D810069ED7A /* Graph */ = {
+			isa = PBXGroup;
+			children = (
+				4C0B89E21B3C0D990069ED7A /* GraphViewController.swift */,
+				4C0B89E41B3C14FE0069ED7A /* ReverseCircleChart.swift */,
+				4C0B89E61B3C29030069ED7A /* WeekMaxChart.swift */,
+				4C0B89E81B3C340C0069ED7A /* TrendChartView.swift */,
+			);
+			name = Graph;
+			sourceTree = "<group>";
+		};
 		4C232A011B34211E006CA462 /* Image */ = {
 			isa = PBXGroup;
 			children = (
+				4C9085E61B4CF86E00BC080B /* 06_newgoal */,
+				4C50422E1B4A7B6E0050A501 /* 01_main */,
+				4CC44BCC1B42B146002F155B /* 03_detail */,
+				4CC44BA31B415203002F155B /* 02_stopwatch */,
 				4CB353A61B1C41A700E36245 /* setting@2x.png */,
 				4C2328C71B342005006CA462 /* ic_ab_back_holo_dark_am.png */,
 				4C2328C81B342005006CA462 /* ic_actionbar_icon.png */,
@@ -757,12 +927,39 @@
 			name = Image;
 			sourceTree = "<group>";
 		};
+		4C5042291B4A771E0050A501 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				4C50422A1B4A77360050A501 /* ProfileViewController.swift */,
+			);
+			name = Profile;
+			sourceTree = "<group>";
+		};
+		4C50422E1B4A7B6E0050A501 /* 01_main */ = {
+			isa = PBXGroup;
+			children = (
+				4C5042371B4A7E0E0050A501 /* 01_main_basic_gray@3x_12.png */,
+				4C50422F1B4A7B740050A501 /* 01_main_basic_gray@3x_03.png */,
+				4C5042301B4A7B740050A501 /* 01_main_basic_gray@3x_05.png */,
+				4C5042311B4A7B740050A501 /* 01_main_basic_gray@3x_07.png */,
+				4C5042321B4A7B740050A501 /* 01_main_basic_gray@3x_09.png */,
+			);
+			name = 01_main;
+			sourceTree = "<group>";
+		};
 		4C7AF8EA1B1EE69D005A0185 /* Calendar */ = {
 			isa = PBXGroup;
 			children = (
 				4C7AF8ED1B1EE9DB005A0185 /* CalendarViewController.swift */,
 				4C7AF8EB1B1EE9BF005A0185 /* CalendarTableViewCell.swift */,
 				4C7CBFCA1B217562000E271D /* CalendarDayView.swift */,
+				4C79037B1B3AB16500B48656 /* WeekCalendarViewController.swift */,
+				4C79037D1B3ABA7B00B48656 /* WeekCalendarCell.swift */,
+				4C30D8C61B40375900598ADE /* DateButton.swift */,
+				4C30D8C21B401BF900598ADE /* MonthCalendarViewController2.swift */,
+				4C30D8C41B401C3C00598ADE /* MonthCalendarCell2.swift */,
+				4C4B710F1B3D70DA00BF1F02 /* MonthCalendarViewController.swift */,
+				4C4B71111B3D70EE00BF1F02 /* MonthCalendarCell.swift */,
 				4CD3C52C1B2E975C000AFDA3 /* TaskTableViewController.swift */,
 			);
 			name = Calendar;
@@ -772,6 +969,7 @@
 			isa = PBXGroup;
 			children = (
 				4C7CBFCD1B218373000E271D /* TimeTableViewController.swift */,
+				4C4B71131B3D7AC700BF1F02 /* HorizontalCollectionViewLayout.swift */,
 			);
 			name = TimeTable;
 			sourceTree = "<group>";
@@ -850,6 +1048,23 @@
 			name = Extension;
 			sourceTree = "<group>";
 		};
+		4C9085E61B4CF86E00BC080B /* 06_newgoal */ = {
+			isa = PBXGroup;
+			children = (
+				4C9085EF1B4D188700BC080B /* icon_alarm_wt@3x.png */,
+				4C9085F01B4D188700BC080B /* icon_alarm@3x.png */,
+				4C9085F11B4D188700BC080B /* icon_reread_wt@3x.png */,
+				4C9085FF1B4D292400BC080B /* icon_review_wt@3x.png */,
+				4C9085F21B4D188700BC080B /* icon_reread@3x.png */,
+				4C9085F41B4D188700BC080B /* icon_review@3x.png */,
+				4C9085F51B4D188700BC080B /* icon_week_wt@3x.png */,
+				4C9085F61B4D188700BC080B /* icon_week@3x.png */,
+				4C9085E71B4CF87800BC080B /* category_wt@3x.png */,
+				4C9085E81B4CF87800BC080B /* category@3x.png */,
+			);
+			name = 06_newgoal;
+			sourceTree = "<group>";
+		};
 		4C969A2F1B1D5B5B00712AB0 /* Setting */ = {
 			isa = PBXGroup;
 			children = (
@@ -866,8 +1081,16 @@
 		4C969A301B1D5B6300712AB0 /* Detail */ = {
 			isa = PBXGroup;
 			children = (
+				4C7903441B3AA0AD00B48656 /* graph_bg.png */,
 				4C7CBFB81B1FECA8000E271D /* 2.jpg */,
-				4C969A311B1D618B00712AB0 /* DetailViewController.swift */,
+				4C969A311B1D618B00712AB0 /* DetailViewControllerOld.swift */,
+				4C7903401B3A8A6000B48656 /* DetailViewController.swift */,
+				4CC44BC41B4257D3002F155B /* DetailWeekCalendarViewController.swift */,
+				4CC44BC61B425810002F155B /* DetailWeekCalendarCell.swift */,
+				4C7903421B3A8D5400B48656 /* DetailView.swift */,
+				4CC44BCF1B42CD83002F155B /* FocusViewController.swift */,
+				4C0B89DF1B3C049C0069ED7A /* AmountTextView.swift */,
+				4C4B710D1B3D4DB100BF1F02 /* AmountInputViewController.swift */,
 				4CD3C58A1B3108A5000AFDA3 /* EditTaskViewController.swift */,
 				4C7CBFBA1B1FF139000E271D /* CircleChart.swift */,
 				4C7CBFBC1B1FF60C000E271D /* BarChart.swift */,
@@ -887,6 +1110,9 @@
 				4C969A3A1B1D65EC00712AB0 /* track.jpg */,
 				4CD3C5321B2ECC4A000AFDA3 /* TimerView.swift */,
 				4CD3C5341B2ECC62000AFDA3 /* TimerViewController.swift */,
+				4CC44BC21B4182EA002F155B /* TimeLogViewController.swift */,
+				4CC44BBC1B4178AF002F155B /* ResetViewController.swift */,
+				4CC44BC01B41820B002F155B /* AmountViewController.swift */,
 			);
 			name = Timer;
 			sourceTree = "<group>";
@@ -914,12 +1140,20 @@
 			isa = PBXGroup;
 			children = (
 				4C7CC0721B269A44000E271D /* TaskLogic.swift */,
-				4CB353B01B1C562100E36245 /* NewTaskViewController.swift */,
-				4C7CC0521B25473A000E271D /* PeriodViewController.swift */,
+				4CB353B01B1C562100E36245 /* NewTaskViewControllerOld.swift */,
+				4C9085E41B4CE12800BC080B /* NewTaskViewController.swift */,
+				4CD697901B4E705A00E6B9B8 /* TimeTaskViewController.swift */,
+				4CD697921B4E707100E6B9B8 /* AmountTaskViewController.swift */,
+				4C79033C1B3A4F7600B48656 /* UnitInputView.swift */,
+				4C7CC0521B25473A000E271D /* PeriodViewControllerOld.swift */,
+				4C9086011B4D30AA00BC080B /* PeriodViewController.swift */,
 				4C7AF8F31B1EF594005A0185 /* InvestViewController.swift */,
 				4CD3C58C1B312914000AFDA3 /* InvestView.swift */,
 				4C7CC0541B25750D000E271D /* InvestTableViewCell.swift */,
+				4C79033E1B3A5EC700B48656 /* RepeatViewcontroller.swift */,
 				4C7CBFCF1B219D2C000E271D /* TimerBlurViewController.swift */,
+				4C9085EB1B4CFA2700BC080B /* CategorySettingViewController.swift */,
+				4C9085ED1B4CFF8A00BC080B /* CategorySettingTableViewCell.swift */,
 			);
 			name = NewTask;
 			sourceTree = "<group>";
@@ -948,6 +1182,8 @@
 		4CB353701B1C030F00E36245 /* Todait */ = {
 			isa = PBXGroup;
 			children = (
+				4C5042291B4A771E0050A501 /* Profile */,
+				4C0B89E11B3C0D810069ED7A /* Graph */,
 				4CD3C5621B2FB5A3000AFDA3 /* OpenSource */,
 				4C7CC09E1B2827B2000E271D /* Extension */,
 				4C7CC0981B28240E000E271D /* Statistics */,
@@ -968,8 +1204,8 @@
 				4CD3C59E1B325E23000AFDA3 /* BasicTableViewController.swift */,
 				4CB3539C1B1C0ADB00E36245 /* TodaitNavigationBar.swift */,
 				4CB3537A1B1C030F00E36245 /* Main.storyboard */,
-				4CB353961B1C056D00E36245 /* ios */,
 				4CB3537D1B1C030F00E36245 /* Images.xcassets */,
+				4C9085DA1B4CD87B00BC080B /* ios */,
 				4C232A011B34211E006CA462 /* Image */,
 				4CB3537F1B1C030F00E36245 /* LaunchScreen.xib */,
 				4CD3C5531B2EE883000AFDA3 /* libGoogleAnalyticsServices.a */,
@@ -993,6 +1229,10 @@
 				4CB3538C1B1C030F00E36245 /* TodaitTests.swift */,
 				4C7CC08B1B26C8A5000E271D /* DayTest.swift */,
 				4C27DD4E1B33ABA500D4911F /* StatisticsTests.swift */,
+				4CC44BA11B4100DA002F155B /* WeekCalendarTests.swift */,
+				4C30D8BC1B40176000598ADE /* MonthCalendarTests.swift */,
+				4C30D8BE1B4017C200598ADE /* Date.swift */,
+				4C30D8C01B4019CE00598ADE /* Utill.swift */,
 				4C7CC08A1B26A6A4000E271D /* CoreData */,
 				4CB3538A1B1C030F00E36245 /* Supporting Files */,
 			);
@@ -1014,12 +1254,52 @@
 				4CB353AC1B1C500F00E36245 /* ParallelHeaderView.swift */,
 				4CB353A01B1C2A0D00E36245 /* TaskTableViewCell.swift */,
 				4CD3C5671B2FB7A6000AFDA3 /* TodaitRevealViewController.swift */,
+				4C5042271B4A757A0050A501 /* MainTabbarViewController.swift */,
+				4C5042391B4A84650050A501 /* MainTabbarButton.swift */,
 				4CD3C5691B2FB7C1000AFDA3 /* MainViewController.swift */,
+				4C50422C1B4A79620050A501 /* MainViewControllerOld.swift */,
 				4C79032D1B383F1900B48656 /* MainPhotoViewController.swift */,
 				4C79032F1B3842F800B48656 /* MainPhotoCell.swift */,
 				4CD3C56F1B2FC98D000AFDA3 /* CategoryRearViewController.swift */,
+				4C7903351B395CCB00B48656 /* CategorySortViewController.swift */,
 			);
 			name = Main;
+			sourceTree = "<group>";
+		};
+		4CC44BA31B415203002F155B /* 02_stopwatch */ = {
+			isa = PBXGroup;
+			children = (
+				4C9085D21B4CD25200BC080B /* stopwatch_bottom_02@3x.png */,
+				4C9085D31B4CD25200BC080B /* stopwatch_bottom_03@3x.png */,
+				4C9085D41B4CD25200BC080B /* stopwatch_bottom_04@3x.png */,
+				4C9085D51B4CD25200BC080B /* stopwatch_bottom_05@3x.png */,
+				4CC44BAE1B41528F002F155B /* track.jpg */,
+				4CC44BB01B41529C002F155B /* wwdc.png */,
+				4CC44BC81B42ADBB002F155B /* 02_stopwatch_play@3x.png */,
+				4CC44BC91B42ADBB002F155B /* 02_stopwatch_stop@3x.png */,
+				4CC44BB21B4176DE002F155B /* stopwatch_stop_03@3x.png */,
+				4CC44BB31B4176DE002F155B /* stopwatch_stop_07@3x.png */,
+				4CC44BB41B4176DE002F155B /* stopwatch_stop_09@3x.png */,
+				4CC44BB51B4176DE002F155B /* stopwatch_stop_12@3x.png */,
+				4CC44BB61B4176DE002F155B /* stopwatch_stop_15@3x.png */,
+			);
+			name = 02_stopwatch;
+			sourceTree = "<group>";
+		};
+		4CC44BCC1B42B146002F155B /* 03_detail */ = {
+			isa = PBXGroup;
+			children = (
+				4C9085DC1B4CDABD00BC080B /* detail_basic_06@3x.png */,
+				4C9085DD1B4CDABD00BC080B /* detail_basic_11@3x.png */,
+				4C9085DE1B4CDABD00BC080B /* detail_basic_14@3x.png */,
+				4C9085DF1B4CDABD00BC080B /* detail_basic_19@3x.png */,
+				4C5F69EC1B43CC5900F66A75 /* detail_basic_27@3x.png */,
+				4C5F69F01B43CDC300F66A75 /* detail_diary_input_star@3x.png */,
+				4C5F69EA1B43CC0D00F66A75 /* detail_basic_03@3x.png */,
+				4CC44BCD1B42B150002F155B /* detail_basic_23@3x.png */,
+				4C5F69E71B4388A500F66A75 /* detail_basic_30@3x.png */,
+			);
+			name = 03_detail;
 			sourceTree = "<group>";
 		};
 		4CD3C5621B2FB5A3000AFDA3 /* OpenSource */ = {
@@ -1144,6 +1424,7 @@
 			files = (
 				4C2329D81B342005006CA462 /* ic_notification_stopwatch_pause_lollipop.png in Resources */,
 				4C2329E81B342005006CA462 /* ic_setting_daily_finish.png in Resources */,
+				4C5042341B4A7B740050A501 /* 01_main_basic_gray@3x_05.png in Resources */,
 				4CB3537C1B1C030F00E36245 /* Main.storyboard in Resources */,
 				4C2329E91B342005006CA462 /* ic_setting_facebook.png in Resources */,
 				4C2329771B342005006CA462 /* ic_calendar_next_pressed.png in Resources */,
@@ -1156,23 +1437,31 @@
 				4C2329B61B342005006CA462 /* ic_fragment_task_info_button_edit_pressed.9.png in Resources */,
 				4C2329DE1B342005006CA462 /* ic_notification_stopwatch_stop_pressed.png in Resources */,
 				4C2329EE1B342005006CA462 /* ic_setting_open_source_license.png in Resources */,
+				4C9085E01B4CDABD00BC080B /* detail_basic_06@3x.png in Resources */,
 				4C2329711B342005006CA462 /* ic_arrow_right_white.png in Resources */,
+				4CC44BAF1B41528F002F155B /* track.jpg in Resources */,
 				4C2329BA1B342005006CA462 /* ic_fragment_task_info_stopwatch_start.png in Resources */,
 				4C2329D21B342005006CA462 /* ic_menu_sort.png in Resources */,
 				4C2329D31B342005006CA462 /* ic_menu_statistics.png in Resources */,
+				4C9085D61B4CD25200BC080B /* stopwatch_bottom_02@3x.png in Resources */,
 				4C2329921B342005006CA462 /* ic_drawer_task_index.png in Resources */,
 				4C2329951B342005006CA462 /* ic_fragment_daily_statistics_achievement_rate.png in Resources */,
+				4CC44BCB1B42ADBB002F155B /* 02_stopwatch_stop@3x.png in Resources */,
 				4C2329C21B342005006CA462 /* ic_gallery_rotation_image.png in Resources */,
 				4C2329691B342005006CA462 /* ic_activity_main_tab_index_disabled.png in Resources */,
 				4C23299C1B342005006CA462 /* ic_fragment_daily_statistics_time.png in Resources */,
 				4C2329A71B342005006CA462 /* ic_fragment_stopwatch_pause_pressed.png in Resources */,
 				4C2329B41B342005006CA462 /* ic_fragment_task_creation_repetition.png in Resources */,
+				4C9085F81B4D188700BC080B /* icon_alarm@3x.png in Resources */,
 				4C2329D01B342005006CA462 /* ic_menu_save.png in Resources */,
 				4C2329C01B342005006CA462 /* ic_gallery_image_crop.png in Resources */,
 				4C23297E1B342005006CA462 /* ic_close_pressed.png in Resources */,
+				4CC44BBB1B4176DE002F155B /* stopwatch_stop_15@3x.png in Resources */,
 				4C2329A21B342005006CA462 /* ic_fragment_stopwatch_edit_amount.png in Resources */,
 				4CB353811B1C030F00E36245 /* LaunchScreen.xib in Resources */,
 				4C2329851B342005006CA462 /* ic_drawer_indicator.png in Resources */,
+				4C9085F91B4D188700BC080B /* icon_reread_wt@3x.png in Resources */,
+				4C9085D71B4CD25200BC080B /* stopwatch_bottom_03@3x.png in Resources */,
 				4C2329BD1B342005006CA462 /* ic_fragment_task_progress_rate_weekly_disabled.png in Resources */,
 				4C2329A11B342005006CA462 /* ic_fragment_stopwatch_button_confirm.png in Resources */,
 				4C23298E1B342005006CA462 /* ic_drawer_item_setting.png in Resources */,
@@ -1191,7 +1480,8 @@
 				4C2329FD1B342005006CA462 /* ic_view_week_row_item_delete.png in Resources */,
 				4C23296B1B342005006CA462 /* ic_activity_main_tab_timeline_disabled.png in Resources */,
 				4C2329991B342005006CA462 /* ic_fragment_daily_statistics_button_previous_disabled.png in Resources */,
-				4CB353971B1C056D00E36245 /* ios in Resources */,
+				4C9085E11B4CDABD00BC080B /* detail_basic_11@3x.png in Resources */,
+				4CC44BB91B4176DE002F155B /* stopwatch_stop_09@3x.png in Resources */,
 				4C23296C1B342005006CA462 /* ic_activity_main_tab_timeline.png in Resources */,
 				4C23297F1B342005006CA462 /* ic_close.png in Resources */,
 				4C2329CD1B342005006CA462 /* ic_menu_overflow.png in Resources */,
@@ -1214,17 +1504,21 @@
 				4C23298C1B342005006CA462 /* ic_drawer_item_index.png in Resources */,
 				4C2329BF1B342005006CA462 /* ic_gallery_image_check.png in Resources */,
 				4C2329DF1B342005006CA462 /* ic_notification_stopwatch_stop.png in Resources */,
+				4CC44BCA1B42ADBB002F155B /* 02_stopwatch_play@3x.png in Resources */,
 				4CB353A51B1C402B00E36245 /* setting.png in Resources */,
 				4C2329AB1B342005006CA462 /* ic_fragment_stopwatch_save_pressed.png in Resources */,
 				4C2329C91B342005006CA462 /* ic_menu_edit.png in Resources */,
 				4CD3C5871B3026FB000AFDA3 /* list.png in Resources */,
 				4C2329FA1B342005006CA462 /* ic_view_week_row_item_add_pressed.png in Resources */,
 				4C2329A91B342005006CA462 /* ic_fragment_stopwatch_previous_task_pressed.png in Resources */,
+				4CC44BB71B4176DE002F155B /* stopwatch_stop_03@3x.png in Resources */,
 				4C2329D41B342005006CA462 /* ic_new_badge.png in Resources */,
 				4C2329C51B342005006CA462 /* ic_logo_splash.png in Resources */,
 				4C23297B1B342005006CA462 /* ic_camera_button_pressed.png in Resources */,
 				4C2329F01B342005006CA462 /* ic_setting_password_unlock.png in Resources */,
+				4C9085E21B4CDABD00BC080B /* detail_basic_14@3x.png in Resources */,
 				4CB353AB1B1C48C100E36245 /* back@3x.png in Resources */,
+				4C9085D81B4CD25200BC080B /* stopwatch_bottom_04@3x.png in Resources */,
 				4C2329D61B342005006CA462 /* ic_new_week_uncheck.png in Resources */,
 				4C2329DA1B342005006CA462 /* ic_notification_stopwatch_pause.png in Resources */,
 				4C2329811B342005006CA462 /* ic_dialog_save.png in Resources */,
@@ -1233,11 +1527,14 @@
 				4C2329C61B342005006CA462 /* ic_logo_tutorial.png in Resources */,
 				4C2329E31B342005006CA462 /* ic_setting_about_todait.png in Resources */,
 				4C2329841B342005006CA462 /* ic_drawer_calendar.png in Resources */,
+				4CC44BBA1B4176DE002F155B /* stopwatch_stop_12@3x.png in Resources */,
 				4C2329F41B342005006CA462 /* ic_setting_right_arrow.png in Resources */,
 				4C2329ED1B342005006CA462 /* ic_setting_main_image.png in Resources */,
 				4C23299D1B342005006CA462 /* ic_fragment_diary_pencil.png in Resources */,
 				4C2329821B342005006CA462 /* ic_double_quotation_end.png in Resources */,
+				4C9085E91B4CF87800BC080B /* category_wt@3x.png in Resources */,
 				4C2329671B342005006CA462 /* ic_activity_main_tab_extra_disabled.png in Resources */,
+				4C5F69ED1B43CC5900F66A75 /* detail_basic_27@3x.png in Resources */,
 				4C2329FC1B342005006CA462 /* ic_view_week_row_item_delete_pressed.png in Resources */,
 				4C2329BC1B342005006CA462 /* ic_fragment_task_progress_rate_trend.png in Resources */,
 				4C2329AC1B342005006CA462 /* ic_fragment_stopwatch_save.png in Resources */,
@@ -1246,15 +1543,19 @@
 				4C23298F1B342005006CA462 /* ic_drawer_item_statistics.png in Resources */,
 				4C2329F61B342005006CA462 /* ic_setting_uncheck.png in Resources */,
 				4C2329EC1B342005006CA462 /* ic_setting_kakao.png in Resources */,
+				4C9086001B4D292400BC080B /* icon_review_wt@3x.png in Resources */,
 				4C23298D1B342005006CA462 /* ic_drawer_item_pro.png in Resources */,
 				4C2329CF1B342005006CA462 /* ic_menu_pro.png in Resources */,
 				4C2329CA1B342005006CA462 /* ic_menu_more.png in Resources */,
+				4CC44BB11B41529C002F155B /* wwdc.png in Resources */,
 				4C2329831B342005006CA462 /* ic_double_quotation_start.png in Resources */,
 				4C2329F91B342005006CA462 /* ic_task_edit_notification.png in Resources */,
+				4C9085DB1B4CD87B00BC080B /* ios in Resources */,
 				4C2329DB1B342005006CA462 /* ic_notification_stopwatch_start_lollipop.png in Resources */,
 				4C2329DD1B342005006CA462 /* ic_notification_stopwatch_start.png in Resources */,
 				4C2329F11B342005006CA462 /* ic_setting_pro_code.png in Resources */,
 				4C2329C71B342005006CA462 /* ic_menu_accept.png in Resources */,
+				4C5042381B4A7E0E0050A501 /* 01_main_basic_gray@3x_12.png in Resources */,
 				4C2329881B342005006CA462 /* ic_drawer_item_event.png in Resources */,
 				4C2329F51B342005006CA462 /* ic_setting_stopwatch_screen_dim.png in Resources */,
 				4C969A631B1ECC6C00712AB0 /* done@3x.png in Resources */,
@@ -1263,9 +1564,14 @@
 				4C23296A1B342005006CA462 /* ic_activity_main_tab_index.png in Resources */,
 				4C2329801B342005006CA462 /* ic_dialog_delete_icon.png in Resources */,
 				4C23298A1B342005006CA462 /* ic_drawer_item_help.png in Resources */,
+				4CC44BB81B4176DE002F155B /* stopwatch_stop_07@3x.png in Resources */,
 				4C2329781B342005006CA462 /* ic_calendar_next.png in Resources */,
+				4C9085FE1B4D188700BC080B /* icon_week@3x.png in Resources */,
 				4C232A001B342005006CA462 /* progress_secondary_holo_light.9.png in Resources */,
+				4C9085EA1B4CF87800BC080B /* category@3x.png in Resources */,
+				4C9085FD1B4D188700BC080B /* icon_week_wt@3x.png in Resources */,
 				4C2329B31B342005006CA462 /* ic_fragment_task_creation_period.png in Resources */,
+				4C9085D91B4CD25200BC080B /* stopwatch_bottom_05@3x.png in Resources */,
 				4C2329CB1B342005006CA462 /* ic_menu_new.png in Resources */,
 				4C2329E21B342005006CA462 /* ic_refresh.png in Resources */,
 				4C2329FF1B342005006CA462 /* progress_primary_holo_light.9.png in Resources */,
@@ -1279,10 +1585,16 @@
 				4C2329971B342005006CA462 /* ic_fragment_daily_statistics_button_next_pressed.png in Resources */,
 				4C2329911B342005006CA462 /* ic_drawer_statistics.png in Resources */,
 				4C2329F31B342005006CA462 /* ic_setting_review.png in Resources */,
+				4C5042351B4A7B740050A501 /* 01_main_basic_gray@3x_07.png in Resources */,
+				4C5F69F11B43CDC300F66A75 /* detail_diary_input_star@3x.png in Resources */,
 				4C23299B1B342005006CA462 /* ic_fragment_daily_statistics_button_previous.png in Resources */,
 				4C2329901B342005006CA462 /* ic_drawer_setting.png in Resources */,
 				4C2329B01B342005006CA462 /* ic_fragment_task_category_add_new_task.png in Resources */,
 				4C2329EF1B342005006CA462 /* ic_setting_password_lock.png in Resources */,
+				4C5042361B4A7B740050A501 /* 01_main_basic_gray@3x_09.png in Resources */,
+				4C5F69E81B4388A500F66A75 /* detail_basic_30@3x.png in Resources */,
+				4C9085FA1B4D188700BC080B /* icon_reread@3x.png in Resources */,
+				4C9085E31B4CDABD00BC080B /* detail_basic_19@3x.png in Resources */,
 				4C2329DC1B342005006CA462 /* ic_notification_stopwatch_start_pressed.png in Resources */,
 				4CD3C5891B3106B4000AFDA3 /* edit.png in Resources */,
 				4C2329D51B342005006CA462 /* ic_new_week_check.png in Resources */,
@@ -1296,25 +1608,31 @@
 				4CB353A71B1C41A700E36245 /* setting@2x.png in Resources */,
 				4C2329AE1B342005006CA462 /* ic_fragment_stopwatch_start.png in Resources */,
 				4C2329EB1B342005006CA462 /* ic_setting_kakao_yellow_id.png in Resources */,
+				4C5F69EB1B43CC0D00F66A75 /* detail_basic_03@3x.png in Resources */,
 				4C2329F71B342005006CA462 /* ic_setting_version_info.png in Resources */,
 				4C23296E1B342005006CA462 /* ic_activity_main_tab_timetable.png in Resources */,
 				4C23297A1B342005006CA462 /* ic_calendar_previous.png in Resources */,
 				4C2329871B342005006CA462 /* ic_drawer_item_community.png in Resources */,
 				4C23297D1B342005006CA462 /* ic_check.png in Resources */,
 				4C2329BE1B342005006CA462 /* ic_fragment_task_progress_rate_weekly.png in Resources */,
+				4C9085FC1B4D188700BC080B /* icon_review@3x.png in Resources */,
 				4C969A3B1B1D65EC00712AB0 /* track.jpg in Resources */,
 				4C2329F21B342005006CA462 /* ic_setting_restore.png in Resources */,
 				4C2329701B342005006CA462 /* ic_arrow_right_purple.png in Resources */,
+				4CC44BCE1B42B150002F155B /* detail_basic_23@3x.png in Resources */,
 				4C2329C81B342005006CA462 /* ic_menu_calendar.png in Resources */,
 				4C2329FE1B342005006CA462 /* progress_bg_holo_light.9.png in Resources */,
 				4C2329BB1B342005006CA462 /* ic_fragment_task_progress_rate_trend_disabled.png in Resources */,
 				4C2329E71B342005006CA462 /* ic_setting_check.png in Resources */,
+				4C5042331B4A7B740050A501 /* 01_main_basic_gray@3x_03.png in Resources */,
 				4C2329D91B342005006CA462 /* ic_notification_stopwatch_pause_pressed.png in Resources */,
+				4C9085F71B4D188700BC080B /* icon_alarm_wt@3x.png in Resources */,
 				4C2329B11B342005006CA462 /* ic_fragment_task_creation_input.png in Resources */,
 				4C2329931B342005006CA462 /* ic_event_background_pattern.png in Resources */,
 				4C7AF8F21B1EEF99005A0185 /* newPlus.png in Resources */,
 				4C2329CE1B342005006CA462 /* ic_menu_previous_item.png in Resources */,
 				4C2329861B342005006CA462 /* ic_drawer_item_badge_pro.png in Resources */,
+				4C7903451B3AA0AD00B48656 /* graph_bg.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1368,36 +1686,58 @@
 				4CB353791B1C030F00E36245 /* ViewController.swift in Sources */,
 				4C7CBFC11B200597000E271D /* ChartItem.swift in Sources */,
 				4CB353991B1C079200E36245 /* BasicViewController.swift in Sources */,
+				4C9086021B4D30AA00BC080B /* PeriodViewController.swift in Sources */,
+				4C30D8C31B401BF900598ADE /* MonthCalendarViewController2.swift in Sources */,
+				4C4B71121B3D70EE00BF1F02 /* MonthCalendarCell.swift in Sources */,
 				4C7CC0871B26A096000E271D /* Task.swift in Sources */,
+				4CC44BC31B4182EA002F155B /* TimeLogViewController.swift in Sources */,
+				4C30D8C71B40375900598ADE /* DateButton.swift in Sources */,
 				4C27DD511B33F4FB00D4911F /* TaskStatisticsViewController.swift in Sources */,
+				4C5042281B4A757A0050A501 /* MainTabbarViewController.swift in Sources */,
 				4C7CC0A01B2827F6000E271D /* Color.swift in Sources */,
+				4C50422B1B4A77360050A501 /* ProfileViewController.swift in Sources */,
 				4CB353A11B1C2A0D00E36245 /* TaskTableViewCell.swift in Sources */,
 				4CD3C52D1B2E975C000AFDA3 /* TaskTableViewController.swift in Sources */,
 				4CD3C5351B2ECC62000AFDA3 /* TimerViewController.swift in Sources */,
 				4CD3C5701B2FC98D000AFDA3 /* CategoryRearViewController.swift in Sources */,
 				4CB3539D1B1C0ADB00E36245 /* TodaitNavigationBar.swift in Sources */,
+				4C4B71141B3D7AC700BF1F02 /* HorizontalCollectionViewLayout.swift in Sources */,
 				4C7CC0751B26A095000E271D /* Category.swift in Sources */,
-				4CB353B11B1C562100E36245 /* NewTaskViewController.swift in Sources */,
+				4CB353B11B1C562100E36245 /* NewTaskViewControllerOld.swift in Sources */,
 				4C7CC0A91B28915B000E271D /* WeekLabel.swift in Sources */,
 				4CD3C56A1B2FB7C1000AFDA3 /* MainViewController.swift in Sources */,
 				4CA3070B1B2A7902007CFCFF /* SortViewController.swift in Sources */,
 				4C7CBFBF1B1FFE2C000E271D /* WeekChartView.swift in Sources */,
+				4C9085EE1B4CFF8A00BC080B /* CategorySettingTableViewCell.swift in Sources */,
+				4C79033F1B3A5EC700B48656 /* RepeatViewcontroller.swift in Sources */,
 				4C27DD531B340B4C00D4911F /* TaskBarDashViewController.swift in Sources */,
+				4C0B89E91B3C340C0069ED7A /* TrendChartView.swift in Sources */,
 				4CD3C59F1B325E23000AFDA3 /* BasicTableViewController.swift in Sources */,
+				4C4B71101B3D70DA00BF1F02 /* MonthCalendarViewController.swift in Sources */,
 				4CA307091B29E4D6007CFCFF /* WeekChart.swift in Sources */,
+				4CC44BC11B41820B002F155B /* AmountViewController.swift in Sources */,
+				4C4B710E1B3D4DB100BF1F02 /* AmountInputViewController.swift in Sources */,
 				4C7CC0831B26A096000E271D /* Off_Day.swift in Sources */,
 				4C7AF8F41B1EF594005A0185 /* InvestViewController.swift in Sources */,
 				4CD3C58D1B312914000AFDA3 /* InvestView.swift in Sources */,
+				4C79037C1B3AB16500B48656 /* WeekCalendarViewController.swift in Sources */,
 				4C969A611B1EBFDF00712AB0 /* CategoryViewController.swift in Sources */,
+				4C79037E1B3ABA7B00B48656 /* WeekCalendarCell.swift in Sources */,
 				4CD3C5A31B32AF4A000AFDA3 /* ProgressListViewController.swift in Sources */,
 				4C7CBFCE1B218373000E271D /* TimeTableViewController.swift in Sources */,
 				4CB353A91B1C41F900E36245 /* SettingViewController.swift in Sources */,
+				4C9085EC1B4CFA2700BC080B /* CategorySettingViewController.swift in Sources */,
+				4C0B89E71B3C29030069ED7A /* WeekMaxChart.swift in Sources */,
+				4C30D8C51B401C3C00598ADE /* MonthCalendarCell2.swift in Sources */,
 				4C7CC0791B26A096000E271D /* Diary.swift in Sources */,
+				4C7903431B3A8D5400B48656 /* DetailView.swift in Sources */,
 				4CB353AD1B1C500F00E36245 /* ParallelHeaderView.swift in Sources */,
 				4C7CC0A61B282866000E271D /* String.swift in Sources */,
 				4C79032E1B383F1900B48656 /* MainPhotoViewController.swift in Sources */,
 				4CD3C5651B2FB625000AFDA3 /* SWRevealViewController.m in Sources */,
+				4CD697931B4E707100E6B9B8 /* AmountTaskViewController.swift in Sources */,
 				4CD3C5311B2EB757000AFDA3 /* TimeXAxis.swift in Sources */,
+				4C79033D1B3A4F7600B48656 /* UnitInputView.swift in Sources */,
 				4C7AF8EC1B1EE9BF005A0185 /* CalendarTableViewCell.swift in Sources */,
 				4C7CC0A41B282850000E271D /* Date.swift in Sources */,
 				4C7CC09D1B282442000E271D /* StatisticsViewController.swift in Sources */,
@@ -1405,34 +1745,47 @@
 				4C7CBFD01B219D2C000E271D /* TimerBlurViewController.swift in Sources */,
 				4CA3070D1B2AAB84007CFCFF /* TimeChart.swift in Sources */,
 				4C7CBFC31B2006AD000E271D /* WebViewController.swift in Sources */,
+				4C9085E51B4CE12800BC080B /* NewTaskViewController.swift in Sources */,
 				4CD3C58B1B3108A5000AFDA3 /* EditTaskViewController.swift in Sources */,
 				4CD3C59D1B325B09000AFDA3 /* InfoViewController.swift in Sources */,
+				4CC44BC71B425810002F155B /* DetailWeekCalendarCell.swift in Sources */,
 				4C7CC0921B274134000E271D /* DateManager.swift in Sources */,
 				4C7CC0A21B282836000E271D /* Image.swift in Sources */,
+				4C50422D1B4A79620050A501 /* MainViewControllerOld.swift in Sources */,
 				4C7CC0731B269A44000E271D /* TaskLogic.swift in Sources */,
 				4C7CBFBD1B1FF60C000E271D /* BarChart.swift in Sources */,
+				4CC44BC51B4257D3002F155B /* DetailWeekCalendarViewController.swift in Sources */,
 				4CB353771B1C030F00E36245 /* Todait.xcdatamodeld in Sources */,
 				4C7CBFC81B2032E9000E271D /* FinishTimeViewController.swift in Sources */,
 				4C7CBFC51B2012BE000E271D /* NewCategoryViewController.swift in Sources */,
+				4CC44BBD1B4178AF002F155B /* ResetViewController.swift in Sources */,
+				4C0B89E01B3C049C0069ED7A /* AmountTextView.swift in Sources */,
 				4C7CBFCB1B217562000E271D /* CalendarDayView.swift in Sources */,
-				4C7CC0531B25473A000E271D /* PeriodViewController.swift in Sources */,
+				4C7CC0531B25473A000E271D /* PeriodViewControllerOld.swift in Sources */,
 				4C7CC07B1B26A096000E271D /* Review_Task.swift in Sources */,
+				4C7903411B3A8A6000B48656 /* DetailViewController.swift in Sources */,
 				4CB353741B1C030F00E36245 /* AppDelegate.swift in Sources */,
 				4C7CC07D1B26A096000E271D /* Day.swift in Sources */,
+				4CC44BD01B42CD83002F155B /* FocusViewController.swift in Sources */,
 				4C7CC07F1B26A096000E271D /* TimeLog.swift in Sources */,
 				4C7CC0BB1B294685000E271D /* BarDashViewController.swift in Sources */,
 				4C7CC0811B26A096000E271D /* Week.swift in Sources */,
 				4C7903301B3842F800B48656 /* MainPhotoCell.swift in Sources */,
 				4CD3C5331B2ECC4A000AFDA3 /* TimerView.swift in Sources */,
+				4C0B89E51B3C14FE0069ED7A /* ReverseCircleChart.swift in Sources */,
 				4CD3C5681B2FB7A6000AFDA3 /* TodaitRevealViewController.swift in Sources */,
+				4C0B89E31B3C0D990069ED7A /* GraphViewController.swift in Sources */,
 				4C7CC0891B26A097000E271D /* TimeHistory.swift in Sources */,
+				4C50423A1B4A84650050A501 /* MainTabbarButton.swift in Sources */,
 				4C7AF8EE1B1EE9DB005A0185 /* CalendarViewController.swift in Sources */,
 				4CD3C52F1B2E995C000AFDA3 /* Utill.swift in Sources */,
+				4CD697911B4E705A00E6B9B8 /* TimeTaskViewController.swift in Sources */,
 				4C7CC0771B26A096000E271D /* User.swift in Sources */,
-				4C969A321B1D618B00712AB0 /* DetailViewController.swift in Sources */,
+				4C969A321B1D618B00712AB0 /* DetailViewControllerOld.swift in Sources */,
 				4C7CC0511B254101000E271D /* PaddingTextField.swift in Sources */,
 				4C7CC0851B26A096000E271D /* AmountLog.swift in Sources */,
 				4C7CC0561B25750D000E271D /* InvestTableViewCell.swift in Sources */,
+				4C7903361B395CCB00B48656 /* CategorySortViewController.swift in Sources */,
 				4CD3C5A51B32C8C2000AFDA3 /* PhotoViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1447,10 +1800,14 @@
 				4C27DD4F1B33ABA500D4911F /* StatisticsTests.swift in Sources */,
 				4CB3538D1B1C030F00E36245 /* TodaitTests.swift in Sources */,
 				4CD3C5931B317001000AFDA3 /* Day.swift in Sources */,
+				4C30D8BD1B40176000598ADE /* MonthCalendarTests.swift in Sources */,
 				4CD3C5911B316FF8000AFDA3 /* Week.swift in Sources */,
+				4CC44BA21B4100DA002F155B /* WeekCalendarTests.swift in Sources */,
 				4CD3C5951B3170E2000AFDA3 /* AppDelegate.swift in Sources */,
 				4CD3C5971B317110000AFDA3 /* Color.swift in Sources */,
 				4C7CC08C1B26C8A5000E271D /* DayTest.swift in Sources */,
+				4C30D8C11B4019CE00598ADE /* Utill.swift in Sources */,
+				4C30D8BF1B4017C200598ADE /* Date.swift in Sources */,
 				4CA3070F1B2AC83C007CFCFF /* TaskTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1685,6 +2042,7 @@
 		4CB353751B1C030F00E36245 /* Todait.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				4C5F69E91B438A9300F66A75 /* Todait 4.xcdatamodel */,
 				4C7CBFC61B202625000E271D /* Todait 3.xcdatamodel */,
 				4C969A5F1B1EA96900712AB0 /* Todait 2.xcdatamodel */,
 				4CB353761B1C030F00E36245 /* Todait.xcdatamodel */,

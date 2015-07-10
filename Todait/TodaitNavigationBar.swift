@@ -35,6 +35,8 @@ class TodaitNavigationBar: UINavigationBar {
     }
     
     func addBackButton(){
+        
+        
         backButton = UIButton(frame: CGRectMake(0,0, 80*ratio, 64))
         backButton.setImage(UIImage(named: "back@3x.png"), forState:UIControlState.Normal)
         backButton.addTarget(self, action: Selector("backButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)

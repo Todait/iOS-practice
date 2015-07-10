@@ -767,7 +767,7 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         }else{
             
             NSLog("수정완료",1)
-            //needToUpdate()
+            needToUpdate()
             
             self.navigationController?.popViewControllerAnimated(true)
         }
@@ -800,13 +800,10 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
     func needToUpdate() {
         
         
-        self.delegate.updateCategory(category)
-        
-        /*
-        if self.delegate.respondsToSelector("updateCategory:"){
-        self.delegate.updateCategory(category4)
+        if self.delegate.respondsToSelector("updateCategory:from:"){
+            self.delegate.updateCategory(category,from:"EditTaskVC")
         }
-        */
+        
     }
     
     func setupTextField(){

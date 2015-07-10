@@ -9,12 +9,21 @@
 import UIKit
 import CoreData
 
-class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
+class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,CalendarDelegate,UIScrollViewDelegate,UIGestureRecognizerDelegate{
 
+    
+    var headerView:UIView!
+    var dateLabel:UILabel!
+    
+    var weekCalendarVC:WeekCalendarViewController!
+    var monthCalendarVC:MonthCalendarViewController2!
+    
+    
+    
     var timeTableView: UIScrollView!
     
     
-    let TimeTableHeight:CGFloat = 55
+    let TimeTableHeight:CGFloat = 40
     
     let HistoryViewOriginX:CGFloat = 50
     let HistoryViewWidth:CGFloat = 220
@@ -24,9 +33,23 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
     var timeHistoryList:[TimeHistory] = []
     
     
+    var selectedDateNumber:NSNumber!
+    var selectedWeekOfMonth:CGFloat! = 2
+    
+    var panStart:CGPoint!
+    var panEnd:CGPoint!
+    
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        selectedDateNumber = getDateNumberFromDate(NSDate())
+        
+        addMonthView()
+        addWeekView()
+        addHeaderView()
+        
         addTimeTableView()
         addTimeTableSubViews()
         addGesture()
@@ -35,19 +58,313 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
         
         
         addExampleHistoryView(CGRectMake(HistoryViewOriginX*ratio,150,200,60), color: UIColor.todaitRed())
-        
         addExampleHistoryView(CGRectMake(HistoryViewOriginX*ratio,250,200,120), color: UIColor.todaitGreen())
         
     }
     
+    func addHeaderView(){
+        
+        headerView = UIView(frame: CGRectMake(0, 64, width, 43*ratio))
+        headerView.backgroundColor = UIColor.colorWithHexString("FEFEFE")
+        view.addSubview(headerView)
+        
+        dateLabel = UILabel(frame: CGRectMake(15*ratio, 0, 290*ratio, 23*ratio))
+        dateLabel.textColor = UIColor.todaitGray()
+        dateLabel.font = UIFont(name:"AppleSDGothicNeo-UltraLight", size: 10*ratio)
+        dateLabel.textAlignment = NSTextAlignment.Center
+        headerView.addSubview(dateLabel)
+        
+        updateDateLabel(getDateFromDateNumber(getTodayDateNumber()))
+        
+        
+        let weekTitle = ["SUN","MON","TUE","WED","THU","FRI","SAT"]
+        let weekWidth = 320*ratio / 7
+        
+        
+        for index in 0...6 {
+            let weekDayLabel = UILabel(frame: CGRectMake(CGFloat(index)*weekWidth, 23*ratio, weekWidth, 20*ratio))
+            weekDayLabel.textAlignment = NSTextAlignment.Center
+            weekDayLabel.text = weekTitle[index]
+            weekDayLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 7.5*ratio)
+            weekDayLabel.textColor = UIColor.todaitGray()
+            headerView.addSubview(weekDayLabel)
+            
+            if index == 0 {
+                weekDayLabel.textColor = UIColor.todaitRed()
+            }
+            
+        }
+        
+        let line = UIView(frame:CGRectMake(0, 42.5*ratio, width, 0.5*ratio))
+        line.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
+        headerView.addSubview(line)
+        
+    }
+    
+    func updateDateLabel(date:NSDate){
+        let dateForm = NSDateFormatter()
+        dateForm.dateFormat = "yyyy.MM"
+        dateLabel.text = dateForm.stringFromDate(date)
+        
+        selectedWeekOfMonth = getWeekNumber(date)
+        
+        NSLog("%f 주차", selectedWeekOfMonth)
+        
+    }
+    
+    func getWeekNumber(date:NSDate)->CGFloat{
+        
+        var time = Int(date.timeIntervalSinceDate(getFirstDateOfMonth(date)) / (7*24*60*60))
+        
+        return CGFloat(time + 1)
+        
+    }
+    
+    
+    func addMonthView(){
+        
+        
+        
+        
+        monthCalendarVC = MonthCalendarViewController2()
+        
+        monthCalendarVC.delegate = self
+        monthCalendarVC.view.backgroundColor = UIColor.whiteColor()
+        monthCalendarVC.view.frame = CGRectMake(0,64+43*ratio-(selectedWeekOfMonth-1)*48*ratio,width,48*6*ratio)
+        
+        monthCalendarVC.dateNumber = selectedDateNumber
+        addChildViewController(monthCalendarVC)
+        view.addSubview(monthCalendarVC.view)
+        
+        
+        var panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: Selector("panGesture:"))
+        panGesture.delegate = self
+        monthCalendarVC.view.addGestureRecognizer(panGesture)
+        
+        
+    }
+    
+    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+    
+        
+        
+        
+        if gestureRecognizer.view == timeTableView {
+            
+            
+            var gesture = gestureRecognizer as! UIPanGestureRecognizer
+            var velocity = gesture.velocityInView(self.view)
+            
+            NSLog("time velocity %f",velocity.y)
+            
+            if ( abs(velocity.y) > abs(velocity.x) && velocity.y > 0 && timeTableView.contentOffset.y < 15*ratio) {
+                timeTableView.scrollEnabled = false
+                return true
+            }else if weekCalendarVC.view.hidden == true  && velocity.y < 0 {
+                timeTableView.scrollEnabled = false
+                return true
+            }
 
+            
+            return false
+        }
+        
+        
+        
+        var gesture = gestureRecognizer as! UIPanGestureRecognizer
+        var velocity = gesture.velocityInView(self.view)
+        
+        NSLog("pan velocity %f",velocity.y)
+        
+        return abs(velocity.y) > abs(velocity.x)
+        
+
+    }
+    
+    func panGesture(gesture:UIPanGestureRecognizer){
+        
+        /*
+        if gesture.view == timeTableView {
+         
+            NSLog("time gesture")
+            var velocity = gesture.velocityInView(self.view)
+            
+            if timeTableView.contentOffset.y < 0 && velocity.y > 0 {
+                scrollCalendar(gesture)
+            }
+            
+            return
+        }
+        */
+        
+        scrollCalendar(gesture)
+        
+    }
+    
+    func scrollCalendar(gesture:UIPanGestureRecognizer){
+        switch gesture.state {
+        case UIGestureRecognizerState.Began:
+            weekCalendarVC.view.hidden = true
+            panStart = gesture.locationInView(self.view)
+        case UIGestureRecognizerState.Changed:
+            panEnd = gesture.locationInView(self.view)
+            gestureMoved()
+            panStart = gesture.locationInView(self.view)
+        case UIGestureRecognizerState.Ended:
+            gestureEnded()
+        case UIGestureRecognizerState.Cancelled:
+            gestureEnded()
+        default: break
+            
+        }
+    }
+    
+    func gestureMoved(){
+        
+        var diff = panStart.y - panEnd.y
+        
+        let baseOriginY = 64 + 43*ratio
+        let minOriginY = baseOriginY - 48*ratio*selectedWeekOfMonth
+        let maxOriginY = baseOriginY - 48*5*ratio
+        let topDistance = 48*ratio*(selectedWeekOfMonth-1)
+        let bottomDistance = 48*ratio*(6-selectedWeekOfMonth)
+        
+        
+        var calendarDiff = 1*(selectedWeekOfMonth-1)*diff/6
+        var timeTableDiff = 5*diff/6
+        
+        let monthRect = monthCalendarVC.view.frame
+        let monthX = monthRect.origin.x
+        let monthY = monthRect.origin.y
+        let monthW = monthRect.size.width
+        let monthH = monthRect.size.height
+        
+        
+        
+        //NSLog("위는 %f 움직이고 , 아래 %f 움직이기",selectedWeekOfMonth,6-selectedWeekOfMonth)
+        
+        if monthY - calendarDiff < minOriginY {
+            //NSLog("최대 올라감C %f", monthY - calendarDiff)
+            monthCalendarVC.view.frame = CGRectMake(monthX,baseOriginY,monthW,monthH)
+        }else if(monthY - calendarDiff >= minOriginY && monthY - calendarDiff <= baseOriginY) {
+            //NSLog("중간C %f",monthY - calendarDiff)
+             monthCalendarVC.view.frame = CGRectMake(monthX,monthY - calendarDiff, monthW, monthH)
+        }else {
+            
+            //NSLog("최대내려감C %f",monthY - calendarDiff)
+            monthCalendarVC.view.frame = CGRectMake(monthX,baseOriginY,monthW,monthH)
+        }
+        
+        
+        
+        if timeTableView.frame.origin.y - timeTableDiff < baseOriginY + 48*ratio {
+            //NSLog("최대 올라감 %f", timeTableView.frame.origin.y - timeTableDiff)
+            timeTableView.frame = CGRectMake(0, baseOriginY + 48*ratio, 245*ratio, timeTableView.frame.size.height)
+            monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-48*self.ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, 48*6*self.ratio)
+        }else if(timeTableView.frame.origin.y - timeTableDiff >= baseOriginY + 48*ratio && timeTableView.frame.origin.y - timeTableDiff <= baseOriginY + 48*6*ratio) {
+            
+            //NSLog("중간 %f",timeTableView.frame.origin.y - timeTableDiff)
+            timeTableView.frame = CGRectMake(0, timeTableView.frame.origin.y - timeTableDiff, 245*ratio, timeTableView.frame.size.height)
+            
+        }else {
+            
+            //NSLog("최대내려감 %f",timeTableView.frame.origin.y - timeTableDiff)
+            timeTableView.frame = CGRectMake(0, baseOriginY + 48*6*ratio, 245*ratio, timeTableView.frame.size.height)
+        }
+        
+        
+    }
+    
+    func gestureEnded(){
+        
+        let baseOriginY = 64 + 43*ratio
+        
+        if timeTableView.frame.origin.y >= 250*ratio {
+            
+            UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+                self.timeTableView.frame = CGRectMake(0, baseOriginY + 48*6*self.ratio, 245*self.ratio, self.timeTableView.frame.size.height)
+                self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY, 320*self.ratio, 48*6*self.ratio)
+                
+            }, completion: { (Bool) -> Void in
+                self.timeTableView.scrollEnabled = true
+                self.weekCalendarVC.view.hidden = true
+            })
+        }else{
+            UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+                self.timeTableView.frame = CGRectMake(0, baseOriginY + 48*self.ratio, 245*self.ratio, self.timeTableView.frame.size.height)
+                self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-48*self.ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, 48*6*self.ratio)
+                }, completion: { (Bool) -> Void in
+                    self.timeTableView.scrollEnabled = true
+                    self.weekCalendarVC.view.hidden = false
+            })
+        }
+        
+    }
+    
+    func updateDate(monthDate: NSDate,from:String) {
+        NSLog("Receive Date %@", monthDate)
+        updateDateLabel(monthDate)
+        
+        selectedDateNumber = getDateNumberFromDate(monthDate)
+        
+        monthCalendarVC.setSelectedDateNumber(selectedDateNumber)
+        weekCalendarVC.setSelectedDateNumber(selectedDateNumber)
+        
+        
+        /*
+        switch from {
+        case "Month": weekCalendarVC.setSelectedDateNumber(selectedDateNumber)
+        case "Week": monthCalendarVC.setSelectedDateNumber(selectedDateNumber)
+        default: monthCalendarVC.setSelectedDateNumber(selectedDateNumber)
+                 weekCalendarVC.setSelectedDateNumber(selectedDateNumber)
+
+        }
+        */
+    }
+    
+    func addWeekView(){
+        
+        weekCalendarVC = WeekCalendarViewController()
+        addChildViewController(weekCalendarVC)
+        weekCalendarVC.delegate = self
+        
+        weekCalendarVC.view.backgroundColor = UIColor.whiteColor()
+        weekCalendarVC.view.frame = CGRectMake(0,64+43*ratio,width,48*ratio)
+        //weekCalendarVC.view.alpha = 0.1
+        weekCalendarVC.dateNumber = selectedDateNumber
+        view.addSubview(weekCalendarVC.view)
+        
+        
+        var panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: Selector("panGesture:"))
+        panGesture.delegate = self
+        weekCalendarVC.view.addGestureRecognizer(panGesture)
+        
+    }
+
+    
     func addTimeTableView(){
         
-        timeTableView = UIScrollView(frame: CGRectMake(0, navigationHeight*ratio, width, height-navigationHeight*ratio))
-        timeTableView.contentSize = CGSizeMake(width,27*TimeTableHeight*ratio)
+        var originY:CGFloat = 64 + 43*ratio + 48*ratio
+        
+        timeTableView = UIScrollView(frame: CGRectMake(0, originY, 245*ratio, height-originY))
+        timeTableView.contentSize = CGSizeMake(245*ratio,27*TimeTableHeight*ratio)
         timeTableView.backgroundColor = UIColor.whiteColor()
+        timeTableView.delegate = self
+        
+        timeTableView.layer.shadowOffset = CGSizeMake(0, 0.5*ratio)
+        timeTableView.layer.shadowColor = UIColor.blackColor().CGColor
+        timeTableView.layer.shadowRadius = 2
+        timeTableView.layer.shadowOpacity = 1
         
         view.addSubview(timeTableView)
+        
+    
+        var panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: Selector("panGesture:"))
+        panGesture.delegate = self
+        timeTableView.addGestureRecognizer(panGesture)
     }
     
     func addTimeTableSubViews(){
@@ -61,16 +378,16 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
             
             timeComp.hour = i-1
             
-            let timeLabel = UILabel(frame: CGRectMake(15*ratio, TimeTableHeight * CGFloat(i)*ratio,50*ratio,TimeTableHeight*ratio))
+            let timeLabel = UILabel(frame: CGRectMake(9*ratio,-20*ratio+TimeTableHeight * CGFloat(i)*ratio,50*ratio,12*ratio))
             timeLabel.text = dateForm.stringFromDate(NSCalendar.currentCalendar().dateFromComponents(timeComp)!)
             timeLabel.textAlignment = NSTextAlignment.Left
-            timeLabel.textColor = UIColor.colorWithHexString("#969696")
-            timeLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+            timeLabel.textColor = UIColor.todaitDarkGray()
+            timeLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 7.5*ratio)
             timeTableView.addSubview(timeLabel)
             
             
-            let timeLineView = UIView(frame: CGRectMake(50*ratio, TimeTableHeight * CGFloat(i)*ratio, 160*ratio, 1*ratio))
-            timeLineView.backgroundColor = UIColor.todaitLightGray()
+            let timeLineView = UIView(frame: CGRectMake(50*ratio,-15*ratio+TimeTableHeight * CGFloat(i)*ratio, 160*ratio, 1*ratio))
+            timeLineView.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
             timeTableView.addSubview(timeLineView)
         }
     }
@@ -111,7 +428,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
         
         
         let historyView = UIView(frame:frame)
-        historyView.backgroundColor = UIColor.todaitLightGray()
+        historyView.backgroundColor = color.colorWithAlphaComponent(0.05)
         //historyView.alpha = 0.5
         historyView.layer.cornerRadius = 4*ratio
         historyView.clipsToBounds = true
@@ -119,7 +436,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
         
         
         
-        let colorBox = UIView(frame:CGRectMake(0,0,10*ratio,height))
+        let colorBox = UIView(frame:CGRectMake(0,0,6*ratio,height))
         colorBox.backgroundColor = color
         historyView.addSubview(colorBox)
         
@@ -137,12 +454,12 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
             let color = historyItem.getColor()
             
             let historyView = UIView(frame:CGRectMake(originX,originY,width,height))
-            historyView.backgroundColor = UIColor.todaitLightGray()
+            historyView.backgroundColor = color.colorWithAlphaComponent(0.3)
             historyView.alpha = 0.5
             historyView.layer.cornerRadius = 4*ratio
             historyView.clipsToBounds = true
             
-            let colorBox = UIView(frame:CGRectMake(0,0,10*ratio,height))
+            let colorBox = UIView(frame:CGRectMake(0,0,6*ratio,height))
             colorBox.backgroundColor = color
             historyView.addSubview(colorBox)
             
@@ -187,6 +504,42 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
     }
     
     
+    func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWithGestureRecognizer otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        
+        
+        if gestureRecognizer.view == timeTableView {
+            NSLog("time ->",1)
+        }else{
+            NSLog("cal ->",1)
+        }
+        
+        if otherGestureRecognizer.view == timeTableView {
+            NSLog("time ",1)
+        }else{
+            NSLog("cal ",1)
+        }
+        
+        
+        return false
+    }
+    
+    
+    
+    func scrollViewDidScroll(scrollView: UIScrollView) {
+        
+        
+        
+    }
+    
+    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+        
+        if scrollView.contentOffset.y < 0 {
+            
+            
+            //gestureRecognizer(<#gestureRecognizer: UIGestureRecognizer#>, shouldRecognizeSimultaneouslyWithGestureRecognizer: <#UIGestureRecognizer#>)
+        }
+        
+    }
  
     
     override func didReceiveMemoryWarning() {
@@ -194,22 +547,18 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate{
         // Dispose of any resources that can be recreated.
     }
     
-
-    
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        NSLog("touchesBegan", 0)
-    }
-    
-    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         todaitNavBar.todaitDelegate = self
-        todaitNavBar.backButton.hidden = false
+        todaitNavBar.backButton.hidden = true
         todaitNavBar.shadowImage = UIImage()
         self.titleLabel.text = "Time Table"
         
         self.screenName = "TimeTable Activity"
     }
+    
+    
+    
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)

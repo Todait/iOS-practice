@@ -31,7 +31,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     var colorData:[String] = ["#FFFB887E","#FFF1CB67","#FFAA9DDE","#FF5694CF","#FF5A5A5A","#FFBEFCEF","#FFC6B6A7","#FF25D59B","#FFDA5A68","#FFF5A26F"]
     
-    let headerHeight: CGFloat = 240
+    let headerHeight: CGFloat = 212
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var timeChart:TimeChart!
@@ -206,31 +206,27 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         view.addSubview(popUp)
         
         
-        UIView.animateWithDuration(0.5, animations: { () -> Void in
-            
+        UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             popCircle.transform = CGAffineTransformMakeScale(1.2, 1.2)
             popUp.font = UIFont(name: "AvenirNext-Regular", size: 16*self.ratio)
             
             }) { (Bool) -> Void in
                 
                 
-                UIView.animateWithDuration(1.5, animations: { () -> Void in
+                UIView.animateWithDuration(1.1, animations: { () -> Void in
                     
                     }, completion: { (Bool) -> Void in
                         
                         popCircle.removeFromSuperview()
                         popUp.removeFromSuperview()
                 })
+                
         }
         
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.clearColor()
-        
-        
-        
         
         addParallelView()
         addMainTableView()
@@ -268,7 +264,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         timeChart.updateChart(timeValue)
         //timeChart.
         timeChart.delegate = self
-        parallelView.addSubview(timeChart)
+        //parallelView.addSubview(timeChart)
         
         
         
@@ -371,7 +367,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func addMainTableView(){
         
-        mainTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio,width,height - navigationHeight*ratio - 47*ratio), style: UITableViewStyle.Grouped)
+        mainTableView = UITableView(frame: CGRectMake(0,navigationHeight,width,height - navigationHeight - 47*ratio), style: UITableViewStyle.Grouped)
         mainTableView.registerClass(TaskTableViewCell.self, forCellReuseIdentifier: "cell")
         mainTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
         mainTableView.delegate = self
@@ -559,16 +555,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         parallelView.remainingTimeLabel.text = "오늘 남은 시간 \(getTimeStringFromSeconds(remainingTime))"
     }
     
-    func getTimeStringFromSeconds(seconds : NSTimeInterval ) -> String {
-        
-        
-        let remainder : Int = Int(seconds % 3600 )
-        let hour : Int = Int(seconds / 3600)
-        let minute : Int = Int(remainder / 60)
-        let second : Int = Int(remainder % 60)
-        
-        return String(format:  "%02lu:%02lu:%02lu", arguments: [hour,minute,second])
-    }
+    
     
     func calculateRemainingTime(){
         
@@ -691,18 +678,18 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        addSettingBtn()
+        //addSettingBtn()
         
         
-        addTabbarView()
-        addHomeButton()
+        //addTabbarView()
+        //addHomeButton()
         //addCalendarButton()
-        addTimeTableButton()
-        addStatisticsButton()
+        //addTimeTableButton()
+        //addStatisticsButton()
         addShowCategoryButton()
-        addTaskButton()
-        addPhotoButton()
-        addProfileButton()
+        //addTaskButton()
+        //addPhotoButton()
+        //addProfileButton()
         timerStart()
         
         titleLabel.text = "Todait"
@@ -852,7 +839,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         cell.indexPath = indexPath
         cell.percentLayer.strokeEnd = 0
         cell.percentLayer.strokeColor = UIColor.todaitLightGray().CGColor
-        cell.percentLabel.textColor = UIColor.todaitLightGray()
+        cell.percentLayer.lineWidth = 3*ratio
+        cell.percentLabel.textColor = UIColor.todaitDarkGray()
         
         let task:Task! = taskData[indexPath.row]
         
@@ -861,11 +849,13 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         let day:Day! = task.getDay(getTodayDateNumber())
         
         
-        cell.titleLabel.text = task.name
+        cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.done_second.integerValue))
         
         if let isDayValid = day {
             
-            cell.contentsLabel.text = day.getProgressString()
+            //cell.contentsLabel.text = day.getProgressString()
+            
+            cell.contentsTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
             cell.percentLabel.text = String(format: "%lu%@", Int(day.done_amount.floatValue/day.expect_amount.floatValue * 100),"%")
             cell.percentLayer.strokeColor = day.getColor().CGColor
             cell.percentLayer.strokeEnd = CGFloat(day.done_amount.floatValue/day.expect_amount.floatValue)
@@ -873,7 +863,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
         }else{
             
-            cell.contentsLabel.text = "공부 시작 전입니다"
+            //cell.contentsLabel.text = "공부 시작 전입니다"
         }
         
         
@@ -889,7 +879,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 50*ratio
+        return 58*ratio
     }
     
     // ScrollView
@@ -970,7 +960,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             
         }
         
-        return getTimeStringFromSeconds(NSTimeInterval(totalSecond))
+        return getTimeStringOfTwoArgumentsFromSeconds(NSTimeInterval(totalSecond))
         
     }
     
