@@ -8,14 +8,18 @@
 
 import UIKit
 
+protocol CalendarDelegate: NSObjectProtocol {
+    
+    func updateDate(date:NSDate,from:String)
+    
+}
 
-
-
-class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource{
+class MonthCalendarViewController2: BasicViewController,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource{
     
     var monthView:UICollectionView!
     var selectedIndex:NSIndexPath! = NSIndexPath(forRow: 0, inSection: 0)
     var delegate:CalendarDelegate!
+    var dateNumber:NSNumber!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +28,59 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
         addMonthView()
         
         
+    }
+    
+    func setSelectedDateNumber(dateNumber:NSNumber){
+        self.dateNumber = dateNumber
+    
+        
+        var toDate = getDateFromDateNumber(self.dateNumber)
+        var fromDate = getOneDayOfMonth(getCurrentDate(selectedIndex))
+        var scrollCount = getNumberOfWeekViewScrollCount(fromDate,to:toDate)
+        var newIndexPath = NSIndexPath(forRow: selectedIndex.row + Int(scrollCount), inSection: 0)
+        monthView.scrollToItemAtIndexPath(newIndexPath, atScrollPosition: UICollectionViewScrollPosition.Right, animated: false)
+        
+        
+        
+        
+        
+        
+        
+        var cell = monthView.cellForItemAtIndexPath(selectedIndex) as! MonthCalendarCell2
+        
+        for index in 0...41 {
+            
+            var button = cell.buttons[index]
+            if button.dateNumber == dateNumber {
+                button.backgroundColor = UIColor.grayColor()
+            }else{
+                button.backgroundColor = UIColor.whiteColor()
+            }
+        }
+    }
+    
+    
+    func getNumberOfWeekViewScrollCount(from:NSDate,to:NSDate)->NSNumber{
+        var fromDateNumber = getDateNumberFromDate(from)
+        var toDateNumber = getDateNumberFromDate(to)
+        
+        var dateForm = NSDateFormatter()
+        dateForm.dateFormat = "M"
+        
+        if  dateForm.stringFromDate(from) != dateForm.stringFromDate(to) {
+            
+            if toDateNumber.integerValue > fromDateNumber.integerValue {
+                NSLog("return 1", 0)
+                return 1
+            }else if toDateNumber.integerValue < fromDateNumber.integerValue {
+                NSLog("return -1", 0)
+                return -1
+            }
+        }
+        
+        NSLog("return 0", 0)
+        
+        return 0
     }
     
     func setupRatio(){
@@ -40,12 +97,13 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
         
         monthView = UICollectionView(frame: CGRectMake(0, 0, width, 48*6*ratio), collectionViewLayout:layout)
         
-        monthView.registerClass(MonthCalendarCell.self, forCellWithReuseIdentifier: "monthCell")
+        monthView.registerClass(MonthCalendarCell2.self, forCellWithReuseIdentifier: "monthCell")
         monthView.backgroundColor = UIColor.clearColor()
         monthView.delegate = self
         monthView.dataSource = self
         monthView.pagingEnabled = true
         monthView.showsHorizontalScrollIndicator = false
+        monthView.contentInset = UIEdgeInsetsZero
         monthView.contentOffset = CGPointMake(width * 500, monthView.contentOffset.y)
         
         view.addSubview(monthView)
@@ -54,43 +112,70 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
     
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return 1000
+        return 1
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 42
+        return 1000
     }
     
     
     func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
         
-        /*
-        if indexPath.section != selectedIndex.section {
-            if self.delegate.respondsToSelector("updateMonth:"){
-                self.delegate.updateMonth(getCurrentDate(selectedIndex))
+        
+        if indexPath.row != selectedIndex.row {
+            if self.delegate.respondsToSelector("updateDate:from:"){
+                NSLog("Month Delegate", 1)
+                
+                var newDate = getOneDayOfMonth(getCurrentDate(selectedIndex))
+                dateNumber = getDateNumberFromDate(newDate)
+                self.delegate.updateDate(newDate,from:"Month")
             }
         }
-        */
         
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("monthCell", forIndexPath: indexPath) as! MonthCalendarCell
+        NSLog("Month cellforrow", 1)
         
-        var adjustIndexPath = getAdjustIndexPath(indexPath)
-        cell.dayLabel.text = getDayOfIndexPath(adjustIndexPath)
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("monthCell", forIndexPath: indexPath) as! MonthCalendarCell2
+        
+        var monthDate = getCurrentDate(indexPath)
+        var date = getFirstDateOfMonth(getCurrentDate(indexPath))
+        var dateForm = NSDateFormatter()
+        var currentDate = date
+        
         selectedIndex = indexPath
         
+        dateForm.dateFormat = "d"
+        
+        var monthForm = NSDateFormatter()
+        monthForm.dateFormat = "M"
+        var month = monthForm.stringFromDate(monthDate)
         
         
-        if selectedIndex == indexPath {
-            cell.backgroundColor = UIColor.todaitLightGray()
-        }else{
-            cell.backgroundColor = UIColor.whiteColor()
+        for var index = 0 ; index < 42 ; index++ {
+            
+            currentDate = date.addDay(index)
+            let button = cell.buttons[index]
+            button.delegate = self.delegate
+            button.setTitle(dateForm.stringFromDate(currentDate), forState: UIControlState.Normal)
+            button.dateNumber = getDateNumberFromDate(currentDate)
+            
+            
+            if monthForm.stringFromDate(currentDate) == month {
+                button.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
+            }else{
+                button.setTitleColor(UIColor.todaitLightGray(), forState: UIControlState.Normal)
+            }
+            
+            if dateNumber == button.dateNumber {
+                button.backgroundColor = UIColor.grayColor()
+            }else{
+                button.backgroundColor = UIColor.whiteColor()
+            }
         }
-        
-        
         
         return cell
         
@@ -103,7 +188,7 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
         
         return NSIndexPath(forRow: value, inSection: indexPath.section)
     }
-
+    
     
     func getDayOfIndexPath(indexPath:NSIndexPath)->String{
         
@@ -122,7 +207,7 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
         
         var adjustDate = getAdjustDate(NSDate())
         
-        return adjustDate.addMonth(Int(indexPath.section - 500))
+        return adjustDate.addMonth(Int(indexPath.row - 500))
     }
     
     func getAdjustDate(date:NSDate)->NSDate{
@@ -131,13 +216,24 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
     }
     
     
+    func getOneDayOfMonth(date:NSDate)->NSDate{
+        
+        var adjustDate = getAdjustDate(date)
+        
+        let firstDayOfMonthComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitWeekday|NSCalendarUnit.CalendarUnitHour, fromDate:adjustDate)
+        firstDayOfMonthComp.day = 1
+        firstDayOfMonthComp.hour = 5
+        
+        var firstDate:NSDate = NSCalendar.currentCalendar().dateFromComponents(firstDayOfMonthComp)!
+        
+        return firstDate
+    }
     
     func getFirstDateOfMonth(date:NSDate)->NSDate{
         
         let firstDayOfMonthComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitWeekday|NSCalendarUnit.CalendarUnitHour, fromDate:date)
         firstDayOfMonthComp.day = 1
-        firstDayOfMonthComp.hour = 11
-        firstDayOfMonthComp.minute = 59
+        firstDayOfMonthComp.hour = 5
         
         var firstDate:NSDate = NSCalendar.currentCalendar().dateFromComponents(firstDayOfMonthComp)!
         
@@ -162,8 +258,8 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
-        return CGSizeMake(width/7, 48*ratio)
-        
+        return CGSizeMake(width,288*ratio)
+    
     }
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAtIndex section: Int) -> CGFloat {
