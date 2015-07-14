@@ -10,16 +10,21 @@ import UIKit
 import CoreData
 import Photos
 
-class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CategoryUpdateDelegate,CalendarDelegate,TimeLogDelegate,AmountLogDelegate,FocusDelegate{
+class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate,CategoryUpdateDelegate,CalendarDelegate,TimeLogDelegate,AmountLogDelegate,FocusDelegate,UIGestureRecognizerDelegate,DetailMemoViewDelegate{
     
     
     var detailView:DetailView!
     
     var memoHeaderView:UIView!
-    var monthView:UIView!
-    var memoView:UIView!
     
-    var weekCalendarVC:DetailWeekCalendarViewController!
+    var calendarView:UIView!
+    
+    var monthView:UIView!
+    var memoView:DetailMemoView!
+    
+    
+    var calendarButton:UIButton!
+    
     
     var detailTableView: UITableView!
     var detailScrollView: UIScrollView!
@@ -42,7 +47,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     
     var selectedDateNumber:NSNumber!
-    
+    var selectedWeekOfMonth:CGFloat! = 2
     
     let headerMinHeight:CGFloat = 100
     let hederMaxHeight:CGFloat = 215
@@ -50,25 +55,64 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     var isCalendarScroll:Bool = true
     
     
+    var panStart:CGPoint!
+    var panEnd:CGPoint!
+    
+    var isCalendarShow:Bool = false
+    var button:UIButton!
+    
+    
+    var weekCalendarVC:DetailWeekCalendarViewController!
+    var monthCalendarVC:DetailMonthCalendarViewController!
+    
+    var isAnimated:Bool = false
+    
     override func viewDidLoad(){
         super.viewDidLoad()
         view.backgroundColor = UIColor.whiteColor()
         
         selectedDateNumber = getDateNumberFromDate(NSDate())
+        selectedWeekOfMonth = getWeekNumber(NSDate())
         
-        setupDay()
+        setupDay(getTodayDateNumber())
         addHeaderView()
         addCalendarView()
-        addInfoView()
+        addWeekHeaderView()
         
         
-        //addDetailTable()
-        addDetailScrollView()
+        addMemoView()
+        addCalendarView()
+       
+        
+        addDetailTable()
+        
+        
+        addMonthCalendarVC()
+        addWeekCalendarVC()
+        
+        view.addSubview(detailView)
+        view.addSubview(memoView)
+        
+         addCalendarButton()
+        
+        
+        //addDetailScrollView()
     }
     
-    func setupDay(){
+    func zzz(){
+        NSLog("zz")
+    }
+    
+    func getWeekNumber(date:NSDate)->CGFloat{
         
-        if let dayValid = task.getDay(getTodayDateNumber()) {
+        var time = Int(date.timeIntervalSinceDate(getFirstDateOfMonth(date)) / (7*24*60*60))
+        
+        return CGFloat(time + 1)
+        
+    }
+    
+    func setupDay(dateNumber:NSNumber){
+        if let dayValid = task.getDay(dateNumber) {
             day = dayValid
             doneCountEnabled = true
             progressPercent = day.getProgressPercent()
@@ -89,39 +133,44 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     func addHeaderView(){
         
         addDetailView()
-        addMonthView()
         addMemoView()
     }
     
+    func addCalendarView(){
+        calendarView = UIView(frame: CGRectMake(0, 255*ratio, width, 60*ratio))
+        calendarView.clipsToBounds = true
+        //view.addSubview(calendarView)
+        
+    }
+    
     func addDetailView(){
-        detailView = DetailView(frame: CGRectMake(0, 0, width, 215*ratio))
+        detailView = DetailView(frame: CGRectMake(0, 0, width, 258*ratio))
         detailView.dateLabel.text = task.getStringOfPeriodProgress()
         detailView.timeLabel.text = task.getDoneTimeString()
         detailView.amountLabel.text = task.getDoneAmountString()
         detailView.categoryLabel.text = task.category_id.name
         detailView.categoryCircle.backgroundColor = task.getColor()
         detailView.mainImageView.image = UIImage(named: "track.jpg")
-    }
-    
-    func addMonthView(){
-        monthView = UIView(frame: CGRectMake(0, 0, 320*ratio, 48*6*ratio))
-        monthView.backgroundColor = UIColor.yellowColor()
-    }
-    
-    func addMemoView(){
         
-        memoView = UIView(frame: CGRectMake(0, 318*ratio, 320*ratio, 186*ratio))
-        //memoView.backgroundColor = UIColor.orangeColor()
+        
+        
+        var panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: Selector("panGesture:"))
+        panGesture.delegate = self
+        detailView.addGestureRecognizer(panGesture)
+        
         
     }
+   
     
     
-    func addCalendarView(){
+    func addWeekHeaderView(){
         
         
         
-        var headerView = UIView(frame: CGRectMake(0, 215*ratio, width, 103*ratio))
+        var headerView = UIView(frame: CGRectMake(0, 215*ratio, width, 43*ratio))
         headerView.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
+        headerView.clipsToBounds = true
         
         dateLabel = UILabel(frame: CGRectMake(15*ratio, 0, 290*ratio, 23*ratio))
         dateLabel.textColor = UIColor.todaitGray()
@@ -146,6 +195,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             if index == 0 {
                 weekDayLabel.textColor = UIColor.todaitRed()
+            }else if index == 6 {
+                weekDayLabel.textColor = UIColor.todaitBlue()
             }
             
         }
@@ -153,217 +204,574 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         let line = UIView(frame:CGRectMake(0, 65.5*ratio, width, 0.5*ratio))
         line.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
         detailView.addSubview(line)
-        
-        
-        
-        
-        weekCalendarVC = DetailWeekCalendarViewController()
-        addChildViewController(weekCalendarVC)
-        weekCalendarVC.view.backgroundColor = UIColor.whiteColor()
-        weekCalendarVC.view.frame = CGRectMake(0,43.5*ratio,width,60*ratio)
-        weekCalendarVC.dateNumber = selectedDateNumber
-        weekCalendarVC.delegate = self
-        headerView.addSubview(weekCalendarVC.view)
-        headerView.clipsToBounds = true
-        
-        
         detailView.addSubview(headerView)
+        
+        
+        
+        
+        
+        
+        
     }
     
-    func addInfoView(){
+    
+    func panGesture(gesture:UIPanGestureRecognizer){
         
+        scrollCalendar(gesture)
         
-        var memoHeaderLabel = UILabel(frame: CGRectMake(0, 116*ratio, width, 24.5*ratio))
-        memoHeaderLabel.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
-        memoHeaderLabel.textColor = UIColor.todaitGray()
-        memoHeaderLabel.textAlignment = NSTextAlignment.Center
-        memoHeaderLabel.text = "공부메모"
-        memoHeaderLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
-        memoView.addSubview(memoHeaderLabel)
+    }
+    
+    func scrollCalendar(gesture:UIPanGestureRecognizer){
         
-        
-        var diaryButton = UIButton(frame:CGRectMake(18*ratio,116*ratio+39*ratio,16*ratio,16*ratio))
-        diaryButton.setBackgroundImage(UIImage(named: "detail_basic_27@3x.png"), forState: UIControlState.Normal)
-        diaryButton.addTarget(self, action: Selector("diaryButtonClk"), forControlEvents: UIControlEvents.TouchDown)
-        
-        memoView.addSubview(diaryButton)
-        
-        var memoInfoLabel = UILabel(frame: CGRectMake(37*ratio, 116*ratio+24.5*ratio, 180*ratio, 45.5*ratio))
-        memoInfoLabel.textColor = UIColor.todaitGray()
-        memoInfoLabel.textAlignment = NSTextAlignment.Left
-        memoInfoLabel.text = "공부 일기를 추가하세요."
-        memoInfoLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
-        
-        memoView.addSubview(memoInfoLabel)
-        
-        
-        var focusScore:CGFloat = CGFloat(day.score.floatValue)
-        
-        
-        for index in 0...4 {
+        switch gesture.state {
+        case UIGestureRecognizerState.Began:
+            //weekCalendarVC.view.hidden = true
+            panStart = gesture.locationInView(self.view)
+        case UIGestureRecognizerState.Changed:
+            panEnd = gesture.locationInView(self.view)
+            gestureMoved(gesture)
+            panStart = gesture.locationInView(self.view)
+        case UIGestureRecognizerState.Ended:
+            gestureEnded(gesture)
+        case UIGestureRecognizerState.Cancelled:
+            gestureEnded(gesture)
+        default: break
             
-            var imageView = UIImageView(frame: CGRectMake(200*ratio + 17*ratio * CGFloat(index), 116*ratio+39*ratio, 14*ratio, 14*ratio))
-            imageView.image = UIImage(named: "detail_basic_30@3x.png")
+        }
+    }
+    
+    func gestureMoved(gesture:UIPanGestureRecognizer){
+        
+        
+        
+        var translation = gesture.translationInView(self.view)
+        var gestureView = gesture.view as UIView!
+        
+        //NSLog("velocity %f",gesture.velocityInView(self.view).y)
+        
+        
+        if gestureView == detailView {
+            gestureView.center = CGPointMake(gestureView.center.x , gestureView.center.y + translation.y)
             
+            detailViewScroll(gesture)
+        }else if gestureView == monthCalendarVC.view {
             
-            memoView.addSubview(imageView)
+            //memoViewScroll(gesture)
             
-            if index > Int(focusScore) {
-                
-            }else if index == Int(focusScore){
-                
-                
-                var percent = focusScore - CGFloat(index)
-                
-                var path = UIBezierPath()
-                path.moveToPoint(CGPointMake(0*ratio,7*ratio))
-                path.addLineToPoint(CGPointMake(14*ratio,7*ratio))
-                
-                
-                var colorLayer = CAShapeLayer()
-                colorLayer.path = path.CGPath
-                colorLayer.fillColor = UIColor.todaitGreen().CGColor
-                colorLayer.strokeColor = UIColor.todaitRed().CGColor
-                colorLayer.strokeStart = 0
-                colorLayer.strokeEnd = percent
-                colorLayer.lineWidth = 14*ratio
-                
-                
-                var maskLayer = CALayer()
-                maskLayer.contents = UIImage(named: "detail_diary_input_star@3x.png")!.CGImage
-                maskLayer.frame = CGRectMake(200*ratio + 17*ratio * CGFloat(index), 116*ratio+39*ratio, 14*ratio, 14*ratio)
-                maskLayer.mask = colorLayer
-                
-                memoView.layer.addSublayer(maskLayer)
-                
-            }else{
-                
-                var imageView = UIImageView(frame: CGRectMake(200*ratio + 17*ratio * CGFloat(index), 116*ratio+39*ratio, 14*ratio, 14*ratio))
-                imageView.image = UIImage(named: "detail_diary_input_star@3x.png")
-                
-                memoView.addSubview(imageView)
+            if isAnimated == false {
+                showWeekCalendar()
+                isAnimated = true
             }
+            
+            
+            
+            //monthCalendarScroll(gesture)
+            
+        }else if gestureView == weekCalendarVC.view {
+            
+            //NSLog("Week")
+            
+            
+            weekCalendarVC.view.hidden = true
+            
+            if isAnimated == false {
+                showMonthCalendar()
+                isAnimated = true
+            }
+            
+            
+            
+            //memoViewScroll(gesture)
+            
+            //var velocity = gesture.velocityInView(self.view).y
+            
+            /*
+            var diff = panStart.y - panEnd.y
+            var calendarDiff = 1*(selectedWeekOfMonth-1)*diff/6
+            var timeTableDiff = 5*diff/6
+            
+            
+            
+            
+            var minOfMonth = weekCalendarVC.view.frame.origin.y - 60 * ratio * (selectedWeekOfMonth-1) + 60 * 3 * ratio
+            
+            //Month 위치조정
+            
+            
+            if monthCalendarVC.view.center.y - calendarDiff < minOfMonth {
+                NSLog("최대 올라감C %f", monthCalendarVC.view.center.y - calendarDiff)
+                //monthCalendarVC.view.center = CGPointMake(monthCalendarVC.view.center.x , minOfMonth)
+                //monthCalendarVC.view.frame = CGRectMake(monthX,baseOriginY,monthW,monthH)
+            }else if(monthCalendarVC.view.center.y - calendarDiff >= minOfMonth && monthCalendarVC.view.center.y - calendarDiff <= minOfMonth + 60*6*ratio) {
+                NSLog("중간C %f",monthCalendarVC.view.center.y - calendarDiff)
+                //monthCalendarVC.view.center =  CGPointMake(monthCalendarVC.view.center.x, minOfMonth - calendarDiff)//CGRectMake(monthX,monthY - calendarDiff, monthW, monthH)
+            }else {
+                
+                NSLog("최대내려감C %f",monthCalendarVC.view.center.y - calendarDiff)
+                //monthCalendarVC.view.frame = CGRectMake(monthX,baseOriginY,monthW,monthH)
+            }
+
+            */
+            
+        }else if gestureView == memoView {
+           
+            memoViewScroll(gesture)
+           
+        }
+        
+        gesture.setTranslation(CGPointMake(0, 0), inView: self.view)
+        
+        
+        /*
+        var diff = panStart.y - panEnd.y
+        
+        let baseOriginY = 64 + 43*ratio
+        let minOriginY = baseOriginY - 48*ratio*selectedWeekOfMonth
+        let maxOriginY = baseOriginY - 48*5*ratio
+        let topDistance = 48*ratio*(selectedWeekOfMonth-1)
+        let bottomDistance = 48*ratio*(6-selectedWeekOfMonth)
+        
+        
+        var calendarDiff = 1*(selectedWeekOfMonth-1)*diff/6
+        var timeTableDiff = 5*diff/6
+        
+        let monthRect = monthCalendarVC.view.frame
+        let monthX = monthRect.origin.x
+        let monthY = monthRect.origin.y
+        let monthW = monthRect.size.width
+        let monthH = monthRect.size.height
+        
+        
+        
+        //NSLog("위는 %f 움직이고 , 아래 %f 움직이기",selectedWeekOfMonth,6-selectedWeekOfMonth)
+        
+        if monthY - calendarDiff < minOriginY {
+            //NSLog("최대 올라감C %f", monthY - calendarDiff)
+            monthCalendarVC.view.frame = CGRectMake(monthX,baseOriginY,monthW,monthH)
+        }else if(monthY - calendarDiff >= minOriginY && monthY - calendarDiff <= baseOriginY) {
+            //NSLog("중간C %f",monthY - calendarDiff)
+            monthCalendarVC.view.frame = CGRectMake(monthX,monthY - calendarDiff, monthW, monthH)
+        }else {
+            
+            //NSLog("최대내려감C %f",monthY - calendarDiff)
+            monthCalendarVC.view.frame = CGRectMake(monthX,baseOriginY,monthW,monthH)
         }
         
         
-        let focusButton = UIButton(frame: CGRectMake(200*ratio , 70*ratio+24.5*ratio, 90*ratio, 45.5*ratio))
-        focusButton.backgroundColor = UIColor.clearColor()
-        focusButton.addTarget(self, action: Selector("focusButtonClk"), forControlEvents: UIControlEvents.TouchDown)
         
-        memoView.addSubview(focusButton)
+        if timeTableView.frame.origin.y - timeTableDiff < baseOriginY + 48*ratio {
+            //NSLog("최대 올라감 %f", timeTableView.frame.origin.y - timeTableDiff)
+            timeTableView.frame = CGRectMake(0, baseOriginY + 48*ratio, 245*ratio, timeTableView.frame.size.height)
+            monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-48*self.ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, 48*6*self.ratio)
+        }else if(timeTableView.frame.origin.y - timeTableDiff >= baseOriginY + 48*ratio && timeTableView.frame.origin.y - timeTableDiff <= baseOriginY + 48*6*ratio) {
+            
+            //NSLog("중간 %f",timeTableView.frame.origin.y - timeTableDiff)
+            timeTableView.frame = CGRectMake(0, timeTableView.frame.origin.y - timeTableDiff, 245*ratio, timeTableView.frame.size.height)
+            
+        }else {
+            
+            //NSLog("최대내려감 %f",timeTableView.frame.origin.y - timeTableDiff)
+            timeTableView.frame = CGRectMake(0, baseOriginY + 48*6*ratio, 245*ratio, timeTableView.frame.size.height)
+        }
         
-        
-        
-        
-        //
-        
-        var upperLine = UIView(frame:CGRectMake(0,0*ratio,width,0.5*ratio))
-        upperLine.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
-        memoView.addSubview(upperLine)
-        
-        
-        var timerButton = UIButton(frame:CGRectMake(50*ratio, 0*ratio+12.5*ratio, 58*ratio, 58*ratio))
-        
-        timerButton.setBackgroundImage(UIImage(named: "detail_basic_23@3x.png"), forState: UIControlState.Normal)
-        timerButton.clipsToBounds = true
-        timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        
-        memoView.addSubview(timerButton)
+        */
+    }
+    
+    func detailViewScroll(gesture:UIPanGestureRecognizer){
+        //NSLog("Detail")
         
         
+        if detailView.center.y <= -20*ratio {
+            detailView.center = CGPointMake(detailView.center.x, -20*ratio)
+            weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, -20*ratio + 258*ratio)
+        }else if(detailView.center.y >= 129*ratio) {
+            detailView.center = CGPointMake(detailView.center.x, 129*ratio)
+            weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 129*ratio + 258*ratio)
+        }
         
-        var timerAimLabel = UILabel(frame:CGRectMake(15*ratio,0*ratio+77*ratio,130*ratio,12*ratio))
-        timerAimLabel.text = "목표시간 01:30:00"
-        timerAimLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
-        timerAimLabel.textAlignment = NSTextAlignment.Center
-        timerAimLabel.textColor = UIColor.todaitGray()
+        weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, detailView.center.y + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height/2)
+        
+        if weekCalendarVC.view.hidden {
+            
+            monthCalendarVC.view.center = CGPointMake(monthCalendarVC.view.center.x , detailView.center.y + 129*ratio + 180*ratio)
+            memoView.frame = CGRectMake(0, monthCalendarVC.view.frame.origin.y + 360*ratio, 320*ratio, memoView.frame.size.height)
+            
+        }else{
+            monthCalendarVC.view.center = CGPointMake(monthCalendarVC.view.center.x , detailView.center.y + 129*ratio + 180*ratio)
+            //memoView.center = CGPointMake(memoView.center.x,weekCalendarVC.view.center.y + 30*ratio + )
+            memoView.frame = CGRectMake(0, weekCalendarVC.view.frame.origin.y + 60*ratio, 320*ratio, memoView.frame.size.height)
+        }
+    }
+    
+    func monthCalendarScroll(gesture:UIPanGestureRecognizer){
+        
+        NSLog("Month")
+        
+        
+        var translation = gesture.translationInView(self.view)
+        var gestureView = gesture.view as UIView!
+        
+        //var velocity = gesture.velocityInView(self.view).y
+        var diff = translation.y
+        var calendarDiff = 1*(selectedWeekOfMonth-1)*diff/6
+        var timeTableDiff = 5*diff/6
+        
+        //gestureView.center = CGPointMake(gestureView.center.x , gestureView.center.y + translation.y)
+        
+        var minOfMonth = weekCalendarVC.view.frame.origin.y - 60 * ratio * (selectedWeekOfMonth-1) + 60 * 3 * ratio
+        
+        //Month 위치조정
+        
+        
+        if monthCalendarVC.view.center.y + calendarDiff < minOfMonth {
+            NSLog("최대 올라감C %f", monthCalendarVC.view.center.y + calendarDiff)
+            monthCalendarVC.view.center = CGPointMake(monthCalendarVC.view.center.x , minOfMonth)
+            //monthCalendarVC.view.frame = CGRectMake(monthX,baseOriginY,monthW,monthH)
+            
+        }else if(monthCalendarVC.view.center.y + calendarDiff >= minOfMonth && monthCalendarVC.view.center.y - calendarDiff <= minOfMonth + 60*6*ratio) {
+            
+            NSLog("중간C %f",monthCalendarVC.view.center.y - calendarDiff)
+            monthCalendarVC.view.center =  CGPointMake(monthCalendarVC.view.center.x, minOfMonth + calendarDiff)//CGRectMake(monthX,monthY - calendarDiff, monthW, monthH)
+        }else {
+        
+            NSLog("최대내려감C %f",monthCalendarVC.view.center.y - calendarDiff)
+            monthCalendarVC.view.center =  CGPointMake(monthCalendarVC.view.center.x, minOfMonth + calendarDiff)
+        }
+        
+    }
+    
+    func memoViewScroll(gesture:UIPanGestureRecognizer){
+        
+        
+        var translation = gesture.translationInView(self.view)
+        var gestureView = gesture.view as UIView!
+        
+        //gestureView.center = CGPointMake(gestureView.center.x , gestureView.center.y + translation.y)
+        
+        
+        /*
+        
+        if detailView.center.y + translation.y <= -20*ratio {
+            
+            detailView.center = CGPointMake(detailView.center.x, -20*ratio)
+         
+            
+            //weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, -20*ratio + 215*ratio/2 + weekCalendarVC.view.frame.size.height/2)
+            
+            
+            if weekCalendarVC.view.hidden {
+                
+                
+            }else{
+                
+                if memoView.center.y + translation.y <= -20*ratio + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height {
+                    NSLog("memo Top")
+                    memoView.center = CGPointMake(memoView.center.x, -20*ratio + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height)
+                    
+                }else if memoView.center.y + translation.y >= 215*ratio/2 + detailView.frame.size.height/2 + memoView.frame.size.height{
+                    NSLog("memo Bottom")
+                    memoView.center = CGPointMake(memoView.center.x, 215*ratio + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height)
+                }else{
+                    NSLog("Memo!!")
+                }
+                
+            }
+            
+            
+        }else if(detailView.center.y + translation.y >= 129*ratio) {
+            detailView.center = CGPointMake(detailView.center.x, 129*ratio)
+            //weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 215*ratio/2 + 215*ratio)
+            //weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, -20*ratio + 215*ratio/2 + weekCalendarVC.view.frame.size.height/2)
+        }
+        
+        if memoView.center.y + translation.y <= 169*ratio + 243*ratio {
+            
+            memoView.center = CGPointMake(memoView.center.x, 169*ratio + 243*ratio)
+            
+        }else if memoView.center.y + translation.y >= 618*ratio {
+            memoView.center = CGPointMake(memoView.center.x, 618*ratio)
+        }
+        */
+        
+        
+        if weekCalendarVC.view.hidden {
+            
+            if detailView.center.y + translation.y <= -20*ratio {
+                showWeekCalendar()
+            }
+        }else{
+            
+            memoView.center = CGPointMake(gestureView.center.x , gestureView.center.y + translation.y)
+            detailView.center = CGPointMake(detailView.center.x , detailView.center.y + translation.y)
+            weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, weekCalendarVC.view.center.y + translation.y)
+            
+            if detailView.center.y + translation.y <= -20*ratio {
+                
+                detailView.center = CGPointMake(detailView.center.x, -20*ratio)
+                weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, -20*ratio + 129*ratio + 30*ratio)
+                memoView.center = CGPointMake(memoView.center.x, -20*ratio + 129*ratio + 60*ratio + 243*ratio)
+                
+                /*
+                if memoView.center.y + translation.y <= -20*ratio + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height {
+                    NSLog("memo Top")
+                    memoView.center = CGPointMake(memoView.center.x, -20*ratio + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height)
+                    
+                }else if memoView.center.y + translation.y >= 215*ratio/2 + detailView.frame.size.height/2 + memoView.frame.size.height{
+                    NSLog("memo Bottom")
+                    memoView.center = CGPointMake(memoView.center.x, 215*ratio + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height)
+                }else{
+                    NSLog("Memo!!")
+                }
+                */
+                
+            }else if(detailView.center.y + translation.y >= 129*ratio) {
+                detailView.center = CGPointMake(detailView.center.x, 129*ratio)
+                weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 129*ratio + 129*ratio + 30*ratio)
+                memoView.center = CGPointMake(memoView.center.x, 129*ratio + 129*ratio + 60*ratio + 243*ratio)
+                
+                //weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 215*ratio/2 + 215*ratio)
+                //weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, -20*ratio + 215*ratio/2 + weekCalendarVC.view.frame.size.height/2)
+            }
+            
+            /*
+            if memoView.center.y + translation.y <= 169*ratio + 243*ratio {
+                
+                memoView.center = CGPointMake(memoView.center.x, 169*ratio + 243*ratio)
+                
+            }else if memoView.center.y + translation.y >= 618*ratio {
+                memoView.center = CGPointMake(memoView.center.x, 618*ratio)
+            }
+            */
+        }
+        
+    }
+    
+    func gestureEnded(gesture:UIPanGestureRecognizer){
+        
+        /*
+        var velocity = gesture.velocityInView(self.view)
+        var magnitude = sqrt(velocity.y*velocity.y)
+        var slideMult = magnitude / 200
+        
+        var slideView:UIView! = gesture.view
+        var slideFactor:Float = 0.05 * Float(slideMult)
+        
+        var finalPoint = CGPointMake(160*ratio, slideView.center.y + velocity.y*CGFloat(slideFactor))
+        
+        
+        if slideView == detailView {
+            
+            finalPoint.y = min(max(finalPoint.y,-20*ratio),215*ratio/2)
+            
+            UIView.animateWithDuration(0.5, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+                self.detailView.center = finalPoint
+            }, completion: { (Bool) -> Void in
+                
+            })
+        }
+        
+        */
+        
+        /*
+        let baseOriginY = 64 + 43*ratio
+        
+        if timeTableView.frame.origin.y >= 250*ratio {
+            
+            UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+                self.timeTableView.frame = CGRectMake(0, baseOriginY + 48*6*self.ratio, 245*self.ratio, self.timeTableView.frame.size.height)
+                self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY, 320*self.ratio, 48*6*self.ratio)
+                
+                }, completion: { (Bool) -> Void in
+                    self.timeTableView.scrollEnabled = true
+                    self.weekCalendarVC.view.hidden = true
+            })
+        }else{
+            UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+                self.timeTableView.frame = CGRectMake(0, baseOriginY + 48*self.ratio, 245*self.ratio, self.timeTableView.frame.size.height)
+                self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-48*self.ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, 48*6*self.ratio)
+                }, completion: { (Bool) -> Void in
+                    self.timeTableView.scrollEnabled = true
+                    self.weekCalendarVC.view.hidden = false
+            })
+        }
+        
+        */
+    }
+    
+    
+    func addMemoView(){
+        
+        
+        memoView = DetailMemoView(frame: CGRectMake(0, 315*ratio, 320*ratio, 486*ratio))
+        memoView.backgroundColor = UIColor.whiteColor()
+        memoView.circleChart.updatePercent(progressPercent)
+        memoView.amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+        memoView.delegate = self
+        memoView.addFocusScore(CGFloat(day.score.floatValue))
+        
+        updateMemoTimerAimLabel()
+        
+        
+        
+        var panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: Selector("panGesture:"))
+        panGesture.delegate = self
+        memoView.addGestureRecognizer(panGesture)
+    }
+    
+    func addCalendarButton(){
+        
+        calendarButton = UIButton(frame: CGRectMake(115*ratio, 70*ratio, 90*ratio, 90*ratio))
+        calendarButton.backgroundColor = UIColor.todaitBlue()
+        calendarButton.tag = 0
+        calendarButton.addTarget(self, action: Selector("calendarButtonClk"), forControlEvents: UIControlEvents.TouchDown)
+        view.addSubview(calendarButton)
+    }
+    
+    func calendarButtonClk(){
+        
+        if calendarButton.tag == 0 {
+            showMonthCalendar()
+        }else{
+            showWeekCalendar()
+        }
+        
+    }
+    
+    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+        
+        
+        return !isAnimated
+        
+    }
+    
+    func showWeekCalendar(){
+        
+        NSLog("Show Week")
+        calendarButton.tag = 0
        
-        memoView.addSubview(timerAimLabel)
+        weekCalendarVC.view.hidden = true
         
+        /*
+        if isAnimated == true {
+            return
+        }else{
+            isAnimated = false
+        }
+        */
         
-        var timerLabel = UILabel(frame:CGRectMake(15*ratio,0*ratio+89*ratio,130*ratio,22*ratio))
-        timerLabel.text = "00:00:00"
-        timerLabel.font = UIFont(name: "AppleSDGothicNeo-Light",size:20*ratio)
-        timerLabel.textAlignment = NSTextAlignment.Center
-        timerLabel.textColor = UIColor.todaitOrange()
-       
-        memoView.addSubview(timerLabel)
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            
+            self.monthCalendarVC.view.frame = CGRectMake(0,self.detailView.center.y+129*self.ratio-60*self.ratio*(self.selectedWeekOfMonth-1)-0*self.ratio, 320*self.ratio, 360*self.ratio)
+            self.weekCalendarVC.view.hidden = true
+            self.memoView.frame = CGRectMake(0, self.detailView.center.y+129*self.ratio+60*self.ratio, 320*self.ratio, 486*self.ratio)
+            
+            }) { (Bool) -> Void in
+                
+                self.weekCalendarVC.view.hidden = false
+                self.isAnimated = false
+        }
         
+    }
+    
+    func showMonthCalendar(){
         
-        var timeLogButton = UIButton(frame: CGRectMake(15*ratio, 0*ratio+70*ratio, 130*ratio, 45*ratio))
-        timeLogButton.backgroundColor = UIColor.clearColor()
-        timeLogButton.addTarget(self, action: Selector("timeButtonClk"), forControlEvents: UIControlEvents.TouchDown)
-      
-        memoView.addSubview(timeLogButton)
+        weekCalendarVC.view.hidden = true
+        NSLog("Show Month")
+        calendarButton.tag = 1
         
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            
+            self.monthCalendarVC.view.frame = CGRectMake(0,self.detailView.center.y+129*self.ratio,320*self.ratio,360*self.ratio)
+            self.memoView.frame = CGRectMake(0, self.detailView.center.y+129*self.ratio+360*self.ratio, 320*self.ratio, 486*self.ratio)
+            
+            
+        }) { (Bool) -> Void in
+            
+            self.isAnimated = false
+        }
         
-        var middleLine = UIView(frame:CGRectMake(159.75*ratio,0*ratio,0.5*ratio,115*ratio))
-        middleLine.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
-        
-        memoView.addSubview(middleLine)
-        
-        var circleChart = CircleChart(frame: CGRectMake(210*ratio, 0*ratio+12.5*ratio, 58*ratio, 58*ratio))
-        circleChart.circleColor = UIColor.todaitOrange()
-        circleChart.updatePercent(progressPercent)
-        circleChart.percentLabel.frame = CGRectMake(5*ratio,5*ratio,48*ratio,48*ratio)
-        circleChart.percentLabel.font = UIFont(name: "AppleSDGothicNeo-Light",size: 25*ratio)
-        circleChart.percentLabel.adjustsFontSizeToFitWidth = true
-        
-        memoView.addSubview(circleChart)
-        
-        var background:UIImage = UIImage(named: "graph_bg.png")!
-        var maskLayer:CALayer = CALayer()
-        maskLayer.contents = background.CGImage
-        maskLayer.frame = CGRectMake(0,0,58*ratio,58*ratio)
-        maskLayer.mask = circleChart.percentLayer
-        circleChart.layer.addSublayer(maskLayer)
-        
-        
-        
-        
-        var amountTextView = AmountTextView(frame: CGRectMake(175*ratio,0*ratio+74*ratio, 130*ratio, 25*ratio))
-        amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
-        amountTextView.userInteractionEnabled = false
-        
-         memoView.addSubview(amountTextView)
-        
-        
-        var amountButton = UIButton(frame:CGRectMake(160*ratio, 0*ratio, 160*ratio, 115*ratio))
-        amountButton.backgroundColor = UIColor.clearColor()
-        amountButton.addTarget(self, action: Selector("amountButtonClk"), forControlEvents: UIControlEvents.TouchDown)
-        
-         memoView.addSubview(amountButton)
+    }
+    
+    
+    func updateMemoTimerAimLabel(){
+        var expectedTimes:[NSNumber] = task.week.getExpectedTime()
+        var expectedTime:NSTimeInterval = NSTimeInterval(expectedTimes[day.day_of_week.integerValue])
+        memoView.timerAimLabel.text = getTimeStringFromSeconds(expectedTime)
     }
     
     
     func addDetailTable(){
-        detailTableView = UITableView(frame: CGRectMake(0,0,width,height), style: UITableViewStyle.Grouped)
+        detailTableView = UITableView(frame: CGRectMake(0,0,width,height), style: UITableViewStyle.Plain)
         detailTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        detailTableView.registerClass(DetailCalendarCell.self, forCellReuseIdentifier: "calendarCell")
+        
+        detailTableView.bounces = false
         detailTableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
         detailTableView.delegate = self
         detailTableView.dataSource = self
         detailTableView.contentOffset.y = 0
         detailTableView.sectionFooterHeight = 0
         detailTableView.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
-        detailTableView.backgroundColor = UIColor.yellowColor()
         detailTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        detailTableView.contentOffset.y = 20*ratio
         //view.addSubview(detailTableView)
     }
     
+    func addWeekCalendarVC(){
+        weekCalendarVC = DetailWeekCalendarViewController()
+        weekCalendarVC.view.backgroundColor = UIColor.whiteColor()
+        
+        weekCalendarVC.task = task
+        weekCalendarVC.delegate = self
+        weekCalendarVC.dateNumber = selectedDateNumber
+        weekCalendarVC.view.frame = CGRectMake(0,255*ratio,width,60*ratio)
+        
+        addChildViewController(weekCalendarVC)
+        view.addSubview(weekCalendarVC.view)
+        
+        
+        
+        var panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: Selector("panGesture:"))
+        panGesture.delegate = self
+        weekCalendarVC.view.addGestureRecognizer(panGesture)
+    }
+    
+    func addMonthCalendarVC(){
+        
+        monthCalendarVC = DetailMonthCalendarViewController()
+        monthCalendarVC.view.backgroundColor = UIColor.whiteColor()
+        monthCalendarVC.delegate = self
+        monthCalendarVC.task = task
+        monthCalendarVC.dateNumber = selectedDateNumber
+        
+        monthCalendarVC.view.frame = CGRectMake(0,255*ratio-(selectedWeekOfMonth-1)*60*ratio,width,60*6*ratio)
+        addChildViewController(monthCalendarVC)
+        view.addSubview(monthCalendarVC.view)
+        
+        
+        var panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: Selector("panGesture:"))
+        panGesture.delegate = self
+        monthCalendarVC.view.addGestureRecognizer(panGesture)
+    }
+    
+    
+    
     func addDetailScrollView(){
         
-        detailScrollView = UIScrollView(frame: CGRectMake(0, 0, 320*ratio, 568*ratio))
+        detailScrollView = UIScrollView(frame: CGRectMake(0, 200, 320*ratio, 568*ratio))
         detailScrollView.contentSize = CGSizeMake(320*ratio, 1500*ratio)
         //detailScrollView.backgroundColor = UIColor.magentaColor()
         detailScrollView.delegate = self
         
+        
+        detailScrollView.alpha = 0.8
         view.addSubview(detailScrollView)
         
         
-        detailScrollView.addSubview(monthView)
         detailScrollView.addSubview(detailView)
-        detailScrollView.addSubview(memoView)
+        //detailScrollView.addSubview(memoView)
         
     }
     
@@ -380,56 +788,35 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         NSLog("SCROLL Y %f originY %f",scrollView.contentOffset.y,detailView.frame.origin.y)
         
         
+        
+        
+        
         let offset = scrollView.contentOffset.y
         
         scrollView.contentOffset.x = 0
         
         
-        if isCalendarScroll {
+        if offset >= 120*ratio {
+            detailView.transform = CGAffineTransformMakeTranslation(0, -120*ratio)
+            monthCalendarVC.view.transform = CGAffineTransformMakeTranslation(0, -120*ratio)
+            weekCalendarVC.view.transform = CGAffineTransformMakeTranslation(0, -120*ratio)
+            //memoView.transform = CGAffineTransformMakeTranslation(0, offset-115*ratio)
+            //monthView.transform = CGAffineTransformMakeTranslation(0, offset-115*ratio)
             
-            //detailView.transform = CGAffineTransformMakeTranslation(0, offset)
+        }else if offset <= 0*ratio {
             
-            if offset > 115*ratio {
-                detailView.transform = CGAffineTransformMakeTranslation(0, offset-115*ratio)
-            }else if offset <= 0{
-                
-                //detailView.transform = CGAffineTransformMakeTranslation(0, 2*offset)
-                
-                
-                if 2*offset < -230*ratio {
-                    detailView.transform = CGAffineTransformMakeTranslation(0, -115*ratio+offset)
-                }else{
-                    detailView.transform = CGAffineTransformMakeTranslation(0, 2*offset)
-                
-                    
-                }
-                
-                
-                detailScrollView.contentSize = CGSizeMake(320*ratio, 1500*ratio + detailView.frame.size.height)
-                NSLog("Height", detailView.frame.size.height + 1500*ratio)
-                
-            }
+            //detailView.frame = CGRectMake(0, -offset, 320*ratio,215*ratio)
             
+            
+            detailView.transform = CGAffineTransformMakeTranslation(0, 0)
+            monthCalendarVC.view.transform = CGAffineTransformMakeTranslation(0, 0)
+            weekCalendarVC.view.transform = CGAffineTransformMakeTranslation(0, 0)
+
+            //memoView.transform = CGAffineTransformMakeTranslation(0, offset)
+            //monthView.transform = CGAffineTransformMakeTranslation(0, offset)
             
         }else{
-            
-            if offset > 115*ratio {
-                detailView.transform = CGAffineTransformMakeTranslation(0, offset-115*ratio)
-                memoView.transform = CGAffineTransformMakeTranslation(0, offset-115*ratio)
-                monthView.transform = CGAffineTransformMakeTranslation(0, offset-115*ratio)
-
-            }else if offset <= 0 {
-                
-                //detailView.frame = CGRectMake(0, -offset, 320*ratio,215*ratio)
-                
-                
-                detailView.transform = CGAffineTransformMakeTranslation(0, offset)
-                memoView.transform = CGAffineTransformMakeTranslation(0, offset)
-                monthView.transform = CGAffineTransformMakeTranslation(0, offset)
-                
-            }
-            
-            //detailView.transform = CGAffineTransformMakeTranslation(0, -offset)
+            detailView.transform = CGAffineTransformMakeTranslation(0, -offset)
         }
         
         
@@ -456,12 +843,15 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
     }
     
+    
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         
         if section == 0 {
-            return 308*ratio
+            return 235*ratio
         }else if section == 1 {
-            return 0*ratio
+            
+            return 186*ratio
+            
         }else{
             return 70*ratio
         }
@@ -474,39 +864,113 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
+        
+        if indexPath.section == 0 {
+            
+            
+            return 60*6*ratio
+            /*
+            if isCalendarShow {
+                
+                return 300*ratio
+                
+            }
+            
+            
+            
+            return 60*ratio
+            */
+        }
+        
+        
+        
         return 58*ratio
         
     }
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
-        /*
-        if doneCountEnabled == true {
-            addDoneAmount()
+        
+        isCalendarShow = !isCalendarShow
+        
+        //tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation:UITableViewRowAnimation.Automatic)
+        
+        var cell = tableView.cellForRowAtIndexPath(NSIndexPath(forRow: 0, inSection: 0)) as! DetailCalendarCell
+        
+        
+        if !self.isCalendarShow {
+            
+            UIView.animateWithDuration(0.3, animations: { () -> Void in
+                //self.memoView.transform = CGAffineTransformMakeTranslation(0, -5*60*self.ratio)
+                cell.monthCalendarVC.view.frame = CGRectMake(0,-(self.selectedWeekOfMonth-1)*60*self.ratio,self.width,60*6*self.ratio)
+            })
+            
+            
+        }else{
+            
+            UIView.animateWithDuration(0.3, animations: { () -> Void in
+                //self.memoView.transform = CGAffineTransformMakeTranslation(0,0)
+                cell.monthCalendarVC.view.frame = CGRectMake(0,0,self.width,60*6*self.ratio)
+            })
         }
+        
+        
+        /*
+        if !isCalendarShow {
+            
+            UIView.animateWithDuration(0.3, animations: { () -> Void in
+                //self.memoView.transform = CGAffineTransformMakeTranslation(0, -5*60*self.ratio)
+                cell.monthCalendarVC.view.frame = CGRectMake(0,-(self.selectedWeekOfMonth-1)*60*self.ratio,self.width,60*6*self.ratio)
+            })
+            
+            
+        }else{
+            
+            UIView.animateWithDuration(0.3, animations: { () -> Void in
+                //self.memoView.transform = CGAffineTransformMakeTranslation(0,0)
+                cell.monthCalendarVC.view.frame = CGRectMake(0,0,self.width,60*6*self.ratio)
+            })
+        }
+        
         */
-
+        cell.weekCalendarVC.view.hidden = isCalendarShow
+        
+        //tableView.reloadSections(NSIndexSet(index: 1), withRowAnimation: UITableViewRowAnimation.Automatic)
+        
         return false
     }
     
+    func tableView(tableView: UITableView, didHighlightRowAtIndexPath indexPath: NSIndexPath) {
+        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: 0, inSection: 0)], withRowAnimation:UITableViewRowAnimation.Automatic)
+        
+    }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
+    
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return 15
+        if section == 0 {
+            return 1
+        }
+        
+        
+        return 3
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         var headerView = UIView()
-        headerView.backgroundColor = UIColor.whiteColor()
+        headerView.backgroundColor = UIColor.clearColor()
         
-        headerView.addSubview(monthView)
-        headerView.addSubview(memoView)
-        headerView.addSubview(detailView)
+        if section == 0 {
+            //headerView.addSubview(detailView)
+        }else if(section == 1){
+            //headerView.addSubview(memoView)
+        }
+        
         
         return headerView
     }
@@ -547,6 +1011,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             NSLog("집중도 저장",1)
         }
         
+        memoView.addFocusScore(CGFloat(day.score.floatValue))
         
         //detailTableView.reloadData()
     }
@@ -556,17 +1021,50 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         let dateForm = NSDateFormatter()
         dateForm.dateFormat = "yyyy.MM"
         dateLabel.text = dateForm.stringFromDate(date)
+        selectedWeekOfMonth = getWeekNumber(date)
+        
+        
+        updateMemo(date)
+    }
+    
+    
+    func updateMemo(date:NSDate){
+ 
+        var dateNumber = getDateNumberFromDate(date)
+        var newDay =  task.getDay(dateNumber)
+        
+        if let check = newDay {
+            
+            day = newDay
+            setupDay(dateNumber)
+            memoView.circleChart.updatePercent(progressPercent)
+            memoView.amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+            memoView.timerLabel.text = getTimeStringFromSeconds(NSTimeInterval(day.done_second))
+            memoView.addFocusScore(CGFloat(day.score.floatValue))
+            
+            updateMemoTimerAimLabel()
+        }else{
+            
+            if let check = day {
+                memoView.circleChart.updatePercent(0)
+                memoView.amountTextView.setupText(0, total: 0.integerValue, unit: task.unit)
+                memoView.timerLabel.text = getTimeStringFromSeconds(NSTimeInterval(0))
+                memoView.addFocusScore(CGFloat(day.score.floatValue))
+            }
+        }
     }
 
-    
-    
     
     func updateDate(date:NSDate,from:String){
         
         NSLog("Receive Date %@", date)
         updateDateLabel(date)
+        
         selectedDateNumber = getDateNumberFromDate(date)
         weekCalendarVC.setSelectedDateNumber(selectedDateNumber)
+        monthCalendarVC.setSelectedDateNumber(selectedDateNumber)
+        selectedWeekOfMonth = getWeekNumber(date)
+        
         
         
         day = task.getDay(getDateNumberFromDate(date))
@@ -575,16 +1073,37 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
         
-        cell.backgroundColor = UIColor.whiteColor()
         
-        for view in cell.contentView.subviews{
-            view.removeFromSuperview()
+        if indexPath.section == 0 {
+            
+            var cell = tableView.dequeueReusableCellWithIdentifier("calendarCell", forIndexPath: indexPath) as! DetailCalendarCell
+            
+            
+            
+            if !isCalendarShow {
+                
+               
+                
+                
+            }else{
+                
+            }
+            
+            
+            return cell
+            
+        }else{
+            var cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
+            
+            cell.backgroundColor = UIColor.yellowColor()
+            
+            for view in cell.contentView.subviews{
+                view.removeFromSuperview()
+            }
+            
+            return cell
         }
-        
-        
-        return cell
     }
     
     func timerButtonClk(){
@@ -641,6 +1160,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func saveAmountLog(amount:Int){
         
+        
+        
         let entityDescription = NSEntityDescription.entityForName("AmountLog", inManagedObjectContext:managedObjectContext!)
         
         let amountLog = AmountLog(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
@@ -672,7 +1193,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     
     
-    func timeButtonClk(){
+    func timeLogButtonClk(){
         
         var timeLogVC = TimeLogViewController()
         timeLogVC.delegate = self
@@ -708,8 +1229,12 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func refreshView(){
         
-        setupDay()
+        var refreshDateNumber = getDateFromDateNumber(selectedDateNumber)
+        
+        setupDay(selectedDateNumber)
         refreshHeaderText()
+        
+        updateMemo(refreshDateNumber)
         //detailTableView.reloadData()
         
     }
@@ -819,8 +1344,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func addGraphButton(){
         
-        graphButton = UIButton(frame: CGRectMake(258*ratio,30,24,24))
-        graphButton.setBackgroundImage(UIImage.maskColor("ic_drawer_statistics.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
+        graphButton = UIButton(frame: CGRectMake(258*ratio,34,24,16))
+        graphButton.setBackgroundImage(UIImage.maskColor("detail_basic_06@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
         graphButton.addTarget(self, action: Selector("showGraphVC"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(graphButton)
         
