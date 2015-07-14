@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MonthCalendarCell2: UICollectionViewCell {
+class MonthCalendarCell: UICollectionViewCell {
     
     
     var dayLabel:UILabel!

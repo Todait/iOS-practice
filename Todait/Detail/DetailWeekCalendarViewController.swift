@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 
 
@@ -17,6 +18,8 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
     var selectedIndex:NSIndexPath! = NSIndexPath(forRow: 0, inSection: 0)
     var delegate:CalendarDelegate!
     var dateNumber:NSNumber!
+    
+    var task:Task!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,6 +61,9 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
         
     }
     
+    
+    
+    
     func setSelectedDateNumber(dateNumber:NSNumber){
         
         
@@ -73,19 +79,22 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
         var newIndexPath = NSIndexPath(forRow: selectedIndex.row + Int(scrollCount), inSection: 0)
         weekView.scrollToItemAtIndexPath(newIndexPath, atScrollPosition: UICollectionViewScrollPosition.Right, animated: false)
         
+        let todayDateNumber:NSNumber! = getTodayDateNumber()
         
-        
-        var cell = weekView.cellForItemAtIndexPath(selectedIndex) as! DetailWeekCalendarCell
-        
-        for index in 0...6 {
-            var button = cell.buttons[index]
-            if button.dateNumber == dateNumber {
-                button.backgroundColor = UIColor.colorWithHexString("#FAFAFA")
-            }else{
-                button.backgroundColor = UIColor.whiteColor()
+        if let cell = weekView.cellForItemAtIndexPath(selectedIndex) as? DetailWeekCalendarCell {
+            
+            for index in 0...6 {
+                var button = cell.buttons[index]
+                
+                if(button.dateNumber == todayDateNumber){
+                    button.backgroundColor = UIColor.colorWithHexString("#F2F2F2")
+                }else if button.dateNumber == dateNumber {
+                    button.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.05)
+                }else{
+                    button.backgroundColor = UIColor.whiteColor()
+                }
             }
         }
-        
     }
     
     func getNumberOfWeekViewScrollCount(from:NSDate,to:NSDate)->NSNumber{
@@ -158,33 +167,49 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
         for var index = 0 ; index < 7 ; index++ {
             
             currentDate = date.addDay(index)
+            let currentDateNumber = getDateNumberFromDate(currentDate)
             let button = cell.buttons[index]
             button.delegate = self.delegate
-            button.dateNumber = getDateNumberFromDate(currentDate)
-            button.setTitle(dateForm.stringFromDate(currentDate), forState: UIControlState.Normal)
+            button.dateNumber = currentDateNumber
             
-            if dateNumber == button.dateNumber {
-                button.backgroundColor = UIColor.colorWithHexString("#FAFAFA")
+            let label = cell.dayLabels[index]
+            label.text = dateForm.stringFromDate(currentDate)
+            
+            
+            
+            let todayDateNumber:NSNumber! = getTodayDateNumber()
+            
+            
+            if(button.dateNumber == todayDateNumber){
+                button.backgroundColor = UIColor.colorWithHexString("#F2F2F2")
+            }else if self.dateNumber == button.dateNumber {
+                button.backgroundColor = UIColor.whiteColor()
             }else{
                 button.backgroundColor = UIColor.whiteColor()
             }
             
+
             
-            let amountView = UILabel(frame: CGRectMake(160*ratio/7 - 8*ratio, -19*ratio, 16*ratio, 16*ratio))
-            amountView.text = "9"
-            amountView.textColor = UIColor.whiteColor()
-            amountView.textAlignment = NSTextAlignment.Center
-            amountView.backgroundColor = UIColor.todaitRed()
-            amountView.clipsToBounds = true
-            amountView.layer.cornerRadius = 8*ratio
-            button.addSubview(amountView)
-            
+            if let currentDay = task.getDay(currentDateNumber) {
+                
+                
+                if currentDay.expect_amount.integerValue <= currentDay.done_amount.integerValue {
+                    button.expectLabel.backgroundColor = UIColor.todaitGreen()
+                    button.expectLabel.text = "\(currentDay.done_amount)"
+
+                }else{
+                    button.expectLabel.backgroundColor = UIColor.todaitRed()
+                    button.expectLabel.text = "\(currentDay.expect_amount)"
+
+                }
+                
+            }else{
+                button.expectLabel.text = ""
+                button.expectLabel.backgroundColor = UIColor.clearColor()
+            }
         }
         
-        
-        
         return cell
-        
     }
     
     func getCurrentDate(indexPath:NSIndexPath)->NSDate{

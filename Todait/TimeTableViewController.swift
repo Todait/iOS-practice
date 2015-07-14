@@ -16,7 +16,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     var dateLabel:UILabel!
     
     var weekCalendarVC:WeekCalendarViewController!
-    var monthCalendarVC:MonthCalendarViewController2!
+    var monthCalendarVC:MonthCalendarViewController!
     
     
     
@@ -126,7 +126,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         
         
         
-        monthCalendarVC = MonthCalendarViewController2()
+        monthCalendarVC = MonthCalendarViewController()
         
         monthCalendarVC.delegate = self
         monthCalendarVC.view.backgroundColor = UIColor.whiteColor()
@@ -203,6 +203,12 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     }
     
     func scrollCalendar(gesture:UIPanGestureRecognizer){
+        
+        NSLog("pan %f",gesture.velocityInView(self.view).y)
+        
+        var velocity:CGPoint = gesture.velocityInView(self.view)
+        
+        
         switch gesture.state {
         case UIGestureRecognizerState.Began:
             weekCalendarVC.view.hidden = true
@@ -212,15 +218,18 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
             gestureMoved()
             panStart = gesture.locationInView(self.view)
         case UIGestureRecognizerState.Ended:
-            gestureEnded()
+            gestureEnded(gesture)
         case UIGestureRecognizerState.Cancelled:
-            gestureEnded()
+            gestureEnded(gesture)
         default: break
             
         }
     }
     
     func gestureMoved(){
+        
+        
+        
         
         var diff = panStart.y - panEnd.y
         
@@ -276,9 +285,16 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         
     }
     
-    func gestureEnded(){
+    func gestureEnded(gesture:UIPanGestureRecognizer){
         
         let baseOriginY = 64 + 43*ratio
+        
+        /*
+        var velocity = gesture.velocityInView(self.view)
+        var slideFactor = velocity.y/1500
+        var timeY = self.timeTableView.frame.origin.y + velocity.y*slideFactor
+        timeY = min(max(timeY,baseOriginY + 48*ratio),baseOriginY + 48*6*ratio)
+        */
         
         if timeTableView.frame.origin.y >= 250*ratio {
             

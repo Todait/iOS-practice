@@ -12,7 +12,10 @@ import UIKit
 class DetailWeekCalendarCell: UICollectionViewCell {
     
     var ratio:CGFloat! = 0
-    var buttons:[DateButton]! = []
+    var buttons:[DetailDateButton]! = []
+    var dayLabels:[UILabel]! = []
+    
+    
     var width:CGFloat! = 0
     var height:CGFloat! = 0
     var dateNumber:NSNumber!
@@ -23,6 +26,7 @@ class DetailWeekCalendarCell: UICollectionViewCell {
         
         setupRatio()
         setupButtons()
+        setupDayLabels()
         
     }
     
@@ -35,7 +39,7 @@ class DetailWeekCalendarCell: UICollectionViewCell {
         let screenWidth = screenRect.size.width
         ratio = screenWidth/320
         width = 320*ratio/7
-        height = 48*ratio
+        height = 60*ratio
     }
     
     func setupButtons(){
@@ -47,13 +51,32 @@ class DetailWeekCalendarCell: UICollectionViewCell {
             
             let originX = CGFloat(i%7)*width
             
-            let button = DateButton(frame:CGRectMake(originX, 32*ratio, width, 20*ratio))
-            button.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
-            button.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Light", size: 19*ratio)
+            let button = DetailDateButton(frame:CGRectMake(originX, 0, width, 60*ratio))
+            button.backgroundColor = UIColor.clearColor()
             buttons.append(button)
             addSubview(button)
         }
     }
     
+    func setupDayLabels(){
+        
+        for index in 0...6 {
+            
+            
+            let i = Int(index)
+            
+            let originX = CGFloat(i%7)*width
+            
+            let label = UILabel(frame:CGRectMake(originX, 32*ratio, width, 20*ratio))
+            label.backgroundColor = UIColor.clearColor()
+            label.textColor = UIColor.todaitGray()
+            label.font = UIFont(name: "AppleSDGothicNeo-Light", size: 19*ratio)
+            label.textAlignment = NSTextAlignment.Center
+            
+            dayLabels.append(label)
+            addSubview(label)
+        }
+        
+    }
     
 }

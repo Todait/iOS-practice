@@ -14,7 +14,7 @@ protocol CalendarDelegate: NSObjectProtocol {
     
 }
 
-class MonthCalendarViewController2: BasicViewController,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource{
+class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource{
     
     var monthView:UICollectionView!
     var selectedIndex:NSIndexPath! = NSIndexPath(forRow: 0, inSection: 0)
@@ -44,17 +44,17 @@ class MonthCalendarViewController2: BasicViewController,UICollectionViewDelegate
         
         
         
-        
-        
-        var cell = monthView.cellForItemAtIndexPath(selectedIndex) as! MonthCalendarCell2
-        
-        for index in 0...41 {
+        if let check = monthView.cellForItemAtIndexPath(selectedIndex) as? MonthCalendarCell {
+            var cell = monthView.cellForItemAtIndexPath(selectedIndex) as! MonthCalendarCell
             
-            var button = cell.buttons[index]
-            if button.dateNumber == dateNumber {
-                button.backgroundColor = UIColor.grayColor()
-            }else{
-                button.backgroundColor = UIColor.whiteColor()
+            for index in 0...41 {
+                
+                var button = cell.buttons[index]
+                if button.dateNumber == dateNumber {
+                    button.backgroundColor = UIColor.todaitWhiteGray()
+                }else{
+                    button.backgroundColor = UIColor.whiteColor()
+                }
             }
         }
     }
@@ -97,7 +97,7 @@ class MonthCalendarViewController2: BasicViewController,UICollectionViewDelegate
         
         monthView = UICollectionView(frame: CGRectMake(0, 0, width, 48*6*ratio), collectionViewLayout:layout)
         
-        monthView.registerClass(MonthCalendarCell2.self, forCellWithReuseIdentifier: "monthCell")
+        monthView.registerClass(MonthCalendarCell.self, forCellWithReuseIdentifier: "monthCell")
         monthView.backgroundColor = UIColor.clearColor()
         monthView.delegate = self
         monthView.dataSource = self
@@ -139,7 +139,7 @@ class MonthCalendarViewController2: BasicViewController,UICollectionViewDelegate
         
         NSLog("Month cellforrow", 1)
         
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("monthCell", forIndexPath: indexPath) as! MonthCalendarCell2
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("monthCell", forIndexPath: indexPath) as! MonthCalendarCell
         
         var monthDate = getCurrentDate(indexPath)
         var date = getFirstDateOfMonth(getCurrentDate(indexPath))
@@ -171,7 +171,7 @@ class MonthCalendarViewController2: BasicViewController,UICollectionViewDelegate
             }
             
             if dateNumber == button.dateNumber {
-                button.backgroundColor = UIColor.grayColor()
+                button.backgroundColor = UIColor.todaitWhiteGray()
             }else{
                 button.backgroundColor = UIColor.whiteColor()
             }
@@ -233,7 +233,8 @@ class MonthCalendarViewController2: BasicViewController,UICollectionViewDelegate
         
         let firstDayOfMonthComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitWeekday|NSCalendarUnit.CalendarUnitHour, fromDate:date)
         firstDayOfMonthComp.day = 1
-        firstDayOfMonthComp.hour = 5
+        firstDayOfMonthComp.hour = 11
+        firstDayOfMonthComp.minute = 59
         
         var firstDate:NSDate = NSCalendar.currentCalendar().dateFromComponents(firstDayOfMonthComp)!
         
