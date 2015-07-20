@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,UpdateDelegate{
+class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,CategoryDelegate{
     var mainColor: UIColor!
     
     var categoryButton: UIButton!
@@ -59,7 +59,7 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     var startRangeAmount:Int! = 0
     var endRangeAmount:Int! = 0
     var dayAmount:Int! = 0
-    
+    var category:Category!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -320,10 +320,14 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         
     }
     
-    func needToUpdate() {
+    func categoryEdited(editedCategory:Category) {
         
         
-        
+        categoryButton.layer.borderColor = UIColor.clearColor().CGColor
+        categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
+        categoryButton.backgroundColor = UIColor.colorWithHexString(editedCategory.color)
+     
+        self.category = editedCategory
     }
     
     

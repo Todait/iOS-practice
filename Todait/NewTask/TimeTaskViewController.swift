@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,UpdateDelegate{
+class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,CategoryDelegate{
     var mainColor: UIColor!
     
     var categoryButton: UIButton!
@@ -356,7 +356,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         
     }
     
-    func needToUpdate() {
+    func categoryEdited(editedCategory:Category){
         
     }
     

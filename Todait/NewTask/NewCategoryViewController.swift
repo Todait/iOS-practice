@@ -12,6 +12,7 @@ import CoreData
 protocol UpdateDelegate: NSObjectProtocol {
     func needToUpdate()
 
+    
 }
 
 

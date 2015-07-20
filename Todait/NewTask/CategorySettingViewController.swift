@@ -29,7 +29,7 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     
     var selectedIndex:Int! = 0
     var isAddCategoryView:Bool! = false
-    var delegate:UpdateDelegate!
+    var delegate:CategoryDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -201,14 +201,25 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         return categoryData.count
     }
     
+    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        
+        selectedIndex = indexPath.row
+        
+        tableView.reloadData()
+        
+        return false
+        
+    }
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! CategorySettingTableViewCell
         
         let category = categoryData[indexPath.row] as Category
-        
         cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(category.color)
         cell.titleLabel.text = category.name
+        
+        
         
         
         
@@ -242,7 +253,7 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         }else{
             
             //확인
-            
+            categoryEdited(categoryData[selectedIndex])
         }
         
         /*
@@ -280,15 +291,15 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
             //에러처리
         }else{
             NSLog("Category 저장성공",1)
-            needToUpdate()
+            categoryEdited(category)
         }
     }
     
-    func needToUpdate(){
+    func categoryEdited(category:Category){
         
-        if self.delegate.respondsToSelector("needToUpdate"){
+        if self.delegate.respondsToSelector("categoryEdited:"){
             
-            self.delegate.needToUpdate()
+            self.delegate.categoryEdited(category)
             
         }
         
