@@ -1,14 +1,14 @@
 //
-//  NewTimeTaskViewController.swift
+//  TimerTaskViewController.swift
 //  Todait
 //
-//  Created by CruzDiary on 2015. 7. 9..
+//  Created by CruzDiary on 2015. 7. 20..
 //  Copyright (c) 2015년 GpleLab. All rights reserved.
 //
 
 import UIKit
 
-class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,UpdateDelegate{
+class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,UpdateDelegate{
     var mainColor: UIColor!
     
     var categoryButton: UIButton!
@@ -141,29 +141,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
             addTaskTextField(cell)
             addCategoryButton(cell)
             
-        }else if(indexPath.row == 1 && indexPath.section == 0){
-            
-            addAimDateSubView(cell)
-            
-            //addRangeTextField(cell)
-            
-        }else if(indexPath.row == 2 && indexPath.section == 0){
-            
-            
-            addAmountButton(cell)
-            
-        }else if indexPath.section == 1 {
-            
-            
-            if isTotal == true {
-                addTotalTextField(cell)
-            }else{
-                addRangeTextField(cell,indexPath:indexPath)
-                //addRangeAmount(cell,indexPath.row)
-            }
-            
-            
-        }else if(indexPath.section == 2 ){
+        }else if(indexPath.section == 1){
             
             addOptionView(cell)
         }
@@ -225,14 +203,10 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
         
-        if indexPath.row == 2 && indexPath.section == 2 {
-            return 120*ratio
-        }else if indexPath.row == 1 && indexPath.section == 0 {
-            return 53*ratio
-        }else if indexPath.row == 2 && indexPath.section == 0 {
-            return 60*ratio
-        }else if indexPath.section == 2 {
-            return 104*ratio
+        if indexPath.section == 0 {
+            return 54*ratio
+        }else if indexPath.section == 1 {
+            return 52*ratio
         }
         
         
@@ -241,23 +215,12 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        
-        switch section {
-        case 0: return 3
-        case 1:
-            if isTotal == true {
-                return 1
-            }else{
-                return 1 + rangeList.count
-            }
-        case 2: return 1
-        default: return 0
-        }
+        return 1
         
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 3
+        return 2
     }
     
     
@@ -285,7 +248,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         taskTextField.backgroundColor = UIColor.whiteColor()
         taskTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         taskTextField.text = aimString
-        taskTextField.tintColor = mainColor
+        taskTextField.tintColor = UIColor.todaitGreen()
         taskTextField.delegate = self
         currentTextField = taskTextField
         cell.contentView.addSubview(taskTextField)
@@ -293,6 +256,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         addLineView(cell)
     }
     
+    /*
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
         
         currentTextField = textField
@@ -305,6 +269,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         
         return true
     }
+    */
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
@@ -342,11 +307,10 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         
     }
     
-    
-    
     func showCategorySettingVC(){
         
         var categoryVC = CategorySettingViewController()
+        //categoryVC.delegate = self
         categoryVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         categoryVC.delegate = self
         self.navigationController?.presentViewController(categoryVC, animated: false, completion: { () -> Void in
@@ -358,7 +322,10 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
     
     func needToUpdate() {
         
+        
+        
     }
+    
     
     
     func addLineView(cell: UITableViewCell){
@@ -368,7 +335,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         cell.contentView.addSubview(lineView)
     }
     
-   
+    
     
     func updateUnitAllEvents(textField:UITextField){
         unitString = textField.text
@@ -423,16 +390,16 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         
         /*
         if rangeList.count == index {
-            
-            var rangeData:[String:String] = [:]
-            rangeData["startTime"] = textField.text
-            rangeList.append(rangeData)
-            
+        
+        var rangeData:[String:String] = [:]
+        rangeData["startTime"] = textField.text
+        rangeList.append(rangeData)
+        
         }else{
-            
-            var rangeData = rangeList[index]
-            rangeData["startTime"] = textField.text
-            
+        
+        var rangeData = rangeList[index]
+        rangeData["startTime"] = textField.text
+        
         }
         */
     }
@@ -442,15 +409,15 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         
         /*
         if rangeList.count == index {
-            var rangeData = rangeList[index]
-            rangeData["endTime"] = textField.text
-            
+        var rangeData = rangeList[index]
+        rangeData["endTime"] = textField.text
+        
         }else{
-            
-            var rangeData:[String:String] = [:]
-            rangeData["endTime"] = textField.text
-            rangeList.append(rangeData)
-            
+        
+        var rangeData:[String:String] = [:]
+        rangeData["endTime"] = textField.text
+        rangeList.append(rangeData)
+        
         }
         */
     }
@@ -628,9 +595,8 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         
         addDayOptionView(cell)
         addAlarmOptionView(cell)
-        addreviewOptionView(cell)
-        addreReadOptionView(cell)
-        
+        //addreviewOptionView(cell)
+        //addreReadOptionView(cell)
         
     }
     
