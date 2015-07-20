@@ -618,7 +618,7 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         
         
         var titleLabel = UILabel(frame: CGRectMake(68*ratio, 15*ratio, 92*ratio, 22.5*ratio))
-        titleLabel.text = "매일"
+        titleLabel.text = "요일지정"
         titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
         dayOption.addSubview(titleLabel)
         
@@ -671,9 +671,23 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     
     func alarmOptionClk(){
         
+        
+        showAlarmVC()
+        
         option = OptionStatus.alarm
         timeTaskTableView.reloadData()
         
+    }
+    
+    func showAlarmVC(){
+        
+        var alarmVC = AlarmViewController()
+        //alarmVC.delegate = self
+        alarmVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        
+        self.navigationController?.presentViewController(alarmVC, animated: false, completion: { () -> Void in
+            
+        })
     }
     
     func addreviewOptionView(cell:UITableViewCell){
