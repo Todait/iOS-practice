@@ -232,7 +232,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         timeLog.created_at = NSDate()
         timeLog.updated_at = NSDate()
         
-        timeLog.day_id.done_second = timeLog.day_id.done_second.integerValue + Int(time)
+        //timeLog.day_id.done_second = timeLog.day_id.done_second.integerValue + Int(time)
         
         var error: NSError?
         managedObjectContext?.save(&error)
