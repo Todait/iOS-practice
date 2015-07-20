@@ -55,9 +55,10 @@ class DetailMemoView: UIView {
         addFocusButton()
         addLine()
         addTimerButton()
+        addTimeLogButton()
         addTimerLabel()
         addTimerAimLabel()
-        addTimeLogButton()
+        
         addMiddleLine()
         addCircleChart()
         addChartMask()
@@ -83,7 +84,7 @@ class DetailMemoView: UIView {
     
     func addHeaderLabel(){
         
-        headerLabel = UILabel(frame: CGRectMake(0, 116*ratio, width, 24.5*ratio))
+        headerLabel = UILabel(frame: CGRectMake(0, 116*ratio, 320*ratio, 24.5*ratio))
         headerLabel.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
         headerLabel.textColor = UIColor.todaitGray()
         headerLabel.textAlignment = NSTextAlignment.Center
@@ -95,9 +96,16 @@ class DetailMemoView: UIView {
     
     
     func addDiaryButton(){
-        diaryButton = UIButton(frame:CGRectMake(18*ratio,116*ratio+39*ratio,16*ratio,16*ratio))
-        diaryButton.setBackgroundImage(UIImage(named: "detail_basic_27@3x.png"), forState: UIControlState.Normal)
+        
+        let diaryImage = UIImageView(frame: CGRectMake(18*ratio,116*ratio+39*ratio,16*ratio,16*ratio))
+        diaryImage.image = UIImage(named: "detail_basic_27@3x.png")
+        addSubview(diaryImage)
+        
+        
+        diaryButton = UIButton(frame:CGRectMake(5*ratio,108*ratio+39*ratio,150*ratio,32*ratio))
         diaryButton.addTarget(self, action: Selector("diaryButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        diaryButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame: CGRectMake(0, 0, 150*ratio, 32*ratio)), forState: UIControlState.Normal)
+        diaryButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitLightGray(), frame: CGRectMake(0, 0, 150*ratio, 32*ratio)), forState: UIControlState.Highlighted)
         
         addSubview(diaryButton)
     }
@@ -109,7 +117,7 @@ class DetailMemoView: UIView {
         infoLabel = UILabel(frame: CGRectMake(37*ratio, 116*ratio+24.5*ratio, 180*ratio, 45.5*ratio))
         infoLabel.textColor = UIColor.todaitGray()
         infoLabel.textAlignment = NSTextAlignment.Left
-        infoLabel.text = "공부 일기를 추가하세요."
+        infoLabel.text = "메모를 추가하세요."
         infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
         
         addSubview(infoLabel)
@@ -119,7 +127,8 @@ class DetailMemoView: UIView {
     func addFocusButton(){
         
         focusButton = UIButton(frame: CGRectMake(200*ratio , 115*ratio+24.5*ratio, 90*ratio, 45.5*ratio))
-        focusButton.backgroundColor = UIColor.clearColor()
+        focusButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame: CGRectMake(0, 0, 90*ratio, 45.5*ratio)), forState: UIControlState.Normal)
+        focusButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitLightGray(), frame: CGRectMake(0, 0, 90*ratio, 45.5*ratio)), forState: UIControlState.Highlighted)
         focusButton.addTarget(self, action: Selector("focusButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         
         addSubview(focusButton)
@@ -145,6 +154,16 @@ class DetailMemoView: UIView {
         addSubview(timerButton)
     }
     
+    func addTimeLogButton(){
+        
+        timeLogButton = UIButton(frame: CGRectMake(15*ratio, 0*ratio+70*ratio, 130*ratio, 45*ratio))
+        timeLogButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame: CGRectMake(0, 0, 130*ratio, 45*ratio)), forState: UIControlState.Normal)
+        timeLogButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitLightGray(), frame: CGRectMake(0, 0, 130*ratio, 45*ratio)), forState: UIControlState.Highlighted)
+        timeLogButton.addTarget(self, action: Selector("timeLogButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        addSubview(timeLogButton)
+    }
+    
     func addTimerAimLabel(){
         timerAimLabel = UILabel(frame:CGRectMake(15*ratio,0*ratio+77*ratio,130*ratio,12*ratio))
         timerAimLabel.text = "목표시간 01:30:00"
@@ -167,14 +186,7 @@ class DetailMemoView: UIView {
         addSubview(timerLabel)
     }
     
-    func addTimeLogButton(){
-        
-        timeLogButton = UIButton(frame: CGRectMake(15*ratio, 0*ratio+70*ratio, 130*ratio, 45*ratio))
-        timeLogButton.backgroundColor = UIColor.clearColor()
-        timeLogButton.addTarget(self, action: Selector("timeLogButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        
-        addSubview(timeLogButton)
-    }
+    
    
     
     func addMiddleLine(){

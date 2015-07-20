@@ -32,7 +32,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     var task:Task!
     var day:Day!
-    var diarys:[Diary]! = []
+    var diaryData:[Diary]! = []
     
     var dateLabel:UILabel!
     
@@ -143,7 +143,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func loadDiary(){
         
-        diarys = day.diaryList.array as! [Diary]
+        diaryData = day.diaryList.array as! [Diary]
         
     }
     
@@ -545,7 +545,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         var panGesture = UIPanGestureRecognizer()
         panGesture.addTarget(self, action: Selector("panGesture:"))
         panGesture.delegate = self
-        memoView.addGestureRecognizer(panGesture)
+        //memoView.addGestureRecognizer(panGesture)
     }
     
     func addDiaryTableView(){
@@ -825,7 +825,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return diarys.count
+        return diaryData.count
     }
     
     
@@ -950,7 +950,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         cell.addSubview(imageView)
         
         
-        var diary:Diary = diarys[indexPath.row] as Diary
+        var diary:Diary = diaryData[indexPath.row] as Diary
+        
         
         for imageData in diary.imageList {
             
@@ -964,7 +965,9 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         
         var diaryLabel = UILabel(frame:CGRectMake(100*ratio,15*ratio,150*ratio,27.5*ratio))
+        
         diaryLabel.text = diary.body
+        
         diaryLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
         diaryLabel.textColor = UIColor.todaitDarkGray()
         cell.contentView.addSubview(diaryLabel)
@@ -981,6 +984,53 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
     }
     
+    
+    
+    func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+        
+        let deleteButton = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: getDeleteString()) { (action:UITableViewRowAction!, indexPath:NSIndexPath!) -> Void in
+            
+            self.tableView(tableView, commitEditingStyle: UITableViewCellEditingStyle.Delete, forRowAtIndexPath: indexPath)
+            
+        }
+        
+        
+        
+        
+        deleteButton.backgroundColor = UIColor.todaitRed()
+        
+        return [deleteButton]
+        
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        
+        let diary = diaryData[indexPath.row]
+        managedObjectContext?.deleteObject(diary)
+        
+        var error:NSError?
+        managedObjectContext?.save(&error)
+        
+        if error == nil {
+            NSLog("Diary 삭제완료",0)
+            
+            
+            diaryData.removeAtIndex(indexPath.row)
+            
+            tableView.beginUpdates()
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:UITableViewRowAnimation.Automatic)
+            tableView.endUpdates()
+            
+            //loadDiary()
+            
+        }else {
+            //삭제에러처리
+            
+        }
+    }
+    
+    
     func timerButtonClk(){
         
         //var timer
@@ -996,8 +1046,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         
         if segue.identifier == "ShowTimerView" {
-            let timerVC = segue.destinationViewController as! TimerViewController
             
+            let timerVC = segue.destinationViewController as! TimerViewController
             let day:Day! = task.getDay(getTodayDateNumber())
             timerVC.task = task
             timerVC.day = day
