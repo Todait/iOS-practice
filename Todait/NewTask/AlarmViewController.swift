@@ -22,6 +22,9 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
     var pmLabel:UILabel!
     var amLabel:UILabel!
     
+    var repeatButton:UIButton!
+    
+    
     var alarmButton:UIButton!
     var alarmLabel:UILabel!
     var isAlarmOn:Bool! = false
@@ -34,6 +37,7 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
         addInfoView()
         addconfirmButton()
         addPickerViews()
+        addRepeatButton()
         addAlarmButton()
         
         setPickerDate(NSDate())
@@ -116,6 +120,10 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
     }
     
     func confirmButtonClk(){
+        
+        closeButtonClk()
+
+        
         /*
         if self.delegate.respondsToSelector("saveTimeLog:"){
             
@@ -174,6 +182,14 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
         amLabel.textAlignment = NSTextAlignment.Left
         amLabel.textColor = UIColor.todaitLightGray()
         backgroundView.addSubview(amLabel)
+    }
+    
+    func addRepeatButton(){
+        
+        repeatButton = UIButton(frame: CGRectMake(0, 220*ratio, 183*ratio, 55*ratio))
+        repeatButton.backgroundColor = UIColor.todaitLightGray()
+        backgroundView.addSubview(repeatButton)
+        
     }
     
     func addAlarmButton(){

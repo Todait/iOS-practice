@@ -308,6 +308,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     func doneButtonClk(){
         
+        backButtonClk()
         
         
     }
