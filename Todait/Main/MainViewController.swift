@@ -9,6 +9,7 @@
 import UIKit
 import CoreData
 import Photos
+import Alamofire
 
 class MainViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate,TaskTableViewCellDelegate,UpdateDelegate,touchDelegate,CategoryUpdateDelegate{
     
@@ -134,34 +135,6 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func updateCategory(category:Category,from:String){
         
-        self.category = category
-        isShowAllCategory = false
-        
-        
-        let categoryColor = UIColor.colorWithHexString(category.color)
-        
-        
-        if let check = timeChart {
-            timeChart.chartColor = categoryColor
-            timeChart.updateChart(timeValue)
-            homeButton.backgroundColor = categoryColor
-        }
-        
-        if let check = parallelView {
-            parallelView.backgroundColor = categoryColor
-        }
-        
-        
-        if let check = createTaskButton {
-            let backgroundImage = UIImage.colorImage(categoryColor, frame: CGRectMake(0, 0, 50*ratio, 50*ratio))
-            createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
-        }
-        
-        
-        if let check = todaitNavBar {
-             todaitNavBar.setBackgroundImage(UIImage.colorImage(categoryColor,frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
-        }
-
         loadTaskData()
         loadDayData()
         
@@ -238,9 +211,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         
         addListView()
+    
     }
-    
-    
     
     func addParallelView(){
         parallelView = ParallelHeaderView(frame: CGRectMake(0, 0, width, headerHeight*ratio))
@@ -879,7 +851,6 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         for dayItem in dayData{
             let day:Day! = dayItem
-            
             completeCount = completeCount + Int(day.done_amount.floatValue/day.expect_amount.floatValue * 100)
         }
         
