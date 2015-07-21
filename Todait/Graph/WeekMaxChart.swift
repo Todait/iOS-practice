@@ -133,6 +133,7 @@ class WeekMaxChart: UIView {
             
             if expectHeight == 0 {
                 expectHeight = chartWidth
+                doneHeight = 0
             }
             
             
@@ -220,6 +221,7 @@ class WeekMaxChart: UIView {
             
             
             if expectHeight == 0 {
+                doneHeight = 0
                 expectHeight = chartWidth
             }
             
