@@ -10,6 +10,25 @@ import UIKit
 
 class BasicTableViewCell: UITableViewCell {
 
+    var ratio:CGFloat! = 0
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
+        setupRatio()
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
+    func setupRatio(){
+        let screenRect = UIScreen.mainScreen().bounds
+        let screenWidth = screenRect.size.width
+        ratio = screenWidth/320
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

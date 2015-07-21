@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DiaryDetailViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,TodaitNavigationDelegate{
+class DiaryDetailViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,TodaitNavigationDelegate,UIActionSheetDelegate{
    
     
     var diaryTableView: UITableView!
@@ -74,11 +74,64 @@ class DiaryDetailViewController: BasicViewController,UITableViewDelegate,UITable
         cell.diaryLabel.sizeToFit()
         cell.diaryLabel.frame = CGRectMake(15*ratio, 30*ratio + TOP_MARGIN_DIARY, 278*ratio, cell.diaryLabel.frame.size.height)
         cell.timeLabel.text = getTimeStringFromSeconds(1000)
+        cell.optionButton.indexPath = indexPath
+        cell.optionButton.addTarget(self, action: Selector("optionButtonClk:"), forControlEvents: UIControlEvents.TouchUpInside)
         
         
         return cell
+    }
+    
+    func optionButtonClk(button:IndexPathButton){
+        
+        let actionSheet = IndexPathActionSheet(title:nil, delegate: self, cancelButtonTitle: getCancelString(), destructiveButtonTitle:nil, otherButtonTitles:"게시물 수정","공유","게시물 삭제")
+        
+        actionSheet.indexPath = button.indexPath
+        actionSheet.showInView(view)
+    }
+    
+    func actionSheet(actionSheet: UIActionSheet, clickedButtonAtIndex buttonIndex: Int) {
+        
+        let actionSheet:IndexPathActionSheet = actionSheet as! IndexPathActionSheet
+        
+        switch buttonIndex {
+            
+        case 1: editPostAtIndex(actionSheet.indexPath.section)
+        case 2: sharePostAtIndex(actionSheet.indexPath.section)
+        case 3: deletePostAtIndex(actionSheet.indexPath.section)
+        
+        default: return
+        
+        }
         
     }
+    
+    func editPostAtIndex(index:Int){
+    
+    }
+    
+    func sharePostAtIndex(index:Int){
+        
+    }
+    
+    func deletePostAtIndex(index:Int){
+        
+        
+        let diary = diaryData[index]
+        managedObjectContext?.deleteObject(diary)
+        
+        var error:NSError?
+        managedObjectContext?.save(&error)
+        
+        if error == nil {
+            NSLog("Diary 삭제완료",0)
+            diaryData.removeAtIndex(index)
+            
+            diaryTableView.beginUpdates()
+            diaryTableView.deleteSections(NSIndexSet(index: index), withRowAnimation: UITableViewRowAnimation.Automatic)
+            diaryTableView.endUpdates()
+        }
+    }
+    
   
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         

@@ -1218,7 +1218,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         addGraphButton()
         
         
-        
+        loadDiary()
         diaryTableView.reloadData()
         
     }

@@ -13,7 +13,6 @@
 
 #import "SWRevealViewController.h"
 
-#import "PNChart.h"
 #import "GAI.h"
 #import "GAIDictionaryBuilder.h"
 #import "GAIEcommerceProduct.h"

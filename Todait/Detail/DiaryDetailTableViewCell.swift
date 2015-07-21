@@ -13,7 +13,7 @@ class DiaryDetailTableViewCell: BasicTableViewCell {
     
     var colorCircle:UIView!
     var diaryLabel:UILabel!
-    var optionButton:UIButton!
+    var optionButton:IndexPathButton!
     var timeLabel:UILabel!
     
     var photoCollectionVC:PhotoCollectionViewController!
@@ -25,7 +25,7 @@ class DiaryDetailTableViewCell: BasicTableViewCell {
         addColorCircle()
         addTimeLabel()
         addDiaryLabel()
-        
+        addOptionButton()
         
     }
     
@@ -58,6 +58,21 @@ class DiaryDetailTableViewCell: BasicTableViewCell {
         diaryLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10*ratio)
         diaryLabel.textColor = UIColor.todaitDarkGray()
         addSubview(diaryLabel)
+        
+    }
+    
+    func addOptionButton(){
+        
+        optionButton = IndexPathButton(frame: CGRectMake(275*ratio, 16*ratio, 11*ratio, 7*ratio))
+        optionButton.setBackgroundImage(UIImage(named: "detail_diary_input_step3_03@3x.png"), forState: UIControlState.Normal)
+        
+        addSubview(optionButton)
+        
+    }
+    
+    func optionButtonClk(){
+        
+        
         
     }
 
