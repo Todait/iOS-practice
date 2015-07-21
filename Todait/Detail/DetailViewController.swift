@@ -812,6 +812,11 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
         
+        var diaryDetailVC = DiaryDetailViewController()
+        diaryDetailVC.day = day
+        diaryDetailVC.task = task
+        
+        self.navigationController?.pushViewController(diaryDetailVC, animated: true)
         
         
         return false
@@ -819,7 +824,9 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    
         return 1
+    
     }
     
     
@@ -983,7 +990,6 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         return cell
         
     }
-    
     
     
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
@@ -1210,6 +1216,11 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         addEditButton()
         addGraphButton()
+        
+        
+        
+        diaryTableView.reloadData()
+        
     }
     
     func addEditButton(){
