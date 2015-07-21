@@ -392,7 +392,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         
         
-        memoView = DetailMemoView(frame: CGRectMake(0, 0*ratio, 320*ratio, 230*ratio))
+        memoView = DetailMemoView(frame: CGRectMake(0, 0*ratio, 320*ratio, 186*ratio))
         memoView.backgroundColor = UIColor.whiteColor()
         memoView.circleChart.updatePercent(progressPercent)
         memoView.amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
@@ -652,7 +652,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
         if indexPath.section == 0 {
-            return 230*ratio
+            return 186*ratio
         }
         
         return 57.5*ratio
