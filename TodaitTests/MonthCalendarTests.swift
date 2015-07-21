@@ -72,12 +72,11 @@ class MonthCalendarTests: XCTestCase {
         var fromString = dateForm.stringFromDate(from)
         var toString = dateForm.stringFromDate(to)
         
-        if  fromString != toString {
-            
+        if fromString != toString {
             if toDateNumber.integerValue > fromDateNumber.integerValue {
                 NSLog("return 1", 0)
                 return 1
-            }else if toDateNumber.integerValue < fromDateNumber.integerValue {
+            } else if toDateNumber.integerValue < fromDateNumber.integerValue {
                 NSLog("return -1", 0)
                 return -1
             }
@@ -88,20 +87,12 @@ class MonthCalendarTests: XCTestCase {
     }
     
     
+    
     func testWeekCalendarMove(){
         
         var fromDate = getDate(2015, 6, 28, 10, 0, 0)
         var toDate = getDate(2015, 5, 1, 10, 0, 0)
         XCTAssertEqual(getNumberOfMonthViewScrollCount(fromDate, to: toDate),-1,"Month를 왼쪽 스와이프")
-        
-        fromDate = getDate(2015, 6, 30, 10, 0, 0)
-        toDate = getDate(2015, 4, 26, 10, 10, 0)
-        XCTAssertEqual(getNumberOfMonthViewScrollCount(fromDate, to: toDate),-2,"Month를 오른쪽 스와이프")
-        
-        fromDate = getDate(2015, 6, 30, 10, 0, 0)
-        toDate = getDate(2015, 4, 30, 10, 10, 0)
-        XCTAssertEqual(getNumberOfMonthViewScrollCount(fromDate, to: toDate),-2,"Month를 오른쪽 스와이프")
-        
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 5, 7, 10, 10, 0)
@@ -161,9 +152,13 @@ class MonthCalendarTests: XCTestCase {
         toDate = getDate(2015, 7, 26, 10, 10, 0)
         XCTAssertEqual(getNumberOfMonthViewScrollCount(fromDate, to: toDate),1,"Month를 오른쪽 스와이프")
         
-        fromDate = getDate(2015, 6, 30, 10, 0, 0)
-        toDate = getDate(2015, 8, 2, 10, 10, 0)
-        XCTAssertEqual(getNumberOfMonthViewScrollCount(fromDate, to: toDate),2,"Month를 오른쪽 스와이프")
+        
+    }
+    
+    func testGetFirstDateOfMonth(){
+        
+        XCTAssertEqual(getDateNumberFromDate(getFirstDateOfMonth(getDate(2015, 7, 1, 6, 10, 10))),20150628,"7월 첫째 주")
+        
         
         
     }

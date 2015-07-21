@@ -10,26 +10,9 @@ import UIKit
 import XCTest
 
 
-public extension NSDate {
-    
-    func getDayString()->String{
-        let dateForm = NSDateFormatter()
-        dateForm.dateFormat = "MMM dd, EEE"
-        return dateForm.stringFromDate(self)
-    }
-    
-    func getHourString()->String{
-        let hourForm = NSDateFormatter()
-        hourForm.dateFormat = "a h:mm"
-        return hourForm.stringFromDate(self)
-    }
-    
-    func addDay(day:Int)->NSDate{
-        
-        return self.dateByAddingTimeInterval(24*60*60*NSTimeInterval(day))
-        
-    }
-}
+
+
+
 
 
 public extension String {
@@ -226,7 +209,8 @@ class Time {
         
         let firstDayOfMonthComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitWeekday|NSCalendarUnit.CalendarUnitHour, fromDate:date)
         firstDayOfMonthComp.day = 1
-        firstDayOfMonthComp.hour = 5
+        firstDayOfMonthComp.hour = 11
+        firstDayOfMonthComp.minute = 59
         
         var firstDate:NSDate = NSCalendar.currentCalendar().dateFromComponents(firstDayOfMonthComp)!
         

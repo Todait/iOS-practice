@@ -27,7 +27,7 @@ class TaskTests: XCTestCase {
         finishHour = 4
         finishMinute = 0
         
-        
+        /*
         task = Task()
         task.start_date =    getDateNumberFromDate(getDate(2015, month: 6, day: 20, hour: 6, minute: 0, second: 0))
         task.end_date =    getDateNumberFromDate(getDate(2015, month:7, day:1,hour:5,minute:0,second:0))
@@ -72,7 +72,7 @@ class TaskTests: XCTestCase {
         
         
         
-        
+        */
         
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -202,6 +202,7 @@ class TaskTests: XCTestCase {
         finishHour = 4
         finishMinute = 0
         
+        /*
         task.start_date = getDateNumberFromDate(getDate(2015, month: 6, day: 14, hour: 6, minute: 0, second: 0))
         task.end_date =  getDateNumberFromDate(getDate(2015, month: 6, day: 16, hour: 6, minute: 0, second: 0))
         task.updateDay()
@@ -211,10 +212,11 @@ class TaskTests: XCTestCase {
         
         var before = task.dayList
         
-        var dayList = (before as NSArray).sortedArrayUsingDescriptors([sortDescriptor])
+        //var dayList = (before as NSArray).sortedArrayUsingDescriptors([sortDescriptor])
        
         
         var taskCount = task.dayList.count
+        */
         /*
         XCTAssertEqual(taskCount,5,"시작시간을 앞당긴만큼 Day 추가 카운트체크")
         

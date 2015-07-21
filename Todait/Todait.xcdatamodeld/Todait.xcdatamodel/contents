@@ -32,6 +32,7 @@
         <attribute name="done_amount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="done_second" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="expect_amount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="score" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="server_task_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
@@ -46,13 +47,20 @@
         <attribute name="body" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="diry_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="image_names" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="score" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
         <attribute name="server_day_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="server_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="timestamp" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
-        <relationship name="day_id" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Day" inverseName="diaryList" inverseEntity="Day" syncable="YES"/>
+        <relationship name="day_id" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Day" inverseName="diaryList" inverseEntity="Day" syncable="YES"/>
+        <relationship name="imageList" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ImageData" inverseName="diary_id" inverseEntity="ImageData" syncable="YES"/>
+    </entity>
+    <entity name="ImageData" representedClassName="Todait.ImageData" syncable="YES">
+        <attribute name="archived_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <attribute name="updated_at" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="diary_id" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Diary" inverseName="imageList" inverseEntity="Diary" syncable="YES"/>
     </entity>
     <entity name="Off_Day" representedClassName="Todait.Off_Day" syncable="YES">
         <attribute name="archived" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -151,12 +159,13 @@
     <elements>
         <element name="AmountLog" positionX="396" positionY="477" width="128" height="193"/>
         <element name="Category" positionX="-387" positionY="117" width="128" height="178"/>
-        <element name="Day" positionX="241" positionY="216" width="128" height="283"/>
-        <element name="Diary" positionX="403" positionY="216" width="128" height="208"/>
+        <element name="Day" positionX="225" positionY="162" width="128" height="298"/>
+        <element name="Diary" positionX="412" positionY="143" width="128" height="210"/>
+        <element name="ImageData" positionX="414" positionY="396" width="128" height="118"/>
         <element name="Off_Day" positionX="-128" positionY="402" width="128" height="163"/>
         <element name="Review_Task" positionX="-405" positionY="387" width="128" height="178"/>
         <element name="Task" positionX="-234" positionY="63" width="128" height="343"/>
-        <element name="TimeHistory" positionX="171" positionY="531" width="128" height="193"/>
+        <element name="TimeHistory" positionX="216" positionY="563" width="128" height="193"/>
         <element name="TimeLog" positionX="18" positionY="485" width="128" height="208"/>
         <element name="User" positionX="-585" positionY="117" width="128" height="163"/>
         <element name="Week" positionX="97" positionY="-48" width="128" height="253"/>
