@@ -51,6 +51,10 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     var selectedDateNumber:NSNumber!
     var selectedWeekOfMonth:CGFloat! = 2
     
+    
+    let weekCalendarHeight:CGFloat = 60
+    let monthCalendarHeight:CGFloat = 360
+    
     let headerMinHeight:CGFloat = 100
     let hederMaxHeight:CGFloat = 215
     var showCalendarHeight:CGFloat = 48
@@ -85,7 +89,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         
         addMemoView()
-        addDiaryTableView()
+        
         
         addCalendarView()
         
@@ -99,14 +103,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         view.addSubview(detailView)
         view.addSubview(memoView)
-        
-        //addCalendarButton()
-        
-        
-        
-        
-        
-        
+        addDiaryTableView()
         
     }
     
@@ -143,7 +140,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func loadDiary(){
         
-        diaryData = day.diaryList.array as! [Diary]
+        let sortDescriptor = NSSortDescriptor(key: "created_at", ascending: false)
+        diaryData = day.diaryList.sortedArrayUsingDescriptors([sortDescriptor]) as! [Diary]
         
     }
     
@@ -228,6 +226,42 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
     }
     
+    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
+        
+        
+        
+        
+        if gestureRecognizer.view == diaryTableView {
+            
+            
+            var gesture = gestureRecognizer as! UIPanGestureRecognizer
+            var velocity = gesture.velocityInView(self.view)
+            
+            NSLog("time velocity %f",velocity.y)
+            
+            if ( abs(velocity.y) > abs(velocity.x) && velocity.y > 0 && diaryTableView.contentOffset.y < 15*ratio) {
+                diaryTableView.scrollEnabled = false
+                return true
+            }else if weekCalendarVC.view.hidden == true  && velocity.y < 0 {
+                diaryTableView.scrollEnabled = false
+                return true
+            }
+            
+            
+            return false
+        }
+        
+        
+        
+        var gesture = gestureRecognizer as! UIPanGestureRecognizer
+        var velocity = gesture.velocityInView(self.view)
+        
+        NSLog("pan velocity %f",velocity.y)
+        
+        return abs(velocity.y) > abs(velocity.x)
+        
+        
+    }
     
     func panGesture(gesture:UIPanGestureRecognizer){
         
@@ -237,13 +271,18 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func scrollCalendar(gesture:UIPanGestureRecognizer){
         
+        NSLog("pan %f",gesture.velocityInView(self.view).y)
+        
+        var velocity:CGPoint = gesture.velocityInView(self.view)
+        
+        
         switch gesture.state {
         case UIGestureRecognizerState.Began:
-            //weekCalendarVC.view.hidden = true
+            weekCalendarVC.view.hidden = true
             panStart = gesture.locationInView(self.view)
         case UIGestureRecognizerState.Changed:
             panEnd = gesture.locationInView(self.view)
-            gestureMoved(gesture)
+            gestureMoved()
             panStart = gesture.locationInView(self.view)
         case UIGestureRecognizerState.Ended:
             gestureEnded(gesture)
@@ -254,282 +293,106 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         }
     }
     
-    func gestureMoved(gesture:UIPanGestureRecognizer){
+    func gestureMoved(){
         
         
         
-        var translation = gesture.translationInView(self.view)
-        var gestureView = gesture.view as UIView!
         
-        //NSLog("velocity %f",gesture.velocityInView(self.view).y)
+        var diff = panStart.y - panEnd.y
         
-        
-        if gestureView == detailView {
-            gestureView.center = CGPointMake(gestureView.center.x , gestureView.center.y + translation.y)
-            
-            detailViewScroll(gesture)
-        }else if gestureView == monthCalendarVC.view {
-            
-            //memoViewScroll(gesture)
-            
-            if isAnimated == false {
-                showWeekCalendar()
-                isAnimated = true
-            }
-            
-            
-            
-            //monthCalendarScroll(gesture)
-            
-        }else if gestureView == weekCalendarVC.view {
-            
-            //NSLog("Week")
-            
-            
-            weekCalendarVC.view.hidden = true
-            
-            if isAnimated == false {
-                showMonthCalendar()
-                isAnimated = true
-            }
-            
-        }else if gestureView == memoView {
-            
-            memoViewScroll(gesture)
-            
-        }
-        
-        gesture.setTranslation(CGPointMake(0, 0), inView: self.view)
-        
-    }
-    
-    func detailViewScroll(gesture:UIPanGestureRecognizer){
-        //NSLog("Detail")
+        let baseOriginY = 64 + 43*ratio
+        let minOriginY = baseOriginY - weekCalendarHeight*ratio*selectedWeekOfMonth
+        let maxOriginY = baseOriginY - weekCalendarHeight*5*ratio
+        let topDistance = weekCalendarHeight*ratio*(selectedWeekOfMonth-1)
+        let bottomDistance = weekCalendarHeight*ratio*(6-selectedWeekOfMonth)
         
         
-        if detailView.center.y <= 20*ratio {
-            detailView.center = CGPointMake(detailView.center.x, 20*ratio)
-            weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 20*ratio + 258*ratio)
-        }else if(detailView.center.y >= 129*ratio) {
-            detailView.center = CGPointMake(detailView.center.x, 129*ratio)
-            weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 129*ratio + 258*ratio)
-        }
-        
-        weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, detailView.center.y + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height/2)
-        
-        if weekCalendarVC.view.hidden {
-            
-            monthCalendarVC.view.center = CGPointMake(monthCalendarVC.view.center.x , detailView.center.y + 129*ratio + 180*ratio)
-            memoView.frame = CGRectMake(0, monthCalendarVC.view.frame.origin.y + 360*ratio, 320*ratio, memoView.frame.size.height)
-            
-        }else{
-            monthCalendarVC.view.center = CGPointMake(monthCalendarVC.view.center.x , detailView.center.y + 129*ratio + 180*ratio)
-            //memoView.center = CGPointMake(memoView.center.x,weekCalendarVC.view.center.y + 30*ratio + )
-            memoView.frame = CGRectMake(0, weekCalendarVC.view.frame.origin.y + 60*ratio, 320*ratio, memoView.frame.size.height)
-        }
-    }
-    
-    func monthCalendarScroll(gesture:UIPanGestureRecognizer){
-        
-        NSLog("Month")
-        
-        
-        var translation = gesture.translationInView(self.view)
-        var gestureView = gesture.view as UIView!
-        
-        //var velocity = gesture.velocityInView(self.view).y
-        var diff = translation.y
         var calendarDiff = 1*(selectedWeekOfMonth-1)*diff/6
         var timeTableDiff = 5*diff/6
         
-        //gestureView.center = CGPointMake(gestureView.center.x , gestureView.center.y + translation.y)
+        let monthRect = monthCalendarVC.view.frame
+        let monthX = monthRect.origin.x
+        let monthY = monthRect.origin.y
+        let monthW = monthRect.size.width
+        let monthH = monthRect.size.height
         
-        var minOfMonth = weekCalendarVC.view.frame.origin.y - 60 * ratio * (selectedWeekOfMonth-1) + 60 * 3 * ratio
         
-        //Month 위치조정
-        
-        
-        if monthCalendarVC.view.center.y + calendarDiff < minOfMonth {
-            NSLog("최대 올라감C %f", monthCalendarVC.view.center.y + calendarDiff)
-            monthCalendarVC.view.center = CGPointMake(monthCalendarVC.view.center.x , minOfMonth)
-            //monthCalendarVC.view.frame = CGRectMake(monthX,baseOriginY,monthW,monthH)
+        if monthY - calendarDiff < minOriginY {
+            //NSLog("최대 올라감C %f", monthY - calendarDiff)
+            monthCalendarVC.view.frame = CGRectMake(monthX,baseOriginY,monthW,monthH)
             
-        }else if(monthCalendarVC.view.center.y + calendarDiff >= minOfMonth && monthCalendarVC.view.center.y - calendarDiff <= minOfMonth + 60*6*ratio) {
-            
-            NSLog("중간C %f",monthCalendarVC.view.center.y - calendarDiff)
-            monthCalendarVC.view.center =  CGPointMake(monthCalendarVC.view.center.x, minOfMonth + calendarDiff)//CGRectMake(monthX,monthY - calendarDiff, monthW, monthH)
+        }else if(monthY - calendarDiff >= minOriginY && monthY - calendarDiff <= baseOriginY) {
+            //NSLog("중간C %f",monthY - calendarDiff)
+            monthCalendarVC.view.frame = CGRectMake(monthX,monthY - calendarDiff, monthW, monthH)
         }else {
             
-            NSLog("최대내려감C %f",monthCalendarVC.view.center.y - calendarDiff)
-            monthCalendarVC.view.center =  CGPointMake(monthCalendarVC.view.center.x, minOfMonth + calendarDiff)
-        }
-        
-    }
-    
-    func memoViewScroll(gesture:UIPanGestureRecognizer){
-        
-        
-        var translation = gesture.translationInView(self.view)
-        var gestureView = gesture.view as UIView!
-        
-        //gestureView.center = CGPointMake(gestureView.center.x , gestureView.center.y + translation.y)
-        
-        
-        /*
-        
-        if detailView.center.y + translation.y <= 20*ratio {
-        
-        detailView.center = CGPointMake(detailView.center.x, 20*ratio)
-        
-        
-        //weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 20*ratio + 215*ratio/2 + weekCalendarVC.view.frame.size.height/2)
-        
-        
-        if weekCalendarVC.view.hidden {
-        
-        
-        }else{
-        
-        if memoView.center.y + translation.y <= 20*ratio + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height {
-        NSLog("memo Top")
-        memoView.center = CGPointMake(memoView.center.x, 20*ratio + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height)
-        
-        }else if memoView.center.y + translation.y >= 215*ratio/2 + detailView.frame.size.height/2 + memoView.frame.size.height{
-        NSLog("memo Bottom")
-        memoView.center = CGPointMake(memoView.center.x, 215*ratio + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height)
-        }else{
-        NSLog("Memo!!")
-        }
-        
+            //NSLog("최대내려감C %f",monthY - calendarDiff)
+            monthCalendarVC.view.frame = CGRectMake(monthX,baseOriginY,monthW,monthH)
         }
         
         
-        }else if(detailView.center.y + translation.y >= 129*ratio) {
-        detailView.center = CGPointMake(detailView.center.x, 129*ratio)
-        //weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 215*ratio/2 + 215*ratio)
-        //weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 20*ratio + 215*ratio/2 + weekCalendarVC.view.frame.size.height/2)
+        
+        if diaryTableView.frame.origin.y - timeTableDiff < baseOriginY + weekCalendarHeight*ratio {
+            //NSLog("최대 올라감 %f", diaryTableView.frame.origin.y - timeTableDiff)
+            diaryTableView.frame = CGRectMake(0, baseOriginY + weekCalendarHeight*ratio, 320*ratio, diaryTableView.frame.size.height)
+            monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-weekCalendarHeight*ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, monthCalendarHeight*ratio)
+        }else if(diaryTableView.frame.origin.y - timeTableDiff >= baseOriginY + weekCalendarHeight*ratio && diaryTableView.frame.origin.y - timeTableDiff <= baseOriginY + monthCalendarHeight*ratio) {
+            
+            //NSLog("중간 %f",diaryTableView.frame.origin.y - timeTableDiff)
+            diaryTableView.frame = CGRectMake(0, diaryTableView.frame.origin.y - timeTableDiff, 320*ratio, diaryTableView.frame.size.height)
+        }else {
+            
+            //NSLog("최대내려감 %f",diaryTableView.frame.origin.y - timeTableDiff)
+            diaryTableView.frame = CGRectMake(0, baseOriginY + monthCalendarHeight*ratio, 320*ratio, diaryTableView.frame.size.height)
+            
         }
         
-        if memoView.center.y + translation.y <= 169*ratio + 243*ratio {
-        
-        memoView.center = CGPointMake(memoView.center.x, 169*ratio + 243*ratio)
-        
-        }else if memoView.center.y + translation.y >= 618*ratio {
-        memoView.center = CGPointMake(memoView.center.x, 618*ratio)
-        }
-        */
-        
-        
-        if weekCalendarVC.view.hidden {
-            
-            if detailView.center.y + translation.y <= 20*ratio {
-                showWeekCalendar()
-            }
-        }else{
-            
-            memoView.center = CGPointMake(gestureView.center.x , gestureView.center.y + translation.y)
-            detailView.center = CGPointMake(detailView.center.x , detailView.center.y + translation.y)
-            weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, weekCalendarVC.view.center.y + translation.y)
-            
-            if detailView.center.y + translation.y <= 20*ratio {
-                
-                detailView.center = CGPointMake(detailView.center.x, 20*ratio)
-                weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 20*ratio + 129*ratio + 30*ratio)
-                memoView.center = CGPointMake(memoView.center.x, 20*ratio + 129*ratio + 60*ratio + 243*ratio)
-                
-                /*
-                if memoView.center.y + translation.y <= 20*ratio + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height {
-                NSLog("memo Top")
-                memoView.center = CGPointMake(memoView.center.x, 20*ratio + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height)
-                
-                }else if memoView.center.y + translation.y >= 215*ratio/2 + detailView.frame.size.height/2 + memoView.frame.size.height{
-                NSLog("memo Bottom")
-                memoView.center = CGPointMake(memoView.center.x, 215*ratio + detailView.frame.size.height/2 + weekCalendarVC.view.frame.size.height)
-                }else{
-                NSLog("Memo!!")
-                }
-                */
-                
-            }else if(detailView.center.y + translation.y >= 129*ratio) {
-                detailView.center = CGPointMake(detailView.center.x, 129*ratio)
-                weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 129*ratio + 129*ratio + 30*ratio)
-                memoView.center = CGPointMake(memoView.center.x, 129*ratio + 129*ratio + 60*ratio + 243*ratio)
-                
-                //weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 215*ratio/2 + 215*ratio)
-                //weekCalendarVC.view.center = CGPointMake(weekCalendarVC.view.center.x, 20*ratio + 215*ratio/2 + weekCalendarVC.view.frame.size.height/2)
-            }
-            
-            /*
-            if memoView.center.y + translation.y <= 169*ratio + 243*ratio {
-            
-            memoView.center = CGPointMake(memoView.center.x, 169*ratio + 243*ratio)
-            
-            }else if memoView.center.y + translation.y >= 618*ratio {
-            memoView.center = CGPointMake(memoView.center.x, 618*ratio)
-            }
-            */
-        }
         
     }
     
     func gestureEnded(gesture:UIPanGestureRecognizer){
         
-        /*
-        var velocity = gesture.velocityInView(self.view)
-        var magnitude = sqrt(velocity.y*velocity.y)
-        var slideMult = magnitude / 200
-        
-        var slideView:UIView! = gesture.view
-        var slideFactor:Float = 0.05 * Float(slideMult)
-        
-        var finalPoint = CGPointMake(160*ratio, slideView.center.y + velocity.y*CGFloat(slideFactor))
-        
-        
-        if slideView == detailView {
-        
-        finalPoint.y = min(max(finalPoint.y,20*ratio),215*ratio/2)
-        
-        UIView.animateWithDuration(0.5, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-        self.detailView.center = finalPoint
-        }, completion: { (Bool) -> Void in
-        
-        })
-        }
-        
-        */
-        
-        /*
         let baseOriginY = 64 + 43*ratio
         
-        if timeTableView.frame.origin.y >= 250*ratio {
+        /*
+        var velocity = gesture.velocityInView(self.view)
+        var slideFactor = velocity.y/1500
+        var timeY = self.diaryTableView.frame.origin.y + velocity.y*slideFactor
+        timeY = min(max(timeY,baseOriginY + 48*ratio),baseOriginY + 48*6*ratio)
+        */
         
-        UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-        self.timeTableView.frame = CGRectMake(0, baseOriginY + 48*6*self.ratio, 245*self.ratio, self.timeTableView.frame.size.height)
-        self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY, 320*self.ratio, 48*6*self.ratio)
-        
-        }, completion: { (Bool) -> Void in
-        self.timeTableView.scrollEnabled = true
-        self.weekCalendarVC.view.hidden = true
-        })
+        if diaryTableView.frame.origin.y >= 250*ratio {
+            
+            UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+                
+                self.diaryTableView.frame = CGRectMake(0, baseOriginY + self.monthCalendarHeight*self.ratio, 320*self.ratio, self.diaryTableView.frame.size.height)
+                
+                self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY, 320*self.ratio, self.monthCalendarHeight*self.ratio)
+                
+                
+                }, completion: { (Bool) -> Void in
+                    self.diaryTableView.scrollEnabled = true
+                    self.weekCalendarVC.view.hidden = true
+            })
         }else{
-        UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-        self.timeTableView.frame = CGRectMake(0, baseOriginY + 48*self.ratio, 245*self.ratio, self.timeTableView.frame.size.height)
-        self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-48*self.ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, 48*6*self.ratio)
-        }, completion: { (Bool) -> Void in
-        self.timeTableView.scrollEnabled = true
-        self.weekCalendarVC.view.hidden = false
-        })
+            UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+                self.diaryTableView.frame = CGRectMake(0, baseOriginY + self.weekCalendarHeight*self.ratio, 320*self.ratio, self.diaryTableView.frame.size.height)
+                self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-self.weekCalendarHeight*(self.selectedWeekOfMonth-1)*self.ratio, 320*self.ratio, self.monthCalendarHeight*self.ratio)
+                
+                
+                }, completion: { (Bool) -> Void in
+                    self.diaryTableView.scrollEnabled = true
+                    self.weekCalendarVC.view.hidden = false
+            })
         }
         
-        */
     }
-    
     
     func addMemoView(){
         
         
         
-        memoView = DetailMemoView(frame: CGRectMake(0, 315*ratio, 320*ratio, 486*ratio))
+        memoView = DetailMemoView(frame: CGRectMake(0, 0*ratio, 320*ratio, 230*ratio))
         memoView.backgroundColor = UIColor.whiteColor()
         memoView.circleChart.updatePercent(progressPercent)
         memoView.amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
@@ -539,19 +402,13 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         updateMemoTimerAimLabel()
         
         
-        
-        
-        
-        var panGesture = UIPanGestureRecognizer()
-        panGesture.addTarget(self, action: Selector("panGesture:"))
-        panGesture.delegate = self
-        //memoView.addGestureRecognizer(panGesture)
     }
     
     func addDiaryTableView(){
         
+         var originY:CGFloat = 64 + 43*ratio + weekCalendarHeight*ratio
         
-        diaryTableView = UITableView(frame: CGRectMake(0,195*ratio,width,250*ratio), style: UITableViewStyle.Plain)
+        diaryTableView = UITableView(frame: CGRectMake(0,originY,width,height - originY), style: UITableViewStyle.Plain)
         diaryTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         diaryTableView.registerClass(DetailCalendarCell.self, forCellReuseIdentifier: "calendarCell")
         
@@ -564,8 +421,14 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         diaryTableView.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
         diaryTableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
-        memoView.addSubview(diaryTableView)
+        view.addSubview(diaryTableView)
         
+        
+        var panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: Selector("panGesture:"))
+        panGesture.delegate = self
+        diaryTableView.addGestureRecognizer(panGesture)
+
     }
     
     
@@ -589,13 +452,6 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
     }
     
-    func gestureRecognizerShouldBegin(gestureRecognizer: UIGestureRecognizer) -> Bool {
-        
-        
-        return !isAnimated
-        
-    }
-    
     func showWeekCalendar(){
         
         NSLog("Show Week")
@@ -603,19 +459,10 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         weekCalendarVC.view.hidden = true
         
-        /*
-        if isAnimated == true {
-        return
-        }else{
-        isAnimated = false
-        }
-        */
-        
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             
-            self.monthCalendarVC.view.frame = CGRectMake(0,self.detailView.center.y+129*self.ratio-60*self.ratio*(self.selectedWeekOfMonth-1)-0*self.ratio, 320*self.ratio, 360*self.ratio)
+            self.monthCalendarVC.view.frame = CGRectMake(0,self.detailView.center.y+129*self.ratio-60*self.ratio*(self.selectedWeekOfMonth-1)-0*self.ratio, 320*self.ratio, self.monthCalendarHeight*self.ratio)
             self.weekCalendarVC.view.hidden = true
-            self.memoView.frame = CGRectMake(0, self.detailView.center.y+129*self.ratio+60*self.ratio, 320*self.ratio, 486*self.ratio)
             
             }) { (Bool) -> Void in
                 
@@ -634,7 +481,6 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             
             self.monthCalendarVC.view.frame = CGRectMake(0,self.detailView.center.y+129*self.ratio,320*self.ratio,360*self.ratio)
-            self.memoView.frame = CGRectMake(0, self.detailView.center.y+129*self.ratio+360*self.ratio, 320*self.ratio, 486*self.ratio)
             
             
             }) { (Bool) -> Void in
@@ -805,19 +651,24 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
+        if indexPath.section == 0 {
+            return 230*ratio
+        }
+        
         return 57.5*ratio
         
     }
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
-        
-        var diaryDetailVC = DiaryDetailViewController()
-        diaryDetailVC.day = day
-        diaryDetailVC.task = task
-        
-        self.navigationController?.pushViewController(diaryDetailVC, animated: true)
-        
+        if indexPath.section == 1 {
+            
+            var diaryDetailVC = DiaryDetailViewController()
+            diaryDetailVC.day = day
+            diaryDetailVC.task = task
+            
+            self.navigationController?.pushViewController(diaryDetailVC, animated: true)
+        }
         
         return false
     }
@@ -825,14 +676,19 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
     
-        return 1
+        return 2
     
     }
     
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
+        if section == 0 {
+            return 1
+        }
+        
         return diaryData.count
+        
     }
     
     
@@ -951,41 +807,50 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             view.removeFromSuperview()
         }
         
-        var imageView = UIImageView(frame:CGRectMake(0,0,82*ratio,57.5*ratio))
-        imageView.contentMode = UIViewContentMode.ScaleAspectFill
-        imageView.clipsToBounds = true
-        cell.addSubview(imageView)
         
-        
-        var diary:Diary = diaryData[indexPath.row] as Diary
-        
-        
-        for imageData in diary.imageList {
+        if indexPath.section == 0 {
             
-            let imageData:ImageData = imageData as! ImageData
+            cell.contentView.addSubview(memoView)
             
-            var image = UIImage(data: imageData.image)
-            imageView.image = image
+        }else{
             
             
+            var imageView = UIImageView(frame:CGRectMake(0,0,82*ratio,57.5*ratio))
+            imageView.contentMode = UIViewContentMode.ScaleAspectFill
+            imageView.clipsToBounds = true
+            cell.addSubview(imageView)
+            
+            
+            var diary:Diary = diaryData[indexPath.row] as Diary
+            
+            
+            for imageData in diary.imageList {
+                
+                let imageData:ImageData = imageData as! ImageData
+                
+                var image = UIImage(data: imageData.image)
+                imageView.image = image
+                
+                
+            }
+            
+            
+            var diaryLabel = UILabel(frame:CGRectMake(100*ratio,15*ratio,150*ratio,27.5*ratio))
+            
+            diaryLabel.text = diary.body
+            
+            diaryLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
+            diaryLabel.textColor = UIColor.todaitDarkGray()
+            cell.contentView.addSubview(diaryLabel)
+            
+            
+            var timeLabel = UILabel(frame:CGRectMake(250*ratio,15*ratio,55*ratio,27.5*ratio))
+            timeLabel.textAlignment = NSTextAlignment.Right
+            timeLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
+            timeLabel.textColor = UIColor.todaitDarkGray()
+            timeLabel.text = getTimeStringFromSeconds(1000)
+            cell.contentView.addSubview(timeLabel)
         }
-        
-        
-        var diaryLabel = UILabel(frame:CGRectMake(100*ratio,15*ratio,150*ratio,27.5*ratio))
-        
-        diaryLabel.text = diary.body
-        
-        diaryLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
-        diaryLabel.textColor = UIColor.todaitDarkGray()
-        cell.contentView.addSubview(diaryLabel)
-        
-        
-        var timeLabel = UILabel(frame:CGRectMake(250*ratio,15*ratio,55*ratio,27.5*ratio))
-        timeLabel.textAlignment = NSTextAlignment.Right
-        timeLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
-        timeLabel.textColor = UIColor.todaitDarkGray()
-        timeLabel.text = getTimeStringFromSeconds(1000)
-        cell.contentView.addSubview(timeLabel)
         
         return cell
         

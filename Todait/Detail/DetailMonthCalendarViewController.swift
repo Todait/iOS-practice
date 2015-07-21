@@ -102,7 +102,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         monthView.dataSource = self
         monthView.pagingEnabled = true
         monthView.showsHorizontalScrollIndicator = false
-        monthView.contentInset = UIEdgeInsetsZero
+        monthView.contentInset = UIEdgeInsetsMake(-15*ratio, 0, 0, 0)
         monthView.contentOffset = CGPointMake(width * 500, 0)
         
         view.addSubview(monthView)
