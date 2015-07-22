@@ -7,7 +7,16 @@
 //
 
 import UIKit
+import Foundation
 
-class AttributeString: NSObject {
-   
+public extension NSAttributedString {
+    
+    static func getAttributedString(string:String,font:UIFont,color:UIColor) -> NSAttributedString{
+        
+        let attributedString = NSMutableAttributedString(string: string, attributes: [NSForegroundColorAttributeName:color,NSFontAttributeName:font])
+        
+        return attributedString
+        
+    }
+
 }
