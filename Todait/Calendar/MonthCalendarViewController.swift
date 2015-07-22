@@ -20,6 +20,7 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
     var selectedIndex:NSIndexPath! = NSIndexPath(forRow: 0, inSection: 0)
     var delegate:CalendarDelegate!
     var dateNumber:NSNumber!
+    var task:Task!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,6 +56,7 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
                 }else{
                     button.backgroundColor = UIColor.whiteColor()
                 }
+                button.updateChart(CGFloat(rand()%100)/100)
             }
         }
     }
@@ -175,6 +177,8 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
             }else{
                 button.backgroundColor = UIColor.whiteColor()
             }
+            
+            button.updateChart(CGFloat(rand()%100)/100)
         }
         
         return cell
