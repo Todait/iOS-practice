@@ -120,8 +120,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     }
     
     func setupDay(dateNumber:NSNumber){
-        if let dayValid = task.getDay(dateNumber) {
-            day = dayValid
+        if let day = task.getDay(dateNumber) {
+            self.day = day
             doneCountEnabled = true
             progressPercent = day.getProgressPercent()
             progressString = day.getProgressString()
@@ -140,8 +140,10 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func loadDiary(){
         
-        let sortDescriptor = NSSortDescriptor(key: "created_at", ascending: false)
-        diaryData = day.diaryList.sortedArrayUsingDescriptors([sortDescriptor]) as! [Diary]
+        if let day = day {
+            let sortDescriptor = NSSortDescriptor(key: "created_at", ascending: false)
+            diaryData = day.diaryList.sortedArrayUsingDescriptors([sortDescriptor]) as! [Diary]
+        }
         
     }
     
@@ -394,10 +396,15 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         memoView = DetailMemoView(frame: CGRectMake(0, 0*ratio, 320*ratio, 186*ratio))
         memoView.backgroundColor = UIColor.whiteColor()
-        memoView.circleChart.updatePercent(progressPercent)
-        memoView.amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+        
         memoView.delegate = self
-        memoView.addFocusScore(CGFloat(day.score.floatValue))
+        
+        memoView.circleChart.updatePercent(progressPercent)
+        if let day = day {
+            memoView.amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+            memoView.addFocusScore(CGFloat(day.score.floatValue))
+        }
+        
         
         updateMemoTimerAimLabel()
         
@@ -492,9 +499,16 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     
     func updateMemoTimerAimLabel(){
-        var expectedTimes:[NSNumber] = task.week.getExpectedTime()
-        var expectedTime:NSTimeInterval = NSTimeInterval(expectedTimes[day.day_of_week.integerValue])
-        memoView.timerAimLabel.text = getTimeStringFromSeconds(expectedTime)
+        
+        if let week = task.week as? Week {
+            var expectedTimes:[NSNumber] = task.week.getExpectedTime()
+            
+            
+            if let day = day {
+                var expectedTime:NSTimeInterval = NSTimeInterval(expectedTimes[day.day_of_week.integerValue])
+                memoView.timerAimLabel.text = getTimeStringFromSeconds(expectedTime)
+            }
+        }
     }
     
     
@@ -792,8 +806,10 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         selectedWeekOfMonth = getWeekNumber(date)
         
         
+        if let day = task.getDay(getDateNumberFromDate(date)) {
+            self.day = day
+        }
         
-        day = task.getDay(getDateNumberFromDate(date))
         //detailTableView.reloadData()
         
     }
@@ -811,6 +827,15 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         if indexPath.section == 0 {
             
             cell.contentView.addSubview(memoView)
+            
+            memoView.circleChart.updatePercent(progressPercent)
+            if let day = day {
+                memoView.amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+                memoView.addFocusScore(CGFloat(day.score.floatValue))
+            }
+            
+            
+            updateMemoTimerAimLabel()
             
         }else{
             
@@ -1084,6 +1109,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         
         loadDiary()
+        refreshView()
         diaryTableView.reloadData()
         
     }

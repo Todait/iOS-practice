@@ -8,27 +8,18 @@
 
 import UIKit
 
-class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,CategoryDelegate{
+class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,CategoryDelegate{
     var mainColor: UIColor!
     
     var categoryButton: UIButton!
     
     
     var taskTextField: UITextField!
-    var unitTextField: UITextField!
-    var unitView: UnitInputView!
-    
-    
-    var totalTextField: UITextField!
-    var startRangeTextField: UITextField!
-    var endRangeTextField: UITextField!
-    var dayTextField: UITextField!
     
     var saveButton: UIButton!
     var investButton: UIButton!
     var currentTextField: UITextField!
     
-    var startDateLabel: UILabel!
     
     var dateForm: NSDateFormatter!
     var startDate: NSDate!
@@ -65,8 +56,6 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         super.viewDidLoad()
         
         setupTimeTaskViewController()
-        
-        addUnitView()
         addTimeTaskTableView()
         
         
@@ -90,23 +79,6 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         
     }
     
-    
-    func addUnitView(){
-        
-        unitView = UnitInputView(frame: CGRectMake(0, height, width, 40*ratio))
-        unitView.backgroundColor = mainColor
-        unitView.delegate = self
-        unitView.hidden = true
-        
-        view.addSubview(unitView)
-        
-    }
-    
-    func updateUnit(unit:String){
-        
-        unitTextField.text = unit
-        
-    }
     
     func addTimeTaskTableView(){
         timeTaskTableView = UITableView(frame: CGRectMake(0,0,width,view.frame.size.height), style: UITableViewStyle.Plain)
@@ -226,12 +198,7 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     
     func resignAllTextResponder(){
         
-        unitTextField.resignFirstResponder()
         taskTextField.resignFirstResponder()
-        totalTextField.resignFirstResponder()
-        startRangeTextField.resignFirstResponder()
-        endRangeTextField.resignFirstResponder()
-        dayTextField.resignFirstResponder()
         
     }
     
@@ -275,12 +242,6 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         
         if textField == taskTextField {
             
-            unitView.hidden = false
-            currentTextField = unitTextField
-            
-        }else if textField == unitTextField {
-            
-            unitView.hidden = true
             
         }
         
@@ -486,68 +447,6 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         
     }
     
-    func addAmountButton(cell:UITableViewCell){
-        
-        
-        
-        totalButton = UIButton(frame: CGRectMake(19*ratio, 23*ratio, 89*ratio, 32*ratio))
-        totalButton.setTitle("전체", forState: UIControlState.Normal)
-        totalButton.setTitleColor(UIColor.todaitDarkGray(), forState: UIControlState.Normal)
-        totalButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
-        totalButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
-        totalButton.layer.borderColor = UIColor.colorWithHexString("#B2B2B2").CGColor
-        totalButton.layer.borderWidth = 0.5*ratio
-        totalButton.addTarget(self, action: Selector("totalButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        cell.addSubview(totalButton)
-        
-        
-        
-        rangeButton = UIButton(frame: CGRectMake(108*ratio, 23*ratio, 89*ratio, 32*ratio))
-        
-        rangeButton.setTitle("범위", forState: UIControlState.Normal)
-        rangeButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
-        rangeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
-        rangeButton.addTarget(self, action: Selector("rangeButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        cell.addSubview(rangeButton)
-        
-        
-        
-        setAmountButtonHighlight(totalButton, highlight: isTotal)
-        setAmountButtonHighlight(rangeButton, highlight: !isTotal)
-        
-        /*
-        
-        unitButton = UIButton(frame: CGRectMake(206*ratio, 23*ratio, 89*ratio, 32*ratio))
-        unitButton.setTitle("단위선택", forState: UIControlState.Normal)
-        unitButton.setTitleColor(UIColor.todaitDarkGray(), forState: UIControlState.Normal)
-        unitButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10*ratio)
-        unitButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
-        unitButton.layer.borderColor = UIColor.colorWithHexString("#B2B2B2").CGColor
-        unitButton.layer.borderWidth = 0.5*ratio
-        cell.contentView.addSubview(unitButton)
-        
-        */
-        
-        
-        unitTextField = UITextField(frame: CGRectMake(206*ratio, 23*ratio, 89*ratio, 32*ratio))
-        unitTextField.placeholder = "단위입력"
-        unitTextField.tintColor = mainColor
-        unitTextField.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
-        unitTextField.textColor = UIColor.colorWithHexString("#969696")
-        unitTextField.returnKeyType = UIReturnKeyType.Next
-        unitTextField.textAlignment = NSTextAlignment.Center
-        unitTextField.backgroundColor = UIColor.whiteColor()
-        unitTextField.text = unitString
-        unitTextField.addTarget(self, action: Selector("updateUnitAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        unitTextField.delegate = self
-        
-        cell.contentView.addSubview(unitTextField)
-        
-        var line = UIView(frame:CGRectMake(206*ratio,54*ratio,89*ratio,0.5*ratio))
-        line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
-        cell.contentView.addSubview(line)
-        
-    }
     
     func totalButtonClk(){
         
@@ -597,7 +496,7 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     
     func addOptionView(cell:UITableViewCell){
         
-        addDayOptionView(cell)
+        //addDayOptionView(cell)
         addAlarmOptionView(cell)
         //addreviewOptionView(cell)
         //addreReadOptionView(cell)
@@ -803,27 +702,8 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     
     func settingTime(date:NSDate){
         startDate = date
-        startDateLabel.text = dateForm.stringFromDate(startDate)
     }
     
-    func addStartTimeSubView(cell:UITableViewCell){
-        
-        let infoLabel = UILabel(frame: CGRectMake(15*ratio, 9.5*ratio, 200*ratio, 30*ratio))
-        infoLabel.text = "시작시간"
-        infoLabel.textColor = UIColor.colorWithHexString("#969696")
-        infoLabel.textAlignment = NSTextAlignment.Left
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
-        cell.contentView.addSubview(infoLabel)
-        
-        startDateLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
-        startDateLabel.text = dateForm.stringFromDate(NSDate())
-        startDateLabel.textAlignment = NSTextAlignment.Right
-        startDateLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
-        startDateLabel.textColor = mainColor
-        cell.contentView.addSubview(startDateLabel)
-        
-        addLineView(cell)
-    }
     
     func addreviewTimeSubView(cell:UITableViewCell){
         
@@ -852,125 +732,6 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         */
     }
     
-    
-    func addTotalTextField(cell:UITableViewCell){
-        
-        
-        let infoLabel = UILabel(frame: CGRectMake(20*ratio, 21*ratio, 200*ratio, 16*ratio))
-        infoLabel.text = "전체"
-        infoLabel.textAlignment = NSTextAlignment.Left
-        infoLabel.textColor = UIColor.todaitDarkGray()
-        infoLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
-        cell.contentView.addSubview(infoLabel)
-        
-        
-        
-        
-        totalTextField = UITextField(frame: CGRectMake(60*ratio, 21*ratio, 235*ratio, 16*ratio))
-        totalTextField.textAlignment = NSTextAlignment.Right
-        totalTextField.placeholder = "분량을 입력하세요"
-        totalTextField.tintColor = mainColor
-        totalTextField.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
-        totalTextField.textColor = UIColor.colorWithHexString("#969696")
-        totalTextField.keyboardType = UIKeyboardType.NumberPad
-        totalTextField.returnKeyType = UIReturnKeyType.Done
-        totalTextField.backgroundColor = UIColor.whiteColor()
-        totalTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        totalTextField.delegate = self
-        
-        if let aimAmount = aimAmount {
-            totalTextField.text = "\(aimAmount)"
-        }
-        
-        cell.contentView.addSubview(totalTextField)
-        
-        var line = UIView(frame:CGRectMake(20*ratio, 43*ratio, 272*ratio, 0.5*ratio))
-        line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
-        cell.contentView.addSubview(line)
-    }
-    
-    func updateAmountAllEvents(textField:UITextField){
-        
-        switch textField {
-        case totalTextField : aimAmount = textField.text.toInt()
-        case startRangeTextField : startRangeAmount = textField.text.toInt()
-        case endRangeTextField : endRangeAmount = textField.text.toInt()
-        case dayTextField : dayAmount = textField.text.toInt()
-        default: textField.text = ""
-        }
-        
-    }
-    
-    
-    
-    func addStartRangeTextField(cell:UITableViewCell){
-        startRangeTextField = UITextField(frame: CGRectMake(15*ratio, 9.5*ratio, 130*ratio, 30*ratio))
-        startRangeTextField.textAlignment = NSTextAlignment.Left
-        startRangeTextField.placeholder = "시작"
-        startRangeTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
-        startRangeTextField.textColor = UIColor.colorWithHexString("#969696")
-        startRangeTextField.tintColor = mainColor
-        startRangeTextField.hidden = true
-        startRangeTextField.keyboardType = UIKeyboardType.NumberPad
-        startRangeTextField.backgroundColor = UIColor.whiteColor()
-        startRangeTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        startRangeTextField.delegate = self
-        
-        if startRangeAmount != 0 {
-            startRangeTextField.text = "\(startRangeAmount)"
-        }
-        
-        cell.contentView.addSubview(startRangeTextField)
-    }
-    
-    
-    func addEndRangeTextField(cell:UITableViewCell){
-        endRangeTextField = UITextField(frame: CGRectMake(175*ratio, 9.5*ratio, 130*ratio, 30*ratio))
-        endRangeTextField.textAlignment = NSTextAlignment.Left
-        endRangeTextField.placeholder = "종료"
-        endRangeTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
-        endRangeTextField.textColor = UIColor.colorWithHexString("#969696")
-        endRangeTextField.tintColor = mainColor
-        endRangeTextField.hidden = true
-        endRangeTextField.keyboardType = UIKeyboardType.NumberPad
-        endRangeTextField.backgroundColor = UIColor.whiteColor()
-        endRangeTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        endRangeTextField.delegate = self
-        
-        if endRangeAmount != 0 {
-            endRangeTextField.text = "\(endRangeAmount)"
-        }
-        
-        cell.contentView.addSubview(endRangeTextField)
-    }
-    
-    func addDayTextField(cell:UITableViewCell){
-        dayTextField = UITextField(frame: CGRectMake(15*ratio, 9.5*ratio, 290*ratio, 30*ratio))
-        dayTextField.textAlignment = NSTextAlignment.Left
-        dayTextField.placeholder = "분량을 입력하세요"
-        dayTextField.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
-        dayTextField.textColor = UIColor.colorWithHexString("#969696")
-        dayTextField.tintColor = mainColor
-        dayTextField.hidden = true
-        dayTextField.keyboardType = UIKeyboardType.NumberPad
-        dayTextField.backgroundColor = UIColor.whiteColor()
-        dayTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        dayTextField.delegate = self
-        
-        if dayAmount != 0 {
-            dayTextField.text = "\(dayAmount)"
-        }
-        
-        cell.contentView.addSubview(dayTextField)
-    }
-    
-    func addInvestButton(cell:UITableViewCell){
-        investButton = UIButton(frame: CGRectMake(175*ratio, 9.5*ratio, 130*ratio, 30*ratio))
-        investButton.backgroundColor = UIColor.whiteColor()
-        investButton.setTitle("목표투자시간", forState: UIControlState.Normal)
-        investButton.addTarget(self, action: Selector("showInvestVC"), forControlEvents: UIControlEvents.TouchUpInside)
-        cell.contentView.addSubview(investButton)
-    }
     
     
     func getTimeString(time:Int)->String{

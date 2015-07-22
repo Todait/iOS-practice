@@ -63,6 +63,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         super.viewDidLoad()
         view.backgroundColor = UIColor.whiteColor()
         
+        totalTime = NSTimeInterval(day.done_second)
+        
+        
         addAmountTextView()
         
         
@@ -90,12 +93,12 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     func addAmountTextView(){
         
         amountTextView = AmountTextView(frame: CGRectMake(95*ratio,105*ratio, 130*ratio, 44*ratio))
-        amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
         amountTextView.userInteractionEnabled = false
         amountTextView.amountFont = UIFont(name: "AppleSDGothicNeo-Light", size: 34*ratio)
         amountTextView.unitFont = UIFont(name: "AppleSDGothicNeo-Light", size: 34*ratio)
         amountTextView.amountColor = UIColor.whiteColor()
         amountTextView.unitColor = UIColor.whiteColor()
+        
         
         var paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = NSTextAlignment.Center
@@ -103,7 +106,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         
         view.addSubview(amountTextView)
         
-        amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+        if let day = day {
+            amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+        }
     }
     
     
@@ -366,7 +371,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     func setSubTimerLabel(){
         subTimerLabel = UILabel(frame: CGRectMake(15*ratio, 425*ratio,290*ratio, 24*ratio))
         subTimerLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 14*ratio)
-        subTimerLabel.text = "누적 공부 시간 00:00:00"
+        subTimerLabel.text = "누적 공부 시간 " + getTimeStringFromSeconds(totalTime)
         subTimerLabel.textColor = UIColor.whiteColor()
         subTimerLabel.textAlignment = NSTextAlignment.Center
         view.addSubview(subTimerLabel)
@@ -425,7 +430,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         saveTimeLog()
         saveTimeHistory()
         
-        day.done_second = NSNumber(integer:day.done_second.integerValue+Int(totalTime))
+        day.done_second = NSNumber(integer:Int(totalTime))
         var error:NSError?
         managedObjectContext?.save(&error)
         
@@ -454,7 +459,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     func setupTimer(){
         currentTime = 0
-        totalTime = 0
+        totalTime = NSTimeInterval(day.done_second)
         startDate = NSDate()
     }
     
@@ -558,86 +563,6 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         super.viewWillDisappear(animated)
     }
     
-    
-    /*
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        
-        let touch: AnyObject? = (touches as NSSet).anyObject()
-        let touchPoint:CGPoint! = touch?.locationInView(view)
-        
-        
-        
-        let img = UIImageView(frame:CGRectMake(0,0,20*ratio,20*ratio))
-        img.image = UIImage(named:"TodaitScore.png")
-        img.center = touchPoint
-        view.addSubview(img)
-        
-        let pointLabel = UILabel(frame:CGRectMake(0*ratio,0,60*ratio,10*ratio))
-        pointLabel.textColor = UIColor.todaitGreen()
-        pointLabel.text = "+1"
-        pointLabel.font = UIFont(name:"AvenirNext-Regular",size:8*ratio)
-        pointLabel.textAlignment = NSTextAlignment.Left
-        pointLabel.center = CGPointMake(touchPoint.x+25*ratio,touchPoint.y)
-        view.addSubview(pointLabel)
-        
-        UIView.animateWithDuration(1.5, animations: { () -> Void in
-            
-            img.center = CGPointMake(img.center.x,img.center.y - 100*self.ratio)
-            img.alpha = 0
-            
-            pointLabel.center = CGPointMake(pointLabel.center.x,pointLabel.center.y - 100*self.ratio)
-            pointLabel.alpha = 0
-            
-            
-            }) { (Bool) -> Void in
-                
-                img.removeFromSuperview()
-                pointLabel.removeFromSuperview()
-        }
-        
-
-    }
-    
-    override func touchesMoved(touches: Set<NSObject>, withEvent event: UIEvent) {
-        let touch: AnyObject? = (touches as NSSet).anyObject()
-        let touchPoint:CGPoint! = touch?.locationInView(view)
-        
-        
-        
-        let img = UIImageView(frame:CGRectMake(0,0,20*ratio,20*ratio))
-        img.image = UIImage(named:"TodaitScore.png")
-        img.center = touchPoint
-        view.addSubview(img)
-        
-        let pointLabel = UILabel(frame:CGRectMake(0*ratio,0,60*ratio,10*ratio))
-        pointLabel.textColor = UIColor.todaitGreen()
-        pointLabel.text = "+1"
-        pointLabel.font = UIFont(name:"AvenirNext-Regular",size:8*ratio)
-        pointLabel.textAlignment = NSTextAlignment.Left
-        pointLabel.center = CGPointMake(touchPoint.x+25*ratio,touchPoint.y)
-        view.addSubview(pointLabel)
-        
-        
-        addAmountCount(1)
-        
-        
-        UIView.animateWithDuration(1.5, animations: { () -> Void in
-            
-            img.center = CGPointMake(img.center.x,img.center.y - 100*self.ratio)
-            img.alpha = 0
-            
-            pointLabel.center = CGPointMake(pointLabel.center.x,pointLabel.center.y - 100*self.ratio)
-            pointLabel.alpha = 0
-            
-            self.amountChartFrontView.frame = CGRectMake(0,0,CGFloat(self.amountCount*2),24*self.ratio)
-            
-            }) { (Bool) -> Void in
-                
-                img.removeFromSuperview()
-                pointLabel.removeFromSuperview()
-        }
-    }
-    */
     func addAmountCount(point:Int){
         amountCount = amountCount + point
     }
