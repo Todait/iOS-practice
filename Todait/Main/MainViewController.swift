@@ -45,7 +45,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     
     var tabbarView:UIView!
-    
+    var logoImageView:UIImageView!
     
     var mainListVC:MainListViewController!
 
@@ -518,10 +518,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
+        addLogoImageView()
+        
         
         timerStart()
-        
-        titleLabel.text = "Todait"
+        //titleLabel.text = "Todait"
         //mainTableView.contentOffset.y = 0
         //parallelView.scrollViewDidScroll(mainTableView)
         calculateRemainingTime()
@@ -541,6 +542,30 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         needToUpdate()
         
     }
+    
+    func addLogoImageView(){
+        
+        if let logoImageView = logoImageView {
+            return
+        }
+        
+        logoImageView = UIImageView(frame: CGRectMake(160*ratio - 27, 35, 54, 14))
+        logoImageView.image = UIImage(named: "title_main@3x.png")
+        logoImageView.userInteractionEnabled = true 
+        view.addSubview(logoImageView)
+        
+        let longPress = UILongPressGestureRecognizer(target: self, action: Selector("saveImage:"))
+        logoImageView.addGestureRecognizer(longPress)
+    }
+    
+    
+   
+    func saveImage(gesture:UILongPressGestureRecognizer){
+        
+        let imageView = gesture.view as! UIImageView
+        UIImageWriteToSavedPhotosAlbum(imageView.image!, nil, nil, nil)
+    }
+    
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
@@ -572,7 +597,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func addListButton(){
         listButton = UIButton(frame:CGRectMake(308*ratio - 24,30,24,24))
-        listButton.setImage(UIImage(named: "list.png"),forState: UIControlState.Normal)
+        listButton.setImage(UIImage(named: "bt_hamburger@3x.png"),forState: UIControlState.Normal)
         listButton.addTarget(self, action:Selector("showList"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(listButton)
         
