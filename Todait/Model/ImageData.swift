@@ -9,9 +9,12 @@
 import Foundation
 import CoreData
 
-class Image: NSManagedObject {
+class ImageData: NSManagedObject {
 
     @NSManaged var image: NSData
     @NSManaged var diary_id: Diary
+    @NSManaged var archived_at: NSDate
+    @NSManaged var created_at: NSDate
+    @NSManaged var updated_at: NSDate
 
 }

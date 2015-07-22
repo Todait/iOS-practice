@@ -22,5 +22,5 @@ class Diary: NSManagedObject {
     @NSManaged var timestamp: String
     @NSManaged var updated_at: NSDate
     @NSManaged var day_id: Day
-
+    @NSManaged var imageList: NSOrderedSet
 }
