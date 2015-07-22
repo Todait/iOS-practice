@@ -107,6 +107,7 @@ class Task: NSManagedObject {
     
     
     
+    
     func getWeekTimeProgressData(date:NSDate)->[[String:NSNumber]]{
         
         var datas:[[String:NSNumber]] = []
@@ -402,6 +403,9 @@ class Task: NSManagedObject {
         if((dateNumber.integerValue >= start_date.integerValue) && (end_date.integerValue >= dateNumber.integerValue)){
             let day = makeDay(dateNumber)
             return day
+            
+        }else if unit == ""{
+            let day = makeDay(dateNumber)
         }
         
         return day
@@ -445,31 +449,34 @@ class Task: NSManagedObject {
     
     func getDayPercent(day:Day)->NSNumber{
         
-        
-        
-        let week = self.week
-        let expectedAmount = week.getExpectedAmount()
-        let todayAmount = expectedAmount[Int(day.day_of_week)]
-        
-        
-        var totalAmount:NSNumber = 0
-        
-        let todayDateNumber = getTodayDateNumber()
-        let progressDay:Int = getProgressDayFromDateNumber(todayDateNumber, endDateNumber:end_date).integerValue
-        
-        for index in 0...progressDay {
+        if let week = self.week as? Week {
             
-            let expectIndex = Int((Int(day.day_of_week) + Int(index))%7)
-            totalAmount = totalAmount.integerValue + Int(expectedAmount[expectIndex])
+            let expectedAmount = week.getExpectedAmount()
+            let todayAmount = expectedAmount[Int(day.day_of_week)]
             
+            
+            var totalAmount:NSNumber = 0
+            
+            let todayDateNumber = getTodayDateNumber()
+            let progressDay:Int = getProgressDayFromDateNumber(todayDateNumber, endDateNumber:end_date).integerValue
+            
+            for index in 0...progressDay {
+                
+                let expectIndex = Int((Int(day.day_of_week) + Int(index))%7)
+                totalAmount = totalAmount.integerValue + Int(expectedAmount[expectIndex])
+                
+            }
+            
+            if totalAmount == 0 {
+                return 0
+            }
+            
+            
+            return todayAmount.floatValue / totalAmount.floatValue
         }
         
-        if totalAmount == 0 {
-            return 0
-        }
         
-        
-        return todayAmount.floatValue / totalAmount.floatValue
+        return 0
     }
     
     
@@ -643,6 +650,10 @@ class Task: NSManagedObject {
         
         let doneAmount = getTotalDoneAmount()
         let totalAmount = amount
+        
+        if totalAmount == 0 {
+            return 0
+        }
         
         return doneAmount.floatValue * 100 / totalAmount.floatValue
     }

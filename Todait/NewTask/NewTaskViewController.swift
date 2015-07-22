@@ -267,8 +267,8 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
     
     func addSaveButton(){
         
-        saveButton = UIButton(frame: CGRectMake(288*ratio,30,24,24))
-        saveButton.setBackgroundImage(UIImage.maskColor("newPlus.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
+        saveButton = UIButton(frame: CGRectMake(288*ratio,30,28,20))
+        saveButton.setImage(UIImage.maskColor("icon_check_wt@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
         saveButton.addTarget(self, action: Selector("saveNewTask"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(saveButton)
     }
@@ -281,22 +281,23 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
         let entityDescription = NSEntityDescription.entityForName("Task", inManagedObjectContext:managedObjectContext!)
         let task = Task(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         
-        task.name = "스위프트" //taskTextField.text
+        task.name = timerTaskVC.taskTextField.text
         task.created_at = NSDate()
+        task.unit = ""
         
         
         let dateForm = NSDateFormatter()
         dateForm.dateFormat = "yyyyMMdd"
         
-        task.start_date = getDateNumberFromDate(periodStartDate)
-        task.end_date = getDateNumberFromDate(periodEndDate)
-        task.unit = "개" //unitTextField.text
+        //task.start_date = getDateNumberFromDate(periodStartDate)
+        //task.end_date = getDateNumberFromDate(periodEndDate)
+        //task.unit = "개" //unitTextField.text
         task.category_id = category
         
         
         setupTextField()
         
-        saveNewWeek(task)
+        //saveNewWeek(task)
         
         var error: NSError?
         managedObjectContext?.save(&error)
@@ -327,7 +328,6 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
         week.fri_minute = 1//investData[5];
         week.sat_minute = 2//investData[6];
         
-        
         week.updated_at = NSDate()
         week.created_at = NSDate()
         
@@ -341,11 +341,11 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
     
     func needToUpdate() {
         
-        
+        /*
         if self.delegate.respondsToSelector("updateCategory:from:"){
             self.delegate.updateCategory(category,from:"NewTaskVC")
         }
-        
+        */
     }
     
     func setupTextField(){

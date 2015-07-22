@@ -81,7 +81,8 @@ class NewTaskViewControllerOld: BasicViewController,UITextFieldDelegate,TodaitNa
         setupTaskViewController()
         addTaskTableView()
         addUnitView()
-        registerForKeyboardNotification()
+        
+        
         //setupCategory()
         
         if delegate == nil {
@@ -859,6 +860,8 @@ class NewTaskViewControllerOld: BasicViewController,UITextFieldDelegate,TodaitNa
         
         setNavigationBarColor(mainColor)
         taskTableView.reloadData()
+        
+        registerForKeyboardNotification()
     }
     
     
@@ -970,6 +973,16 @@ class NewTaskViewControllerOld: BasicViewController,UITextFieldDelegate,TodaitNa
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        resignForKeyboardNotification()
+        
+    }
+    
+    func resignForKeyboardNotification(){
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+        
     }
     
     func backButtonClk() {

@@ -22,6 +22,7 @@ class Day: NSManagedObject {
     @NSManaged var expect_amount: NSNumber
     @NSManaged var server_id: NSNumber
     @NSManaged var server_task_id: NSNumber
+    @NSManaged var score: NSNumber
     @NSManaged var updated_at: NSDate
     @NSManaged var task_id: Task
     @NSManaged var diaryList: NSOrderedSet

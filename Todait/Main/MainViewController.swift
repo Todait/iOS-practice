@@ -697,25 +697,23 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         let task:Task! = taskData[indexPath.row]
         
-        NSLog("%@",task.category_id.name)
-        
         let day:Day? = task.getDay(getTodayDateNumber())
         
         
-        if let isDayValid = day {
+        if let day = day {
             
             //cell.contentsLabel.text = day.getProgressString()
-            cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day!.done_second.integerValue))
-            cell.contentsTextView.setupText(day!.done_amount.integerValue, total: day!.expect_amount.integerValue, unit: task.unit)
-            cell.percentLabel.text = String(format: "%lu%@", Int(day!.done_amount.floatValue/day!.expect_amount.floatValue * 100),"%")
-            cell.percentLayer.strokeColor = day!.getColor().CGColor
-            cell.percentLayer.strokeEnd = CGFloat(day!.done_amount.floatValue/day!.expect_amount.floatValue)
-            cell.percentLabel.textColor = day!.getColor()
+            cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.done_second.integerValue))
+            cell.contentsTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+            cell.percentLabel.text = String(format: "%lu%@", Int(day.done_amount.floatValue/day.expect_amount.floatValue * 100),"%")
+            cell.percentLayer.strokeColor = day.getColor().CGColor
+            cell.percentLayer.strokeEnd = CGFloat(day.done_amount.floatValue/day.expect_amount.floatValue)
+            cell.percentLabel.textColor = day.getColor()
             //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
         
         }else{
             
-            //cell.contentsLabel.text = "공부 시작 전입니다"
+            cell.titleLabel.text = task.name + " | "
         }
         
         
