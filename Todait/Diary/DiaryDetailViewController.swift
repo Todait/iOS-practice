@@ -107,9 +107,30 @@ class DiaryDetailViewController: BasicViewController,UITableViewDelegate,UITable
     
     func editPostAtIndex(index:Int){
     
+        let diaryEditVC = DiaryEditViewController()
+        diaryEditVC.diary = diaryData[index]
+        
+        
+        self.navigationController?.pushViewController(diaryEditVC, animated: true)
+        
     }
     
     func sharePostAtIndex(index:Int){
+        
+        
+        let diary = diaryData[index]
+        var images:[UIImage] = []
+        
+        for imageData in diary.imageList {
+            let imageData:ImageData! = imageData as! ImageData
+            images.append(UIImage(data: imageData.image)!)
+        }
+        
+        let actionVC = UIActivityViewController(activityItems:images, applicationActivities:nil)
+        
+        self.presentViewController(actionVC, animated: true) { () -> Void in
+            
+        }
         
     }
     

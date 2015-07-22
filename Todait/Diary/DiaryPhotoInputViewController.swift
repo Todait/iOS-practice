@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol diaryImageDelegate:NSObjectProtocol {
+protocol DiaryImageDelegate:NSObjectProtocol {
     
     func showCamera()
     func showAlbum()
@@ -16,7 +16,7 @@ protocol diaryImageDelegate:NSObjectProtocol {
 }
 
 
-class DiaryPhotoViewController: BasicViewController {
+class DiaryPhotoInputViewController: BasicViewController {
    
     var filterView:UIImageView!
     var resetView:UIView!
@@ -30,7 +30,7 @@ class DiaryPhotoViewController: BasicViewController {
     var amount_type:NSNumber! = 0
     var unit:String! = ""
     
-    var delegate:diaryImageDelegate!
+    var delegate:DiaryImageDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()

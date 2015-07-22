@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import MobileCoreServices
 
-class DiaryViewController: BasicViewController,TodaitNavigationDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,diaryImageDelegate{
+class DiaryViewController: BasicViewController,TodaitNavigationDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate{
    
     
     var doneButton:UIButton!
@@ -85,7 +85,7 @@ class DiaryViewController: BasicViewController,TodaitNavigationDelegate,UIImageP
         
         selectedButtonTag = button.tag
         
-        var showDiaryPhotoVC = DiaryPhotoViewController()
+        var showDiaryPhotoVC = DiaryPhotoInputViewController()
         showDiaryPhotoVC.delegate = self
         showDiaryPhotoVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         

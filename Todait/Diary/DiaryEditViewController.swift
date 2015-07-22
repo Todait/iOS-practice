@@ -7,7 +7,10 @@
 //
 
 import UIKit
+import CoreData
 
 class DiaryEditViewController: BasicViewController {
-   
+
+    var diary:Diary!
+    
 }
