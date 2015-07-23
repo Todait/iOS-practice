@@ -8,6 +8,8 @@
 
 import UIKit
 
+
+
 class SortViewController: BasicTableViewController,TodaitNavigationDelegate,UITableViewDataSource,UITableViewDelegate{
 
     
@@ -74,6 +76,12 @@ class SortViewController: BasicTableViewController,TodaitNavigationDelegate,UITa
         
         if indexPath.section == 0 {
             sortIndex = checkValue[indexPath.row]
+            
+            if indexPath.row == 3 {
+                let userSortVC = UserSortViewController()
+                self.navigationController?.pushViewController(userSortVC, animated: true)
+            }
+            
         }else if indexPath.section == 1 {
             
             
