@@ -572,12 +572,12 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         if sortIndex == 2 {
             request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
         }else if sortIndex == 4 {
-            request.sortDescriptors = [NSSortDescriptor(key: "category_id", ascending: true)]
+            request.sortDescriptors = [NSSortDescriptor(key: "categoryId", ascending: true)]
         }
         
         if isShowAllCategory == false {
             
-            let predicate = NSPredicate(format: "category_id == %@",category)
+            let predicate = NSPredicate(format: "categoryId == %@",category)
             request.predicate = predicate
         }
         
