@@ -1,5 +1,5 @@
 //
-//  Diary.swift
+//  CheckLog.swift
 //  Todait
 //
 //  Created by CruzDiary on 2015. 7. 23..
@@ -9,12 +9,12 @@
 import Foundation
 import CoreData
 
-class Diary: NSManagedObject {
+class CheckLog: NSManagedObject {
 
-    @NSManaged var body: String
-    @NSManaged var diryFlag: NSNumber
+    @NSManaged var beforeChecked: NSNumber
+    @NSManaged var afterChecked: NSNumber
     @NSManaged var timestamp: NSNumber
     @NSManaged var dayId: Day
-    @NSManaged var imageList: NSOrderedSet
+    @NSManaged var reviewDayId: ReviewDay
 
 }

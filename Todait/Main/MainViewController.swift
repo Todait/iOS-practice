@@ -197,6 +197,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //createTestData()
+        
         addParallelView()
         addMainTableView()
         
@@ -213,6 +215,78 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         addListView()
     
     }
+    
+    func createTestData(){
+        
+        let categoryED = NSEntityDescription.entityForName("Category", inManagedObjectContext:managedObjectContext!)
+        
+        
+        
+        for index in 0...19 {
+            
+            
+            let name:String = String.categoryTestNameAtIndex(index)
+            let color:String = String.categoryColorStringAtIndex(index)
+            
+            let category = Category(entity:categoryED!,insertIntoManagedObjectContext:managedObjectContext!)
+            
+            category.name = name
+            category.color = color
+            category.createdAt = NSDate()
+            
+            
+            createTestTask(category)
+        
+        }
+        
+        var error: NSError?
+        managedObjectContext?.save(&error)
+    }
+    
+    func createTestTask(category:Category){
+        
+        let taskED = NSEntityDescription.entityForName("Task", inManagedObjectContext:managedObjectContext!)
+        
+        for index in 0...30 {
+            
+            let name:String = String.categoryTestNameAtIndex(Int(rand()%20))
+            let color:String = String.categoryColorStringAtIndex(Int(rand()%20))
+            
+            
+            let task = Task(entity:taskED!,insertIntoManagedObjectContext:managedObjectContext!)
+            
+            task.name = name
+            task.createdAt = NSDate()
+            task.priority = index
+            task.unit = "회"
+            task.taskType = String.taskTestTaskType(Int(rand()%4))
+            task.startDate = 20150710
+            task.endDate = 20150810
+            task.categoryId = category
+            
+            createTestWeek(task)
+            
+        }
+        
+    }
+    
+    func createTestWeek(task:Task){
+        
+        let weekED = NSEntityDescription.entityForName("Week", inManagedObjectContext:managedObjectContext!)
+        
+        let week = Week(entity:weekED!,insertIntoManagedObjectContext:managedObjectContext!)
+        
+        week.taskId = task
+        week.mon = Int(rand()%5)
+        week.sun = Int(rand()%5)
+        week.wed = Int(rand()%5)
+        week.thu = Int(rand()%5)
+        week.tue = Int(rand()%5)
+        week.sat = Int(rand()%5)
+        week.fri = Int(rand()%5)
+        
+    }
+    
     
     func addParallelView(){
         parallelView = ParallelHeaderView(frame: CGRectMake(0, 0, width, headerHeight*ratio))
@@ -436,10 +510,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         let category = Category(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         category.name = "기본"
-        category.created_at = NSDate()
+        category.createdAt = NSDate()
         category.color = "#FFFB887E"
-        category.updated_at = NSDate()
-        category.dirty_flag = 0
+        category.updatedAt = NSDate()
         
         var error: NSError?
         managedObjectContext?.save(&error)
@@ -537,7 +610,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         }
         
         addListButton()
-        
+        addSettingButton()
         
         needToUpdate()
         
@@ -551,7 +624,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         logoImageView = UIImageView(frame: CGRectMake(160*ratio - 27, 35, 54, 14))
         logoImageView.image = UIImage(named: "title_main@3x.png")
-        logoImageView.userInteractionEnabled = true 
+        logoImageView.userInteractionEnabled = true
         view.addSubview(logoImageView)
         
         let longPress = UILongPressGestureRecognizer(target: self, action: Selector("saveImage:"))
@@ -573,8 +646,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         stopTimer()
     }
     
-    func addSettingBtn(){
-        settingButton = UIButton(frame: CGRectMake(288*ratio, 30, 24, 24))
+    func addSettingButton(){
+        settingButton = UIButton(frame: CGRectMake(258*ratio, 30, 24, 24))
         settingButton.setImage(UIImage(named: "setting@2x.png"), forState: UIControlState.Normal)
         settingButton.addTarget(self, action: Selector("showSetting"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(settingButton)
@@ -596,8 +669,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     
     func addListButton(){
-        listButton = UIButton(frame:CGRectMake(308*ratio - 24,30,24,24))
-        listButton.setImage(UIImage(named: "bt_hamburger@3x.png"),forState: UIControlState.Normal)
+        listButton = UIButton(frame:CGRectMake(308*ratio - 24,30,16,15))
+        listButton.setBackgroundImage(UIImage(named: "bt_hamburger@3x.png"),forState: UIControlState.Normal)
         listButton.addTarget(self, action:Selector("showList"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(listButton)
         
@@ -713,26 +786,28 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             temp.removeFromSuperview()
         }
         
+        let task:Task! = taskData[indexPath.row]
+        let day:Day? = task.getDay(getTodayDateNumber())
+        
         cell.delegate = self
         cell.indexPath = indexPath
         cell.percentLayer.strokeEnd = 0
         cell.percentLayer.strokeColor = UIColor.todaitLightGray().CGColor
         cell.percentLayer.lineWidth = 2
         cell.percentLabel.textColor = UIColor.todaitDarkGray()
+        cell.colorBoxView.backgroundColor = task.getColor()
         
-        let task:Task! = taskData[indexPath.row]
-        
-        let day:Day? = task.getDay(getTodayDateNumber())
+
         
         
         if let day = day {
             
             //cell.contentsLabel.text = day.getProgressString()
-            cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.done_second.integerValue))
-            cell.contentsTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
-            cell.percentLabel.text = String(format: "%lu%@", Int(day.done_amount.floatValue/day.expect_amount.floatValue * 100),"%")
+            cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.doneSecond.integerValue))
+            cell.contentsTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
+            cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
             cell.percentLayer.strokeColor = day.getColor().CGColor
-            cell.percentLayer.strokeEnd = CGFloat(day.done_amount.floatValue/day.expect_amount.floatValue)
+            cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
             cell.percentLabel.textColor = day.getColor()
             //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
         
@@ -859,7 +934,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         for dayItem in dayData{
             let day:Day! = dayItem
-            totalSecond = totalSecond + Int(day.done_second)
+            totalSecond = totalSecond + Int(day.doneSecond)
             
         }
         
@@ -874,7 +949,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         for dayItem in dayData{
             let day:Day! = dayItem
-            completeCount = completeCount + Int(day.done_amount.floatValue/day.expect_amount.floatValue * 100)
+            completeCount = completeCount + Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100)
         }
         
         if dayData.count == 0 {

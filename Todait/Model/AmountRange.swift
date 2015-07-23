@@ -1,5 +1,5 @@
 //
-//  TimeHistory.swift
+//  AmountRange.swift
 //  Todait
 //
 //  Created by CruzDiary on 2015. 7. 23..
@@ -9,11 +9,11 @@
 import Foundation
 import CoreData
 
-class TimeHistory: NSManagedObject {
+class AmountRange: NSManagedObject {
 
-    @NSManaged var doneMillis: NSNumber
-    @NSManaged var endedAt: NSDate
-    @NSManaged var startedAt: NSDate
+    @NSManaged var startPoint: NSNumber
+    @NSManaged var endPoint: NSNumber
+    @NSManaged var doneAmount: NSNumber
     @NSManaged var dayId: Day
 
 }
