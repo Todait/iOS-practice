@@ -173,7 +173,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
             
             
             if(button.dateNumber == todayDateNumber){
-                button.backgroundColor = UIColor.colorWithHexString("#F2F2F2")
+                button.backgroundColor = UIColor.todaitWhiteGray()
             }else if self.dateNumber == button.dateNumber {
                 button.backgroundColor = UIColor.whiteColor()
             }else{
@@ -185,13 +185,13 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
             if let currentDay = task.getDay(currentDateNumber) {
                 
                 
-                if currentDay.expect_amount.integerValue <= currentDay.done_amount.integerValue {
+                if currentDay.expectAmount.integerValue <= currentDay.doneAmount.integerValue {
                     button.expectLabel.backgroundColor = UIColor.todaitGreen()
-                    button.expectLabel.text = "\(currentDay.done_amount)"
+                    button.expectLabel.text = "\(currentDay.doneAmount)"
                     
                 }else{
                     button.expectLabel.backgroundColor = UIColor.todaitRed()
-                    button.expectLabel.text = "\(currentDay.expect_amount)"
+                    button.expectLabel.text = "\(currentDay.expectAmount)"
                     
                 }
                 

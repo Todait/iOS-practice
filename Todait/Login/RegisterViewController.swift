@@ -293,46 +293,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     
     
     
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return jobData.count
-    }
-    
-    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
-        selectedIndexPath = indexPath
-        
-        tableView.reloadData()
-        
-        return false
-        
-    }
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! CategorySettingTableViewCell
-        
-        let category = categoryData[indexPath.row] as Category
-        cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(category.color)
-        cell.titleLabel.text = category.name
-        
-        
-        
-        
-        
-        return cell
-        
-    }
-    
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        
-        return 48*ratio
-    }
-    
-    
     
     
     override func viewWillAppear(animated: Bool) {

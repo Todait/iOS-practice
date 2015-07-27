@@ -238,7 +238,7 @@ class DiaryDetailViewController: BasicViewController,UITableViewDelegate,UITable
         
         if let task = task {
             
-            let category = task.category_id
+            let category = task.categoryId
             titleLabel.text = category.name + " - " + task.name
             
         }

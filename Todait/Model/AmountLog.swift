@@ -22,4 +22,10 @@ class AmountLog: NSManagedObject {
     @NSManaged var updatedAt: NSDate
     @NSManaged var dayId: Day
 
+    
+    func getDoneAmount()->NSNumber{
+        return afterDoneAmount.integerValue - beforeDoneAmount.integerValue
+    }
+    
+    
 }

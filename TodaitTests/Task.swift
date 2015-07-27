@@ -13,7 +13,7 @@ import UIKit
 class Task:NSObject {
     
      var amount: NSNumber!
-     var amount_type: NSNumber!
+     var task_type: NSNumber!
      var archived_at: NSDate!
      var created_at: NSDate!
      var dirty_flag: NSNumber!

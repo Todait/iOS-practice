@@ -12,6 +12,7 @@ import UIKit
 class WeekCalendarCell: UICollectionViewCell {
     
     var ratio:CGFloat! = 0
+    
     var buttons:[DateButton]! = []
     var width:CGFloat! = 0
     var height:CGFloat! = 0

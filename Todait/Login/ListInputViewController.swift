@@ -15,6 +15,8 @@ class ListInputViewController: BasicViewController,UITableViewDelegate,UITableVi
     var filterView:UIImageView!
     var tableView:UITableView!
     
+    var dataSource:[String] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -38,6 +40,28 @@ class ListInputViewController: BasicViewController,UITableViewDelegate,UITableVi
         tableView.separatorStyle = UITableViewCellSeparatorStyle.None
         tableView.registerClass(CategorySettingTableViewCell.self, forCellReuseIdentifier: "Cell")
         view.addSubview(tableView)
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
+        
+        
+        return cell
+        
+        
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 45*ratio
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return dataSource.count
     }
     
     override func viewWillAppear(animated: Bool) {

@@ -87,7 +87,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
                 var button = cell.buttons[index]
                 
                 if(button.dateNumber == todayDateNumber){
-                    button.backgroundColor = UIColor.colorWithHexString("#F2F2F2")
+                    button.backgroundColor = UIColor.todaitWhiteGray()
                 }else if button.dateNumber == dateNumber {
                     button.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.05)
                 }else{
@@ -181,7 +181,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
             
             
             if(button.dateNumber == todayDateNumber){
-                button.backgroundColor = UIColor.colorWithHexString("#F2F2F2")
+                button.backgroundColor = UIColor.todaitWhiteGray()
             }else if self.dateNumber == button.dateNumber {
                 button.backgroundColor = UIColor.whiteColor()
             }else{
@@ -193,13 +193,13 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
             if let currentDay = task.getDay(currentDateNumber) {
                 
                 
-                if currentDay.expect_amount.integerValue <= currentDay.done_amount.integerValue {
+                if currentDay.expectAmount.integerValue <= currentDay.doneAmount.integerValue {
                     button.expectLabel.backgroundColor = UIColor.todaitGreen()
-                    button.expectLabel.text = "\(currentDay.done_amount)"
+                    button.expectLabel.text = "\(currentDay.doneAmount)"
 
                 }else{
                     button.expectLabel.backgroundColor = UIColor.todaitRed()
-                    button.expectLabel.text = "\(currentDay.expect_amount)"
+                    button.expectLabel.text = "\(currentDay.expectAmount)"
 
                 }
                 

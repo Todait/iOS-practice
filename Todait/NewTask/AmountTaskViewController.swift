@@ -8,6 +8,13 @@
 
 import UIKit
 
-class NewAmountTaskViewController: BasicViewController {
+class AmountTaskViewController: BasicViewController {
    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.todaitNavBar.hidden = true
+        
+    }
+    
 }

@@ -77,7 +77,7 @@ class TaskTableViewController: UITableViewController,TaskTableViewCellDelegate{
         
         let task:Task! = taskData[indexPath.row]
         
-        NSLog("%@",task.category_id.name)
+        NSLog("%@",task.categoryId.name)
         
         let day:Day! = task.getDay(getTodayDateNumber())
         
@@ -86,14 +86,14 @@ class TaskTableViewController: UITableViewController,TaskTableViewCellDelegate{
         
         if let isDayValid = day {
             
-            cell.contentsLabel.text = day.getProgressString()
-            cell.percentLabel.text = String(format: "%lu%@", Int(day.done_amount.floatValue/day.expect_amount.floatValue * 100),"%")
+            cell.contentsTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
+            cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
             cell.percentLayer.strokeColor = UIColor.colorWithHexString("#00D2B1").CGColor
-            cell.percentLayer.strokeEnd = CGFloat(day.done_amount.floatValue/day.expect_amount.floatValue)
-            cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
+            cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
+            cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.categoryId.color)
         }else{
             
-            cell.contentsLabel.text = "공부 시작 전입니다"
+            //cell.contentsLabel.text = "공부 시작 전입니다"
         }
         
         

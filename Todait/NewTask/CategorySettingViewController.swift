@@ -279,10 +279,10 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         
         let category = Category(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         category.name = categoryTextField.text
-        category.created_at = NSDate()
+        category.createdAt = NSDate()
         category.color = String.categoryColorStringAtIndex(selectedIndex)
-        category.updated_at = NSDate()
-        category.dirty_flag = 0
+        category.updatedAt = NSDate()
+        category.dirtyFlag = 0
         
         var error: NSError?
         managedObjectContext?.save(&error)
@@ -362,9 +362,10 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         
         
         if indexPath.row == selectedIndex {
-            let select = UIView(frame:CGRectMake(2*ratio,2*ratio,21*ratio,21*ratio))
-            select.backgroundColor = UIColor.whiteColor()
-            circle.addSubview(select)
+            
+            let checkView = UIImageView(frame: CGRectMake(5*ratio, 7*ratio, 15*ratio, 11*ratio))
+            checkView.image = UIImage(named: "icon_check_wt@3x.png")
+            circle.addSubview(checkView)
         }
 
         

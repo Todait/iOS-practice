@@ -85,7 +85,7 @@
     </entity>
     <entity name="Task" representedClassName="Todait.Task" syncable="YES">
         <attribute name="amount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="amount_type" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="amount_type" optional="YES" attributeType="Integer 32" defaultValueString="0" elementID="task_type" syncable="YES"/>
         <attribute name="archived_at" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="created_at" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dirty_flag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -164,7 +164,7 @@
         <element name="ImageData" positionX="414" positionY="396" width="128" height="118"/>
         <element name="Off_Day" positionX="-128" positionY="402" width="128" height="163"/>
         <element name="Review_Task" positionX="-405" positionY="387" width="128" height="178"/>
-        <element name="Task" positionX="-234" positionY="63" width="128" height="343"/>
+        <element name="Task" positionX="-234" positionY="63" width="128" height="345"/>
         <element name="TimeHistory" positionX="216" positionY="563" width="128" height="193"/>
         <element name="TimeLog" positionX="18" positionY="485" width="128" height="208"/>
         <element name="User" positionX="-585" positionY="117" width="128" height="163"/>

@@ -16,4 +16,18 @@ class TimeHistory: NSManagedObject {
     @NSManaged var startedAt: NSDate
     @NSManaged var dayId: Day
 
+    
+    
+    let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    let defaults:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
+    
+    func getColor()->UIColor{
+        return dayId.getColor()
+    }
+    
+    func getHistoryTime()->NSTimeInterval{
+        return endedAt.timeIntervalSinceDate(startedAt)
+    }
+    
+    
 }

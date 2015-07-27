@@ -18,6 +18,22 @@ class Week: NSManagedObject {
     @NSManaged var thu: NSNumber
     @NSManaged var tue: NSNumber
     @NSManaged var wed: NSNumber
-    @NSManaged var taskDateId: TaskDate
+    @NSManaged var taskId: Task
 
+    func getExpectedAmount()->[NSNumber]{
+        
+        var expectedAmount:[NSNumber] = [sun,mon,tue,wed,thu,fri,sat]
+        
+        return expectedAmount
+    }
+    
+    
+    func getExpectedTime()->[NSNumber]{
+        
+        var expectedTime:[NSNumber] = [sun,mon,tue,wed,thu,fri,sat]
+        
+        return expectedTime
+    }
+    
+    
 }

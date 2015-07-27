@@ -41,6 +41,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     var dayData:[Day] = []
     var taskData:[Task] = []
     
+    var taskTestCount:NSTimeInterval = 0
     
     
     
@@ -254,18 +255,17 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             
             
             let task = Task(entity:taskED!,insertIntoManagedObjectContext:managedObjectContext!)
-            
             task.name = name
             task.createdAt = NSDate()
-            task.priority = index
+            task.priority = NSDate().timeIntervalSince1970 + taskTestCount
             task.unit = "회"
             task.taskType = String.taskTestTaskType(Int(rand()%4))
             task.startDate = 20150710
             task.endDate = 20150810
             task.categoryId = category
-            
             createTestWeek(task)
             
+            taskTestCount = taskTestCount + 1
         }
         
     }
@@ -569,10 +569,14 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         let request = NSFetchRequest()
         request.entity = entityDescription
         
-        if sortIndex == 2 {
+        if sortIndex == 1{
+            
+        }else if sortIndex == 2 {
             request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
         }else if sortIndex == 4 {
             request.sortDescriptors = [NSSortDescriptor(key: "categoryId", ascending: true)]
+        }else if sortIndex == 8 {
+            request.sortDescriptors = [NSSortDescriptor(key: "priority", ascending: true)]
         }
         
         if isShowAllCategory == false {

@@ -30,7 +30,7 @@ class FocusViewController: BasicViewController{
     var delegate:FocusDelegate!
     
     
-    var amount_type:NSNumber! = 0
+    var task_type:String! = ""
     var unit:String! = ""
     
     override func viewDidLoad() {

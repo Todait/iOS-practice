@@ -18,9 +18,6 @@ class TaskTests: XCTestCase {
     var finishHour:Int = 4
     var finishMinute:Int = 15
     
-    var task:Task!
-    var week:Week!
-    
     override func setUp() {
         super.setUp()
     

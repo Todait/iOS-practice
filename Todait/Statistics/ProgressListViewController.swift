@@ -55,7 +55,10 @@ class ProgressListViewController: BasicTableViewController,TodaitNavigationDeleg
         
         cell.percentLabel.text = String(format:"%.0f%@",CGFloat(task.getPercentOfDoneAmount()),"%")
         cell.titleLabel.text = task.name
-        cell.contentsLabel.text = task.getDoneAmountString()
+        
+        //cell.contentsTextView.setupText(task.getTotalDoneAmount(), total: task.amount, unit: task.unit)
+        
+        //cell.contentsLabel.text = task.getDoneAmountString()
         
         /*
         if let isDayValid = day {

@@ -146,7 +146,7 @@ class TaskTableViewCell: UITableViewCell {
     }
     
     func addColorBoxView(){
-        colorBoxView = UIView(frame: CGRectMake(0, 0, 2 * DEFAULT_LINE_WIDTH, 49*ratio))
+        colorBoxView = UIView(frame: CGRectMake(0, 0, 2 * DEFAULT_LINE_WIDTH, 58*ratio))
         colorBoxView.backgroundColor = UIColor.clearColor()
         self.addSubview(colorBoxView)
     }

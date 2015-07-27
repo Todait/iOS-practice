@@ -141,7 +141,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     func loadDiary(){
         
         if let day = day {
-            let sortDescriptor = NSSortDescriptor(key: "created_at", ascending: false)
+            let sortDescriptor = NSSortDescriptor(key: "timestamp", ascending: false)
             diaryData = day.diaryList.sortedArrayUsingDescriptors([sortDescriptor]) as! [Diary]
         }
         
@@ -165,7 +165,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         detailView.dateLabel.text = task.getStringOfPeriodProgress()
         detailView.timeLabel.text = task.getDoneTimeString()
         detailView.amountLabel.text = task.getDoneAmountString()
-        detailView.categoryLabel.text = task.category_id.name
+        detailView.categoryLabel.text = task.categoryId.name
         detailView.categoryCircle.backgroundColor = task.getColor()
         detailView.mainImageView.image = UIImage(named: "track.jpg")
         detailView.hidden = true
@@ -401,7 +401,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         memoView.circleChart.updatePercent(progressPercent)
         if let day = day {
-            memoView.amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+            memoView.amountTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
             memoView.addFocusScore(CGFloat(day.score.floatValue))
         }
         
@@ -505,7 +505,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             
             if let day = day {
-                var expectedTime:NSTimeInterval = NSTimeInterval(expectedTimes[day.day_of_week.integerValue])
+                var expectedTime:NSTimeInterval = NSTimeInterval(expectedTimes[day.dayOfWeek.integerValue])
                 memoView.timerAimLabel.text = getTimeStringFromSeconds(expectedTime)
             }
         }
@@ -778,8 +778,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             day = newDay
             setupDay(dateNumber)
             memoView.circleChart.updatePercent(progressPercent)
-            memoView.amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
-            memoView.timerLabel.text = getTimeStringFromSeconds(NSTimeInterval(day.done_second))
+            memoView.amountTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
+            memoView.timerLabel.text = getTimeStringFromSeconds(NSTimeInterval(day.doneSecond))
             memoView.addFocusScore(CGFloat(day.score.floatValue))
             
             updateMemoTimerAimLabel()
@@ -830,7 +830,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
             memoView.circleChart.updatePercent(progressPercent)
             if let day = day {
-                memoView.amountTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
+                memoView.amountTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
                 memoView.addFocusScore(CGFloat(day.score.floatValue))
             }
             
@@ -957,7 +957,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             editTaskVC.editedTask = task
             editTaskVC.delegate = self
             editTaskVC.mainColor = task.getColor()
-            editTaskVC.category = task.category_id
+            editTaskVC.category = task.categoryId
             
         }
         
@@ -969,7 +969,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         var amountVC = AmountViewController()
         amountVC.delegate = self
         amountVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
-        amountVC.amount_type = task.amount_type
+        amountVC.taskType = task.taskType
         amountVC.unit = task.unit
         
         self.navigationController?.presentViewController(amountVC, animated: false, completion: { () -> Void in
@@ -987,16 +987,16 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         let amountLog = AmountLog(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         
-        amountLog.day_id = day
-        amountLog.before_done_amount = day.done_amount
-        amountLog.updated_at = NSDate()
-        amountLog.dirty_flag = 0
-        day.done_amount = Int(day.done_amount) + Int(amount)
-        amountLog.after_done_amount = day.done_amount
-        amountLog.created_at = NSDate()
+        amountLog.dayId = day
+        amountLog.beforeDoneAmount = day.doneAmount
+        amountLog.updatedAt = NSDate()
+        amountLog.dirtyFlag = 0
+        day.doneAmount = Int(day.doneAmount) + Int(amount)
+        amountLog.afterDoneAmount = day.doneAmount
+        amountLog.createdAt = NSDate()
         amountLog.timestamp = NSDate().timeIntervalSince1970
-        amountLog.server_id = 0
-        amountLog.server_day_id = 0
+        amountLog.serverId = 0
+        amountLog.serverDayId = 0
         amountLog.archived = 0
         
         var error: NSError?
@@ -1029,17 +1029,14 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         let entityDescription = NSEntityDescription.entityForName("TimeLog", inManagedObjectContext:managedObjectContext!)
         let timeLog = TimeLog(entity: entityDescription!, insertIntoManagedObjectContext:managedObjectContext)
-        timeLog.dirty_flag = 0
-        timeLog.day_id = day
+        timeLog.dayId = day
         timeLog.timestamp = NSDate().timeIntervalSince1970
-        timeLog.created_at = NSDate()
-        timeLog.server_id = 0
-        timeLog.before_second = day.done_second
-        day.done_second = Int(day.done_second) + Int(time)
-        timeLog.after_second = day.done_second.integerValue
-        timeLog.done_second = Int(time)
-        timeLog.created_at = NSDate()
-        timeLog.updated_at = NSDate()
+        timeLog.createdAt = NSDate()
+        timeLog.beforeSecond = day.doneSecond
+        day.doneSecond = Int(day.doneSecond) + Int(time)
+        timeLog.afterSecond = day.doneSecond.integerValue
+        timeLog.createdAt = NSDate()
+        timeLog.updatedAt = NSDate()
         
         var error: NSError?
         managedObjectContext?.save(&error)
@@ -1065,7 +1062,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         detailView.dateLabel.text = task.getStringOfPeriodProgress()
         detailView.timeLabel.text = task.getDoneTimeString()
         detailView.amountLabel.text = task.getDoneAmountString()
-        detailView.categoryLabel.text = task.category_id.name
+        detailView.categoryLabel.text = task.categoryId.name
         detailView.categoryCircle.backgroundColor = task.getColor()
         
     }
@@ -1208,16 +1205,16 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         let amountLog = AmountLog(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         
-        amountLog.day_id = day
-        amountLog.before_done_amount = day.done_amount
-        amountLog.updated_at = NSDate()
-        amountLog.dirty_flag = 0
-        day.done_amount = Int(day.done_amount) + 1
-        amountLog.after_done_amount = day.done_amount
-        amountLog.created_at = NSDate()
+        amountLog.dayId = day
+        amountLog.beforeDoneAmount = day.doneAmount
+        amountLog.updatedAt = NSDate()
+        amountLog.dirtyFlag = 0
+        day.doneAmount = Int(day.doneAmount) + 1
+        amountLog.afterDoneAmount = day.doneAmount
+        amountLog.createdAt = NSDate()
         amountLog.timestamp = NSDate().timeIntervalSince1970
-        amountLog.server_id = 0
-        amountLog.server_day_id = 0
+        amountLog.serverId = 0
+        amountLog.serverDayId = 0
         amountLog.archived = 0
         
         var error: NSError?

@@ -40,5 +40,44 @@ public extension String {
         }
     }
     
+    static func categoryTestNameAtIndex(index:Int)->String{
+        
+        switch index{
+        case 0: return "Swift"
+        case 1: return "Design"
+        case 2: return "Java"
+        case 3: return "JSP"
+        case 4: return "Android"
+        case 5: return "Python"
+        case 6: return "Window"
+        case 7: return "Apple"
+        case 8: return "iOS"
+        case 9: return "PHP"
+        case 10: return "OpenGL"
+        case 11: return "Linux"
+        case 12: return ".NET"
+        case 13: return "Cocos2D"
+        case 14: return "Network"
+        case 15: return "DataBase"
+        case 16: return "Algorithm"
+        case 17: return "Ruby"
+        case 18: return "iPhone"
+        case 19: return "MacBook"
+            
+        default : return "Cruz"
+            
+        }
+        
+    }
     
+    static func taskTestTaskType(index:Int)->String{
+        switch index{
+        case 0: return "Timer"
+        case 1: return "Time"
+        case 2: return "Amount"
+        case 3: return "Total"
+        default: return "Timer"
+        }
+    }
+        
 }

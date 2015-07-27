@@ -180,7 +180,7 @@ class DiaryViewController: BasicViewController,TodaitNavigationDelegate,UIImageP
         
         if let task = task {
             
-            let category = task.category_id
+            let category = task.categoryId
             titleLabel.text = category.name + " - " + task.name
         
         }
@@ -211,9 +211,10 @@ class DiaryViewController: BasicViewController,TodaitNavigationDelegate,UIImageP
         let entityDescription = NSEntityDescription.entityForName("Diary", inManagedObjectContext:managedObjectContext!)
         let diary = Diary(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         
-        diary.day_id = day
+        diary.dayId = day
         diary.body = diaryTextView.text
-        diary.created_at = NSDate()
+        diary.timestamp = NSDate().timeIntervalSince1970
+
         
         if let image = photoButton1.imageView?.image {
             saveNewImage(image,diary: diary)
@@ -241,7 +242,7 @@ class DiaryViewController: BasicViewController,TodaitNavigationDelegate,UIImageP
         let entityDescription = NSEntityDescription.entityForName("ImageData", inManagedObjectContext:managedObjectContext!)
         let imageData = ImageData(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         imageData.image = UIImageJPEGRepresentation(image, 1.0)
-        imageData.diary_id = diary
+        imageData.diaryId = diary
         
         var error: NSError?
         managedObjectContext?.save(&error)

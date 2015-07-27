@@ -12,12 +12,18 @@ public extension UIColor {
     
     
     class func todaitBlue()->UIColor! {
-        return colorWithHexString("#77c4f0")
+        return colorWithHexString("#4fa0fe")
     }
     
     class func todaitOrange()->UIColor! {
         return colorWithHexString("#FF9381")
     }
+    
+    class func todaitYellow()->UIColor! {
+        return colorWithHexString("#FFD094")
+    }
+    
+    
     
     class func todaitRed()->UIColor! {
         return colorWithHexString("#FF7E7E")

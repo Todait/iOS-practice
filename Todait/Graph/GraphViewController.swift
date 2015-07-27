@@ -32,7 +32,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.todaitLightGray()
+        view.backgroundColor = UIColor.todaitBackgroundGray()
         addScrollView()
         
         addTotalDashView()
@@ -388,7 +388,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
         todaitNavBar.shadowImage = UIImage()
-        self.titleLabel.text = task.category_id.name + " - " + task.name
+        self.titleLabel.text = task.categoryId.name + " - " + task.name
         self.screenName = "Statistics Activity"
         
     }

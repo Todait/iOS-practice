@@ -453,7 +453,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             editTaskVC.editedTask = task
             editTaskVC.delegate = self
             editTaskVC.mainColor = task.getColor()
-            editTaskVC.category = task.category_id
+            editTaskVC.category = task.categoryId
             
         }
     }
@@ -473,16 +473,16 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
         
         let amountLog = AmountLog(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         
-        amountLog.day_id = day
-        amountLog.before_done_amount = day.done_amount
-        amountLog.updated_at = NSDate()
-        amountLog.dirty_flag = 0
-        day.done_amount = Int(day.done_amount) + 1
-        amountLog.after_done_amount = day.done_amount
-        amountLog.created_at = NSDate()
+        amountLog.dayId = day
+        amountLog.beforeDoneAmount = day.doneAmount
+        amountLog.updatedAt = NSDate()
+        amountLog.dirtyFlag = 0
+        day.doneAmount = Int(day.doneAmount) + 1
+        amountLog.afterDoneAmount = day.doneAmount
+        amountLog.createdAt = NSDate()
         amountLog.timestamp = NSDate().timeIntervalSince1970
-        amountLog.server_id = 0
-        amountLog.server_day_id = 0
+        amountLog.serverId = 0
+        amountLog.serverDayId = 0
         amountLog.archived = 0
         
         var error: NSError?

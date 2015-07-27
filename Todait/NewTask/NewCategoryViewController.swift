@@ -58,6 +58,7 @@ class NewCategoryViewController: BasicViewController,TodaitNavigationDelegate,UI
     func addCategoryNameTextField(){
         
         categoryNameTextField = PaddingTextField(frame: CGRectMake(0, 0, width, 80*ratio))
+        categoryNameTextField.padding == 30*ratio
         categoryNameTextField.backgroundColor = UIColor.whiteColor()
         categoryNameTextField.placeholder = "카테고리 이름"
         categoryNameTextField.textColor = UIColor.colorWithHexString("#969696")
@@ -180,10 +181,10 @@ class NewCategoryViewController: BasicViewController,TodaitNavigationDelegate,UI
         
         let category = Category(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         category.name = categoryNameTextField.text
-        category.created_at = NSDate()
+        category.createdAt = NSDate()
         category.color = colorData[selectedIndex]
-        category.updated_at = NSDate()
-        category.dirty_flag = 0
+        category.updatedAt = NSDate()
+        category.dirtyFlag = 0
         
         var error: NSError?
         managedObjectContext?.save(&error)

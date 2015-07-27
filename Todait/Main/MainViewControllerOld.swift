@@ -605,10 +605,10 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
         
         let category = Category(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         category.name = "기본"
-        category.created_at = NSDate()
+        category.createdAt = NSDate()
         category.color = "#FFFB887E"
-        category.updated_at = NSDate()
-        category.dirty_flag = 0
+        category.updatedAt = NSDate()
+        category.dirtyFlag = 0
         
         var error: NSError?
         managedObjectContext?.save(&error)
@@ -660,12 +660,12 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
         if sortIndex == 2 {
             request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
         }else if sortIndex == 4 {
-            request.sortDescriptors = [NSSortDescriptor(key: "category_id", ascending: true)]
+            request.sortDescriptors = [NSSortDescriptor(key: "categoryId", ascending: true)]
         }
         
         if isShowAllCategory == false {
             
-            let predicate = NSPredicate(format: "category_id == %@",category)
+            let predicate = NSPredicate(format: "categoryId == %@",category)
             request.predicate = predicate
         }
         
@@ -844,23 +844,23 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
         
         let task:Task! = taskData[indexPath.row]
         
-        NSLog("%@",task.category_id.name)
+        NSLog("%@",task.categoryId.name)
         
         let day:Day! = task.getDay(getTodayDateNumber())
         
         
-        cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.done_second.integerValue))
+        cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.doneSecond.integerValue))
         
         if let isDayValid = day {
             
             //cell.contentsLabel.text = day.getProgressString()
             
-            cell.contentsTextView.setupText(day.done_amount.integerValue, total: day.expect_amount.integerValue, unit: task.unit)
-            cell.percentLabel.text = String(format: "%lu%@", Int(day.done_amount.floatValue/day.expect_amount.floatValue * 100),"%")
+            cell.contentsTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
+            cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
             cell.percentLayer.strokeColor = day.getColor().CGColor
-            cell.percentLayer.strokeEnd = CGFloat(day.done_amount.floatValue/day.expect_amount.floatValue)
+            cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
             cell.percentLabel.textColor = day.getColor()
-            //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
+            //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.categoryId.color)
         }else{
             
             //cell.contentsLabel.text = "공부 시작 전입니다"
@@ -956,7 +956,7 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
         
         for dayItem in dayData{
             let day:Day! = dayItem
-            totalSecond = totalSecond + Int(day.done_second)
+            totalSecond = totalSecond + Int(day.doneSecond)
             
         }
         
@@ -972,7 +972,7 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
         for dayItem in dayData{
             let day:Day! = dayItem
             
-            completeCount = completeCount + Int(day.done_amount.floatValue/day.expect_amount.floatValue * 100)
+            completeCount = completeCount + Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100)
         }
         
         if dayData.count == 0 {

@@ -28,7 +28,7 @@ class BasicTableViewController: BasicViewController,UITableViewDataSource,UITabl
     func addTableView(){
         
         
-        tableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio,width,height - navigationHeight), style: UITableViewStyle.Grouped)
+        tableView = UITableView(frame: CGRectMake(0,navigationHeight,width,height - navigationHeight), style: UITableViewStyle.Grouped)
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "basic")
         tableView.contentInset = UIEdgeInsetsMake(-15*ratio, 0, 0, 0)
         tableView.sectionFooterHeight = 0.0

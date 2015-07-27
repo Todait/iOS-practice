@@ -282,22 +282,21 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
         let task = Task(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         
         task.name = timerTaskVC.taskTextField.text
-        task.created_at = NSDate()
         task.unit = ""
         
         
         let dateForm = NSDateFormatter()
         dateForm.dateFormat = "yyyyMMdd"
         
-        //task.start_date = getDateNumberFromDate(periodStartDate)
-        //task.end_date = getDateNumberFromDate(periodEndDate)
+        task.startDate = getDateNumberFromDate(periodStartDate)
+        task.endDate = getDateNumberFromDate(periodEndDate)
         //task.unit = "개" //unitTextField.text
-        task.category_id = category
-        
+        //task.categoryId = category
+        task.categoryId = timerTaskVC.category
         
         setupTextField()
         
-        //saveNewWeek(task)
+        saveNewWeek(task)
         
         var error: NSError?
         managedObjectContext?.save(&error)
@@ -317,20 +316,16 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
         
         let entityDescription = NSEntityDescription.entityForName("Week", inManagedObjectContext:managedObjectContext!)
         let week = Week(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
-        week.task_id = task
+        week.taskId = task
         
         
-        week.sun_minute = 1//investData[0];
-        week.mon_minute = 2//investData[1];
-        week.tue_minute = 5//investData[2];
-        week.wed_minute = 6//investData[3];
-        week.thu_minute = 7//investData[4];
-        week.fri_minute = 1//investData[5];
-        week.sat_minute = 2//investData[6];
-        
-        week.updated_at = NSDate()
-        week.created_at = NSDate()
-        
+        week.sun = 3600//investData[0];
+        week.mon = 3600//investData[1];
+        week.tue = 3600//investData[2];
+        week.wed = 3600//investData[3];
+        week.thu = 3600//investData[4];
+        week.fri = 3600//investData[5];
+        week.sat = 3600//investData[6];
         
         
         var error: NSError?

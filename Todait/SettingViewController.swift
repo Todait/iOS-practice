@@ -33,9 +33,8 @@ class SettingViewController: BasicTableViewController,UITableViewDelegate,Todait
     
     func addSettingTableView(){
         
-        settingTableView = UITableView(frame: CGRectMake(0,navigationHeight*ratio,width,height - navigationHeight), style: UITableViewStyle.Grouped)
+        settingTableView = UITableView(frame: CGRectMake(0,navigationHeight,width,height - navigationHeight), style: UITableViewStyle.Plain)
         settingTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        settingTableView.contentInset = UIEdgeInsetsMake(-15*ratio, 0, 0, 0)
         settingTableView.sectionFooterHeight = 0.0
         settingTableView.delegate = self
         settingTableView.dataSource = self

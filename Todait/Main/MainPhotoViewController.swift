@@ -56,16 +56,21 @@ class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICo
         
     }
     
+    
+    
+    
     func getMainImage(){
         
-        
-        let localIdentifier:String! = defaults.objectForKey("mainPhoto") as! String
-        var image:UIImage!
-        
-        if let check = localIdentifier {
-            getMainImageFromPhotos(check as String)
-        }else{
+        if let check: AnyObject = defaults.objectForKey("mainPhoto") {
             
+            let localIdentifier:String! = defaults.objectForKey("mainPhoto") as! String
+            var image:UIImage!
+            
+            if let check = localIdentifier {
+                getMainImageFromPhotos(check as String)
+            }else{
+                
+            }
         }
     }
     

@@ -19,4 +19,19 @@ class TaskDate: NSManagedObject {
     @NSManaged var dayList: NSSet
     @NSManaged var week: Week
 
+    
+    
+    
+    let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    let defaults:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
+    
+    
+    
+    func getColor()->UIColor{
+        return taskId.getColor()
+    }
+    
+    
+    
+    
 }

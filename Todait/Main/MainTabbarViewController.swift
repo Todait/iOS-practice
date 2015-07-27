@@ -24,6 +24,7 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
     private var newTaskButton:MainTabbarButton!
     private var statisticsButton:MainTabbarButton!
     private var profileButton:MainTabbarButton!
+  
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
@@ -61,6 +62,7 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
         setupStatisticsViewController()
         setupProfileViewController()
         
+        setupLoginViewController()
         
         
         let vc = viewControllers[0]
@@ -72,22 +74,37 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
     func setupMainViewController(){
         
         var mainVC = self.storyboard?.instantiateViewControllerWithIdentifier("mainVC") as! MainViewController
-        
         addChildViewController(mainVC)
-        
         viewControllers.append(mainVC)
     }
     
     func setupTimeTableViewController(){
-        viewControllers.append(TimeTableViewController())
+        let timeTableVC = TimeTableViewController()
+        addChildViewController(timeTableVC)
+        viewControllers.append(timeTableVC)
+        
     }
     
     func setupStatisticsViewController(){
-        viewControllers.append(StatisticsViewController())
+        
+        let statisticsVC = StatisticsViewController()
+        addChildViewController(statisticsVC)
+        viewControllers.append(statisticsVC)
+        
     }
     
     func setupProfileViewController(){
-        viewControllers.append(ProfileViewController())
+        
+        let profileVC = ProfileViewController()
+        addChildViewController(profileVC)
+        //viewControllers.append(profileVC)
+    }
+    
+    func setupLoginViewController(){
+        
+        let loginVC = LoginViewController()
+        addChildViewController(loginVC)
+        viewControllers.append(loginVC)
     }
     
     func addTabbarView(){

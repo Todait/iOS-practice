@@ -27,7 +27,7 @@ class DiaryPhotoInputViewController: BasicViewController {
     var cancelButton:UIButton!
     
     
-    var amount_type:NSNumber! = 0
+    var task_type:String! = ""
     var unit:String! = ""
     
     var delegate:DiaryImageDelegate!

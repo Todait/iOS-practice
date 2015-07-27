@@ -57,9 +57,11 @@ class DateButton: UIButton {
             backgroundChart.hidden = false
             frontChart.frame = CGRectMake(0, 0, backgroundChart.frame.size.width * value, 3*ratio)
             
-            if value < 0.5 {
+            if value < 0.33 {
                 frontChart.backgroundColor = UIColor.todaitRed()
-            }else{
+            }else if value < 0.66 {
+                frontChart.backgroundColor = UIColor.todaitYellow()
+            }else {
                 frontChart.backgroundColor = UIColor.todaitGreen()
             }
         }
@@ -75,7 +77,7 @@ class DateButton: UIButton {
     func dateUpdate(){
         
         
-        self.backgroundColor = UIColor.colorWithHexString("#F2F2F2")
+        self.backgroundColor = UIColor.todaitWhiteGray()
         if self.delegate.respondsToSelector("updateDate:from:"){
             self.delegate.updateDate(getDateFromDateNumber(dateNumber),from:"button")
         }
