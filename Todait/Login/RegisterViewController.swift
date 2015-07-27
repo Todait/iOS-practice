@@ -94,6 +94,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         profileButton.layer.borderColor = UIColor.todaitGreen().CGColor
         profileButton.layer.borderWidth = 3*ratio
         profileButton.addTarget(self, action: Selector("profileButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        profileButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFill
         scrollView.addSubview(profileButton)
         
     }
