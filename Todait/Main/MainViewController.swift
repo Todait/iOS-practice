@@ -654,7 +654,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         settingButton = UIButton(frame: CGRectMake(258*ratio, 30, 24, 24))
         settingButton.setImage(UIImage(named: "setting@2x.png"), forState: UIControlState.Normal)
         settingButton.addTarget(self, action: Selector("showSetting"), forControlEvents: UIControlEvents.TouchUpInside)
-        view.addSubview(settingButton)
+        //view.addSubview(settingButton)
     }
     
     
