@@ -9,7 +9,7 @@
 import UIKit
 import MobileCoreServices
 
-class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate{
+class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate,ListInputDelegate{
 
     
     var scrollView:UIScrollView!
@@ -19,6 +19,9 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     var profileButton:UIButton!
     var cameraButton:UIButton!
     
+    
+    
+    
     var nameField:PaddingTextField!
     var emailField:PaddingTextField!
     var passwordField:PaddingTextField!
@@ -26,6 +29,8 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     
     var jobField:PaddingTextField!
     var objectField:PaddingTextField!
+    
+    var currentTextField:UITextField!
     
     var registerButton:UIButton!
     
@@ -195,27 +200,67 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     func addNameField(){
         
         nameField = PaddingTextField(frame: CGRectMake(0, 198*ratio, width, 48*ratio))
-        nameField.attributedPlaceholder = NSAttributedString.getAttributedString("Name",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)!,color:UIColor.whiteColor())
+        nameField.attributedPlaceholder = NSAttributedString.getAttributedString("Name",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
         nameField.padding = 30*ratio
         nameField.textAlignment = NSTextAlignment.Left
         nameField.delegate = self
         nameField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
         nameField.textColor = UIColor.whiteColor()
         nameField.returnKeyType = UIReturnKeyType.Next
+        nameField.tintColor = UIColor.whiteColor()
+        nameField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
         scrollView.addSubview(nameField)
+        
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        
+        switch textField {
+            
+        case nameField: emailField.becomeFirstResponder()
+        case emailField: passwordField.becomeFirstResponder()
+        case passwordField: confirmField.becomeFirstResponder()
+        case confirmField: showJobInputView()
+        default: return true
+            
+        }
+        
+        return true
+    }
+    
+    func showJobInputView(){
+        
+        
+        let listInputVC = ListInputViewController()
+        
+        listInputVC.dataSource = ["초등학생","중학생","고등학생","대학생","직장인"]
+        listInputVC.title = "직업"
+        listInputVC.delegate = self
+        listInputVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        
+        self.navigationController?.presentViewController(listInputVC, animated: false, completion: { () -> Void in
+            
+        })
+        
+        
+    }
+    
+    func selectedString(string:String){
         
     }
     
     func addEmailField(){
         
         emailField = PaddingTextField(frame: CGRectMake(0, 247*ratio, width, 48*ratio))
-        emailField.attributedPlaceholder = NSAttributedString.getAttributedString("E-mail",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)!,color:UIColor.whiteColor())
+        emailField.attributedPlaceholder = NSAttributedString.getAttributedString("E-mail",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
         emailField.padding = 30*ratio
         emailField.textAlignment = NSTextAlignment.Left
         emailField.delegate = self
         emailField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
         emailField.textColor = UIColor.whiteColor()
         emailField.returnKeyType = UIReturnKeyType.Next
+        emailField.tintColor = UIColor.whiteColor()
+        emailField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
         scrollView.addSubview(emailField)
         
     }
@@ -224,13 +269,15 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
         passwordField = PaddingTextField(frame: CGRectMake(0, 296*ratio, width, 48*ratio))
         passwordField.padding = 30*ratio
-        passwordField.attributedPlaceholder = NSAttributedString.getAttributedString("Password",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)!,color:UIColor.whiteColor())
+        passwordField.attributedPlaceholder = NSAttributedString.getAttributedString("Password",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
         
         passwordField.textAlignment = NSTextAlignment.Left
         passwordField.delegate = self
         passwordField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
         passwordField.textColor = UIColor.whiteColor()
-        passwordField.returnKeyType = UIReturnKeyType.Join
+        passwordField.returnKeyType = UIReturnKeyType.Next
+        passwordField.tintColor = UIColor.whiteColor()
+        passwordField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
         scrollView.addSubview(passwordField)
     }
     
@@ -238,43 +285,49 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
         confirmField = PaddingTextField(frame: CGRectMake(0, 345*ratio, width, 48*ratio))
         confirmField.padding = 30*ratio
-        confirmField.attributedPlaceholder = NSAttributedString.getAttributedString("Password",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)!,color:UIColor.whiteColor())
+        confirmField.attributedPlaceholder = NSAttributedString.getAttributedString("Password",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
         
         confirmField.textAlignment = NSTextAlignment.Left
         confirmField.delegate = self
         confirmField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
         confirmField.textColor = UIColor.whiteColor()
-        confirmField.returnKeyType = UIReturnKeyType.Join
+        confirmField.returnKeyType = UIReturnKeyType.Next
+        confirmField.tintColor = UIColor.whiteColor()
+        confirmField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
         scrollView.addSubview(confirmField)
     }
 
     
-    func addObjectField(){
+    func addJobField(){
         
         
         jobField = PaddingTextField(frame: CGRectMake(0, 399*ratio, width, 48*ratio))
         jobField.padding = 30*ratio
-        jobField.attributedPlaceholder = NSAttributedString.getAttributedString("직업",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)!,color:UIColor.whiteColor())
+        jobField.attributedPlaceholder = NSAttributedString.getAttributedString("직업",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
         
         jobField.textAlignment = NSTextAlignment.Left
         jobField.delegate = self
         jobField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
         jobField.textColor = UIColor.whiteColor()
-        jobField.returnKeyType = UIReturnKeyType.Join
+        jobField.returnKeyType = UIReturnKeyType.Next
+        jobField.tintColor = UIColor.whiteColor()
+        jobField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
         scrollView.addSubview(jobField)
     }
     
-    func addJobField(){
+    func addObjectField(){
         
         objectField = PaddingTextField(frame: CGRectMake(0, 448*ratio, width, 48*ratio))
         objectField.padding = 30*ratio
-        objectField.attributedPlaceholder = NSAttributedString.getAttributedString("목표",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)!,color:UIColor.whiteColor())
+        objectField.attributedPlaceholder = NSAttributedString.getAttributedString("목표",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
         
         objectField.textAlignment = NSTextAlignment.Left
         objectField.delegate = self
         objectField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
         objectField.textColor = UIColor.whiteColor()
-        objectField.returnKeyType = UIReturnKeyType.Join
+        objectField.returnKeyType = UIReturnKeyType.Next
+        objectField.tintColor = UIColor.whiteColor()
+        objectField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
         scrollView.addSubview(objectField)
     }
     
