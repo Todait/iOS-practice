@@ -29,7 +29,7 @@ public func getMainString() -> String {
 
 public func getTimeTableString() -> String{
     if getLanguage() == "ko" {
-        return "시간표"
+        return "타임로그"
     }else{
         return "TimeTable"
     }
