@@ -178,7 +178,6 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
-        
         if textField == emailTextField {
             passwordField.becomeFirstResponder()
         }else if textField == passwordField {
