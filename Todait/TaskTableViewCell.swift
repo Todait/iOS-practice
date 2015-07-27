@@ -15,7 +15,7 @@ protocol TaskTableViewCellDelegate :  NSObjectProtocol {
 
 
 
-class TaskTableViewCell: UITableViewCell {
+class TaskTableViewCell: BasicTableViewCell {
     var titleLabel : UILabel!
     //var contentsLabel : UILabel!
     
@@ -31,8 +31,6 @@ class TaskTableViewCell: UITableViewCell {
     
     var delegate : TaskTableViewCellDelegate!
     
-    var ratio : CGFloat!
-    
     let DEFAULT_START_ANGLE : CGFloat = -89.0
     let DEFAULT_END_ANGLE : CGFloat = -89.00001
     let DEFAULT_LINE_WIDTH : CGFloat = 2
@@ -42,8 +40,6 @@ class TaskTableViewCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        
-        setupRatio()
         addTitleLabel()
         //addContentsLabel()
         addContentsTextView()
@@ -52,11 +48,6 @@ class TaskTableViewCell: UITableViewCell {
         addColorBoxView()
     }
     
-    func setupRatio(){
-        let screenRect = UIScreen.mainScreen().bounds
-        let screenWidth = screenRect.size.width
-        ratio = screenWidth/320
-    }
     
     func addTitleLabel(){
         titleLabel = UILabel(frame: CGRectMake(75*ratio, 11*ratio, 250*ratio, 14*ratio))
@@ -80,8 +71,8 @@ class TaskTableViewCell: UITableViewCell {
         
         contentsTextView = AmountTextView(frame: CGRectMake(72*ratio, 20*ratio, 250*ratio, 32*ratio))
         contentsTextView.unitColor = UIColor.todaitGray()
-        contentsTextView.unitFont = UIFont(name: "AppleSDGothicNeo-Regular", size: 20*ratio)
-        contentsTextView.amountFont = UIFont(name: "AppleSDGothicNeo-Regular", size: 20*ratio)
+        contentsTextView.unitFont = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
+        contentsTextView.amountFont = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
         contentsTextView.amountColor = UIColor.todaitDarkGray()
         contentsTextView.baseLine = 0
         
@@ -100,16 +91,38 @@ class TaskTableViewCell: UITableViewCell {
         timerButton.layer.cornerRadius = 18*ratio
         timerButton.layer.borderWidth = 1.0
         timerButton.layer.borderColor = UIColor.todaitLightGray().CGColor
+        
+        
+        timerButton.addTarget(self, action: Selector("timerButtonTouchUpOutside"), forControlEvents:UIControlEvents.TouchUpOutside)
+        timerButton.addTarget(self, action: Selector("timerButtonTouchDown"), forControlEvents:UIControlEvents.TouchDown)
         timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         timerButton.setImage(UIImage.maskColor("detail_basic_23@3x.png", color: UIColor.todaitLightGray()), forState: UIControlState.Normal)
         
-        timerButton.setImage(UIImage.maskColor("detail_basic_23@3x.png", color: UIColor.todaitGray()), forState: UIControlState.Highlighted)
+        timerButton.setImage(UIImage.maskColor("detail_basic_23@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Highlighted)
+        
+        timerButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame:CGRectMake(0,0,36*ratio,36*ratio)), forState: UIControlState.Normal)
+        timerButton.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("#95CCC4").colorWithAlphaComponent(0.5), frame:CGRectMake(0,0,36*ratio,36*ratio)), forState: UIControlState.Highlighted)
+        
         timerButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         
         self.addSubview(timerButton)
         
         setPercentBezierPath()
         addPercentLayer()
+    }
+    
+    func timerButtonTouchDown(){
+        
+        print("touchdown")
+        percentLabel.hidden = true
+        
+    }
+    
+    func timerButtonTouchUpOutside(){
+        
+        print("touchUpOutSide")
+        
+        percentLabel.hidden = false
     }
     
     func timerButtonClk(){

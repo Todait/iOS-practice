@@ -352,7 +352,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func addMainTableView(){
         
         mainTableView = UITableView(frame: CGRectMake(0,navigationHeight ,width,height - navigationHeight - 47*ratio), style: UITableViewStyle.Grouped)
-        mainTableView.registerClass(TaskTableViewCell.self, forCellReuseIdentifier: "cell")
+        mainTableView.registerClass(TaskTableViewCell.self, forCellReuseIdentifier: "mainCell")
+        mainTableView.registerClass(TimerTaskTableViewCell.self, forCellReuseIdentifier: "timerCell")
         mainTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
         mainTableView.delegate = self
         mainTableView.dataSource = self
@@ -783,49 +784,92 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TaskTableViewCell
         
-        
-        for temp in cell.contentView.subviews{
-            temp.removeFromSuperview()
-        }
         
         let task:Task! = taskData[indexPath.row]
         let day:Day? = task.getDay(getTodayDateNumber())
         
-        cell.delegate = self
-        cell.indexPath = indexPath
-        cell.percentLayer.strokeEnd = 0
-        cell.percentLayer.strokeColor = UIColor.todaitLightGray().CGColor
-        cell.percentLayer.lineWidth = 2
-        cell.percentLabel.textColor = UIColor.todaitDarkGray()
-        cell.colorBoxView.backgroundColor = task.getColor()
         
-
-        
-        
-        if let day = day {
+        if task.taskType == "Timer" {
             
-            //cell.contentsLabel.text = day.getProgressString()
-            cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.doneSecond.integerValue))
-            cell.contentsTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
-            cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
-            cell.percentLayer.strokeColor = day.getColor().CGColor
-            cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
-            cell.percentLabel.textColor = day.getColor()
-            //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
-        
+            let cell = tableView.dequeueReusableCellWithIdentifier("timerCell", forIndexPath: indexPath) as! TimerTaskTableViewCell
+            
+            
+            for temp in cell.contentView.subviews{
+                temp.removeFromSuperview()
+            }
+            cell.delegate = self
+            cell.indexPath = indexPath
+            cell.percentLayer.strokeEnd = 0
+            cell.percentLayer.strokeColor = UIColor.todaitLightGray().CGColor
+            cell.percentLayer.lineWidth = 2
+            cell.percentLabel.textColor = UIColor.todaitDarkGray()
+            cell.colorBoxView.backgroundColor = task.getColor()
+            cell.percentLabel.hidden = false
+            
+            if let day = day {
+                
+                cell.titleLabel.text = task.name
+                cell.contentsTextView.setupText(NSTimeInterval(day.doneSecond.integerValue))
+                cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
+                cell.percentLayer.strokeColor = day.getColor().CGColor
+                cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
+                cell.percentLabel.textColor = day.getColor()
+                
+            }
+            
+            var line = UIView(frame: CGRectMake(0, 57.5*ratio, 320*ratio, 0.5*ratio))
+            line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
+            cell.contentView.addSubview(line)
+            
+            return cell
+            
         }else{
             
-            cell.titleLabel.text = task.name + " | "
+            let cell = tableView.dequeueReusableCellWithIdentifier("mainCell", forIndexPath: indexPath) as! TaskTableViewCell
+            
+            
+            for temp in cell.contentView.subviews{
+                temp.removeFromSuperview()
+            }
+            
+            cell.delegate = self
+            cell.indexPath = indexPath
+            cell.percentLayer.strokeEnd = 0
+            cell.percentLayer.strokeColor = UIColor.todaitLightGray().CGColor
+            cell.percentLayer.lineWidth = 2
+            cell.percentLabel.textColor = UIColor.todaitDarkGray()
+            cell.colorBoxView.backgroundColor = task.getColor()
+            cell.percentLabel.hidden = false
+            
+            
+            
+            if let day = day {
+                
+                //cell.contentsLabel.text = day.getProgressString()
+                cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.doneSecond.integerValue))
+                cell.contentsTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
+                cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
+                cell.percentLayer.strokeColor = day.getColor().CGColor
+                cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
+                cell.percentLabel.textColor = day.getColor()
+                //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
+                
+            }else{
+                
+                cell.titleLabel.text = task.name + " | "
+            }
+
+            var line = UIView(frame: CGRectMake(0, 57.5*ratio, 320*ratio, 0.5*ratio))
+            line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
+            cell.contentView.addSubview(line)
+            
+            
+            return cell
         }
         
         
-        var line = UIView(frame: CGRectMake(0, 57.5*ratio, 320*ratio, 0.5*ratio))
-        line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
-        cell.contentView.addSubview(line)
         
-        return cell
     }
     
     func timerButtonClk(indexPath:NSIndexPath) {
@@ -865,7 +909,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         tableView.reloadData()
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("mainCell", forIndexPath: indexPath)
         as! TaskTableViewCell
         
         
