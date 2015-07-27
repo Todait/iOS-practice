@@ -84,12 +84,12 @@ class DetailMemoView: UIView {
     
     func addHeaderLabel(){
         
-        headerLabel = UILabel(frame: CGRectMake(0, 116*ratio, 320*ratio, 24.5*ratio))
-        headerLabel.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
+        headerLabel = UILabel(frame: CGRectMake(0, 115*ratio, 320*ratio, 23*ratio))
+        headerLabel.backgroundColor = UIColor.todaitBackgroundGray()
         headerLabel.textColor = UIColor.todaitGray()
         headerLabel.textAlignment = NSTextAlignment.Center
         headerLabel.text = "공부메모"
-        headerLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+        headerLabel.font = UIFont(name: "AvenirNext-Medium", size: 10*ratio)
         addSubview(headerLabel)
         
     }
@@ -97,7 +97,7 @@ class DetailMemoView: UIView {
     
     func addDiaryButton(){
         
-        let diaryImage = UIImageView(frame: CGRectMake(18*ratio,116*ratio+39*ratio,16*ratio,16*ratio))
+        let diaryImage = UIImageView(frame: CGRectMake(18*ratio,153*ratio,16*ratio,16*ratio))
         diaryImage.image = UIImage(named: "detail_basic_27@3x.png")
         addSubview(diaryImage)
         
@@ -105,7 +105,7 @@ class DetailMemoView: UIView {
         diaryButton = UIButton(frame:CGRectMake(5*ratio,108*ratio+39*ratio,150*ratio,32*ratio))
         diaryButton.addTarget(self, action: Selector("diaryButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         diaryButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame: CGRectMake(0, 0, 150*ratio, 32*ratio)), forState: UIControlState.Normal)
-        diaryButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitLightGray(), frame: CGRectMake(0, 0, 150*ratio, 32*ratio)), forState: UIControlState.Highlighted)
+        diaryButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitBackgroundGray(), frame: CGRectMake(0, 0, 150*ratio, 32*ratio)), forState: UIControlState.Highlighted)
         
         addSubview(diaryButton)
     }
@@ -114,21 +114,20 @@ class DetailMemoView: UIView {
     
     func addInfoLabel(){
         
-        infoLabel = UILabel(frame: CGRectMake(37*ratio, 116*ratio+24.5*ratio, 180*ratio, 45.5*ratio))
-        infoLabel.textColor = UIColor.todaitGray()
+        infoLabel = UILabel(frame: CGRectMake(52*ratio, 138*ratio, 180*ratio, 46*ratio))
+        infoLabel.textColor = UIColor.todaitLightGray()
         infoLabel.textAlignment = NSTextAlignment.Left
         infoLabel.text = "메모를 추가하세요."
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
-        
+        infoLabel.font = UIFont(name: "AvenirNext-Medium", size: 13*ratio)
         addSubview(infoLabel)
     }
     
     
     func addFocusButton(){
         
-        focusButton = UIButton(frame: CGRectMake(200*ratio , 115*ratio+24.5*ratio, 90*ratio, 45.5*ratio))
+        focusButton = UIButton(frame: CGRectMake(200*ratio , 138*ratio, 90*ratio, 46*ratio))
         focusButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame: CGRectMake(0, 0, 90*ratio, 45.5*ratio)), forState: UIControlState.Normal)
-        focusButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitLightGray(), frame: CGRectMake(0, 0, 90*ratio, 45.5*ratio)), forState: UIControlState.Highlighted)
+        focusButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitBackgroundGray(), frame: CGRectMake(0, 0, 90*ratio, 46*ratio)), forState: UIControlState.Highlighted)
         focusButton.addTarget(self, action: Selector("focusButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         
         addSubview(focusButton)
@@ -139,7 +138,7 @@ class DetailMemoView: UIView {
     
     func addLine(){
         upperLine = UIView(frame:CGRectMake(0,0*ratio,width,0.5*ratio))
-        upperLine.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
+        upperLine.backgroundColor = UIColor.todaitBackgroundGray()
         addSubview(upperLine)
     }
     
@@ -156,9 +155,9 @@ class DetailMemoView: UIView {
     
     func addTimeLogButton(){
         
-        timeLogButton = UIButton(frame: CGRectMake(15*ratio, 0*ratio+70*ratio, 130*ratio, 45*ratio))
+        timeLogButton = UIButton(frame: CGRectMake(15*ratio, 0*ratio+70*ratio, 130*ratio, 46*ratio))
         timeLogButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame: CGRectMake(0, 0, 130*ratio, 45*ratio)), forState: UIControlState.Normal)
-        timeLogButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitLightGray(), frame: CGRectMake(0, 0, 130*ratio, 45*ratio)), forState: UIControlState.Highlighted)
+        timeLogButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitBackgroundGray(), frame: CGRectMake(0, 0, 130*ratio, 45*ratio)), forState: UIControlState.Highlighted)
         timeLogButton.addTarget(self, action: Selector("timeLogButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         
         addSubview(timeLogButton)
@@ -191,8 +190,8 @@ class DetailMemoView: UIView {
     
     func addMiddleLine(){
         
-        middleLine = UIView(frame:CGRectMake(159.75*ratio,0*ratio,0.5*ratio,115*ratio))
-        middleLine.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
+        middleLine = UIView(frame:CGRectMake(159.5*ratio,0*ratio,1*ratio,115*ratio))
+        middleLine.backgroundColor = UIColor.todaitBackgroundGray()
         
         addSubview(middleLine)
         
@@ -204,7 +203,7 @@ class DetailMemoView: UIView {
         circleChart.circleColor = UIColor.todaitOrange()
         //circleChart.updatePercent(progressPercent)
         circleChart.percentLabel.frame = CGRectMake(5*ratio,5*ratio,48*ratio,48*ratio)
-        circleChart.percentLabel.font = UIFont(name: "AppleSDGothicNeo-Light",size: 25*ratio)
+        circleChart.percentLabel.font = UIFont(name: "AppleSDGothicNeo-UltraLight",size: 20*ratio)
         circleChart.percentLabel.adjustsFontSizeToFitWidth = true
         
         addSubview(circleChart)

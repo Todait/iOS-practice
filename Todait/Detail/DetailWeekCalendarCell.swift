@@ -67,7 +67,7 @@ class DetailWeekCalendarCell: UICollectionViewCell {
             
             let originX = CGFloat(i%7)*width
             
-            let label = UILabel(frame:CGRectMake(originX, 32*ratio, width, 20*ratio))
+            let label = UILabel(frame:CGRectMake(originX, 33*ratio, width, 20*ratio))
             label.backgroundColor = UIColor.clearColor()
             label.textColor = UIColor.todaitGray()
             label.font = UIFont(name: "AppleSDGothicNeo-Light", size: 19*ratio)

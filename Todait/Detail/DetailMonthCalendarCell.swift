@@ -70,7 +70,7 @@ class DetailMonthCalendarCell: UICollectionViewCell {
             let originX = CGFloat(i%7)*width
             let originY = CGFloat(i/7)*height
             
-            let label = UILabel(frame:CGRectMake(originX, 32*ratio + originY, width, 20*ratio))
+            let label = UILabel(frame:CGRectMake(originX, 33*ratio + originY, width, 20*ratio))
             label.backgroundColor = UIColor.clearColor()
             label.textColor = UIColor.todaitGray()
             label.font = UIFont(name: "AppleSDGothicNeo-Light", size: 19*ratio)

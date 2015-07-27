@@ -57,15 +57,15 @@ class DetailDateButton: UIButton {
         
         
         
-        expectLabel = UILabel(frame: CGRectMake(160*ratio/7 - 7.5, 15*ratio, 15, 15))
+        expectLabel = UILabel(frame: CGRectMake(160*ratio/7 - 7, 14*ratio - 7, 14, 14))
         
         expectLabel.adjustsFontSizeToFitWidth = true
-        expectLabel.font = UIFont(name: "HelveticaNeue", size: 7*ratio)
+        expectLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10)
         expectLabel.textColor = UIColor.whiteColor()
         expectLabel.textAlignment = NSTextAlignment.Center
         expectLabel.backgroundColor = UIColor.clearColor()
         expectLabel.clipsToBounds = true
-        expectLabel.layer.cornerRadius = 7.5
+        expectLabel.layer.cornerRadius = 7
         addSubview(expectLabel)
         
         

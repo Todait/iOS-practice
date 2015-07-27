@@ -105,18 +105,15 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         view.addSubview(detailView)
         view.addSubview(memoView)
-        addDiaryTableView()
         
+        addDiaryTableView()
         addShadowView()
     }
     
-    func zzz(){
-        NSLog("zz")
-    }
     
     func getWeekNumber(date:NSDate)->CGFloat{
         
-        var time = Int(date.timeIntervalSinceDate(getFirstDateOfMonth(date)) / (7*24*60*60))
+        var time = Int(date.timeIntervalSinceDate(getFirstSundayDateOfMonth(date)) / (7*24*60*60))
         
         return CGFloat(time + 1)
         
@@ -189,12 +186,12 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         
         var headerView = UIView(frame: CGRectMake(0, 64, width, 43*ratio))
-        headerView.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
+        headerView.backgroundColor = UIColor.todaitBackgroundGray()
         headerView.clipsToBounds = true
         
         dateLabel = UILabel(frame: CGRectMake(15*ratio, 0, 290*ratio, 23*ratio))
         dateLabel.textColor = UIColor.todaitGray()
-        dateLabel.font = UIFont(name:"AppleSDGothicNeo-UltraLight", size: 10*ratio)
+        dateLabel.font = UIFont(name:"AppleSDGothicNeo-Medium", size: 10*ratio)
         dateLabel.textAlignment = NSTextAlignment.Center
         headerView.addSubview(dateLabel)
         
@@ -212,7 +209,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             let weekDayLabel = UILabel(frame: CGRectMake(CGFloat(index)*weekWidth, 23*ratio, weekWidth, 20*ratio))
             weekDayLabel.textAlignment = NSTextAlignment.Center
             weekDayLabel.text = weekTitle[index]
-            weekDayLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 7.5*ratio)
+            weekDayLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 8*ratio)
             weekDayLabel.textColor = UIColor.todaitGray()
             weekDayLabel.backgroundColor = UIColor.clearColor()
             headerView.addSubview(weekDayLabel)
@@ -444,7 +441,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         diaryTableView.dataSource = self
         diaryTableView.contentOffset.y = 0
         diaryTableView.sectionFooterHeight = 0
-        diaryTableView.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
+        diaryTableView.backgroundColor = UIColor.todaitBackgroundGray()
         diaryTableView.separatorStyle = UITableViewCellSeparatorStyle.None
         
         view.addSubview(diaryTableView)
@@ -558,7 +555,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         detailTableView.dataSource = self
         detailTableView.contentOffset.y = 0
         detailTableView.sectionFooterHeight = 0
-        detailTableView.backgroundColor = UIColor.colorWithHexString("#EFEFEF")
+        detailTableView.backgroundColor = UIColor.todaitBackgroundGray()
         detailTableView.separatorStyle = UITableViewCellSeparatorStyle.None
         //view.addSubview(detailTableView)
     }
@@ -846,7 +843,14 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             self.day = day
         }
         
-        //detailTableView.reloadData()
+        
+        if from == "Week" {
+            
+            let baseOriginY = 64 + 43*ratio
+            
+            monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-weekCalendarHeight*ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, monthCalendarHeight*ratio)
+            
+        }
         
     }
     
