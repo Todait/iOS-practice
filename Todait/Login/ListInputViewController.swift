@@ -8,6 +8,11 @@
 
 import UIKit
 
+protocol ListInputDelegate : NSObjectProtocol {
+    func selectedString(string:String)
+}
+
+
 class ListInputViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource{
     
     var tableTitle:String! = ""
@@ -16,6 +21,8 @@ class ListInputViewController: BasicViewController,UITableViewDelegate,UITableVi
     var tableView:UITableView!
     
     var dataSource:[String] = []
+    
+    var delegate:ListInputDelegate!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,9 +57,36 @@ class ListInputViewController: BasicViewController,UITableViewDelegate,UITableVi
         
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
         
+        for temp in cell.contentView.subviews {
+            temp.removeFromSuperview()
+        }
+        
+        
+        let title:String = dataSource[indexPath.row]
+        
+        let titleLabel = UILabel(frame:CGRectMake(15*ratio,5*ratio,250*ratio,35*ratio))
+        titleLabel.text = title
+        titleLabel.font = UIFont(name:"AppleSDGothicNeo-Light",size:14*ratio)
+        titleLabel.textColor = UIColor.todaitGray()
+        titleLabel.textAlignment = NSTextAlignment.Left
+        
+        cell.contentView.addSubview(titleLabel)
+        
+        
         
         return cell
         
+        
+    }
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    
+        
+        if self.delegate.respondsToSelector("selectedString:"){
+            
+            self.delegate.selectedString(dataSource[indexPath.row])
+            
+        }
         
     }
     
