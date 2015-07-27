@@ -66,7 +66,7 @@
         <!--Navigation Controller-->
         <scene sceneID="tnL-As-CbX">
             <objects>
-                <navigationController id="Qgp-iz-vlx" sceneMemberID="viewController">
+                <navigationController navigationBarHidden="YES" id="Qgp-iz-vlx" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="NGR-5O-3Td">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -125,7 +125,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="252" y="-157"/>
+            <point key="canvasLocation" x="194" y="-157"/>
         </scene>
         <!--Timer View Controller-->
         <scene sceneID="cW1-8m-gnd">
@@ -369,9 +369,9 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="Ir7-i8-Tb2"/>
-        <segue reference="Opy-KL-cVV"/>
-        <segue reference="Fak-dM-lxb"/>
+        <segue reference="9wR-hP-Vgj"/>
+        <segue reference="MJ6-d1-7Rc"/>
+        <segue reference="hF8-E9-VIJ"/>
         <segue reference="Bxf-SX-fhr"/>
     </inferredMetricsTieBreakers>
 </document>

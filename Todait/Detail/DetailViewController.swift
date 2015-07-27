@@ -732,6 +732,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
+        
         if section == 0 {
             return 1
         }

@@ -62,6 +62,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         scrollView = UIScrollView(frame: CGRectMake(0, 0, width, height))
         scrollView.contentSize = CGSizeMake(width, height)
         scrollView.backgroundColor = UIColor.clearColor()
+        scrollView.bounces = false
         view.addSubview(scrollView)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: Selector("resignAllKeyBoard"))
@@ -71,7 +72,9 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     
     func resignAllKeyBoard(){
         
-        currentTextField.resignFirstResponder()
+        if let textField = currentTextField {
+            currentTextField.resignFirstResponder()
+        }
     }
     
     func addLoginButton(){

@@ -43,6 +43,8 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         addLoginButton()
         addRegisterButton()
         
+        
+        showMainTabbarVC()
     }
     
     
@@ -125,6 +127,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         scrollView = UIScrollView(frame: CGRectMake(0, 0, width, height))
         scrollView.contentSize = CGSizeMake(width, height)
         scrollView.backgroundColor = UIColor.clearColor()
+        scrollView.bounces = false
         view.addSubview(scrollView)
 
         
@@ -135,7 +138,10 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
     func resignAllKeyBoard(){
         
-        currentTextField.resignFirstResponder()
+        if let textField = currentTextField {
+            currentTextField.resignFirstResponder()
+        }
+    
     }
     
     func addLogoImageView(){

@@ -75,6 +75,8 @@ public func getFirstDateOfMonth(date:NSDate)->NSDate{
 }
 
 
+
+
 public func getTimeStringFromSeconds(seconds : NSTimeInterval ) -> String {
     
     

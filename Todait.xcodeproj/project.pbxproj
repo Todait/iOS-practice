@@ -286,6 +286,8 @@
 		4C86458B1B65C4BC00C2F800 /* Validator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C86457C1B65C4BC00C2F800 /* Validator.swift */; };
 		4C86458C1B65C4BC00C2F800 /* ValidationError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C86457D1B65C4BC00C2F800 /* ValidationError.swift */; };
 		4C86458D1B65C4BC00C2F800 /* ValidationRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C86457E1B65C4BC00C2F800 /* ValidationRule.swift */; };
+		4C8645901B65EB0B00C2F800 /* TimerTaskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C86458F1B65EB0B00C2F800 /* TimerTaskTableViewCell.swift */; };
+		4C8645921B65F59100C2F800 /* TimerTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8645911B65F59100C2F800 /* TimerTextView.swift */; };
 		4C9085D61B4CD25200BC080B /* stopwatch_bottom_02@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D21B4CD25200BC080B /* stopwatch_bottom_02@3x.png */; };
 		4C9085D71B4CD25200BC080B /* stopwatch_bottom_03@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D31B4CD25200BC080B /* stopwatch_bottom_03@3x.png */; };
 		4C9085D81B4CD25200BC080B /* stopwatch_bottom_04@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D41B4CD25200BC080B /* stopwatch_bottom_04@3x.png */; };
@@ -743,6 +745,8 @@
 		4C86457C1B65C4BC00C2F800 /* Validator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Validator.swift; sourceTree = "<group>"; };
 		4C86457D1B65C4BC00C2F800 /* ValidationError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidationError.swift; sourceTree = "<group>"; };
 		4C86457E1B65C4BC00C2F800 /* ValidationRule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValidationRule.swift; sourceTree = "<group>"; };
+		4C86458F1B65EB0B00C2F800 /* TimerTaskTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimerTaskTableViewCell.swift; path = Main/TimerTaskTableViewCell.swift; sourceTree = "<group>"; };
+		4C8645911B65F59100C2F800 /* TimerTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimerTextView.swift; path = Main/TimerTextView.swift; sourceTree = "<group>"; };
 		4C9085D21B4CD25200BC080B /* stopwatch_bottom_02@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_02@3x.png"; sourceTree = "<group>"; };
 		4C9085D31B4CD25200BC080B /* stopwatch_bottom_03@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_03@3x.png"; sourceTree = "<group>"; };
 		4C9085D41B4CD25200BC080B /* stopwatch_bottom_04@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_04@3x.png"; sourceTree = "<group>"; };
@@ -1539,7 +1543,9 @@
 			children = (
 				4CD3C5861B3026FB000AFDA3 /* list.png */,
 				4CB353AC1B1C500F00E36245 /* ParallelHeaderView.swift */,
+				4C8645911B65F59100C2F800 /* TimerTextView.swift */,
 				4CB353A01B1C2A0D00E36245 /* TaskTableViewCell.swift */,
+				4C86458F1B65EB0B00C2F800 /* TimerTaskTableViewCell.swift */,
 				4CD3C5671B2FB7A6000AFDA3 /* TodaitRevealViewController.swift */,
 				4C5042271B4A757A0050A501 /* MainTabbarViewController.swift */,
 				4C5042391B4A84650050A501 /* MainTabbarButton.swift */,
@@ -2011,6 +2017,7 @@
 				4C1A281F1B53B46400B777D5 /* DetailMemoView.swift in Sources */,
 				4CC44BC31B4182EA002F155B /* TimeLogViewController.swift in Sources */,
 				4C0459651B5CAF7E00710D96 /* TimerTaskViewController.swift in Sources */,
+				4C8645901B65EB0B00C2F800 /* TimerTaskTableViewCell.swift in Sources */,
 				4C30D8C71B40375900598ADE /* DateButton.swift in Sources */,
 				4C27DD511B33F4FB00D4911F /* TaskStatisticsViewController.swift in Sources */,
 				4C5042281B4A757A0050A501 /* MainTabbarViewController.swift in Sources */,
@@ -2021,6 +2028,7 @@
 				4CD3C5351B2ECC62000AFDA3 /* TimerViewController.swift in Sources */,
 				4CD3C5701B2FC98D000AFDA3 /* CategoryRearViewController.swift in Sources */,
 				4CB3539D1B1C0ADB00E36245 /* TodaitNavigationBar.swift in Sources */,
+				4C8645921B65F59100C2F800 /* TimerTextView.swift in Sources */,
 				4C8644461B60AB0800C2F800 /* ReviewDay.swift in Sources */,
 				4C4B71141B3D7AC700BF1F02 /* HorizontalCollectionViewLayout.swift in Sources */,
 				4CB231E31B5E14F200FE94AA /* DiaryViewController.swift in Sources */,
