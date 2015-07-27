@@ -15,6 +15,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     var scrollView:UIScrollView!
     
     var logoImageView:UIImageView!
+    
     var emailTextField:PaddingTextField!
     var passwordField:PaddingTextField!
     
@@ -126,6 +127,15 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         scrollView.backgroundColor = UIColor.clearColor()
         view.addSubview(scrollView)
 
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: Selector("resignAllKeyBoard"))
+        scrollView.addGestureRecognizer(tapGesture)
+        
+    }
+    
+    func resignAllKeyBoard(){
+        
+        currentTextField.resignFirstResponder()
     }
     
     func addLogoImageView(){
@@ -178,6 +188,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
+        
         if textField == emailTextField {
             passwordField.becomeFirstResponder()
         }else if textField == passwordField {

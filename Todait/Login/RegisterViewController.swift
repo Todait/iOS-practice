@@ -64,6 +64,14 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         scrollView.backgroundColor = UIColor.clearColor()
         view.addSubview(scrollView)
         
+        let tapGesture = UITapGestureRecognizer(target: self, action: Selector("resignAllKeyBoard"))
+        scrollView.addGestureRecognizer(tapGesture)
+        
+    }
+    
+    func resignAllKeyBoard(){
+        
+        currentTextField.resignFirstResponder()
     }
     
     func addLoginButton(){
@@ -265,6 +273,14 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
     }
     
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+        
+        currentTextField = textField
+        
+        return true
+        
+    }
+    
     func addPasswordField(){
         
         passwordField = PaddingTextField(frame: CGRectMake(0, 296*ratio, width, 48*ratio))
@@ -353,6 +369,74 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         super.viewWillAppear(animated)
         self.todaitNavBar.hidden = true
         
+        registerForKeyboardNotification()
     }
+    
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        resignForKeyboardNotification()
+    }
+    
+    
+    func resignForKeyboardNotification(){
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+        
+    }
+    
+    
+    func registerForKeyboardNotification(){
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWasShown:"), name: UIKeyboardWillShowNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillBeHidden:"), name: UIKeyboardWillHideNotification, object: nil)
+        
+    }
+    
+    func keyboardWasShown(aNotification:NSNotification){
+        
+        var info:[NSObject:AnyObject] = aNotification.userInfo!
+        var kbSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)!.CGRectValue().size as CGSize
+        
+        var contentInsets = UIEdgeInsetsMake(0, 0, kbSize.height, 0)
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
+        
+        var aRect = self.view.frame
+        aRect.size.height = aRect.size.height - kbSize.height
+        
+        if (!CGRectContainsPoint(aRect, registerButton.frame.origin)) {
+            
+            scrollView.scrollRectToVisible(registerButton.frame, animated: true)
+            
+        }
+        
+        
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            //self.unitView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-40*self.ratio)
+            }, completion: nil)
+        
+    }
+    
+    func keyboardWillBeHidden(aNotification:NSNotification){
+        
+        var contentInsets = UIEdgeInsetsZero
+        scrollView.contentInset = contentInsets
+        scrollView.scrollIndicatorInsets = contentInsets
+        
+        
+        
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            //self.unitView.transform = CGAffineTransformMakeTranslation(0, 40*self.ratio)
+            }) { (Bool) -> Void in
+                //self.unitView.hidden = true
+        }
+        
+    }
+
     
 }
