@@ -293,7 +293,7 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
         //task.unit = "개" //unitTextField.text
         //task.categoryId = category
         task.categoryId = timerTaskVC.category
-        
+        task.taskType = "timer"
         setupTextField()
         
         saveNewWeek(task)
