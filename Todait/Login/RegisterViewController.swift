@@ -243,7 +243,8 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         let listInputVC = ListInputViewController()
         
         listInputVC.dataSource = ["초등학생","중학생","고등학생","대학생","직장인"]
-        listInputVC.title = "직업"
+        listInputVC.tableTitle = "직업"
+        listInputVC.buttonTitle = "취소"
         listInputVC.delegate = self
         listInputVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         
@@ -255,6 +256,9 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     }
     
     func selectedString(string:String){
+        
+        jobField.text = string
+        scrollView.scrollRectToVisible(jobField.frame, animated: true)
         
     }
     
@@ -413,7 +417,6 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         if (!CGRectContainsPoint(aRect, registerButton.frame.origin)) {
             
             scrollView.scrollRectToVisible(registerButton.frame, animated: true)
-            
         }
         
         
