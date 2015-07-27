@@ -673,8 +673,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     
     func addListButton(){
-        listButton = UIButton(frame:CGRectMake(308*ratio - 24,30,16,15))
-        listButton.setBackgroundImage(UIImage(named: "bt_hamburger@3x.png"),forState: UIControlState.Normal)
+        listButton = UIButton(frame:CGRectMake(308*ratio - 24,33,16,15))
+        listButton.setImage(UIImage(named: "bt_hamburger@3x.png"),forState: UIControlState.Normal)
         listButton.addTarget(self, action:Selector("showList"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(listButton)
         
@@ -859,15 +859,18 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     }
     
     
-    
-    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         performSegueWithIdentifier("ShowDetailView", sender:indexPath)
         
         tableView.reloadData()
         
-        return false
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+        as! TaskTableViewCell
+        
+        
+        cell.setSelected(false, animated: true)
+        
     }
     
     
