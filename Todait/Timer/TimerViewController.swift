@@ -127,9 +127,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     }
     
     func addResetButton(){
-        resetButton = UIButton(frame: CGRectMake(0, height, 80*ratio, 48*ratio))
-        resetButton.setImage(UIImage(named: "stopwatch_bottom_02@3x.png"), forState: UIControlState.Normal)
-        resetButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        resetButton = UIButton(frame: CGRectMake(0, height, 80*ratio, 55*ratio))
+        resetButton.setImage(UIImage(named: "bt_nitialization@3x.png"), forState: UIControlState.Normal)
+        resetButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
         resetButton.addTarget(self, action: Selector("resetButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(resetButton)
     }
@@ -179,7 +179,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     func showButtons(show:Bool){
         
-        var transform = 48*ratio
+        var transform = 55*ratio
         
         if show {
             transform = transform * -1
@@ -199,9 +199,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     
     func addTimeButton(){
-        timeLogButton = UIButton(frame: CGRectMake(80*ratio, height, 80*ratio, 48*ratio))
-        timeLogButton.setBackgroundImage(UIImage(named: "stopwatch_bottom_03@3x.png"), forState: UIControlState.Normal)
-        timeLogButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        timeLogButton = UIButton(frame: CGRectMake(80*ratio, height, 80*ratio, 55*ratio))
+        timeLogButton.setBackgroundImage(UIImage(named: "bt_stopwatch@3x.png"), forState: UIControlState.Normal)
+        timeLogButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
         timeLogButton.addTarget(self, action: Selector("timeButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         timeLogButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         view.addSubview(timeLogButton)
@@ -246,9 +246,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     }
     
     func addAmountButton(){
-        amountLogButton = UIButton(frame: CGRectMake(160*ratio, height, 80*ratio, 48*ratio))
-        amountLogButton.setImage(UIImage(named: "stopwatch_bottom_04@3x.png"), forState: UIControlState.Normal)
-        amountLogButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
+        amountLogButton = UIButton(frame: CGRectMake(160*ratio, height, 80*ratio, 55*ratio))
+        amountLogButton.setImage(UIImage(named: "bt_amount@3x.png"), forState: UIControlState.Normal)
+        amountLogButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
         amountLogButton.addTarget(self, action: Selector("amountButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(amountLogButton)
     }
@@ -300,8 +300,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     
     func addDoneButton(){
-        doneButton = UIButton(frame: CGRectMake(240*ratio, height-48*ratio, 80*ratio, 48*ratio))
-        doneButton.setBackgroundImage(UIImage(named: "stopwatch_bottom_05@3x.png"), forState: UIControlState.Normal)
+        doneButton = UIButton(frame: CGRectMake(240*ratio, height-55*ratio, 80*ratio, 55*ratio))
+        doneButton.setBackgroundImage(UIImage(named: "bt_check@3x.png"), forState: UIControlState.Normal)
         doneButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
         doneButton.addTarget(self, action: Selector("doneButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(doneButton)
@@ -378,8 +378,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     func addTimerButton(){
         
         timerButton = UIButton(frame: CGRectMake(113*ratio, 209*ratio, 94*ratio, 122*ratio))
-        timerButton.setBackgroundImage(UIImage(named: "02StopwatchStop@3x.png"), forState: UIControlState.Normal)
-        timerButton.setBackgroundImage(UIImage(named: "02Stopwatch_play@3x.png"), forState: UIControlState.Highlighted)
+        timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_stop@3x.png"), forState: UIControlState.Normal)
+        timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_play@3x.png"), forState: UIControlState.Highlighted)
         timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(timerButton)
         
@@ -393,8 +393,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
             
             showButtons(true)
             
-            timerButton.setBackgroundImage(UIImage(named: "02Stopwatch_play@3x.png"), forState: UIControlState.Normal)
-            timerButton.setBackgroundImage(UIImage(named: "02StopwatchStop@3x.png"), forState: UIControlState.Highlighted)
+            timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_play@3x.png"), forState: UIControlState.Normal)
+            timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_stop@3x.png"), forState: UIControlState.Highlighted)
             
             timer.invalidate()
             
@@ -410,8 +410,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
             showButtons(false)
             startTimer()
             
-            timerButton.setBackgroundImage(UIImage(named: "02StopwatchStop@3x.png"), forState: UIControlState.Normal)
-            timerButton.setBackgroundImage(UIImage(named: "02Stopwatch_play@3x.png"), forState: UIControlState.Highlighted)
+            timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_stop@3x.png"), forState: UIControlState.Normal)
+            timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_play@3x.png"), forState: UIControlState.Highlighted)
             
         }
 
