@@ -7,8 +7,10 @@
 //
 
 import UIKit
+import Alamofire
 
-class LoginViewController: BasicViewController,UITextFieldDelegate{
+
+class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDelegate{
    
     var scrollView:UIScrollView!
     
@@ -173,6 +175,17 @@ class LoginViewController: BasicViewController,UITextFieldDelegate{
         scrollView.addSubview(passwordField)
     }
     
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        
+        if textField == emailTextField {
+            passwordField.becomeFirstResponder()
+        }else if textField == passwordField {
+            loginButtonClk()
+        }
+        
+        return true
+    }
+    
     
     func addLoginButton(){
         
@@ -185,7 +198,54 @@ class LoginViewController: BasicViewController,UITextFieldDelegate{
         loginButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
         scrollView.addSubview(loginButton)
         
+        loginButton.addTarget(self, action: Selector("loginButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        
     }
+    
+    
+    func loginButtonClk(){
+        
+        isEmailValid(emailTextField.text)
+        
+        let validator = Validator()
+        
+        validator.registerField(emailTextField, rules:[EmailRule(message:"Invalid email")])
+        validator.registerField(passwordField, rules:[PasswordRule]())
+        validator.validate(self)
+        
+    }
+    
+    func validationSuccessful(){
+        requestLogin()
+    }
+    
+    func requestLogin(){
+        
+        var params:[String:AnyObject] = [:]
+        let email = emailTextField.text as String
+        let password = passwordField.text as String
+        params["user"] = ["email":email,"password":password]
+        
+        var manager = Manager.sharedInstance
+        manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
+        
+        Alamofire.request(.POST, "http://192.168.0.10:3000/sessions", parameters: params).responseJSON(options: nil) { (NSURLRequest, NSHTTPResponse, AnyObject, NSError) -> Void in
+            print("login")
+            
+        }
+        
+        
+        //Alamofire.request(.POST, "http://192.168.0.10:3000/sessions", parameters:params, encoding: nil, headers: ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"])
+    }
+    
+    func validationFailed(errors: [UITextField:ValidationError]){
+        NSLog("error")
+    }
+    
+    func isEmailValid(email:String){
+        
+    }
+    
     
     func addFindButton(){
         
