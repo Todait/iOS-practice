@@ -44,7 +44,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         addRegisterButton()
         
         
-        showMainTabbarVC()
+        //showMainTabbarVC()
     }
     
     
@@ -223,7 +223,6 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
     func loginButtonClk(){
         
-        isEmailValid(emailTextField.text)
         
         let validator = Validator()
         
@@ -244,25 +243,32 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         let password = passwordField.text as String
         params["user"] = ["email":email,"password":password]
         
-        var manager = Manager.sharedInstance
+        var manager = Alamofire.Manager.sharedInstance
         manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
         
-        Alamofire.request(.POST, "http://192.168.0.10:3000/sessions", parameters: params).responseJSON(options: nil) { (NSURLRequest, NSHTTPResponse, AnyObject, NSError) -> Void in
-            print("login")
+        
+        Alamofire.request(.POST, "https://todait.com/sessions", parameters: params).responseJSON(options: nil) { (request, response, object, error) -> Void in
             
+            let json = JSON(object!)
+            print(json)
+            
+            
+            
+            let errorMessage = json["error"]
+            
+            if errorMessage == "Invalid email or password."{
+                print("ERROR")
+                
+                
+            }else{
+                print("login ")
+                self.showMainTabbarVC()
+            }
         }
-        
-        
-        showMainTabbarVC()
-        
     }
     
     func validationFailed(errors: [UITextField:ValidationError]){
         NSLog("error")
-    }
-    
-    func isEmailValid(email:String){
-        
     }
     
     func showMainTabbarVC(){
