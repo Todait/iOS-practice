@@ -8,6 +8,7 @@
 
 import UIKit
 import MobileCoreServices
+import Alamofire
 
 class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate,ListInputDelegate{
 
@@ -363,14 +364,46 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         registerButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         registerButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Reguar", size: 14*ratio)
         registerButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
+        registerButton.addTarget(self, action: Selector("registerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         
         scrollView.addSubview(registerButton)
+        
         
     }
     
     
-    
+    func registerButtonClk(){
         
+        var params:[String:AnyObject] = [:]
+        
+        
+        let name = nameField.text as String
+        let email = emailField.text as String
+        let password = passwordField.text as String
+        let confirm = confirmField.text as String
+        let job = jobField.text as String
+        let object = objectField.text as String
+        
+        
+        
+        params["user"] = ["email":email,"name":name,"password":password,"password_confirmation":confirm,"grade":job,"image_names":"test.jpeg"]
+        
+        
+        var manager = Alamofire.Manager.sharedInstance
+        manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
+        
+        
+        Alamofire.request(.POST, "https://todait.com/registrations", parameters: params).responseJSON(options: nil) { (request, response, object, error) -> Void in
+            
+            let json = JSON(object!)
+            print(json)
+            
+            
+        }
+    }
+    
+    
+    
     
     
     override func viewWillAppear(animated: Bool) {

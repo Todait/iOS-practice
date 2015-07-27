@@ -354,6 +354,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         mainTableView = UITableView(frame: CGRectMake(0,navigationHeight ,width,height - navigationHeight - 47*ratio), style: UITableViewStyle.Grouped)
         mainTableView.registerClass(TaskTableViewCell.self, forCellReuseIdentifier: "mainCell")
         mainTableView.registerClass(TimerTaskTableViewCell.self, forCellReuseIdentifier: "timerCell")
+        mainTableView.bounces = false
         mainTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
         mainTableView.delegate = self
         mainTableView.dataSource = self
