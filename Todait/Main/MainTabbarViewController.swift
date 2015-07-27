@@ -281,4 +281,8 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
         
     }
     
+    override func viewWillDisappear(animated: Bool) {
+        
+    }
+    
 }

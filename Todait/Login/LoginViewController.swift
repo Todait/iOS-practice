@@ -150,13 +150,14 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     func addEmailField(){
         
         emailTextField = PaddingTextField(frame: CGRectMake(0, 222*ratio, width, 48*ratio))
-        emailTextField.attributedPlaceholder = NSAttributedString.getAttributedString("E-mail",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)!,color:UIColor.whiteColor())
+        emailTextField.attributedPlaceholder = NSAttributedString.getAttributedString("E-mail",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
         emailTextField.padding = 30*ratio
         emailTextField.textAlignment = NSTextAlignment.Left
         emailTextField.delegate = self
         emailTextField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
         emailTextField.textColor = UIColor.whiteColor()
         emailTextField.returnKeyType = UIReturnKeyType.Next
+        emailTextField.tintColor = UIColor.whiteColor()
         scrollView.addSubview(emailTextField)
         
     }
@@ -165,13 +166,14 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         
         passwordField = PaddingTextField(frame: CGRectMake(0, 271*ratio, width, 48*ratio))
         passwordField.padding = 30*ratio
-        passwordField.attributedPlaceholder = NSAttributedString.getAttributedString("Password",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)!,color:UIColor.whiteColor())
+        passwordField.attributedPlaceholder = NSAttributedString.getAttributedString("Password",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
         
         passwordField.textAlignment = NSTextAlignment.Left
         passwordField.delegate = self
         passwordField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
         passwordField.textColor = UIColor.whiteColor()
         passwordField.returnKeyType = UIReturnKeyType.Join
+        passwordField.tintColor = UIColor.whiteColor()
         scrollView.addSubview(passwordField)
     }
     
@@ -235,7 +237,8 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         }
         
         
-        //Alamofire.request(.POST, "http://192.168.0.10:3000/sessions", parameters:params, encoding: nil, headers: ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"])
+        showMainTabbarVC()
+        
     }
     
     func validationFailed(errors: [UITextField:ValidationError]){
@@ -245,6 +248,11 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     func isEmailValid(email:String){
         
     }
+    
+    func showMainTabbarVC(){
+        performSegueWithIdentifier("showMainTabbarVC", sender: self)
+    }
+    
     
     
     func addFindButton(){
