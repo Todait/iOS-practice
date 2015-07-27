@@ -192,18 +192,36 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
             
             if let currentDay = task.getDay(currentDateNumber) {
                 
-                
+
                 if currentDay.expectAmount.integerValue <= currentDay.doneAmount.integerValue {
                     button.expectLabel.backgroundColor = UIColor.todaitGreen()
                     button.expectLabel.text = "\(currentDay.doneAmount)"
-
+                    
+                    if currentDateNumber == getTodayDateNumber() {
+                        button.expectLabel.backgroundColor = UIColor.todaitDarkGreen()
+                    }
+                    
                 }else{
-                    button.expectLabel.backgroundColor = UIColor.todaitRed()
+                    button.expectLabel.backgroundColor = UIColor.todaitRed().colorWithAlphaComponent(0.8)
                     button.expectLabel.text = "\(currentDay.expectAmount)"
-
+                    
+                    if currentDateNumber == getTodayDateNumber() {
+                        button.expectLabel.backgroundColor = UIColor.todaitDarkRed()
+                    }
+                    
+                }
+                
+                
+                if currentDateNumber.integerValue > getTodayDateNumber().integerValue {
+                    
+                    button.expectLabel.textColor = UIColor.todaitDarkGray()
+                    button.expectLabel.backgroundColor = UIColor.todaitWhiteGray()
+                    
                 }
                 
             }else{
+                
+                button.expectLabel.textColor = UIColor.whiteColor()
                 button.expectLabel.text = ""
                 button.expectLabel.backgroundColor = UIColor.clearColor()
             }

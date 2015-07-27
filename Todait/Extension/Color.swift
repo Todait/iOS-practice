@@ -24,6 +24,9 @@ public extension UIColor {
     }
     
     
+    class func todaitLightRed()->UIColor! {
+        return colorWithHexString("#FF9999")
+    }
     
     class func todaitRed()->UIColor! {
         return colorWithHexString("#FF7E7E")
