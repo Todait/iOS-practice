@@ -52,12 +52,14 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     var selectedWeekOfMonth:CGFloat! = 2
     
     
-    let weekCalendarHeight:CGFloat = 60
-    let monthCalendarHeight:CGFloat = 360
+    
+    let detailViewHeight:CGFloat = 115
+    let weekCalendarHeight:CGFloat = 49
+    let monthCalendarHeight:CGFloat = 295
     
     let headerMinHeight:CGFloat = 100
     let hederMaxHeight:CGFloat = 215
-    var showCalendarHeight:CGFloat = 48
+    var showCalendarHeight:CGFloat = 49
     var isCalendarScroll:Bool = true
     
     
@@ -89,10 +91,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         addHeaderView()
         addCalendarView()
         
-        
         addMemoView()
-        
-        
         addCalendarView()
         
         
@@ -161,14 +160,13 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     }
     
     func addDetailView(){
-        detailView = DetailView(frame: CGRectMake(0, 0, width, 258*ratio))
+        detailView = DetailView(frame: CGRectMake(0, 0, width, detailViewHeight*ratio))
         detailView.dateLabel.text = task.getStringOfPeriodProgress()
         detailView.timeLabel.text = task.getDoneTimeString()
         detailView.amountLabel.text = task.getDoneAmountString()
         detailView.categoryLabel.text = task.categoryId.name
         detailView.categoryCircle.backgroundColor = task.getColor()
         detailView.mainImageView.image = UIImage(named: "track.jpg")
-        detailView.hidden = true
         
         
         var panGesture = UIPanGestureRecognizer()
@@ -185,7 +183,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         
         
-        var headerView = UIView(frame: CGRectMake(0, 64, width, 43*ratio))
+        var headerView = UIView(frame: CGRectMake(0, detailViewHeight*ratio, width, 43*ratio))
         headerView.backgroundColor = UIColor.todaitBackgroundGray()
         headerView.clipsToBounds = true
         
@@ -199,14 +197,14 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         
         let weekTitle = ["SUN","MON","TUE","WED","THU","FRI","SAT"]
-        let weekWidth = 320*ratio / 7
+        let weekWidth = 310*ratio / 7
         
         let whiteBox = UIView(frame:CGRectMake(0,23*ratio,width,20*ratio))
         whiteBox.backgroundColor = UIColor.whiteColor()
         headerView.addSubview(whiteBox)
         
         for index in 0...6 {
-            let weekDayLabel = UILabel(frame: CGRectMake(CGFloat(index)*weekWidth, 23*ratio, weekWidth, 20*ratio))
+            let weekDayLabel = UILabel(frame: CGRectMake(CGFloat(index)*weekWidth + 5*ratio, 23*ratio, weekWidth, 20*ratio))
             weekDayLabel.textAlignment = NSTextAlignment.Center
             weekDayLabel.text = weekTitle[index]
             weekDayLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 8*ratio)
@@ -223,7 +221,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         }
         
         let line = UIView(frame:CGRectMake(0, 42.5*ratio, width, 0.5*ratio))
-        line.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25)
+        line.backgroundColor = UIColor.todaitBackgroundGray()
         headerView.addSubview(line)
         self.view.addSubview(headerView)
         
@@ -307,7 +305,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         var diff = panStart.y - panEnd.y
         
-        let baseOriginY = 64 + 43*ratio
+        let baseOriginY = detailViewHeight*ratio + 43*ratio
         let minOriginY = baseOriginY - weekCalendarHeight*ratio*selectedWeekOfMonth
         let maxOriginY = baseOriginY - weekCalendarHeight*5*ratio
         let topDistance = weekCalendarHeight*ratio*(selectedWeekOfMonth-1)
@@ -342,19 +340,19 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         if diaryTableView.frame.origin.y - timeTableDiff < baseOriginY + weekCalendarHeight*ratio {
             //NSLog("최대 올라감 %f", diaryTableView.frame.origin.y - timeTableDiff)
             
-            shadowView.frame = CGRectMake(0, baseOriginY + weekCalendarHeight*ratio - 2.5*ratio, width,5*ratio)
+            shadowView.frame = CGRectMake(0, baseOriginY + weekCalendarHeight*ratio - 2*ratio, width,4*ratio)
             diaryTableView.frame = CGRectMake(0, baseOriginY + weekCalendarHeight*ratio, 320*ratio, diaryTableView.frame.size.height)
             monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-weekCalendarHeight*ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, monthCalendarHeight*ratio)
         }else if(diaryTableView.frame.origin.y - timeTableDiff >= baseOriginY + weekCalendarHeight*ratio && diaryTableView.frame.origin.y - timeTableDiff <= baseOriginY + monthCalendarHeight*ratio) {
             
             //NSLog("중간 %f",diaryTableView.frame.origin.y - timeTableDiff)
-            shadowView.frame = CGRectMake(0, diaryTableView.frame.origin.y - timeTableDiff - 2.5*ratio, width,5*ratio)
+            shadowView.frame = CGRectMake(0, diaryTableView.frame.origin.y - timeTableDiff - 2*ratio, width,4*ratio)
             diaryTableView.frame = CGRectMake(0, diaryTableView.frame.origin.y - timeTableDiff, 320*ratio, diaryTableView.frame.size.height)
         }else {
             
             //NSLog("최대내려감 %f",diaryTableView.frame.origin.y - timeTableDiff)
             
-             shadowView.frame = CGRectMake(0, baseOriginY + monthCalendarHeight*ratio - 2.5*ratio, width,5*ratio)
+             shadowView.frame = CGRectMake(0, baseOriginY + monthCalendarHeight*ratio - 2*ratio, width,4*ratio)
             diaryTableView.frame = CGRectMake(0, baseOriginY + monthCalendarHeight*ratio, 320*ratio, diaryTableView.frame.size.height)
             
         }
@@ -364,7 +362,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func gestureEnded(gesture:UIPanGestureRecognizer){
         
-        let baseOriginY = 64 + 43*ratio
+        let baseOriginY = detailViewHeight*ratio + 43*ratio
         
         /*
         var velocity = gesture.velocityInView(self.view)
@@ -378,7 +376,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
                 
                 
-                self.shadowView.frame = CGRectMake(0, baseOriginY + self.monthCalendarHeight*self.ratio - 2.5*self.ratio, self.width,5*self.ratio)
+                self.shadowView.frame = CGRectMake(0, baseOriginY + self.monthCalendarHeight*self.ratio - 2*self.ratio, self.width,4*self.ratio)
                 self.diaryTableView.frame = CGRectMake(0, baseOriginY + self.monthCalendarHeight*self.ratio, 320*self.ratio, self.diaryTableView.frame.size.height)
                 
                 self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY, 320*self.ratio, self.monthCalendarHeight*self.ratio)
@@ -392,7 +390,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
                 
                 
-                self.shadowView.frame = CGRectMake(0, baseOriginY + self.weekCalendarHeight*self.ratio - 2.5*self.ratio, self.width,5*self.ratio)
+                self.shadowView.frame = CGRectMake(0, baseOriginY + self.weekCalendarHeight*self.ratio - 2*self.ratio, self.width,4*self.ratio)
                 
                 self.diaryTableView.frame = CGRectMake(0, baseOriginY + self.weekCalendarHeight*self.ratio, 320*self.ratio, self.diaryTableView.frame.size.height)
                 self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-self.weekCalendarHeight*(self.selectedWeekOfMonth-1)*self.ratio, 320*self.ratio, self.monthCalendarHeight*self.ratio)
@@ -429,7 +427,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func addDiaryTableView(){
         
-         var originY:CGFloat = 64 + 43*ratio + weekCalendarHeight*ratio
+         var originY:CGFloat = detailViewHeight*ratio + 43*ratio + weekCalendarHeight*ratio
         
         diaryTableView = UITableView(frame: CGRectMake(0,originY,width,height - originY), style: UITableViewStyle.Plain)
         diaryTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -459,14 +457,14 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         var shadowLayer:CAGradientLayer!
         
         shadowLayer = CAGradientLayer()
-        shadowLayer.frame = CGRectMake(0, 2.5*ratio, width, 2.5*ratio)
+        shadowLayer.frame = CGRectMake(0, 2*ratio, width, 2*ratio)
         shadowLayer.startPoint = CGPointMake(0.5, 1.0)
         shadowLayer.endPoint = CGPointMake(0.5, 0)
-        shadowLayer.colors = [UIColor.clearColor().CGColor,UIColor.blackColor().colorWithAlphaComponent(0.25).CGColor]
+        shadowLayer.colors = [UIColor.clearColor().CGColor,UIColor.todaitBackgroundGray().CGColor]
         shadowLayer.locations = [NSNumber(float: 0.5),NSNumber(float: 1.0)]
         view.layer.addSublayer(shadowLayer)
         
-        shadowView = UIView(frame: CGRectMake(0, diaryTableView.frame.origin.y - 2.5*ratio, width, 5*ratio))
+        shadowView = UIView(frame: CGRectMake(0, diaryTableView.frame.origin.y - 2*ratio, width, 4*ratio))
         shadowView.layer.addSublayer(shadowLayer)
         view.addSubview(shadowView)
     }
@@ -500,7 +498,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             
-            self.monthCalendarVC.view.frame = CGRectMake(0,self.detailView.center.y+129*self.ratio-60*self.ratio*(self.selectedWeekOfMonth-1)-0*self.ratio, 320*self.ratio, self.monthCalendarHeight*self.ratio)
+            self.monthCalendarVC.view.frame = CGRectMake(0,self.detailView.center.y+129*self.ratio-self.weekCalendarHeight*self.ratio*(self.selectedWeekOfMonth-1)-0*self.ratio, 320*self.ratio, self.monthCalendarHeight*self.ratio)
             self.weekCalendarVC.view.hidden = true
             
             }) { (Bool) -> Void in
@@ -567,7 +565,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         weekCalendarVC.task = task
         weekCalendarVC.delegate = self
         weekCalendarVC.dateNumber = selectedDateNumber
-        weekCalendarVC.view.frame = CGRectMake(0,64 + 43*ratio,width,60*ratio)
+        weekCalendarVC.view.frame = CGRectMake(0,detailViewHeight*ratio + 43*ratio,width,47*ratio)
         
         addChildViewController(weekCalendarVC)
         view.addSubview(weekCalendarVC.view)
@@ -588,7 +586,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         monthCalendarVC.task = task
         monthCalendarVC.dateNumber = selectedDateNumber
         
-        monthCalendarVC.view.frame = CGRectMake(0,64 + 43*ratio-(selectedWeekOfMonth-1)*60*ratio,width,60*6*ratio)
+        monthCalendarVC.view.frame = CGRectMake(0,detailViewHeight*ratio + 43*ratio-(selectedWeekOfMonth-1)*weekCalendarHeight*ratio,width, monthCalendarHeight*ratio)
         addChildViewController(monthCalendarVC)
         view.addSubview(monthCalendarVC.view)
         
@@ -846,7 +844,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         if from == "Week" {
             
-            let baseOriginY = 64 + 43*ratio
+            let baseOriginY = detailViewHeight*ratio + 43*ratio
             
             monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-weekCalendarHeight*ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, monthCalendarHeight*ratio)
             
@@ -1139,7 +1137,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         self.screenName = "Detail Activity"
         
         todaitNavBar.shadowImage = UIImage()
-        todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(),frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
+        todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(),frame:CGRectMake(0,0,width,navigationHeight)), forBarMetrics: UIBarMetrics.Default)
         
         addEditButton()
         addGraphButton()

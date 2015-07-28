@@ -30,8 +30,8 @@ class DetailCalendarCell: UITableViewCell {
         let screenRect = UIScreen.mainScreen().bounds
         let screenWidth = screenRect.size.width
         ratio = screenWidth/320
-        width = 320*ratio/7
-        height = 60*ratio
+        width = 310*ratio/7
+        height = 49*ratio
     }
 
     required init(coder aDecoder: NSCoder) {

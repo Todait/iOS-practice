@@ -27,6 +27,9 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     
     let HistoryViewOriginX:CGFloat = 50
     let HistoryViewWidth:CGFloat = 220
+    let weekCalendarHeight:CGFloat = 48
+    let monthCalendarHeight:CGFloat = 288
+    
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
@@ -44,6 +47,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     
     var shadowView:UIView!
    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -103,11 +107,11 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         
         
         let weekTitle = ["SUN","MON","TUE","WED","THU","FRI","SAT"]
-        let weekWidth = 320*ratio / 7
+        let weekWidth = 310*ratio / 7
         
         
         for index in 0...6 {
-            let weekDayLabel = UILabel(frame: CGRectMake(CGFloat(index)*weekWidth, 23*ratio, weekWidth, 20*ratio))
+            let weekDayLabel = UILabel(frame: CGRectMake(CGFloat(index)*weekWidth + 5*ratio, 23*ratio, weekWidth, 20*ratio))
             weekDayLabel.backgroundColor = UIColor.whiteColor()
             weekDayLabel.textAlignment = NSTextAlignment.Center
             weekDayLabel.text = weekTitle[index]
@@ -142,7 +146,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     
     func getWeekNumber(date:NSDate)->CGFloat{
         
-        var time = Int(date.timeIntervalSinceDate(getFirstDateOfMonth(date)) / (7*24*60*60))
+        var time = Int(date.timeIntervalSinceDate(getFirstSundayDateOfMonth(date)) / (7*24*60*60))
         
         return CGFloat(time + 1)
         
@@ -359,15 +363,16 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         weekCalendarVC.setSelectedDateNumber(selectedDateNumber)
         
         
-        /*
-        switch from {
-        case "Month": weekCalendarVC.setSelectedDateNumber(selectedDateNumber)
-        case "Week": monthCalendarVC.setSelectedDateNumber(selectedDateNumber)
-        default: monthCalendarVC.setSelectedDateNumber(selectedDateNumber)
-                 weekCalendarVC.setSelectedDateNumber(selectedDateNumber)
-
+        
+        if from == "Week" {
+            
+            let baseOriginY = 64 + 43*ratio
+            
+            monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-weekCalendarHeight*ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, monthCalendarHeight*ratio)
+            
         }
-        */
+        
+        
     }
     
     func addWeekView(){

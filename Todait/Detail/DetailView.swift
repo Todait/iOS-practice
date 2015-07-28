@@ -24,6 +24,8 @@ class DetailView: UIView {
     
     var ratio : CGFloat! = 0
     
+    let detailViewHeight:CGFloat = 115
+    
     override init(frame: CGRect) {
         super.init(frame:frame)
         setupRatio()
@@ -46,7 +48,7 @@ class DetailView: UIView {
     
     func addMainImageView(){
         
-        mainImageView = UIImageView(frame: CGRectMake(0, 0, 320*ratio, 215*ratio))
+        mainImageView = UIImageView(frame: CGRectMake(0, 0, 320*ratio, detailViewHeight*ratio))
         updateMainPhoto()
         mainImageView.contentMode = UIViewContentMode.ScaleAspectFill
         mainImageView.clipsToBounds = true
@@ -74,7 +76,7 @@ class DetailView: UIView {
                     let asset:PHAsset = object as! PHAsset
                     
                     
-                    imageManager.requestImageForAsset(asset, targetSize: CGSizeMake(320*self.ratio,215*self.ratio), contentMode: PHImageContentMode.AspectFill, options: nil) {(image, info) -> Void in
+                    imageManager.requestImageForAsset(asset, targetSize: CGSizeMake(320*self.ratio,self.detailViewHeight*self.ratio), contentMode: PHImageContentMode.AspectFill, options: nil) {(image, info) -> Void in
                         self.mainImageView.image = image
                     }
                     
@@ -86,7 +88,7 @@ class DetailView: UIView {
     
     func addFilterImageView(){
         
-        filterImageView = UIImageView(frame: CGRectMake(0, 0, 320*ratio, 215*ratio))
+        filterImageView = UIImageView(frame: CGRectMake(0, 0, 320*ratio,detailViewHeight*ratio))
         filterImageView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.5)
         addSubview(filterImageView)
         
@@ -94,11 +96,11 @@ class DetailView: UIView {
 
     func addDateView(){
         
-        let imageIcon = UIImageView(frame: CGRectMake(21*ratio, 170*ratio, 10*ratio, 10*ratio))
+        let imageIcon = UIImageView(frame: CGRectMake(21*ratio, 70*ratio, 10*ratio, 10*ratio))
         imageIcon.image = UIImage(named: "detail_basic_11@3x.png")
         addSubview(imageIcon)
         
-        dateLabel = UILabel(frame: CGRectMake(40*ratio, 169*ratio, 130*ratio,12*ratio))
+        dateLabel = UILabel(frame: CGRectMake(40*ratio, 69*ratio, 130*ratio,12*ratio))
         dateLabel.font = UIFont(name: "HelveticaNeue", size: 10*ratio)
         dateLabel.textColor = UIColor.whiteColor()
         dateLabel.textAlignment = NSTextAlignment.Left
@@ -107,12 +109,12 @@ class DetailView: UIView {
     
     func addTimeView(){
         
-        let imageIcon = UIImageView(frame: CGRectMake(181*ratio, 170*ratio, 10*ratio, 10*ratio))
+        let imageIcon = UIImageView(frame: CGRectMake(181*ratio, 70*ratio, 10*ratio, 10*ratio))
         imageIcon.image = UIImage(named: "detail_basic_14@3x.png")
         addSubview(imageIcon)
         
         
-        timeLabel = UILabel(frame: CGRectMake(200*ratio, 169*ratio, 130*ratio, 12*ratio))
+        timeLabel = UILabel(frame: CGRectMake(200*ratio, 69*ratio, 130*ratio, 12*ratio))
         timeLabel.font = UIFont(name: "HelveticaNeue", size: 10*ratio)
         timeLabel.textColor = UIColor.whiteColor()
         timeLabel.textAlignment = NSTextAlignment.Left
@@ -121,11 +123,11 @@ class DetailView: UIView {
     
     func addAmountView(){
         
-        let imageIcon = UIImageView(frame: CGRectMake(21*ratio, 190*ratio, 10*ratio, 10*ratio))
+        let imageIcon = UIImageView(frame: CGRectMake(21*ratio, 90*ratio, 10*ratio, 10*ratio))
         imageIcon.image = UIImage(named: "detail_basic_19@3x.png")
         addSubview(imageIcon)
         
-        amountLabel = UILabel(frame: CGRectMake(40*ratio, 189*ratio, 160*ratio, 12*ratio))
+        amountLabel = UILabel(frame: CGRectMake(40*ratio, 89*ratio, 160*ratio, 12*ratio))
         amountLabel.font = UIFont(name: "HelveticaNeue", size: 10*ratio)
         amountLabel.textColor = UIColor.whiteColor()
         amountLabel.textAlignment = NSTextAlignment.Left
@@ -135,13 +137,13 @@ class DetailView: UIView {
     func addCategoryView(){
         
         
-        categoryCircle = UIView(frame:CGRectMake(181*ratio,190*ratio,10*ratio,10*ratio))
+        categoryCircle = UIView(frame:CGRectMake(181*ratio,90*ratio,10*ratio,10*ratio))
         categoryCircle.layer.cornerRadius = 5*ratio
         categoryCircle.clipsToBounds = true
         addSubview(categoryCircle)
         
         
-        categoryLabel = UILabel(frame: CGRectMake(200*ratio, 189*ratio, 160*ratio, 12*ratio))
+        categoryLabel = UILabel(frame: CGRectMake(200*ratio, 89*ratio, 160*ratio, 12*ratio))
         categoryLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
         categoryLabel.textColor = UIColor.whiteColor()
         categoryLabel.textAlignment = NSTextAlignment.Left

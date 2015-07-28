@@ -38,8 +38,8 @@ class DetailWeekCalendarCell: UICollectionViewCell {
         let screenRect = UIScreen.mainScreen().bounds
         let screenWidth = screenRect.size.width
         ratio = screenWidth/320
-        width = 320*ratio/7
-        height = 60*ratio
+        width = 310*ratio/7
+        height = 49*ratio
     }
     
     func setupButtons(){
@@ -49,10 +49,12 @@ class DetailWeekCalendarCell: UICollectionViewCell {
             
             let i = Int(index)
             
-            let originX = CGFloat(i%7)*width
+            let originX = CGFloat(i%7)*width + 5*ratio
             
-            let button = DetailDateButton(frame:CGRectMake(originX, 0, width, 60*ratio))
+            let button = DetailDateButton(frame:CGRectMake(originX, 0, width, 49*ratio))
             button.backgroundColor = UIColor.clearColor()
+            button.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
+            button.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 19*ratio)
             buttons.append(button)
             addSubview(button)
         }
@@ -65,12 +67,12 @@ class DetailWeekCalendarCell: UICollectionViewCell {
             
             let i = Int(index)
             
-            let originX = CGFloat(i%7)*width
+            let originX = CGFloat(i%7)*width + 5*ratio
             
-            let label = UILabel(frame:CGRectMake(originX, 33*ratio, width, 20*ratio))
+            let label = UILabel(frame:CGRectMake(originX, 23*ratio, width, 20*ratio))
             label.backgroundColor = UIColor.clearColor()
             label.textColor = UIColor.todaitGray()
-            label.font = UIFont(name: "AppleSDGothicNeo-Light", size: 19*ratio)
+            label.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 19*ratio)
             label.textAlignment = NSTextAlignment.Center
             
             dayLabels.append(label)

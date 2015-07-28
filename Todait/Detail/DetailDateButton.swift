@@ -34,8 +34,8 @@ class DetailDateButton: UIButton {
         let screenRect = UIScreen.mainScreen().bounds
         let screenWidth = screenRect.size.width
         ratio = screenWidth/320
-        width = 320*ratio/7
-        height = 60*ratio
+        width = 310*ratio/7
+        height = 49*ratio
     }
     
     func setupEvent(){
@@ -57,7 +57,7 @@ class DetailDateButton: UIButton {
         
         
         
-        expectLabel = UILabel(frame: CGRectMake(160*ratio/7 - 7, 14*ratio - 7, 14, 14))
+        expectLabel = UILabel(frame: CGRectMake(width/2 - 7, 6*ratio, 14, 14))
         
         expectLabel.adjustsFontSizeToFitWidth = true
         expectLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10)

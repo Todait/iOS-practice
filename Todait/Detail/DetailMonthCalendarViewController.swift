@@ -19,6 +19,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
     var task:Task!
     
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -86,6 +87,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         let screenRect = UIScreen.mainScreen().bounds
         let screenWidth = screenRect.size.width
         ratio = screenWidth/320
+        width = 320*ratio
     }
     
     
@@ -94,7 +96,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         var layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Horizontal
         
-        monthView = UICollectionView(frame: CGRectMake(0, 0, width, 60*6*ratio), collectionViewLayout:layout)
+        monthView = UICollectionView(frame: CGRectMake(0, 0, width, 49*6*ratio), collectionViewLayout:layout)
         
         monthView.registerClass(DetailMonthCalendarCell.self, forCellWithReuseIdentifier: "monthCell")
         monthView.backgroundColor = UIColor.clearColor()
@@ -327,7 +329,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
-        return CGSizeMake(width,60*6*ratio)
+        return CGSizeMake(width,49*6*ratio)
         
     }
     

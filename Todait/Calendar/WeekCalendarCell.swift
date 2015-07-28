@@ -35,7 +35,7 @@ class WeekCalendarCell: UICollectionViewCell {
         let screenRect = UIScreen.mainScreen().bounds
         let screenWidth = screenRect.size.width
         ratio = screenWidth/320
-        width = 320*ratio/7
+        width = 310*ratio/7
         height = 48*ratio
     }
     
@@ -48,7 +48,7 @@ class WeekCalendarCell: UICollectionViewCell {
             
             let originX = CGFloat(i%7)*width
             
-            let button = DateButton(frame:CGRectMake(originX, 0, width, height))
+            let button = DateButton(frame:CGRectMake(originX + 5*ratio, 0, width, height))
             button.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
             button.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Light", size: 19*ratio)
             buttons.append(button)

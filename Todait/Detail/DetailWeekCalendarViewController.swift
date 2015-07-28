@@ -47,7 +47,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
         var layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Horizontal
         
-        weekView = UICollectionView(frame: CGRectMake(0, 0, width, 60*ratio), collectionViewLayout:layout)
+        weekView = UICollectionView(frame: CGRectMake(0, 0, width, 49*ratio), collectionViewLayout:layout)
         
         weekView.registerClass(DetailWeekCalendarCell.self, forCellWithReuseIdentifier: "weekCell")
         weekView.backgroundColor = UIColor.clearColor()
@@ -251,7 +251,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
-        return CGSizeMake(width, 60*ratio)
+        return CGSizeMake(width, 49*ratio)
         
     }
     

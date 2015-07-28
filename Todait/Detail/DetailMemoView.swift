@@ -144,7 +144,7 @@ class DetailMemoView: UIView {
     
     func addTimerButton(){
         
-        timerButton = UIButton(frame:CGRectMake(50*ratio, 0*ratio+12.5*ratio, 58*ratio, 58*ratio))
+        timerButton = UIButton(frame:CGRectMake(50*ratio, 11*ratio, 60*ratio, 60*ratio))
         
         timerButton.setBackgroundImage(UIImage(named: "detail_basic_23@3x.png"), forState: UIControlState.Normal)
         timerButton.clipsToBounds = true
@@ -164,7 +164,7 @@ class DetailMemoView: UIView {
     }
     
     func addTimerAimLabel(){
-        timerAimLabel = UILabel(frame:CGRectMake(15*ratio,0*ratio+77*ratio,130*ratio,12*ratio))
+        timerAimLabel = UILabel(frame:CGRectMake(15*ratio,78*ratio,130*ratio,12*ratio))
         timerAimLabel.text = "목표시간 01:30:00"
         timerAimLabel.backgroundColor = UIColor.clearColor()
         timerAimLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
@@ -176,7 +176,7 @@ class DetailMemoView: UIView {
     
     func addTimerLabel(){
         
-        timerLabel = UILabel(frame:CGRectMake(15*ratio,0*ratio+89*ratio,130*ratio,22*ratio))
+        timerLabel = UILabel(frame:CGRectMake(15*ratio,88*ratio,130*ratio,22*ratio))
         timerLabel.text = "00:00:00"
         timerLabel.font = UIFont(name: "AppleSDGothicNeo-Light",size:20*ratio)
         timerLabel.textAlignment = NSTextAlignment.Center
@@ -202,11 +202,11 @@ class DetailMemoView: UIView {
         circleChart = CircleChart(frame: CGRectMake(210*ratio, 0*ratio+12.5*ratio, 58*ratio, 58*ratio))
         circleChart.circleColor = UIColor.todaitOrange()
         //circleChart.updatePercent(progressPercent)
-        circleChart.percentLabel.frame = CGRectMake(5*ratio,5*ratio,48*ratio,48*ratio)
+        circleChart.percentLabel.frame = CGRectMake(5*ratio,7*ratio,48*ratio,48*ratio)
         circleChart.percentLabel.font = UIFont(name: "AppleSDGothicNeo-UltraLight",size: 20*ratio)
         circleChart.percentLabel.adjustsFontSizeToFitWidth = true
-        
         addSubview(circleChart)
+   
     }
     
     func addChartMask(){
@@ -222,7 +222,7 @@ class DetailMemoView: UIView {
     
     func addAmountTextView(){
         
-        amountTextView = AmountTextView(frame: CGRectMake(175*ratio,0*ratio+74*ratio, 130*ratio, 25*ratio))
+        amountTextView = AmountTextView(frame: CGRectMake(175*ratio,0*ratio+72*ratio, 130*ratio, 25*ratio))
         
         var paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = NSTextAlignment.Center
