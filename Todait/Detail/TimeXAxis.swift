@@ -46,7 +46,7 @@ class TimeXAxis: UIView {
             
             let label = UILabel(frame:CGRectMake(width*CGFloat(index),0,width,height))
             label.textColor = UIColor.todaitGray()
-            label.font = UIFont(name: "AvenirNext-Regular", size: 8*ratio)
+            label.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 8*ratio)
             label.textAlignment = NSTextAlignment.Center
             label.text = title[index]
             addSubview(label)
@@ -57,13 +57,13 @@ class TimeXAxis: UIView {
     func seletedLabelAtIndex(index:Int){
         
         for label in labels {
-            label.font = UIFont(name:"AvenirNext-Regular",size:8*ratio)
+            label.font = UIFont(name:"AppleSDGothicNeo-Regular",size:8*ratio)
         }
         
         UIView.animateWithDuration(1.5, animations: { () -> Void in
             
             let label =  self.labels[index]
-            label.font = UIFont(name:"AvenirNext-Regular",size:11*self.ratio)
+            label.font = UIFont(name:"AppleSDGothicNeo-Regular",size:11*self.ratio)
         })
         
     }

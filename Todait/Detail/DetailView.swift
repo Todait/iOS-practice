@@ -144,7 +144,7 @@ class DetailView: UIView {
         
         
         categoryLabel = UILabel(frame: CGRectMake(200*ratio, 89*ratio, 160*ratio, 12*ratio))
-        categoryLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+        categoryLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10*ratio)
         categoryLabel.textColor = UIColor.whiteColor()
         categoryLabel.textAlignment = NSTextAlignment.Left
         addSubview(categoryLabel)

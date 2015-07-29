@@ -9,7 +9,7 @@
 import UIKit
 
 class TimerTaskTableViewCell: BasicTableViewCell {
-
+    
     var titleLabel : UILabel!
     //var contentsLabel : UILabel!
     
@@ -43,34 +43,28 @@ class TimerTaskTableViewCell: BasicTableViewCell {
     
     
     func addTitleLabel(){
-        titleLabel = UILabel(frame: CGRectMake(75*ratio, 11*ratio, 250*ratio, 14*ratio))
+        titleLabel = UILabel(frame: CGRectMake(70*ratio, 11*ratio, 250*ratio, 14*ratio))
         titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
         titleLabel.textColor = UIColor.todaitGray()
         titleLabel.textAlignment = NSTextAlignment.Left
         self.addSubview(titleLabel)
     }
     
-    /*
-    func addContentsLabel(){
-    contentsLabel = UILabel(frame: CGRectMake(60*ratio, 26*ratio, 250*ratio, 22*ratio))
-    contentsLabel.font = UIFont(name: "AvenirNext-Regular", size: 16*ratio)
-    contentsLabel.textColor = UIColor.todaitDarkGray()
-    contentsLabel.textAlignment = NSTextAlignment.Left
-    self.addSubview(contentsLabel)
-    }
-    */
     
     func addContentsTextView(){
         
-        contentsTextView = TimerTextView(frame: CGRectMake(72*ratio, 20*ratio, 250*ratio, 32*ratio))
+        contentsTextView = TimerTextView(frame: CGRectMake(70*ratio, 20*ratio, 250*ratio, 32*ratio))
         contentsTextView.stringColor = UIColor.todaitGray()
         contentsTextView.stringFont = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
         contentsTextView.numberFont = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
-        contentsTextView.numberColor = UIColor.todaitOrange()
+        contentsTextView.numberColor = UIColor.todaitDarkGray()
         contentsTextView.baseLine = 0
+        contentsTextView.textContainer.lineFragmentPadding = 0
         
         var paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = NSTextAlignment.Left
+        paragraphStyle.headIndent = 0
+        paragraphStyle.firstLineHeadIndent = 0
         
         contentsTextView.paragraphStyle = paragraphStyle
         
@@ -78,23 +72,21 @@ class TimerTaskTableViewCell: BasicTableViewCell {
     }
     
     func addTimerButton(){
-        timerButton = UIButton(frame: CGRectMake(23*ratio, 11*ratio, 36*ratio, 36*ratio))
+        timerButton = UIButton(frame: CGRectMake(0*ratio, 0*ratio, 68*ratio, 58*ratio))
         
         timerButton.clipsToBounds = true
         timerButton.layer.cornerRadius = 18*ratio
-        timerButton.layer.borderWidth = 1.0
-        timerButton.layer.borderColor = UIColor.todaitLightGray().CGColor
         
         timerButton.addTarget(self, action: Selector("timerButtonTouchUpOutside"), forControlEvents:UIControlEvents.TouchUpOutside)
         timerButton.addTarget(self, action: Selector("timerButtonTouchDown"), forControlEvents:UIControlEvents.TouchDown)
         timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         
-        timerButton.setImage(UIImage.maskColor("detail_basic_23@3x.png", color: UIColor.todaitLightGray()), forState: UIControlState.Normal)
+        timerButton.setImage(UIImage(named: "bt_play_wt_a@3x.png"), forState: UIControlState.Normal)
         
-        timerButton.setImage(UIImage.maskColor("detail_basic_23@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Highlighted)
+        timerButton.setImage(UIImage(named: "bt_play_gray_a@3x.png"), forState: UIControlState.Highlighted)
         
-        timerButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame:CGRectMake(0,0,36*ratio,36*ratio)), forState: UIControlState.Normal)
-        timerButton.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("#95CCC4").colorWithAlphaComponent(0.5), frame:CGRectMake(0,0,36*ratio,36*ratio)), forState: UIControlState.Highlighted)
+        //timerButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame:CGRectMake(0,0,36*ratio,36*ratio)), forState: UIControlState.Normal)
+        //timerButton.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("#95CCC4").colorWithAlphaComponent(0.5), frame:CGRectMake(0,0,36*ratio,36*ratio)), forState: UIControlState.Highlighted)
         timerButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         
         self.addSubview(timerButton)
@@ -125,7 +117,7 @@ class TimerTaskTableViewCell: BasicTableViewCell {
     
     func setPercentBezierPath(){
         let timerButtonRect = timerButton.frame
-        percentBezierPath = UIBezierPath(arcCenter: timerButton.center, radius:timerButtonRect.size.width/2 - DEFAULT_LINE_WIDTH*ratio/2, startAngle: degreeToRadians(DEFAULT_START_ANGLE), endAngle: degreeToRadians(DEFAULT_END_ANGLE), clockwise: true) as UIBezierPath!
+        percentBezierPath = UIBezierPath(arcCenter:CGPointMake(38*ratio,29*ratio), radius:18*ratio - DEFAULT_LINE_WIDTH*ratio/2, startAngle: degreeToRadians(DEFAULT_START_ANGLE), endAngle: degreeToRadians(DEFAULT_END_ANGLE), clockwise: true) as UIBezierPath!
         
     }
     
@@ -147,8 +139,8 @@ class TimerTaskTableViewCell: BasicTableViewCell {
     }
     
     func addPercentLabel(){
-        percentLabel = UILabel(frame: CGRectMake(23*ratio, 12*ratio, 36*ratio, 36*ratio))
-        percentLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+        percentLabel = UILabel(frame: CGRectMake(21.5*ratio, 12*ratio, 36*ratio, 36*ratio))
+        percentLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10*ratio)
         percentLabel.text = "%"
         percentLabel.textAlignment = NSTextAlignment.Center
         percentLabel.textColor = UIColor.todaitLightGray()
@@ -156,7 +148,7 @@ class TimerTaskTableViewCell: BasicTableViewCell {
     }
     
     func addColorBoxView(){
-        colorBoxView = UIView(frame: CGRectMake(0, 0, 2 * DEFAULT_LINE_WIDTH, 58*ratio))
+        colorBoxView = UIView(frame: CGRectMake(0, 0, 4*ratio, 58*ratio))
         colorBoxView.backgroundColor = UIColor.clearColor()
         self.addSubview(colorBoxView)
     }
@@ -177,5 +169,5 @@ class TimerTaskTableViewCell: BasicTableViewCell {
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
 }

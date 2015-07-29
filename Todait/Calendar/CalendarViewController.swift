@@ -41,7 +41,7 @@ class CalendarViewController: BasicViewController,UITableViewDataSource,UITableV
         dayLabel = UILabel(frame: CGRectMake(0,navigationHeight*ratio,width,22*ratio))
         dayLabel.textAlignment = NSTextAlignment.Center
         dayLabel.text = "2015. 06"
-        dayLabel.font = UIFont(name:"AvenirNext-Regular", size: 16*ratio)
+        dayLabel.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 16*ratio)
         dayLabel.textColor = UIColor.whiteColor()
         view.addSubview(dayLabel)
     }
@@ -56,7 +56,7 @@ class CalendarViewController: BasicViewController,UITableViewDataSource,UITableV
             let originY = navigationHeight*ratio + 22*ratio
             let weekLabel = UILabel(frame: CGRectMake(originX,originY,labelWidth, 22*ratio))
             weekLabel.text = weekName[index]
-            weekLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+            weekLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10*ratio)
             weekLabel.textAlignment = NSTextAlignment.Center
             weekLabel.textColor = UIColor.whiteColor()
             view.addSubview(weekLabel)

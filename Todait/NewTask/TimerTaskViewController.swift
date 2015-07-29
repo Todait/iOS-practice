@@ -711,13 +711,13 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         infoLabel.text = "반복"
         infoLabel.textColor = UIColor.colorWithHexString("#969696")
         infoLabel.textAlignment = NSTextAlignment.Left
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         cell.contentView.addSubview(infoLabel)
         
         let dateLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
         dateLabel.text = "1회"
         dateLabel.textAlignment = NSTextAlignment.Right
-        dateLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
+        dateLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
         dateLabel.textColor = mainColor
         cell.contentView.addSubview(dateLabel)
     }

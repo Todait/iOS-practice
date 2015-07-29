@@ -307,10 +307,11 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
             
             NSLog("Task 저장성공",1)
             needToUpdate()
-            
+            registerAlarm()
             self.navigationController?.popViewControllerAnimated(true)
         }
     }
+    
     
     func saveNewWeek(task:Task){
         
@@ -333,6 +334,21 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
         
         
     }
+    
+    func registerAlarm(){
+        
+        
+        let notification = UILocalNotification()
+        notification.alertBody = timerTaskVC.taskTextField.text
+        notification.timeZone = NSTimeZone.defaultTimeZone()
+        notification.fireDate = NSDate().dateByAddingTimeInterval(5)
+        notification.soundName = UILocalNotificationDefaultSoundName
+        notification.hasAction = true
+        
+        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        
+    }
+    
     
     func needToUpdate() {
         

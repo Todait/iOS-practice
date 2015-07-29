@@ -65,6 +65,23 @@ public func getDateNumberFromDate(date:NSDate)->NSNumber{
     
 }
 
+public func getFirstSundayDateOfMonth(date:NSDate)->NSDate{
+    
+    let firstDayOfMonthComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitWeekday|NSCalendarUnit.CalendarUnitHour, fromDate:date)
+    firstDayOfMonthComp.day = 1
+    firstDayOfMonthComp.hour = 11
+    firstDayOfMonthComp.minute = 59
+    
+    var firstDate:NSDate = NSCalendar.currentCalendar().dateFromComponents(firstDayOfMonthComp)!
+    
+    let weekDayComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitWeekday, fromDate: firstDate)
+    let firstOfWeek = weekDayComp.weekday
+    
+    
+    firstDate = firstDate.addDay(-firstOfWeek)
+    
+    return firstDate
+}
 
 
 

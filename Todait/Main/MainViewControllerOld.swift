@@ -200,7 +200,7 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
         popUp.textColor = UIColor.whiteColor()
         popUp.textAlignment = NSTextAlignment.Center
         popUp.text = "추가되었다"
-        popUp.font = UIFont(name: "AvenirNext-Regular", size: 4*ratio)
+        popUp.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 4*ratio)
         popUp.center = view.center
         
         view.addSubview(popUp)
@@ -208,7 +208,7 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
         
         UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             popCircle.transform = CGAffineTransformMakeScale(1.2, 1.2)
-            popUp.font = UIFont(name: "AvenirNext-Regular", size: 16*self.ratio)
+            popUp.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16*self.ratio)
             
             }) { (Bool) -> Void in
                 
@@ -386,7 +386,7 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
         createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
         createTaskButton.setTitle("+", forState: UIControlState.Normal)
         createTaskButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        createTaskButton.titleLabel?.font = UIFont(name: "AvenirNext-Medium", size: 30*ratio)
+        createTaskButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 30*ratio)
         createTaskButton.clipsToBounds = true
         createTaskButton.layer.cornerRadius = 15*ratio
         createTaskButton.layer.borderColor = UIColor.whiteColor().CGColor
@@ -412,7 +412,7 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
         homeButton.addTarget(self, action: Selector("showCalendarVC"), forControlEvents: UIControlEvents.TouchDown)
         homeButton.setTitle("메인", forState: UIControlState.Normal)
         homeButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        homeButton.titleLabel?.font = UIFont(name:"AvenirNext-Regular",size:12*ratio)
+        homeButton.titleLabel?.font = UIFont(name:"AppleSDGothicNeo-Regular",size:12*ratio)
         view.addSubview(homeButton)
         
     }
@@ -424,7 +424,7 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
     calendarButton.addTarget(self, action: Selector("showCalendarVC"), forControlEvents: UIControlEvents.TouchDown)
     calendarButton.setTitle("Calendar", forState: UIControlState.Normal)
     calendarButton.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
-    calendarButton.titleLabel?.font = UIFont(name:"AvenirNext-Regular",size:12*ratio)
+    calendarButton.titleLabel?.font = UIFont(name:"AppleSDGothicNeo-Regular",size:12*ratio)
     view.addSubview(calendarButton)
     
     }
@@ -436,7 +436,7 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
         timeTableButton.addTarget(self, action: Selector("showTimeTableVC"), forControlEvents: UIControlEvents.TouchDown)
         timeTableButton.setTitle("시간표", forState: UIControlState.Normal)
         timeTableButton.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
-        timeTableButton.titleLabel?.font = UIFont(name:"AvenirNext-Regular",size:12*ratio)
+        timeTableButton.titleLabel?.font = UIFont(name:"AppleSDGothicNeo-Regular",size:12*ratio)
         view.addSubview(timeTableButton)
         
     }
@@ -448,7 +448,7 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
         statisticsButton.addTarget(self, action: Selector("showStatisticsVC"), forControlEvents: UIControlEvents.TouchDown)
         statisticsButton.setTitle("통계", forState: UIControlState.Normal)
         statisticsButton.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
-        statisticsButton.titleLabel?.font = UIFont(name:"AvenirNext-Regular",size:12*ratio)
+        statisticsButton.titleLabel?.font = UIFont(name:"AppleSDGothicNeo-Regular",size:12*ratio)
         
         view.addSubview(statisticsButton)
         
@@ -470,7 +470,7 @@ class MainViewControllerOld: BasicViewController,UITableViewDataSource,UITableVi
         profileButton.addTarget(self, action: Selector("showProfileVC"), forControlEvents: UIControlEvents.TouchDown)
         profileButton.setTitle("프로필", forState: UIControlState.Normal)
         profileButton.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
-        profileButton.titleLabel?.font = UIFont(name:"AvenirNext-Regular",size:12*ratio)
+        profileButton.titleLabel?.font = UIFont(name:"AppleSDGothicNeo-Regular",size:12*ratio)
         
         view.addSubview(profileButton)
         

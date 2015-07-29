@@ -69,7 +69,7 @@ class InfoViewController: BasicTableViewController,TodaitNavigationDelegate{
         let titleLabel = UILabel(frame: CGRectMake(50*ratio, 0*ratio, 270*ratio, 35*ratio))
         titleLabel.textAlignment = NSTextAlignment.Left
         titleLabel.textColor = UIColor.colorWithHexString("#606060")
-        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 11*ratio)
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
         titleLabel.text = cellTitles[indexPath.section][indexPath.row]
         cell.contentView.addSubview(titleLabel)
         

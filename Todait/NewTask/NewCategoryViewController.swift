@@ -62,7 +62,7 @@ class NewCategoryViewController: BasicViewController,TodaitNavigationDelegate,UI
         categoryNameTextField.backgroundColor = UIColor.whiteColor()
         categoryNameTextField.placeholder = "카테고리 이름"
         categoryNameTextField.textColor = UIColor.colorWithHexString("#969696")
-        categoryNameTextField.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
+        categoryNameTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 20*ratio)
         categoryNameTextField.becomeFirstResponder()
         categoryNameTextField.returnKeyType = UIReturnKeyType.Done
         categoryNameTextField.delegate = self

@@ -37,7 +37,7 @@ class MainCategoryTableViewCell: BasicTableViewCell {
     }
     
     func addCategoryCircle(){
-        categoryCircle = UIView(frame: CGRectMake(15*ratio, 10*ratio, 10*ratio, 10*ratio))
+        categoryCircle = UIView(frame: CGRectMake(13*ratio, 12*ratio, 10*ratio, 10*ratio))
         categoryCircle.backgroundColor = UIColor.clearColor()
         categoryCircle.clipsToBounds = true
         categoryCircle.layer.cornerRadius = 5*ratio
@@ -46,8 +46,8 @@ class MainCategoryTableViewCell: BasicTableViewCell {
     }
     
     func addTitleLabel(){
-        titleLabel = UILabel(frame:CGRectMake(38*ratio, 10*ratio, 45*ratio, 10*ratio))
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 8*ratio)
+        titleLabel = UILabel(frame:CGRectMake(32*ratio, 0*ratio, 50*ratio, 34*ratio))
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 10*ratio)
         titleLabel.textAlignment = NSTextAlignment.Left
         titleLabel.textColor = UIColor.whiteColor()
         addSubview(titleLabel)

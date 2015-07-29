@@ -81,7 +81,7 @@ class BasicTableViewController: BasicViewController,UITableViewDataSource,UITabl
         let titleLabel = UILabel(frame: CGRectMake(15*ratio, 0*ratio, 270*ratio, 35*ratio))
         titleLabel.textAlignment = NSTextAlignment.Left
         titleLabel.textColor = UIColor.colorWithHexString("#606060")
-        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 11*ratio)
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
         titleLabel.text = cellTitles[indexPath.section][indexPath.row]
         cell.contentView.addSubview(titleLabel)
         
@@ -96,7 +96,7 @@ class BasicTableViewController: BasicViewController,UITableViewDataSource,UITabl
         let sectionTitleLabel = UILabel(frame: CGRectMake(15*ratio,23*ratio, 250*ratio, 13*ratio))
         sectionTitleLabel.text = sectionTitles[section]
         sectionTitleLabel.textAlignment = NSTextAlignment.Left
-        sectionTitleLabel.font = UIFont(name: "AvenirNext-Regular", size: 11*ratio)
+        sectionTitleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
         sectionTitleLabel.textColor = UIColor.colorWithHexString("#595959")
         
         headerView.addSubview(sectionTitleLabel)

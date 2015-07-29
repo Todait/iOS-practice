@@ -239,7 +239,7 @@ class MainCategoryViewController: BasicViewController,UITableViewDelegate,UITabl
         }
         
         
-        return 30*ratio
+        return 34*ratio
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -270,16 +270,16 @@ class MainCategoryViewController: BasicViewController,UITableViewDelegate,UITabl
             }
             
             
-            let sortInfoLabel = UILabel(frame: CGRectMake(38*ratio, 0, 47*ratio, 42*ratio))
+            let sortInfoLabel = UILabel(frame: CGRectMake(36*ratio, 0, 47*ratio, 42*ratio))
            
             sortInfoLabel.textAlignment = NSTextAlignment.Left
             sortInfoLabel.textColor = UIColor.whiteColor()
-            sortInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 8*ratio)
+            sortInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 12*ratio)
             
             cell.contentView.addSubview(sortInfoLabel)
             
             
-            let sortImageView = UIImageView(frame: CGRectMake(12*ratio, 12*ratio, 15*ratio, 15*ratio))
+            let sortImageView = UIImageView(frame: CGRectMake(10*ratio, 12*ratio, 15*ratio, 15*ratio))
             sortImageView.contentMode = UIViewContentMode.ScaleAspectFill
             
             cell.contentView.addSubview(sortImageView)

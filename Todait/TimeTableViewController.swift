@@ -110,9 +110,13 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         let weekWidth = 310*ratio / 7
         
         
+        let whiteBox = UIView(frame:CGRectMake(0,23*ratio,width,20*ratio))
+        whiteBox.backgroundColor = UIColor.whiteColor()
+        headerView.addSubview(whiteBox)
+        
         for index in 0...6 {
             let weekDayLabel = UILabel(frame: CGRectMake(CGFloat(index)*weekWidth + 5*ratio, 23*ratio, weekWidth, 20*ratio))
-            weekDayLabel.backgroundColor = UIColor.whiteColor()
+            weekDayLabel.backgroundColor = UIColor.clearColor()
             weekDayLabel.textAlignment = NSTextAlignment.Center
             weekDayLabel.text = weekTitle[index]
             weekDayLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 7.5*ratio)
@@ -543,7 +547,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
             timeTableView.addSubview(timeLabel)
             
             
-            let timeLineView = UIView(frame: CGRectMake(50*ratio,25*ratio+TimeTableHeight * CGFloat(i)*ratio, 160*ratio, 1*ratio))
+            let timeLineView = UIView(frame: CGRectMake(50*ratio,25*ratio+TimeTableHeight * CGFloat(i)*ratio, 160*ratio, 1))
             timeLineView.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
             timeTableView.addSubview(timeLineView)
         }

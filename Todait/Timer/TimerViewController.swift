@@ -302,13 +302,15 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     func addDoneButton(){
         doneButton = UIButton(frame: CGRectMake(240*ratio, height-55*ratio, 80*ratio, 55*ratio))
         doneButton.setBackgroundImage(UIImage(named: "bt_check@3x.png"), forState: UIControlState.Normal)
-        doneButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.8)
+        doneButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.2)
         doneButton.addTarget(self, action: Selector("doneButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(doneButton)
     }
     
     func doneButtonClk(){
         
+        
+        saveTimeLog(currentTime)
         backButtonClk()
         
         
@@ -487,7 +489,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         completeButton.setTitle("Complete", forState: UIControlState.Normal)
         completeButton.setTitleColor(task.getColor(), forState: UIControlState.Normal)
         completeButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Highlighted)
-        completeButton.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 18*ratio)
+        completeButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 18*ratio)
         completeButton.addTarget(self, action: Selector("recordTime"), forControlEvents: UIControlEvents.TouchUpInside)
         //view.addSubview(completeButton)
         

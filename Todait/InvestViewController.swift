@@ -92,7 +92,7 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
         investTitleInfoLabel.text = "목표 투자시간"
         investTitleInfoLabel.textAlignment = NSTextAlignment.Center
         investTitleInfoLabel.textColor = mainColor
-        investTitleInfoLabel.font = UIFont(name: "AvenirNext-Regular", size: 30*ratio)
+        investTitleInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 30*ratio)
         view.addSubview(investTitleInfoLabel)
     }
     
@@ -100,7 +100,7 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
         totalTimeLabel = UILabel(frame: CGRectMake(15*ratio, 140*ratio, 290*ratio, 30*ratio))
         totalTimeLabel.textAlignment = NSTextAlignment.Center
         totalTimeLabel.textColor = mainColor
-        totalTimeLabel.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
+        totalTimeLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 20*ratio)
         
         view.addSubview(totalTimeLabel)
     }
@@ -137,7 +137,7 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
             
             nameLabel.textAlignment = NSTextAlignment.Center
             nameLabel.textColor = mainColor.colorWithAlphaComponent(0.1)
-            nameLabel.font = UIFont(name: "AvenirNext-Regular", size: 16*ratio)
+            nameLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16*ratio)
             view.addSubview(nameLabel)
             nameLabels.append(nameLabel)
             
@@ -149,7 +149,7 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
             
             timeLabel.textAlignment = NSTextAlignment.Center
             timeLabel.textColor = mainColor.colorWithAlphaComponent(0.1)
-            timeLabel.font = UIFont(name: "AvenirNext-Regular",size: 12*ratio)
+            timeLabel.font = UIFont(name: "AppleSDGothicNeo-Regular",size: 12*ratio)
             timeLabel.adjustsFontSizeToFitWidth = true
             
             timeLabel.text = getTimeString(timeData[index])
@@ -170,7 +170,7 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
     func addInvestContentsInfoLabel(){
         let investContentsInfoLabel = UILabel(frame: CGRectMake(15*ratio, 180*ratio, 290*ratio, 25*ratio))
         investContentsInfoLabel.text = "요일별 투자시간의 비율에 따라 적정 분량을 나눠줍니다"
-        investContentsInfoLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+        investContentsInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10*ratio)
         investContentsInfoLabel.textColor = mainColor
         investContentsInfoLabel.textAlignment = NSTextAlignment.Center
         view.addSubview(investContentsInfoLabel)
@@ -181,7 +181,7 @@ class InvestViewController: BasicViewController,InvestUpdateDelegate{
         completeButton.backgroundColor = mainColor
         completeButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         completeButton.setTitle("확인", forState: UIControlState.Normal)
-        completeButton.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
+        completeButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 20*ratio)
         completeButton.addTarget(self, action: Selector("completeButtonClk"), forControlEvents:UIControlEvents.TouchUpInside)
         view.addSubview(completeButton)
     }

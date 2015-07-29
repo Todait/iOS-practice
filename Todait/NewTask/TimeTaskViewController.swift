@@ -828,13 +828,13 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         infoLabel.text = "시작시간"
         infoLabel.textColor = UIColor.colorWithHexString("#969696")
         infoLabel.textAlignment = NSTextAlignment.Left
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         cell.contentView.addSubview(infoLabel)
         
         startDateLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
         startDateLabel.text = dateForm.stringFromDate(NSDate())
         startDateLabel.textAlignment = NSTextAlignment.Right
-        startDateLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
+        startDateLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
         startDateLabel.textColor = mainColor
         cell.contentView.addSubview(startDateLabel)
         
@@ -847,13 +847,13 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         infoLabel.text = "반복"
         infoLabel.textColor = UIColor.colorWithHexString("#969696")
         infoLabel.textAlignment = NSTextAlignment.Left
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         cell.contentView.addSubview(infoLabel)
         
         let dateLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
         dateLabel.text = "1회"
         dateLabel.textAlignment = NSTextAlignment.Right
-        dateLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
+        dateLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
         dateLabel.textColor = mainColor
         cell.contentView.addSubview(dateLabel)
     }
@@ -923,7 +923,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         startRangeTextField = UITextField(frame: CGRectMake(15*ratio, 9.5*ratio, 130*ratio, 30*ratio))
         startRangeTextField.textAlignment = NSTextAlignment.Left
         startRangeTextField.placeholder = "시작"
-        startRangeTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        startRangeTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         startRangeTextField.textColor = UIColor.colorWithHexString("#969696")
         startRangeTextField.tintColor = mainColor
         startRangeTextField.hidden = true
@@ -944,7 +944,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         endRangeTextField = UITextField(frame: CGRectMake(175*ratio, 9.5*ratio, 130*ratio, 30*ratio))
         endRangeTextField.textAlignment = NSTextAlignment.Left
         endRangeTextField.placeholder = "종료"
-        endRangeTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        endRangeTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         endRangeTextField.textColor = UIColor.colorWithHexString("#969696")
         endRangeTextField.tintColor = mainColor
         endRangeTextField.hidden = true
@@ -964,7 +964,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         dayTextField = UITextField(frame: CGRectMake(15*ratio, 9.5*ratio, 290*ratio, 30*ratio))
         dayTextField.textAlignment = NSTextAlignment.Left
         dayTextField.placeholder = "분량을 입력하세요"
-        dayTextField.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+        dayTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10*ratio)
         dayTextField.textColor = UIColor.colorWithHexString("#969696")
         dayTextField.tintColor = mainColor
         dayTextField.hidden = true

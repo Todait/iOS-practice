@@ -50,7 +50,7 @@ class TaskTableViewCell: BasicTableViewCell {
     
     
     func addTitleLabel(){
-        titleLabel = UILabel(frame: CGRectMake(75*ratio, 11*ratio, 250*ratio, 14*ratio))
+        titleLabel = UILabel(frame: CGRectMake(70*ratio, 11*ratio, 250*ratio, 14*ratio))
         titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
         titleLabel.textColor = UIColor.todaitGray()
         titleLabel.textAlignment = NSTextAlignment.Left
@@ -60,7 +60,7 @@ class TaskTableViewCell: BasicTableViewCell {
     /*
     func addContentsLabel(){
         contentsLabel = UILabel(frame: CGRectMake(60*ratio, 26*ratio, 250*ratio, 22*ratio))
-        contentsLabel.font = UIFont(name: "AvenirNext-Regular", size: 16*ratio)
+        contentsLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16*ratio)
         contentsLabel.textColor = UIColor.todaitDarkGray()
         contentsLabel.textAlignment = NSTextAlignment.Left
         self.addSubview(contentsLabel)
@@ -69,15 +69,18 @@ class TaskTableViewCell: BasicTableViewCell {
     
     func addContentsTextView(){
         
-        contentsTextView = AmountTextView(frame: CGRectMake(72*ratio, 20*ratio, 250*ratio, 32*ratio))
+        contentsTextView = AmountTextView(frame: CGRectMake(70*ratio, 20*ratio, 250*ratio, 32*ratio))
         contentsTextView.unitColor = UIColor.todaitGray()
         contentsTextView.unitFont = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
         contentsTextView.amountFont = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
         contentsTextView.amountColor = UIColor.todaitDarkGray()
         contentsTextView.baseLine = 0
+        contentsTextView.textContainer.lineFragmentPadding = 0
         
         var paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = NSTextAlignment.Left
+        paragraphStyle.headIndent = 0
+        paragraphStyle.firstLineHeadIndent = 0
         
         contentsTextView.paragraphStyle = paragraphStyle
         
@@ -85,7 +88,7 @@ class TaskTableViewCell: BasicTableViewCell {
     }
 
     func addTimerButton(){
-        timerButton = UIButton(frame: CGRectMake(0*ratio, 0*ratio, 75*ratio, 58*ratio))
+        timerButton = UIButton(frame: CGRectMake(0*ratio, 0*ratio, 68*ratio, 58*ratio))
         
         timerButton.clipsToBounds = true
         timerButton.layer.cornerRadius = 18*ratio
@@ -131,7 +134,7 @@ class TaskTableViewCell: BasicTableViewCell {
     
     func setPercentBezierPath(){
         let timerButtonRect = timerButton.frame
-        percentBezierPath = UIBezierPath(arcCenter:CGPointMake(41*ratio,29*ratio), radius:18*ratio - DEFAULT_LINE_WIDTH*ratio/2, startAngle: degreeToRadians(DEFAULT_START_ANGLE), endAngle: degreeToRadians(DEFAULT_END_ANGLE), clockwise: true) as UIBezierPath!
+        percentBezierPath = UIBezierPath(arcCenter:CGPointMake(38*ratio,29*ratio), radius:18*ratio - DEFAULT_LINE_WIDTH*ratio/2, startAngle: degreeToRadians(DEFAULT_START_ANGLE), endAngle: degreeToRadians(DEFAULT_END_ANGLE), clockwise: true) as UIBezierPath!
         
     }
     
@@ -153,8 +156,8 @@ class TaskTableViewCell: BasicTableViewCell {
     }
     
     func addPercentLabel(){
-        percentLabel = UILabel(frame: CGRectMake(23*ratio, 12*ratio, 36*ratio, 36*ratio))
-        percentLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+        percentLabel = UILabel(frame: CGRectMake(21.5*ratio, 12*ratio, 36*ratio, 36*ratio))
+        percentLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10*ratio)
         percentLabel.text = "%"
         percentLabel.textAlignment = NSTextAlignment.Center
         percentLabel.textColor = UIColor.todaitLightGray()

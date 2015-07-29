@@ -30,7 +30,7 @@ class WeekLabel: UIView{
     }
     
     func setupDefault(){
-        weekFont = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+        weekFont = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
         weekColor = UIColor.todaitLightGray()
     }
     
@@ -42,7 +42,7 @@ class WeekLabel: UIView{
         for index in 0...6{
             
             let label = UILabel(frame: CGRectMake(CGFloat(index)*labelWidth, 0, labelWidth,labelHeight))
-            label.font = UIFont(name:"AvenirNext-Regular", size: 10*ratio)
+            label.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 10*ratio)
             label.textColor = UIColor.todaitLightGray()
             label.textAlignment = NSTextAlignment.Center
             label.adjustsFontSizeToFitWidth = true

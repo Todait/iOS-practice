@@ -300,6 +300,11 @@
 		4C8645DD1B6754EA00C2F800 /* bg_circle_red@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8645D81B6754EA00C2F800 /* bg_circle_red@3x.png */; };
 		4C8645DF1B675B9A00C2F800 /* bg_circle_green_big_360-1@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8645DE1B675B9A00C2F800 /* bg_circle_green_big_360-1@3x.png */; };
 		4C8645E11B6762C300C2F800 /* bt_play@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8645E01B6762C300C2F800 /* bt_play@3x.png */; };
+		4C8645E31B67822300C2F800 /* MainCategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8645E21B67822300C2F800 /* MainCategoryTableViewCell.swift */; };
+		4C8645E61B6786A300C2F800 /* ic_arrange_arrange@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8645E41B6786A300C2F800 /* ic_arrange_arrange@3x.png */; };
+		4C8645E71B6786A300C2F800 /* ic_arrange_folder@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8645E51B6786A300C2F800 /* ic_arrange_folder@3x.png */; };
+		4C8645F71B686AF600C2F800 /* bt_play_gray_a@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8645F51B686AF600C2F800 /* bt_play_gray_a@3x.png */; };
+		4C8645F81B686AF600C2F800 /* bt_play_wt_a@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8645F61B686AF600C2F800 /* bt_play_wt_a@3x.png */; };
 		4C9085D61B4CD25200BC080B /* stopwatch_bottom_02@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D21B4CD25200BC080B /* stopwatch_bottom_02@3x.png */; };
 		4C9085D71B4CD25200BC080B /* stopwatch_bottom_03@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D31B4CD25200BC080B /* stopwatch_bottom_03@3x.png */; };
 		4C9085D81B4CD25200BC080B /* stopwatch_bottom_04@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D41B4CD25200BC080B /* stopwatch_bottom_04@3x.png */; };
@@ -414,7 +419,7 @@
 		4CD697991B4E87D900E6B9B8 /* DetailMonthCalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD697981B4E87D900E6B9B8 /* DetailMonthCalendarCell.swift */; };
 		4CD6979B1B4E8AF800E6B9B8 /* DetailCalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD6979A1B4E8AF800E6B9B8 /* DetailCalendarCell.swift */; };
 		4CD77E5F1B5607EC009B77AD /* Localizing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD77E5E1B5607EC009B77AD /* Localizing.swift */; };
-		4CD77E611B560C24009B77AD /* MainListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD77E601B560C24009B77AD /* MainListViewController.swift */; };
+		4CD77E611B560C24009B77AD /* MainCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD77E601B560C24009B77AD /* MainCategoryViewController.swift */; };
 		4CD77E981B579F5C009B77AD /* TimeTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD77E971B579F5C009B77AD /* TimeTileView.swift */; };
 		4CD77E9A1B57C177009B77AD /* TimeTableCategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD77E991B57C177009B77AD /* TimeTableCategoryCell.swift */; };
 /* End PBXBuildFile section */
@@ -800,6 +805,11 @@
 		4C8645D81B6754EA00C2F800 /* bg_circle_red@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_circle_red@3x.png"; sourceTree = "<group>"; };
 		4C8645DE1B675B9A00C2F800 /* bg_circle_green_big_360-1@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bg_circle_green_big_360-1@3x.png"; sourceTree = "<group>"; };
 		4C8645E01B6762C300C2F800 /* bt_play@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bt_play@3x.png"; sourceTree = "<group>"; };
+		4C8645E21B67822300C2F800 /* MainCategoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainCategoryTableViewCell.swift; path = Main/MainCategoryTableViewCell.swift; sourceTree = "<group>"; };
+		4C8645E41B6786A300C2F800 /* ic_arrange_arrange@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrange_arrange@3x.png"; sourceTree = "<group>"; };
+		4C8645E51B6786A300C2F800 /* ic_arrange_folder@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrange_folder@3x.png"; sourceTree = "<group>"; };
+		4C8645F51B686AF600C2F800 /* bt_play_gray_a@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bt_play_gray_a@3x.png"; sourceTree = "<group>"; };
+		4C8645F61B686AF600C2F800 /* bt_play_wt_a@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bt_play_wt_a@3x.png"; sourceTree = "<group>"; };
 		4C9085D21B4CD25200BC080B /* stopwatch_bottom_02@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_02@3x.png"; sourceTree = "<group>"; };
 		4C9085D31B4CD25200BC080B /* stopwatch_bottom_03@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_03@3x.png"; sourceTree = "<group>"; };
 		4C9085D41B4CD25200BC080B /* stopwatch_bottom_04@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_04@3x.png"; sourceTree = "<group>"; };
@@ -936,7 +946,7 @@
 		4CD697981B4E87D900E6B9B8 /* DetailMonthCalendarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailMonthCalendarCell.swift; path = Detail/DetailMonthCalendarCell.swift; sourceTree = "<group>"; };
 		4CD6979A1B4E8AF800E6B9B8 /* DetailCalendarCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DetailCalendarCell.swift; path = Detail/DetailCalendarCell.swift; sourceTree = "<group>"; };
 		4CD77E5E1B5607EC009B77AD /* Localizing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Localizing.swift; sourceTree = "<group>"; };
-		4CD77E601B560C24009B77AD /* MainListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainListViewController.swift; path = Main/MainListViewController.swift; sourceTree = "<group>"; };
+		4CD77E601B560C24009B77AD /* MainCategoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainCategoryViewController.swift; path = Main/MainCategoryViewController.swift; sourceTree = "<group>"; };
 		4CD77E971B579F5C009B77AD /* TimeTileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeTileView.swift; path = TimeTable/TimeTileView.swift; sourceTree = "<group>"; };
 		4CD77E991B57C177009B77AD /* TimeTableCategoryCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimeTableCategoryCell.swift; path = TimeTable/TimeTableCategoryCell.swift; sourceTree = "<group>"; };
 		4CD77EA31B58D259009B77AD /* Todait Add Image.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Todait Add Image.xcdatamodel"; sourceTree = "<group>"; };
@@ -1166,9 +1176,13 @@
 		4C50422E1B4A7B6E0050A501 /* 01_main */ = {
 			isa = PBXGroup;
 			children = (
+				4C8645F51B686AF600C2F800 /* bt_play_gray_a@3x.png */,
+				4C8645F61B686AF600C2F800 /* bt_play_wt_a@3x.png */,
 				4C8645C61B663FC100C2F800 /* bg_nodata@3x.png */,
 				4C8645C81B66421F00C2F800 /* bg_nodata4s@3x.png */,
 				4C8644121B5F8EBB00C2F800 /* bt_hamburger@3x.png */,
+				4C8645E41B6786A300C2F800 /* ic_arrange_arrange@3x.png */,
+				4C8645E51B6786A300C2F800 /* ic_arrange_folder@3x.png */,
 				4CB231E41B5E3A0100FE94AA /* 01_main_category_min@3x.png */,
 				4C8644101B5F8EA200C2F800 /* title_main@3x.png */,
 				4CB231E51B5E3A0100FE94AA /* category_goal@3x.png */,
@@ -1641,7 +1655,8 @@
 				4C5042271B4A757A0050A501 /* MainTabbarViewController.swift */,
 				4C5042391B4A84650050A501 /* MainTabbarButton.swift */,
 				4CD3C5691B2FB7C1000AFDA3 /* MainViewController.swift */,
-				4CD77E601B560C24009B77AD /* MainListViewController.swift */,
+				4CD77E601B560C24009B77AD /* MainCategoryViewController.swift */,
+				4C8645E21B67822300C2F800 /* MainCategoryTableViewCell.swift */,
 				4C50422C1B4A79620050A501 /* MainViewControllerOld.swift */,
 				4C79032D1B383F1900B48656 /* MainPhotoViewController.swift */,
 				4C79032F1B3842F800B48656 /* MainPhotoCell.swift */,
@@ -1896,6 +1911,7 @@
 				4C2329941B342005006CA462 /* ic_floating_action_button.png in Resources */,
 				4C2329B61B342005006CA462 /* ic_fragment_task_info_button_edit_pressed.9.png in Resources */,
 				4CB231CA1B5DF8EC00FE94AA /* detail_diary_input_step4_03@3x.png in Resources */,
+				4C8645E61B6786A300C2F800 /* ic_arrange_arrange@3x.png in Resources */,
 				4C2329DE1B342005006CA462 /* ic_notification_stopwatch_stop_pressed.png in Resources */,
 				4CB231C81B5DF8EC00FE94AA /* detail_diary_input_step4_11@3x.png in Resources */,
 				4C2329EE1B342005006CA462 /* ic_setting_open_source_license.png in Resources */,
@@ -1966,8 +1982,10 @@
 				4CB353AF1B1C544000E36245 /* test.png in Resources */,
 				4C23298B1B342005006CA462 /* ic_drawer_item_history.png in Resources */,
 				4C23299E1B342005006CA462 /* ic_fragment_diary_rating_disabled.png in Resources */,
+				4C8645F81B686AF600C2F800 /* bt_play_wt_a@3x.png in Resources */,
 				4C23297C1B342005006CA462 /* ic_camera_button.png in Resources */,
 				4C8644A01B60EF9800C2F800 /* bt_graph@3x.png in Resources */,
+				4C8645F71B686AF600C2F800 /* bt_play_gray_a@3x.png in Resources */,
 				4C23299F1B342005006CA462 /* ic_fragment_diary_rating.png in Resources */,
 				4C23296F1B342005006CA462 /* ic_arrow_right_gray.png in Resources */,
 				4C23298C1B342005006CA462 /* ic_drawer_item_index.png in Resources */,
@@ -2004,6 +2022,7 @@
 				4C8645D91B6754EA00C2F800 /* bg_circle_gray@3x.png in Resources */,
 				4C2329F41B342005006CA462 /* ic_setting_right_arrow.png in Resources */,
 				4C2329ED1B342005006CA462 /* ic_setting_main_image.png in Resources */,
+				4C8645E71B6786A300C2F800 /* ic_arrange_folder@3x.png in Resources */,
 				4C23299D1B342005006CA462 /* ic_fragment_diary_pencil.png in Resources */,
 				4C2329821B342005006CA462 /* ic_double_quotation_end.png in Resources */,
 				4C8645DF1B675B9A00C2F800 /* bg_circle_green_big_360-1@3x.png in Resources */,
@@ -2202,6 +2221,7 @@
 				4CD3C5A31B32AF4A000AFDA3 /* ProgressListViewController.swift in Sources */,
 				4C7CBFCE1B218373000E271D /* TimeTableViewController.swift in Sources */,
 				4CB353A91B1C41F900E36245 /* SettingViewController.swift in Sources */,
+				4C8645E31B67822300C2F800 /* MainCategoryTableViewCell.swift in Sources */,
 				4C8644441B60AB0800C2F800 /* TimeHistory.swift in Sources */,
 				4C9085EC1B4CFA2700BC080B /* CategorySettingViewController.swift in Sources */,
 				4C0B89E71B3C29030069ED7A /* WeekMaxChart.swift in Sources */,
@@ -2210,7 +2230,7 @@
 				4CB353AD1B1C500F00E36245 /* ParallelHeaderView.swift in Sources */,
 				4C7CC0A61B282866000E271D /* String.swift in Sources */,
 				4C79032E1B383F1900B48656 /* MainPhotoViewController.swift in Sources */,
-				4CD77E611B560C24009B77AD /* MainListViewController.swift in Sources */,
+				4CD77E611B560C24009B77AD /* MainCategoryViewController.swift in Sources */,
 				4CD3C5651B2FB625000AFDA3 /* SWRevealViewController.m in Sources */,
 				4C86444A1B60AB0800C2F800 /* Task.swift in Sources */,
 				4CD697931B4E707100E6B9B8 /* AmountTaskViewController.swift in Sources */,

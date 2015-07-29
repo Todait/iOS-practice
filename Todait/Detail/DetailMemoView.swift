@@ -89,7 +89,7 @@ class DetailMemoView: UIView {
         headerLabel.textColor = UIColor.todaitGray()
         headerLabel.textAlignment = NSTextAlignment.Center
         headerLabel.text = "공부메모"
-        headerLabel.font = UIFont(name: "AvenirNext-Medium", size: 10*ratio)
+        headerLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10*ratio)
         addSubview(headerLabel)
         
     }
@@ -118,7 +118,7 @@ class DetailMemoView: UIView {
         infoLabel.textColor = UIColor.todaitLightGray()
         infoLabel.textAlignment = NSTextAlignment.Left
         infoLabel.text = "메모를 추가하세요."
-        infoLabel.font = UIFont(name: "AvenirNext-Medium", size: 13*ratio)
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 13*ratio)
         addSubview(infoLabel)
     }
     

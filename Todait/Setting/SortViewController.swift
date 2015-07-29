@@ -48,7 +48,7 @@ class SortViewController: BasicTableViewController,TodaitNavigationDelegate,UITa
         let titleLabel = UILabel(frame: CGRectMake(15*ratio, 0*ratio, 270*ratio, 35*ratio))
         titleLabel.textAlignment = NSTextAlignment.Left
         titleLabel.textColor = UIColor.colorWithHexString("#606060")
-        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 11*ratio)
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
         titleLabel.text = sortTitle[indexPath.section][indexPath.row]
         cell.contentView.addSubview(titleLabel)
         

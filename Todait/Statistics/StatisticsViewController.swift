@@ -80,7 +80,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         let percentInfoLabel = UILabel(frame:CGRectMake(20*ratio, 10*ratio, 100*ratio, 20*ratio))
         percentInfoLabel.text = "성취율"
         percentInfoLabel.textColor = UIColor.todaitGreen()
-        percentInfoLabel.font = UIFont(name:"AvenirNext-Regular",size:8*ratio)
+        percentInfoLabel.font = UIFont(name:"AppleSDGothicNeo-Regular",size:8*ratio)
         doneDashView.addSubview(percentInfoLabel)
         
         
@@ -142,7 +142,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         
         let weekLabel = WeekLabel(frame: CGRectMake(0, 0, 140*ratio, 15*ratio))
         weekLabel.weekColor = UIColor.whiteColor()
-        weekLabel.weekFont = UIFont(name: "AvenirNext-Regular", size: 8*ratio)
+        weekLabel.weekFont = UIFont(name: "AppleSDGothicNeo-Regular", size: 8*ratio)
         weekLabel.updateLabelText(dayTitle)
         
         grayBox.addSubview(weekLabel)
@@ -223,14 +223,14 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         let totalPercentInfoLabel = UILabel(frame:CGRectMake(170*ratio,10*ratio,100*ratio,25*ratio))
         totalPercentInfoLabel.text = "최근 평균 성취율"
         totalPercentInfoLabel.textColor = UIColor.todaitGray()
-        totalPercentInfoLabel.font = UIFont(name:"AvenirNext-Regular",size:14*ratio)
+        totalPercentInfoLabel.font = UIFont(name:"AppleSDGothicNeo-Regular",size:14*ratio)
         totalPercentInfoLabel.textAlignment = NSTextAlignment.Left
         doneDashView.addSubview(totalPercentInfoLabel)
         
         totalPercentLabel = UILabel(frame:CGRectMake(170*ratio,35*ratio,100*ratio,30*ratio))
         totalPercentLabel.text = "100%"
         totalPercentLabel.textColor = UIColor.todaitGreen()
-        totalPercentLabel.font = UIFont(name:"AvenirNext-Regular",size:18*ratio)
+        totalPercentLabel.font = UIFont(name:"AppleSDGothicNeo-Regular",size:18*ratio)
         totalPercentLabel.textAlignment = NSTextAlignment.Right
         doneDashView.addSubview(totalPercentLabel)
         
@@ -241,14 +241,14 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         let totalTimeInfoLabel = UILabel(frame:CGRectMake(170*ratio,80*ratio,100*ratio,25*ratio))
         totalTimeInfoLabel.text = "최근 공부 시간"
         totalTimeInfoLabel.textColor = UIColor.todaitGray()
-        totalTimeInfoLabel.font = UIFont(name:"AvenirNext-Regular",size:14*ratio)
+        totalTimeInfoLabel.font = UIFont(name:"AppleSDGothicNeo-Regular",size:14*ratio)
         totalTimeInfoLabel.textAlignment = NSTextAlignment.Left
         doneDashView.addSubview(totalTimeInfoLabel)
         
         totalTimeLabel = UILabel(frame:CGRectMake(170*ratio,105*ratio,100*ratio,30*ratio))
         totalTimeLabel.text = "00시간 00분"
         totalTimeLabel.textColor = UIColor.todaitGreen()
-        totalTimeLabel.font = UIFont(name:"AvenirNext-Regular",size:18*ratio)
+        totalTimeLabel.font = UIFont(name:"AppleSDGothicNeo-Regular",size:18*ratio)
         totalTimeLabel.textAlignment = NSTextAlignment.Right
         doneDashView.addSubview(totalTimeLabel)
     }
@@ -280,7 +280,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         progressButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 40*ratio, 40*ratio)), forState: UIControlState.Normal)
         progressButton.clipsToBounds = true
         progressButton.layer.cornerRadius = 20*ratio
-        progressButton.titleLabel?.font = UIFont(name:"AvenirNext-Medium",size:14*ratio);
+        progressButton.titleLabel?.font = UIFont(name:"AppleSDGothicNeo-Medium",size:14*ratio);
         progressButton.addTarget(self, action: Selector("touchDown:"), forControlEvents: UIControlEvents.TouchDown)
         progressButton.addTarget(self, action: Selector("touchOut:"),forControlEvents:UIControlEvents.TouchDragOutside)
         statusDashView.addSubview(progressButton)
@@ -289,7 +289,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         let progressInfoLabel = UILabel(frame:CGRectMake(40*ratio,60*ratio,40*ratio,20*ratio))
         progressInfoLabel.textAlignment = NSTextAlignment.Center
         progressInfoLabel.textColor = UIColor.todaitGray()
-        progressInfoLabel.font = UIFont(name:"AvenirNext-Medium",size:14*ratio);
+        progressInfoLabel.font = UIFont(name:"AppleSDGothicNeo-Medium",size:14*ratio);
         progressInfoLabel.text = "진행중"
         
         statusDashView.addSubview(progressInfoLabel)
@@ -369,7 +369,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         completeButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitPurple(), frame: CGRectMake(0, 0, 40*ratio, 40*ratio)), forState: UIControlState.Normal)
         completeButton.clipsToBounds = true
         completeButton.layer.cornerRadius = 20*ratio
-        completeButton.titleLabel?.font = UIFont(name:"AvenirNext-Medium",size:14*ratio);
+        completeButton.titleLabel?.font = UIFont(name:"AppleSDGothicNeo-Medium",size:14*ratio);
         completeButton.addTarget(self, action: Selector("touchDown:"), forControlEvents: UIControlEvents.TouchDown)
         completeButton.addTarget(self, action: Selector("touchOut:"),forControlEvents:UIControlEvents.TouchCancel)
         statusDashView.addSubview(completeButton)
@@ -379,7 +379,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         let completeInfoLabel = UILabel(frame:CGRectMake(125*ratio,60*ratio,40*ratio,20*ratio))
         completeInfoLabel.textAlignment = NSTextAlignment.Center
         completeInfoLabel.textColor = UIColor.todaitGray()
-        completeInfoLabel.font = UIFont(name:"AvenirNext-Medium",size:14*ratio);
+        completeInfoLabel.font = UIFont(name:"AppleSDGothicNeo-Medium",size:14*ratio);
         completeInfoLabel.text = "완료"
         
         statusDashView.addSubview(completeInfoLabel)
@@ -393,7 +393,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         incompleteButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitRed(), frame: CGRectMake(0, 0, 40*ratio, 40*ratio)), forState: UIControlState.Normal)
         incompleteButton.clipsToBounds = true
         incompleteButton.layer.cornerRadius = 20*ratio
-        incompleteButton.titleLabel?.font = UIFont(name:"AvenirNext-Medium",size:14*ratio);
+        incompleteButton.titleLabel?.font = UIFont(name:"AppleSDGothicNeo-Medium",size:14*ratio);
         incompleteButton.addTarget(self, action: Selector("touchDown:"), forControlEvents: UIControlEvents.TouchDown)
         incompleteButton.addTarget(self, action: Selector("touchOut:"),forControlEvents:UIControlEvents.TouchCancel)
         statusDashView.addSubview(incompleteButton)
@@ -403,7 +403,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         let incompleteInfoLabel = UILabel(frame:CGRectMake(210*ratio,60*ratio,40*ratio,20*ratio))
         incompleteInfoLabel.textAlignment = NSTextAlignment.Center
         incompleteInfoLabel.textColor = UIColor.todaitGray()
-        incompleteInfoLabel.font = UIFont(name:"AvenirNext-Medium",size:14*ratio);
+        incompleteInfoLabel.font = UIFont(name:"AppleSDGothicNeo-Medium",size:14*ratio);
         incompleteInfoLabel.text = "미완료"
         
         statusDashView.addSubview(incompleteInfoLabel)
@@ -427,7 +427,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         
         let infoLabel = UILabel(frame:CGRectMake(10*ratio, 10*ratio, 100*ratio, 20*ratio))
         infoLabel.text = "카테고리 순위"
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
         infoLabel.textColor = UIColor.todaitGreen()
         barDashView.addSubview(infoLabel)
         let barDashVC = BarDashViewController()
@@ -541,7 +541,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         let pieChartView = PNPieChart(frame:CGRectMake(15*ratio,15*ratio,215*ratio/2,120*ratio),items:pieChartItems)
         
         pieChartView.descriptionTextColor = UIColor.todaitLightGray()
-        pieChartView.descriptionTextFont = UIFont(name:"AvenirNext-Regular",size:14*ratio)
+        pieChartView.descriptionTextFont = UIFont(name:"AppleSDGothicNeo-Regular",size:14*ratio)
         pieChartView.descriptionTextShadowColor = UIColor.clearColor()
         
         pieDashView.addSubview(pieChartView)

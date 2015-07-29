@@ -81,7 +81,7 @@ class CalendarTableViewCell: UITableViewCell,CalendarDayViewDelegate{
         monthDateLabel = UILabel(frame: CGRectMake(0, 5*ratio, 320*ratio, 25*ratio))
         monthDateLabel.textAlignment = NSTextAlignment.Center
         monthDateLabel.textColor = UIColor.colorWithHexString("#969696")
-        monthDateLabel.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
+        monthDateLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 20*ratio)
         monthDateLabel.text = "6월"
         addSubview(monthDateLabel)
     }

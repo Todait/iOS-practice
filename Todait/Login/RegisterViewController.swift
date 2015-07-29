@@ -284,7 +284,16 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
         
-        currentTextField = textField
+        if textField == jobField {
+            
+            resignAllKeyBoard()
+            showJobInputView()
+            
+        }else{
+            currentTextField = textField
+        }
+        
+        
         
         return true
         
@@ -303,6 +312,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         passwordField.returnKeyType = UIReturnKeyType.Next
         passwordField.tintColor = UIColor.whiteColor()
         passwordField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
+        passwordField.secureTextEntry = true
         scrollView.addSubview(passwordField)
     }
     
@@ -319,6 +329,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         confirmField.returnKeyType = UIReturnKeyType.Next
         confirmField.tintColor = UIColor.whiteColor()
         confirmField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
+        confirmField.secureTextEntry = true
         scrollView.addSubview(confirmField)
     }
 
@@ -350,7 +361,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         objectField.delegate = self
         objectField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
         objectField.textColor = UIColor.whiteColor()
-        objectField.returnKeyType = UIReturnKeyType.Next
+        objectField.returnKeyType = UIReturnKeyType.Join
         objectField.tintColor = UIColor.whiteColor()
         objectField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
         scrollView.addSubview(objectField)

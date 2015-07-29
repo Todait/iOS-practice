@@ -72,7 +72,7 @@ class BasicViewController: GAITrackedViewController,UIGestureRecognizerDelegate 
         
         
         titleLabel = UILabel(frame: CGRectMake(30*ratio, 30.5, 260*ratio, 24))
-        titleLabel.font = UIFont(name: "AvenirNext-Medium", size: 20)
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 20)
         titleLabel.textColor = UIColor.whiteColor()
         titleLabel.textAlignment = NSTextAlignment.Center
         view.addSubview(titleLabel)

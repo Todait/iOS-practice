@@ -69,7 +69,7 @@ class InvestTableViewCell: UITableViewCell {
         everyDayUnitButton.setTitle("매일", forState: UIControlState.Normal)
         everyDayUnitButton.layer.cornerRadius = 6*ratio
         everyDayUnitButton.clipsToBounds = true
-        everyDayUnitButton.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+        everyDayUnitButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
         everyDayUnitButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         everyDayUnitButton.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("C9C9C9"), frame: CGRectMake(0, 0, 40*ratio, 25*ratio)), forState:UIControlState.Normal)
         addSubview(everyDayUnitButton)
@@ -81,7 +81,7 @@ class InvestTableViewCell: UITableViewCell {
         everyWeekUnitButton.setTitle("주중", forState: UIControlState.Normal)
         everyWeekUnitButton.layer.cornerRadius = 6*ratio
         everyWeekUnitButton.clipsToBounds = true
-        everyWeekUnitButton.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+        everyWeekUnitButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
         everyWeekUnitButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         everyWeekUnitButton.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("C9C9C9"), frame: CGRectMake(0, 0, 40*ratio, 25*ratio)), forState:UIControlState.Normal)
         addSubview(everyWeekUnitButton)
@@ -92,7 +92,7 @@ class InvestTableViewCell: UITableViewCell {
         everyHolydayUnitButton.setTitle("주말", forState: UIControlState.Normal)
         everyHolydayUnitButton.layer.cornerRadius = 6*ratio
         everyHolydayUnitButton.clipsToBounds = true
-        everyHolydayUnitButton.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+        everyHolydayUnitButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
         everyHolydayUnitButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         everyHolydayUnitButton.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("C9C9C9"), frame: CGRectMake(0, 0, 40*ratio, 25*ratio)), forState:UIControlState.Normal)
         addSubview(everyHolydayUnitButton)
@@ -117,7 +117,7 @@ class InvestTableViewCell: UITableViewCell {
             button.layer.borderColor = UIColor.colorWithHexString("C9C9C9").CGColor
             button.clipsToBounds = true
             button.layer.borderWidth = 0.5*ratio
-            button.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+            button.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
             button.layer.cornerRadius = radius
             addSubview(button)
             weekButtons.append(button)

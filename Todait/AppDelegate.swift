@@ -20,6 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         appearanceSetup()
+        notificationSetup(application)
         googleAnalyticsSetup()
         
         
@@ -40,6 +41,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UITextField.appearance().tintColor = UIColor.todaitGreen()
     }
     
+    
+    func notificationSetup(application: UIApplication){
+        
+        let notiTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
+        let settings = UIUserNotificationSettings(forTypes: notiTypes, categories: nil)
+        
+        application.registerUserNotificationSettings(settings)
+    }
+    
     func googleAnalyticsSetup(){
         
         
@@ -56,13 +66,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         NSLog("%@",notification)
         
-        /*
-        notification.alertBody = "Todait Alarm"
-        notification.hasAction = true
-        notification.fireDate = NSDate().dateByAddingTimeInterval(5)
-        UIApplication.sharedApplication().scheduleLocalNotification(notification)
-           */
     }
+    
     
     
     

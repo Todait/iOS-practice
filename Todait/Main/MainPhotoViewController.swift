@@ -159,7 +159,7 @@ class MainPhotoViewController: BasicViewController,UICollectionViewDelegate,UICo
         infoLabel.textAlignment = NSTextAlignment.Left
         infoLabel.textColor = UIColor.whiteColor()
         infoLabel.text = "Photo"
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
         view.addSubview(infoLabel)
     }
     

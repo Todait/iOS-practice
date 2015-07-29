@@ -220,7 +220,7 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         
         let titleLabel = UILabel(frame: CGRectMake(15*ratio, 23*ratio, 200*ratio, 16*ratio))
         titleLabel.textColor = UIColor.colorWithHexString("#595959")
-        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         
         switch section {
         case 0:titleLabel.text = "목표"
@@ -297,7 +297,7 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         categoryInfoLabel.text = "카테고리"
         categoryInfoLabel.textColor = UIColor.colorWithHexString("#969696")
         categoryInfoLabel.textAlignment = NSTextAlignment.Left
-        categoryInfoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        categoryInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         cell.contentView.addSubview(categoryInfoLabel)
     }
     
@@ -314,7 +314,7 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         categoryLabel = UILabel(frame: CGRectMake(205*ratio, 9.5*ratio, 100*ratio, 30*ratio))
         categoryLabel.text = category.name
         categoryLabel.textColor = UIColor.colorWithHexString(category.color)
-        categoryLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
+        categoryLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
         categoryLabel.textAlignment = NSTextAlignment.Right
         categoryLabel.setTranslatesAutoresizingMaskIntoConstraints(false)
         
@@ -348,7 +348,7 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
     func addTaskTextField(cell:UITableViewCell){
         taskTextField = UITextField(frame: CGRectMake(15*ratio, 9.5*ratio, 290*ratio, 30*ratio))
         taskTextField.placeholder = "목표를 입력하세요"
-        taskTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        taskTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         taskTextField.textColor = UIColor.colorWithHexString("#969696")
         taskTextField.returnKeyType = UIReturnKeyType.Next
         taskTextField.backgroundColor = UIColor.whiteColor()
@@ -380,7 +380,7 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         unitTextField = UITextField(frame: CGRectMake(15*ratio, 9.5*ratio, 290*ratio, 30*ratio))
         unitTextField.placeholder = "단위를 입력하세요"
         unitTextField.tintColor = mainColor
-        unitTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        unitTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         unitTextField.textColor = UIColor.colorWithHexString("#969696")
         unitTextField.returnKeyType = UIReturnKeyType.Next
         unitTextField.backgroundColor = UIColor.whiteColor()
@@ -406,7 +406,7 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         rangeSegment.frame = CGRectMake(15*ratio, 10.5*ratio, 290*ratio, 28*ratio)
         rangeSegment.selectedSegmentIndex = 0
         rangeSegment.tintColor = mainColor
-        rangeSegment.setTitleTextAttributes([NSFontAttributeName:UIFont(name: "AvenirNext-Regular", size: 14*ratio)!], forState: UIControlState.Normal)
+        rangeSegment.setTitleTextAttributes([NSFontAttributeName:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!], forState: UIControlState.Normal)
         rangeSegment.addTarget(self, action: Selector("rangeSegmentClk:"), forControlEvents: UIControlEvents.AllEvents)
         cell.contentView.addSubview(rangeSegment)
         
@@ -425,14 +425,14 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         infoLabel.text = "기간설정"
         infoLabel.textAlignment = NSTextAlignment.Left
         infoLabel.textColor = UIColor.colorWithHexString("#969696")
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         cell.contentView.addSubview(infoLabel)
         
         
         periodDayLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
         periodDayLabel.text = periodDayString
         periodDayLabel.textAlignment = NSTextAlignment.Right
-        periodDayLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
+        periodDayLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
         periodDayLabel.textColor = mainColor
         cell.contentView.addSubview(periodDayLabel)
         
@@ -445,13 +445,13 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         infoLabel.text = "목표분배"
         infoLabel.textColor = UIColor.colorWithHexString("#969696")
         infoLabel.textAlignment = NSTextAlignment.Left
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         cell.contentView.addSubview(infoLabel)
         
         
         investLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
         investLabel.textAlignment = NSTextAlignment.Right
-        investLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
+        investLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
         investLabel.textColor = mainColor
         cell.contentView.addSubview(investLabel)
         
@@ -518,13 +518,13 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         infoLabel.text = "시작시간"
         infoLabel.textColor = UIColor.colorWithHexString("#969696")
         infoLabel.textAlignment = NSTextAlignment.Left
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         cell.contentView.addSubview(infoLabel)
         
         startDateLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
         startDateLabel.text = startTimeString
         startDateLabel.textAlignment = NSTextAlignment.Right
-        startDateLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
+        startDateLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
         startDateLabel.textColor = mainColor
         cell.contentView.addSubview(startDateLabel)
         
@@ -537,13 +537,13 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         infoLabel.text = "반복"
         infoLabel.textColor = UIColor.colorWithHexString("#969696")
         infoLabel.textAlignment = NSTextAlignment.Left
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         cell.contentView.addSubview(infoLabel)
         
         let dateLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
         dateLabel.text = "1회"
         dateLabel.textAlignment = NSTextAlignment.Right
-        dateLabel.font = UIFont(name: "AvenirNext-Medium", size: 16*ratio)
+        dateLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
         dateLabel.textColor = mainColor
         cell.contentView.addSubview(dateLabel)
     }
@@ -591,7 +591,7 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         totalTextField.textAlignment = NSTextAlignment.Left
         totalTextField.placeholder = "분량을 입력하세요"
         totalTextField.tintColor = mainColor
-        totalTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        totalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         totalTextField.textColor = UIColor.colorWithHexString("#969696")
         totalTextField.keyboardType = UIKeyboardType.NumberPad
         totalTextField.backgroundColor = UIColor.whiteColor()
@@ -614,7 +614,7 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         startRangeTextField = UITextField(frame: CGRectMake(15*ratio, 9.5*ratio, 130*ratio, 30*ratio))
         startRangeTextField.textAlignment = NSTextAlignment.Left
         startRangeTextField.placeholder = "시작"
-        startRangeTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        startRangeTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         startRangeTextField.textColor = UIColor.colorWithHexString("#969696")
         startRangeTextField.hidden = true
         startRangeTextField.keyboardType = UIKeyboardType.NumberPad
@@ -626,7 +626,7 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         endRangeTextField = UITextField(frame: CGRectMake(175*ratio, 9.5*ratio, 130*ratio, 30*ratio))
         endRangeTextField.textAlignment = NSTextAlignment.Left
         endRangeTextField.placeholder = "종료"
-        endRangeTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        endRangeTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         endRangeTextField.textColor = UIColor.colorWithHexString("#969696")
         endRangeTextField.hidden = true
         endRangeTextField.keyboardType = UIKeyboardType.NumberPad
@@ -638,7 +638,7 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         dayTextField = UITextField(frame: CGRectMake(15*ratio, 9.5*ratio, 290*ratio, 30*ratio))
         dayTextField.textAlignment = NSTextAlignment.Left
         dayTextField.placeholder = "분량을 입력하세요"
-        dayTextField.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        dayTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         dayTextField.textColor = UIColor.colorWithHexString("#969696")
         dayTextField.hidden = true
         dayTextField.keyboardType = UIKeyboardType.NumberPad

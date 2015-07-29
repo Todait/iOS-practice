@@ -125,7 +125,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             
             let dayLabel = UILabel(frame: CGRectMake(30*ratio, 60*ratio, 130*ratio,20*ratio))
             dayLabel.text = task.getStringOfPeriodProgress()
-            dayLabel.font = UIFont(name: "AvenirNext-Regular", size: 13*ratio)
+            dayLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 13*ratio)
             dayLabel.textColor = UIColor.whiteColor()
             dayLabel.textAlignment = NSTextAlignment.Left
             cell.contentView.addSubview(dayLabel)
@@ -133,7 +133,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             
             let timeLabel = UILabel(frame: CGRectMake(190*ratio, 60*ratio, 130*ratio, 20*ratio))
             timeLabel.text = task.getDoneTimeString()
-            timeLabel.font = UIFont(name: "AvenirNext-Regular", size: 13*ratio)
+            timeLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 13*ratio)
             timeLabel.textColor = UIColor.whiteColor()
             timeLabel.textAlignment = NSTextAlignment.Left
             cell.contentView.addSubview(timeLabel)
@@ -141,7 +141,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             
             let pageLabel = UILabel(frame: CGRectMake(30*ratio, 90*ratio, 160*ratio, 20*ratio))
             pageLabel.text = task.getDoneAmountString()
-            pageLabel.font = UIFont(name: "AvenirNext-Regular", size: 13*ratio)
+            pageLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 13*ratio)
             pageLabel.textColor = UIColor.whiteColor()
             pageLabel.textAlignment = NSTextAlignment.Left
             cell.contentView.addSubview(pageLabel)
@@ -149,7 +149,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             
             let bookNameLabel = UILabel(frame: CGRectMake(190*ratio, 90*ratio, 160*ratio, 20*ratio))
             bookNameLabel.text = task.name
-            bookNameLabel.font = UIFont(name: "AvenirNext-Regular", size: 13*ratio)
+            bookNameLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 13*ratio)
             bookNameLabel.textColor = UIColor.whiteColor()
             bookNameLabel.textAlignment = NSTextAlignment.Left
             cell.contentView.addSubview(bookNameLabel)
@@ -170,7 +170,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             let infoLabel = UILabel(frame: CGRectMake(30*ratio, 20*ratio, 200*ratio, 30*ratio))
             infoLabel.text = "오늘 진행도"
             infoLabel.textAlignment = NSTextAlignment.Left
-            infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+            infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
             infoLabel.textColor = UIColor.colorWithHexString("#969696")
             cell.contentView.addSubview(infoLabel)
             
@@ -190,7 +190,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             countLabel.text = progressString
             countLabel.textColor = task.getColor()
             countLabel.textAlignment = NSTextAlignment.Left
-            countLabel.font = UIFont(name: "AvenirNext-Regular", size: 18*ratio)
+            countLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 18*ratio)
             cell.contentView.addSubview(countLabel)
             
             
@@ -231,7 +231,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             let infoLabel = UILabel(frame: CGRectMake(30*ratio, 20*ratio, 200*ratio, 30*ratio))
             infoLabel.text = "주간 진행도"
             infoLabel.textAlignment = NSTextAlignment.Left
-            infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+            infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
             infoLabel.textColor = UIColor.colorWithHexString("#969696")
             cell.contentView.addSubview(infoLabel)
             
@@ -261,7 +261,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             let weekLabelString:[String] = task.getWeekDateNumberString(NSDate())
             let weekLabel = WeekLabel(frame:CGRectMake(30*ratio, 90*ratio, 260*ratio, 100*ratio))
             weekLabel.weekColor = UIColor.colorWithHexString("#969696")
-            weekLabel.weekFont = UIFont(name: "AvenirNext-Regular", size: 8*ratio)
+            weekLabel.weekFont = UIFont(name: "AppleSDGothicNeo-Regular", size: 8*ratio)
             weekLabel.updateLabelText(weekLabelString)
             weekLabel.userInteractionEnabled = false
             cell.contentView.addSubview(weekLabel)
@@ -295,7 +295,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             let infoLabel = UILabel(frame: CGRectMake(30*ratio, 20*ratio, 200*ratio, 30*ratio))
             infoLabel.text = "전체 진행도"
             infoLabel.textAlignment = NSTextAlignment.Left
-            infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+            infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
             infoLabel.textColor = UIColor.colorWithHexString("#969696")
             cell.contentView.addSubview(infoLabel)
             
@@ -304,7 +304,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             let countLabel = UILabel(frame: CGRectMake(30*ratio, 60*ratio, 50*ratio, 24*ratio))
             countLabel.text = "분량"
             countLabel.textAlignment = NSTextAlignment.Left
-            countLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+            countLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
             countLabel.textColor = task.getColor()
             countLabel.textColor = UIColor.colorWithHexString("#969696")
             cell.contentView.addSubview(countLabel)
@@ -312,7 +312,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             let dateLabel = UILabel(frame: CGRectMake(30*ratio, 100*ratio, 50*ratio,24*ratio))
             dateLabel.text = "기간"
             dateLabel.textAlignment = NSTextAlignment.Left
-            dateLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+            dateLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
             dateLabel.textColor = UIColor.colorWithHexString("#969696")
             cell.contentView.addSubview(dateLabel)
             
@@ -352,7 +352,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             let countPercentLabel = UILabel(frame: CGRectMake(265*ratio, 60*ratio, 40*ratio, 24*ratio))
             countPercentLabel.text = getWeekAmountPercentString()
             countPercentLabel.textAlignment = NSTextAlignment.Left
-            countPercentLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+            countPercentLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
             countPercentLabel.textColor = UIColor.colorWithHexString("#969696")
             countPercentLabel.adjustsFontSizeToFitWidth = true
             cell.contentView.addSubview(countPercentLabel)
@@ -360,7 +360,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             let datePercentLabel = UILabel(frame: CGRectMake(265*ratio, 100*ratio, 50*ratio,24*ratio))
             datePercentLabel.text = getWeekDatePercentString()
             datePercentLabel.textAlignment = NSTextAlignment.Left
-            datePercentLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+            datePercentLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
             datePercentLabel.textColor = UIColor.colorWithHexString("#969696")
             datePercentLabel.adjustsFontSizeToFitWidth = true
             cell.contentView.addSubview(datePercentLabel)

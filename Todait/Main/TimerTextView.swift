@@ -88,7 +88,7 @@ class TimerTextView: UITextView {
     
     func getAttributedNumberString(string:String)->NSMutableAttributedString{
         
-        let attributes = [NSForegroundColorAttributeName:numberColor,NSFontAttributeName:numberFont]
+        let attributes = [NSForegroundColorAttributeName:numberColor,NSFontAttributeName:numberFont,NSParagraphStyleAttributeName:paragraphStyle]
         
         return NSMutableAttributedString(string:string,attributes:attributes)
         
@@ -96,7 +96,7 @@ class TimerTextView: UITextView {
     
     func getAttributedTextString(string:String)->NSMutableAttributedString{
         
-        let attributes = [NSForegroundColorAttributeName:stringColor,NSFontAttributeName:stringFont]
+        let attributes = [NSForegroundColorAttributeName:stringColor,NSFontAttributeName:stringFont,NSParagraphStyleAttributeName:paragraphStyle]
         
         return NSMutableAttributedString(string:string,attributes:attributes)
         

@@ -44,7 +44,7 @@ class RepeatViewcontroller: BasicViewController {
     func addInfoLabel(){
         infoLabel = UILabel(frame: CGRectMake(30*ratio,100*ratio, 260*ratio, 80*ratio))
         infoLabel.text = "반복 횟수"
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 30*ratio)
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 30*ratio)
         infoLabel.textColor = mainColor
         infoLabel.textAlignment = NSTextAlignment.Center
         view.addSubview(infoLabel)
@@ -56,7 +56,7 @@ class RepeatViewcontroller: BasicViewController {
         doneButton.setTitle("완료", forState: UIControlState.Normal)
         doneButton.setBackgroundImage(UIImage.colorImage(mainColor, frame: CGRectMake(0, 0, width, 50*ratio)), forState:UIControlState.Normal)
         doneButton.addTarget(self, action: Selector("doneButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        doneButton.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
+        doneButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 20*ratio)
         
         view.addSubview(doneButton)
     }

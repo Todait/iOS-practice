@@ -22,6 +22,7 @@ class Category: NSManagedObject {
     @NSManaged var categoryType: String
     @NSManaged var taskList: NSSet
     @NSManaged var userId: User
+    @NSManaged var hidden:Bool
 
     
     func getAveragePercent()->NSNumber {

@@ -168,7 +168,7 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
     
     func addPmLabel(){
         pmLabel = UILabel(frame: CGRectMake(232*ratio, 90*ratio, 60*ratio, 30*ratio))
-        pmLabel.font = UIFont(name: "AvenirNext-Ultralight", size: 26*ratio)
+        pmLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 26*ratio)
         pmLabel.text = "pm"
         pmLabel.textAlignment = NSTextAlignment.Left
         pmLabel.textColor = UIColor.todaitDarkGray()
@@ -177,7 +177,7 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
     
     func addAmLabel(){
         amLabel = UILabel(frame: CGRectMake(232*ratio, 124*ratio, 60*ratio, 30*ratio))
-        amLabel.font = UIFont(name: "AvenirNext-Ultralight", size: 26*ratio)
+        amLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 26*ratio)
         amLabel.text = "am"
         amLabel.textAlignment = NSTextAlignment.Left
         amLabel.textColor = UIColor.todaitLightGray()
@@ -201,7 +201,7 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
         
         let alarmInfoLabel = UILabel(frame: CGRectMake(10*ratio, 9*ratio, 92*ratio, 10*ratio))
         alarmInfoLabel.textColor = UIColor.whiteColor()
-        alarmInfoLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+        alarmInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10*ratio)
         alarmInfoLabel.text = "알람"
         alarmInfoLabel.textAlignment = NSTextAlignment.Center
         alarmButton.addSubview(alarmInfoLabel)
@@ -209,7 +209,7 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
         
         alarmLabel = UILabel(frame: CGRectMake(10*ratio, 26*ratio, 92*ratio, 25*ratio))
         alarmLabel.textColor = UIColor.whiteColor()
-        alarmLabel.font = UIFont(name: "AvenirNext-Light", size: 22.5*ratio)
+        alarmLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 22.5*ratio)
         alarmLabel.text = "OFF"
         alarmLabel.textAlignment = NSTextAlignment.Center
         alarmButton.addSubview(alarmLabel)

@@ -89,7 +89,7 @@ class WeekMaxChart: UIView {
         let originX = padding
         
         let maxValue = getMaxElement(values)
-        let maxHeight = frame.size.height-20*ratio
+        let maxHeight = frame.size.height-14*ratio
         
         
         
@@ -115,7 +115,7 @@ class WeekMaxChart: UIView {
             backChart.backgroundColor = backColor
             valueLabel.textColor = frontColor
             valueLabel.font = chartFont
-            valueLabel.text = getTimeStringFromSeconds(NSTimeInterval(doneAmount))
+            valueLabel.text = getTimeStringOfTwoArgumentsFromSeconds(NSTimeInterval(doneAmount))
             
             var doneHeight:CGFloat! = 0
             var expectHeight:CGFloat! = 0
@@ -178,7 +178,7 @@ class WeekMaxChart: UIView {
         let originX = padding
         
         let maxValue = getMaxElement(values)
-        let maxHeight = frame.size.height-20*ratio
+        let maxHeight = frame.size.height-14*ratio
         
         
         

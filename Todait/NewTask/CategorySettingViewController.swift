@@ -283,6 +283,7 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         category.color = String.categoryColorStringAtIndex(selectedIndex)
         category.updatedAt = NSDate()
         category.dirtyFlag = 0
+        category.hidden = false
         
         var error: NSError?
         managedObjectContext?.save(&error)
@@ -291,7 +292,12 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
             //에러처리
         }else{
             NSLog("Category 저장성공",1)
+            
+            
+            NSNotificationCenter.defaultCenter().postNotificationName("categoryDataChanged", object: nil)
+            
             categoryEdited(category)
+            
         }
     }
     

@@ -56,7 +56,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
     
     func addTotalDashView(){
         
-        totalDashView = UIView(frame:CGRectMake(5*ratio,64+5*ratio,110*ratio,184*ratio))
+        totalDashView = UIView(frame:CGRectMake(4*ratio,64+5*ratio,110*ratio,184*ratio))
         totalDashView.clipsToBounds = true
         totalDashView.layer.cornerRadius = 4*ratio
         totalDashView.backgroundColor = UIColor.whiteColor()
@@ -69,7 +69,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
     
     func addTotalInfoLabel(){
         
-        let totalInfoLabel = UILabel(frame:CGRectMake(15*ratio, 17*ratio, 80*ratio, 20*ratio))
+        let totalInfoLabel = UILabel(frame:CGRectMake(15*ratio, 17*ratio, 80*ratio, 12*ratio))
         totalInfoLabel.text = "전체 진행도"
         totalInfoLabel.textColor = UIColor.todaitDarkGray()
         totalInfoLabel.textAlignment = NSTextAlignment.Center
@@ -80,7 +80,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
     
     func addTotalChartView(){
         
-        var amountChart = ReverseCircleChart(frame: CGRectMake(15*ratio, 52*ratio, 80*ratio, 80*ratio))
+        var amountChart = ReverseCircleChart(frame: CGRectMake(15*ratio, 45*ratio, 80*ratio, 80*ratio))
         amountChart.chartColor = UIColor.todaitRed()
         amountChart.lineColor = UIColor.colorWithHexString("#F9EAEA")
         amountChart.chartBorderWidth = 7*ratio
@@ -89,7 +89,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         totalDashView.addSubview(amountChart)
         
         
-        var periodChart = ReverseCircleChart(frame: CGRectMake(23*ratio, 60*ratio, 64*ratio, 64*ratio))
+        var periodChart = ReverseCircleChart(frame: CGRectMake(23*ratio, 53*ratio, 64*ratio, 64*ratio))
         periodChart.chartColor = UIColor.todaitBlue()
         periodChart.chartBorderWidth = 5.5*ratio
         periodChart.lineColor = UIColor.colorWithHexString("#DAEAF6")
@@ -98,15 +98,15 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         totalDashView.addSubview(periodChart)
         
         
-        var amountInfoLabel = UILabel(frame:CGRectMake(18*ratio,137*ratio,100*ratio,15*ratio))
+        var amountInfoLabel = UILabel(frame:CGRectMake(21*ratio,137*ratio,100*ratio,12*ratio))
         amountInfoLabel.text = "분량"
         amountInfoLabel.textAlignment = NSTextAlignment.Left
-        amountInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 13*ratio)
+        amountInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
         amountInfoLabel.textColor = UIColor.todaitDarkGray()
         totalDashView.addSubview(amountInfoLabel)
         
         
-        var amountPercentLabel = UILabel(frame:CGRectMake(54*ratio,137*ratio,100*ratio,17*ratio))
+        var amountPercentLabel = UILabel(frame:CGRectMake(57*ratio,134*ratio,100*ratio,17*ratio))
         amountPercentLabel.text = String(format: "%.0f%@",CGFloat(task.getPercentOfDoneAmount()),"%")
         amountPercentLabel.textAlignment = NSTextAlignment.Left
         amountPercentLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 15*ratio)
@@ -116,16 +116,16 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         
         
         
-        var periodInfoLabel = UILabel(frame:CGRectMake(18*ratio,154*ratio,100*ratio,25*ratio))
+        var periodInfoLabel = UILabel(frame:CGRectMake(21*ratio,158*ratio,100*ratio,12*ratio))
         periodInfoLabel.text = "기간"
         periodInfoLabel.textAlignment = NSTextAlignment.Left
-        periodInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 13*ratio)
+        periodInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
         periodInfoLabel.textColor = UIColor.todaitDarkGray()
         totalDashView.addSubview(periodInfoLabel)
         
         
         
-        var periodPercentLabel = UILabel(frame:CGRectMake(54*ratio,154*ratio,100*ratio,25*ratio))
+        var periodPercentLabel = UILabel(frame:CGRectMake(57*ratio,151*ratio,100*ratio,25*ratio))
         periodPercentLabel.text = String(format: "%.0f%@",CGFloat(task.getPercentOfPeriodProgress()),"%")
         periodPercentLabel.textAlignment = NSTextAlignment.Left
         periodPercentLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 15*ratio)
@@ -155,7 +155,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
     
     func addWeekView(){
         
-        let weekInfoLabel = UILabel(frame:CGRectMake(15*ratio, 16*ratio, 165*ratio, 12*ratio))
+        let weekInfoLabel = UILabel(frame:CGRectMake(15*ratio, 17*ratio, 165*ratio, 12*ratio))
         weekInfoLabel.text = "주간 진행도"
         weekInfoLabel.textColor = UIColor.todaitDarkGray()
         weekInfoLabel.textAlignment = NSTextAlignment.Center
@@ -253,7 +253,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         
         var focus:CGFloat = CGFloat(task.getAverageFocusScore().floatValue)
         
-        let titleLabel = UILabel(frame:CGRectMake(15*ratio, 16*ratio, 80*ratio, 12*ratio))
+        let titleLabel = UILabel(frame:CGRectMake(15*ratio, 17*ratio, 80*ratio, 12*ratio))
         titleLabel.text = "집중도"
         titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
         titleLabel.textColor = UIColor.todaitDarkGray()
@@ -303,7 +303,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
                 
                 
                 var maskLayer = CALayer()
-                maskLayer.contents = UIImage(named: "detail_basic_30@3x.png")!.CGImage
+                maskLayer.contents = UIImage(named: "detail_diary_input_star@3x.png")!.CGImage
                 maskLayer.frame = CGRectMake(15*ratio + 17*ratio * CGFloat(index), 108*ratio, 14*ratio, 14*ratio)
                 maskLayer.mask = colorLayer
                 
@@ -312,7 +312,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
             }else{
                 
                 var imageView = UIImageView(frame: CGRectMake(15*ratio + 17*ratio * CGFloat(index), 108*ratio, 14*ratio, 14*ratio))
-                imageView.image = UIImage(named: "detail_basic_30@3x.png")
+                imageView.image = UIImage(named: "detail_diary_input_star@3x.png")
                 focusDashView.addSubview(imageView)
             }
         }
@@ -333,7 +333,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
     
     func addTrendLabel(){
         
-        let trendLabel = UILabel(frame:CGRectMake(11*ratio,25*ratio,290*ratio,12*ratio))
+        let trendLabel = UILabel(frame:CGRectMake(11*ratio,12*ratio,290*ratio,12*ratio))
         trendLabel.textAlignment = NSTextAlignment.Center
         trendLabel.text = "트랜드"
         trendLabel.textColor = UIColor.todaitDarkGray()
@@ -379,9 +379,20 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
             
             
             var count = CGFloat(task.dayList.count)
-            let line = UIView(frame:CGRectMake(44*ratio, 70*ratio + CGFloat(index)*CGFloat(16*ratio) , 278*ratio, 1*ratio))
-            line.backgroundColor = UIColor.todaitBackgroundGray()
-            trendDashView.addSubview(line)
+       
+            
+            if index == 1 {
+                
+                let line = UIView(frame:CGRectMake(44*ratio, 70*ratio + CGFloat(index)*CGFloat(16*ratio) , 278*ratio, 2))
+                line.backgroundColor = UIColor.todaitBackgroundGray()
+                trendDashView.addSubview(line)
+                
+            }else{
+                
+                let line = UIView(frame:CGRectMake(44*ratio, 70*ratio + CGFloat(index)*CGFloat(16*ratio) , 278*ratio, 1))
+                line.backgroundColor = UIColor.todaitBackgroundGray()
+                trendDashView.addSubview(line)
+            }
             
             
         }

@@ -145,7 +145,7 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
             titleLabel.textAlignment = NSTextAlignment.Left
             titleLabel.text = "Category"
             titleLabel.textColor = UIColor.whiteColor()
-            titleLabel.font = UIFont(name:"AvenirNext-Regular",size:12*ratio)
+            titleLabel.font = UIFont(name:"AppleSDGothicNeo-Regular",size:12*ratio)
             headerView.addSubview(titleLabel)
             
         }
@@ -171,7 +171,7 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         
         var titleLabel = UILabel(frame:CGRectMake(25*ratio, 12.5*ratio, 250*ratio, 30*ratio))
         
-        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 15*ratio)
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 15*ratio)
         titleLabel.textAlignment = NSTextAlignment.Left
         titleLabel.textColor = UIColor.whiteColor()
         cell.contentView.addSubview(titleLabel)

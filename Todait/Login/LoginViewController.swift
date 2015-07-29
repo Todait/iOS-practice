@@ -44,7 +44,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         addRegisterButton()
         
         
-        //showMainTabbarVC()
+        showMainTabbarVC()
     }
     
     
@@ -190,6 +190,8 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         passwordField.textColor = UIColor.whiteColor()
         passwordField.returnKeyType = UIReturnKeyType.Join
         passwordField.tintColor = UIColor.whiteColor()
+        passwordField.secureTextEntry = true
+        
         scrollView.addSubview(passwordField)
     }
     
@@ -245,7 +247,6 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         
         var manager = Alamofire.Manager.sharedInstance
         manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
-        
         
         Alamofire.request(.POST, "https://todait.com/sessions", parameters: params).responseJSON(options: nil) { (request, response, object, error) -> Void in
             
