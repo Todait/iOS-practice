@@ -830,12 +830,17 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         
         if from == "Week" {
-            
             let baseOriginY = detailViewHeight*ratio + 43*ratio
             
             monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-weekCalendarHeight*ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, monthCalendarHeight*ratio)
-            
         }
+        
+        if selectedDateNumber > getTodayDateNumber().integerValue {
+            memoView.setUserTouchEnable(false)
+        }else{
+            memoView.setUserTouchEnable(true)
+        }
+        
         
     }
     

@@ -110,7 +110,14 @@ class DetailMemoView: UIView {
         addSubview(diaryButton)
     }
     
-   
+    func setUserTouchEnable(enable:Bool){
+        
+        diaryButton.userInteractionEnabled = enable
+        focusButton.userInteractionEnabled = enable
+        timerButton.userInteractionEnabled = enable
+        timeLogButton.userInteractionEnabled = enable
+        amountButton.userInteractionEnabled = enable
+    }
     
     func addInfoLabel(){
         
