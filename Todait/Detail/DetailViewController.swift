@@ -362,7 +362,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func gestureEnded(gesture:UIPanGestureRecognizer){
         
-        let baseOriginY = detailViewHeight*ratio + 43*ratio
+        let baseOriginY = detailViewHeight*ratio + 41.5*ratio
         
         /*
         var velocity = gesture.velocityInView(self.view)
@@ -919,8 +919,16 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
     }
     
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        if indexPath.section == 0 {
+            return false
+        }else{
+            return true
+        }
+    }
     
     func tableView(tableView: UITableView, editActionsForRowAtIndexPath indexPath: NSIndexPath) -> [AnyObject]? {
+        
         
         let deleteButton = UITableViewRowAction(style: UITableViewRowActionStyle.Default, title: getDeleteString()) { (action:UITableViewRowAction!, indexPath:NSIndexPath!) -> Void in
             
@@ -1179,7 +1187,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         popUp.textColor = UIColor.whiteColor()
         popUp.textAlignment = NSTextAlignment.Center
         popUp.text = "수정되었다"
-        popUp.font = UIFont(name: "AvenirNext-Regular", size: 4*ratio)
+        popUp.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 4*ratio)
         popUp.center = view.center
         
         view.addSubview(popUp)
@@ -1187,7 +1195,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             popCircle.transform = CGAffineTransformMakeScale(1.2, 1.2)
-            popUp.font = UIFont(name: "AvenirNext-Regular", size: 16*self.ratio)
+            popUp.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16*self.ratio)
             
             }) { (Bool) -> Void in
                 
