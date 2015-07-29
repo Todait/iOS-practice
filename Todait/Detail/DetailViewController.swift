@@ -85,8 +85,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         selectedWeekOfMonth = getWeekNumber(NSDate())
         
         
-        setupDay(getTodayDateNumber())
-        loadDiary()
+        //setupDay(getTodayDateNumber())
+        //loadDiary()
         
         addHeaderView()
         addCalendarView()
@@ -413,7 +413,10 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         memoView.delegate = self
         
-        memoView.circleChart.updatePercent(progressPercent)
+        if let progressPercent = progressPercent {
+            memoView.circleChart.updatePercent(progressPercent)
+        }
+        
         if let day = day {
             memoView.amountTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
             memoView.addFocusScore(CGFloat(day.score.floatValue))
@@ -491,9 +494,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func showWeekCalendar(){
         
-        NSLog("Show Week")
         calendarButton.tag = 0
-        
         weekCalendarVC.view.hidden = true
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
@@ -512,7 +513,6 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     func showMonthCalendar(){
         
         weekCalendarVC.view.hidden = true
-        NSLog("Show Month")
         calendarButton.tag = 1
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
@@ -619,18 +619,9 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         
-        NSLog("놓앗다", 1)
-        
-        
     }
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        
-        NSLog("SCROLL Y %f originY %f",scrollView.contentOffset.y,detailView.frame.origin.y)
-        
-        
-        
-        
         
         let offset = scrollView.contentOffset.y
         
@@ -667,12 +658,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
         
         var location = scrollView.panGestureRecognizer.locationInView(view)
-        NSLog("VIEW%@",NSStringFromCGPoint(location))
-        
-        
         var location2 = scrollView.panGestureRecognizer.locationInView(detailScrollView)
-        NSLog("Detail%@",NSStringFromCGPoint(location2))
-        
         
         if location2.y > 258*ratio && location2.y < 258*ratio + showCalendarHeight {
             
@@ -1071,7 +1057,13 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         })
     }
     
-    func saveTimeLog(time: NSTimeInterval) {
+    func recordTimeLog(time: NSTimeInterval) {
+        
+        saveTimeLog(time)
+        refreshView()
+    }
+    
+    func saveTimeLog(time: NSTimeInterval){
         
         let entityDescription = NSEntityDescription.entityForName("TimeLog", inManagedObjectContext:managedObjectContext!)
         let timeLog = TimeLog(entity: entityDescription!, insertIntoManagedObjectContext:managedObjectContext)
@@ -1086,9 +1078,6 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         var error: NSError?
         managedObjectContext?.save(&error)
-        
-        
-        refreshView()
     }
     
     func refreshView(){

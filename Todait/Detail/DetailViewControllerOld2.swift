@@ -1081,7 +1081,7 @@ class DetailViewControllerOld2: BasicViewController,TodaitNavigationDelegate,UIT
         })
     }
     
-    func saveTimeLog(time: NSTimeInterval) {
+    func recordTimeLog(time: NSTimeInterval) {
         
         let entityDescription = NSEntityDescription.entityForName("TimeLog", inManagedObjectContext:managedObjectContext!)
         let timeLog = TimeLog(entity: entityDescription!, insertIntoManagedObjectContext:managedObjectContext)

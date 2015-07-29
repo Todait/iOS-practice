@@ -9,7 +9,7 @@
 import UIKit
 
 protocol TimeLogDelegate : NSObjectProtocol {
-    func saveTimeLog(time:NSTimeInterval)
+    func recordTimeLog(time:NSTimeInterval)
 }
 
 class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPickerViewDelegate{
@@ -110,11 +110,11 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
     }
     
     func confirmButtonClk(){
-        if self.delegate.respondsToSelector("saveTimeLog:"){
+        if self.delegate.respondsToSelector("recordTimeLog:"){
             
             
             let time = getTimeLog()
-            self.delegate.saveTimeLog(time)
+            self.delegate.recordTimeLog(time)
             
             closeButtonClk()
         }

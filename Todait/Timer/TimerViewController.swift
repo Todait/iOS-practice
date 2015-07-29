@@ -219,8 +219,13 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         
     }
     
-    func saveTimeLog(time: NSTimeInterval) {
+    func recordTimeLog(time: NSTimeInterval) {
         
+        
+        currentTime = currentTime + time
+        totalTime = totalTime + time
+        updateTimeLabel()
+        /*
         let entityDescription = NSEntityDescription.entityForName("TimeLog", inManagedObjectContext:managedObjectContext!)
         let timeLog = TimeLog(entity: entityDescription!, insertIntoManagedObjectContext:managedObjectContext)
         
@@ -242,7 +247,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         
         updateTimeLabel()
         amountTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
-
+        */
     }
     
     func addAmountButton(){
@@ -310,7 +315,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     func doneButtonClk(){
         
         
-        saveTimeLog(currentTime)
+        recordTimeLog(currentTime)
+        saveTimeLog()
         backButtonClk()
         
         
