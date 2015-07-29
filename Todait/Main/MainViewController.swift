@@ -48,9 +48,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     var tabbarView:UIView!
     var logoImageView:UIImageView!
     
-    var mainListVC:MainListViewController!
+    var mainCategoryVC:MainCategoryViewController!
 
-    
+
+    var isDeleteAnimation:Bool = false
     
     func needToUpdate(){
         
@@ -170,7 +171,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         popUp.textColor = UIColor.whiteColor()
         popUp.textAlignment = NSTextAlignment.Center
         popUp.text = "추가되었다"
-        popUp.font = UIFont(name: "AvenirNext-Regular", size: 4*ratio)
+        popUp.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 4*ratio)
         popUp.center = view.center
         
         view.addSubview(popUp)
@@ -178,7 +179,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             popCircle.transform = CGAffineTransformMakeScale(1.2, 1.2)
-            popUp.font = UIFont(name: "AvenirNext-Regular", size: 16*self.ratio)
+            popUp.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16*self.ratio)
             
             }) { (Bool) -> Void in
                 
@@ -223,7 +224,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         
         
-        for index in 0...19 {
+        for index in 0...3 {
             
             
             let name:String = String.categoryTestNameAtIndex(index)
@@ -248,7 +249,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         let taskED = NSEntityDescription.entityForName("Task", inManagedObjectContext:managedObjectContext!)
         
-        for index in 0...30 {
+        for index in 0...5 {
             
             let name:String = String.categoryTestNameAtIndex(Int(rand()%20))
             let color:String = String.categoryColorStringAtIndex(Int(rand()%20))
@@ -352,8 +353,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func addMainTableView(){
         
         mainTableView = UITableView(frame: CGRectMake(0,navigationHeight ,width,height - navigationHeight - 47*ratio), style: UITableViewStyle.Grouped)
+        
         mainTableView.registerClass(TaskTableViewCell.self, forCellReuseIdentifier: "mainCell")
         mainTableView.registerClass(TimerTaskTableViewCell.self, forCellReuseIdentifier: "timerCell")
+        mainTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "emptyCell")
+        
         mainTableView.bounces = false
         mainTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
         mainTableView.delegate = self
@@ -374,7 +378,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
         createTaskButton.setTitle("+", forState: UIControlState.Normal)
         createTaskButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        createTaskButton.titleLabel?.font = UIFont(name: "AvenirNext-Medium", size: 30*ratio)
+        createTaskButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 30*ratio)
         createTaskButton.clipsToBounds = true
         createTaskButton.layer.cornerRadius = 15*ratio
         createTaskButton.layer.borderColor = UIColor.whiteColor().CGColor
@@ -400,7 +404,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         calendarButton.addTarget(self, action: Selector("showCalendarVC"), forControlEvents: UIControlEvents.TouchDown)
         calendarButton.setTitle("Calendar", forState: UIControlState.Normal)
         calendarButton.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
-        calendarButton.titleLabel?.font = UIFont(name:"AvenirNext-Regular",size:12*ratio)
+        calendarButton.titleLabel?.font = UIFont(name:"AppleSDGothicNeo-Regular",size:12*ratio)
         view.addSubview(calendarButton)
         
     }
@@ -554,11 +558,12 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func addListView(){
         
-        mainListVC = MainListViewController()
-        addChildViewController(mainListVC)
-        mainListVC.view.hidden = true
-        mainListVC.view.frame = CGRectMake(0, 64, 320*ratio, height - 64 - 49*ratio)
-        view.addSubview(mainListVC.view)
+        mainCategoryVC = MainCategoryViewController()
+        addChildViewController(mainCategoryVC)
+        mainCategoryVC.view.hidden = true
+        mainCategoryVC.view.frame = CGRectMake(235*ratio, 64, 85*ratio, height - 64 - 49*ratio)
+        view.addSubview(mainCategoryVC.view)
+        
         
     }
     
@@ -581,16 +586,14 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             request.sortDescriptors = [NSSortDescriptor(key: "priority", ascending: true)]
         }
         
-        if isShowAllCategory == false {
-            
-            let predicate = NSPredicate(format: "categoryId == %@",category)
-            request.predicate = predicate
-        }
+        let predicate = NSPredicate(format: "categoryId.hidden == %@",false)
+        request.predicate = predicate
         
         var error: NSError?
         taskData = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Task]
         
     }
+    
     
     
     
@@ -617,6 +620,14 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         addListButton()
         addSettingButton()
+        needToUpdate()
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("categoryDataMainUpdate"), name: "categoryDataMainUpdate", object: nil)
+        
+    }
+    
+    func categoryDataMainUpdate(){
         
         needToUpdate()
         
@@ -656,7 +667,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         settingButton = UIButton(frame: CGRectMake(258*ratio, 30, 24, 24))
         settingButton.setImage(UIImage(named: "setting@2x.png"), forState: UIControlState.Normal)
         settingButton.addTarget(self, action: Selector("showSetting"), forControlEvents: UIControlEvents.TouchUpInside)
-        view.addSubview(settingButton)
+        //view.addSubview(settingButton)
     }
     
     
@@ -675,7 +686,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     
     func addListButton(){
-        listButton = UIButton(frame:CGRectMake(308*ratio - 24,33,16,15))
+        listButton = UIButton(frame:CGRectMake(308*ratio - 24,33,19,19))
         listButton.setImage(UIImage(named: "bt_hamburger@3x.png"),forState: UIControlState.Normal)
         listButton.addTarget(self, action:Selector("showList"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(listButton)
@@ -701,9 +712,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func showList(){
         
-        //listView.hidden = false
-        mainListVC.view.hidden = false
-        mainListVC.showListButtons()
+        if mainCategoryVC.view.hidden == true {
+            mainCategoryVC.view.hidden = false
+        }else{
+            mainCategoryVC.view.hidden = true
+        }
         
     }
     
@@ -775,6 +788,13 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        
+        if taskData.isEmpty && !isDeleteAnimation {
+            return 1
+        }
+        
+        
         return taskData.count
     }
     
@@ -786,9 +806,35 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         
+        if taskData.isEmpty && !isDeleteAnimation {
+            
+            let cell = tableView.dequeueReusableCellWithIdentifier("emptyCell", forIndexPath: indexPath) as! UITableViewCell
+            
+            for temp in cell.contentView.subviews{
+                temp.removeFromSuperview()
+            }
+            
+            
+            let emptyImageView = UIImageView(frame:CGRectMake(0,0,width,272*ratio))
+            
+            if height == 480 {
+                emptyImageView.image = UIImage(named:"bg_nodata4s@3x.png")
+            }else{
+                emptyImageView.image = UIImage(named:"bg_nodata@3x.png")
+            }
+            
+            cell.contentView.addSubview(emptyImageView)
+            
+            return cell
+            
+        }
+        
+        
+        
         
         let task:Task! = taskData[indexPath.row]
         let day:Day? = task.getDay(getTodayDateNumber())
+        
         
         
         if task.taskType == "Timer" {
@@ -813,9 +859,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
                 cell.titleLabel.text = task.name
                 cell.contentsTextView.setupText(NSTimeInterval(day.doneSecond.integerValue))
                 cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
-                cell.percentLayer.strokeColor = day.getColor().CGColor
+                cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
                 cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
-                cell.percentLabel.textColor = day.getColor()
+                cell.percentLabel.textColor = UIColor.todaitRed()
                 
             }
             
@@ -851,9 +897,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
                 cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.doneSecond.integerValue))
                 cell.contentsTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
                 cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
-                cell.percentLayer.strokeColor = day.getColor().CGColor
+                cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
                 cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
-                cell.percentLabel.textColor = day.getColor()
+                cell.percentLabel.textColor = UIColor.todaitRed()
                 //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
                 
             }else{
@@ -882,6 +928,15 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        
+        
+        if taskData.isEmpty && !isDeleteAnimation {
+            
+            return 272*ratio
+            
+        }
+        
+        
         return 58*ratio
     }
     
@@ -957,9 +1012,17 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             
             taskData.removeAtIndex(indexPath.row)
             
+            isDeleteAnimation = true
+            
             tableView.beginUpdates()
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:UITableViewRowAnimation.Automatic)
             tableView.endUpdates()
+            
+            isDeleteAnimation = false
+            
+            if taskData.isEmpty {
+                tableView.reloadData()
+            }
             
             
             loadTaskData()

@@ -9,7 +9,15 @@
 import UIKit
 import CoreData
 
-class MainListViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource{
+
+
+
+
+
+
+
+
+class MainCategoryViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource{
     
     var listView:UIView!
     
@@ -18,6 +26,7 @@ class MainListViewController: BasicViewController,UITableViewDelegate,UITableVie
     var sortView:UIView!
     
     
+    var filterView:UIVisualEffectView!
     
     var studyButton:UIButton!
     var categoryButton:UIButton!
@@ -33,18 +42,27 @@ class MainListViewController: BasicViewController,UITableViewDelegate,UITableVie
         super.viewDidLoad()
         
         
+        addFilterView()
         addShadowLayer()
         
-        //view.backgroundColor = UIColor.blackColor().colorWithAlphaComponent(0.7)
-        
-        
+        view.backgroundColor = UIColor.clearColor()
         
         loadCategoryData()
         
-        addStudyButton()
-        addCategoryButton()
-        addSortButton()
+        //addStudyButton()
+        //addCategoryButton()
+        //addSortButton()
         addCategoryTableView()
+        
+    }
+    
+    func addFilterView(){
+        
+        let effect = UIBlurEffect(style: UIBlurEffectStyle.Dark)
+        filterView = UIVisualEffectView(effect: effect)
+        filterView.frame = CGRectMake(0*ratio,0,85*ratio,height - 64 - 49*ratio)
+        filterView.alpha = 0.8
+        view.addSubview(filterView)
         
     }
     
@@ -57,7 +75,7 @@ class MainListViewController: BasicViewController,UITableViewDelegate,UITableVie
         shadowLayer.locations = [NSNumber(float: 0.5),NSNumber(float: 1.0)]
         shadowLayer.frame = view.frame
         
-        self.view.layer.insertSublayer(shadowLayer, atIndex: 0)
+        //self.view.layer.insertSublayer(shadowLayer, atIndex: 0)
         
     }
     
@@ -179,9 +197,12 @@ class MainListViewController: BasicViewController,UITableViewDelegate,UITableVie
     
     func addCategoryTableView(){
         
-        categoryTableView = UITableView(frame: CGRectMake(330*ratio,navigationHeight + 20*ratio ,width,height - navigationHeight - 49*ratio - 64 - 20*ratio), style: UITableViewStyle.Grouped)
+        categoryTableView = UITableView(frame: CGRectMake(0*ratio,0 ,85*ratio,height - navigationHeight - 49*ratio ), style: UITableViewStyle.Grouped)
+        categoryTableView.registerClass(MainCategoryTableViewCell.self, forCellReuseIdentifier: "mainCategoryCell")
         categoryTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         categoryTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
+        categoryTableView.sectionFooterHeight = 0
+        categoryTableView.sectionHeaderHeight = 0
         categoryTableView.delegate = self
         categoryTableView.dataSource = self
         categoryTableView.contentOffset.y = 0
@@ -193,98 +214,167 @@ class MainListViewController: BasicViewController,UITableViewDelegate,UITableVie
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return 3
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        switch section {
+        case 0: return 1
+        case 1: return 1
+        case 2: return categoryData.count
+        default: return 1
+            
+        }
+        
+        
+        
         return categoryData.count
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 35*ratio
+        
+        if indexPath.section < 2 {
+            return 42*ratio
+        }
+        
+        
+        return 30*ratio
     }
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0
+    }
+    
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
         
         
-        for view in cell.contentView.subviews{
-            view.removeFromSuperview()
+        if indexPath.section < 2 {
+            
+            let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
+            cell.backgroundColor = UIColor.clearColor()
+            
+            let backView = UIView()
+            backView.backgroundColor = UIColor.colorWithHexString("#252525").colorWithAlphaComponent(0.7)
+            cell.selectedBackgroundView = backView
+            
+            
+            for temp in cell.contentView.subviews {
+                temp.removeFromSuperview()
+            }
+            
+            
+            let sortInfoLabel = UILabel(frame: CGRectMake(38*ratio, 0, 47*ratio, 42*ratio))
+           
+            sortInfoLabel.textAlignment = NSTextAlignment.Left
+            sortInfoLabel.textColor = UIColor.whiteColor()
+            sortInfoLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 8*ratio)
+            
+            cell.contentView.addSubview(sortInfoLabel)
+            
+            
+            let sortImageView = UIImageView(frame: CGRectMake(12*ratio, 12*ratio, 15*ratio, 15*ratio))
+            sortImageView.contentMode = UIViewContentMode.ScaleAspectFill
+            
+            cell.contentView.addSubview(sortImageView)
+
+            
+            if indexPath.section == 0 {
+                sortInfoLabel.text = "정렬설정"
+                sortImageView.image = UIImage(named: "ic_arrange_arrange@3x.png")
+            }else{
+                sortInfoLabel.text = "카테고리"
+                sortImageView.image = UIImage(named: "ic_arrange_folder@3x.png")
+            }
+            
+            
+            
+            
+            
+            return cell
         }
         
+        
+        
+        
+        
+        
+        
+        let cell = tableView.dequeueReusableCellWithIdentifier("mainCategoryCell", forIndexPath: indexPath) as! MainCategoryTableViewCell
         
         let category:Category = categoryData[indexPath.row]
         let categoryColor = UIColor.colorWithHexString(category.color)
         
         
-        
-        var categoryCircle = UIView(frame: CGRectMake(1*ratio, 1*ratio, 30*ratio, 30*ratio))
-        categoryCircle.backgroundColor = categoryColor
-        categoryCircle.clipsToBounds = true
-        categoryCircle.layer.cornerRadius = 15*ratio
-        cell.contentView.addSubview(categoryCircle)
-        
-        
-        var titleLabel = UILabel(frame:CGRectMake(50*ratio, 9.5*ratio, 250*ratio, 30*ratio))
-        titleLabel.text = category.name
-        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
-        titleLabel.textAlignment = NSTextAlignment.Left
-        titleLabel.textColor = UIColor.colorWithHexString("#969696")
-        //cell.contentView.addSubview(titleLabel)
-        
+        cell.mainColor = categoryColor
+        cell.titleLabel.text = category.name
         cell.backgroundColor = UIColor.clearColor()
         cell.contentView.backgroundColor = UIColor.clearColor()
+        
+        cell.setCategorySelect(!category.hidden)
+        
+        
         
         return cell
         
     }
     
-    func showListButtons(){
-        UIView.animateWithDuration(0.6, animations: { () -> Void in
-            
-            self.studyView.transform = CGAffineTransformMakeTranslation(-100*self.ratio, 0)
-            self.categoryView.transform = CGAffineTransformMakeTranslation(-100*self.ratio, 0)
-            self.sortView.transform = CGAffineTransformMakeTranslation(-100*self.ratio, 0)
-            
-            }) { (Bool) -> Void in
-                
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        
+        let cell = tableView.cellForRowAtIndexPath(indexPath)
+        
+        cell!.selected = true
+        
+        let category = categoryData[indexPath.row]
+        category.hidden = !category.hidden
+        
+        var error: NSError?
+        managedObjectContext?.save(&error)
+        
+        if error == nil {
+            NSNotificationCenter.defaultCenter().postNotificationName("categoryDataMainUpdate", object: nil)
         }
         
+        tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
     }
     
-    func hideListButtons(){
-        UIView.animateWithDuration(1.2, animations: { () -> Void in
-            
-            self.studyView.transform = CGAffineTransformMakeTranslation(0*self.ratio, 0)
-            self.categoryView.transform = CGAffineTransformMakeTranslation(0*self.ratio, 0)
-            self.sortView.transform = CGAffineTransformMakeTranslation(0*self.ratio, 0)
-            
-            }) { (Bool) -> Void in
-                
-        }
+    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        let cell = tableView.cellForRowAtIndexPath(indexPath)
+        
+        cell!.selected = false
+        
+        cell!.contentView.backgroundColor = UIColor.clearColor()
         
     }
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         super.touchesBegan(touches, withEvent: event)
         
-        UIView.animateWithDuration(1.2, animations: { () -> Void in
-            
-            self.studyButton.transform = CGAffineTransformMakeTranslation(0, self.studyButton.transform.ty)
-            self.categoryButton.transform = CGAffineTransformMakeTranslation(0, self.categoryButton.transform.ty)
-            self.sortButton.transform = CGAffineTransformMakeTranslation(0, self.sortButton.transform.ty)
-            self.categoryTableView.transform = CGAffineTransformMakeTranslation(0, 0)
-            }) { (Bool) -> Void in
-                self.view.hidden = true
-                self.hideListButtons()
-        }
+        self.view.hidden = true
+        
     }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
         todaitNavBar.hidden = true
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "categoryDataChanged", name: "categoryDataChanged", object: nil)
+        
+    }
+    
+    func categoryDataChanged(){
+        
+        loadCategoryData()
+        categoryTableView.reloadData()
     }
     
 }
