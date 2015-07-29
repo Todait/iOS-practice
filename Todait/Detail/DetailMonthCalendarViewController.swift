@@ -42,7 +42,6 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         
         
         
-        
         if let cell = monthView.cellForItemAtIndexPath(selectedIndex) as? DetailMonthCalendarCell {
             
             for index in 0...41 {
@@ -58,6 +57,19 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
             }
         }
     }
+    
+    func getCurrentDate(indexPath:NSIndexPath)->NSDate{
+        
+        var adjustDate = getAdjustDate(NSDate())
+        
+        return adjustDate.addMonth(Int(indexPath.row - 500))
+    }
+    
+    func getAdjustDate(date:NSDate)->NSDate{
+        
+        return getDateFromDateNumber(getDateNumberFromDate(date))
+    }
+
     
     
     func getNumberOfWeekViewScrollCount(from:NSDate,to:NSDate)->NSNumber{
@@ -147,6 +159,8 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         var dateForm = NSDateFormatter()
         var currentDate = date
         
+        
+        
         selectedIndex = indexPath
         
         dateForm.dateFormat = "d"
@@ -182,6 +196,14 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
                 button.backgroundColor = UIColor.whiteColor()
             }
             
+            
+            var month = monthForm.stringFromDate(monthDate)
+            
+            if monthForm.stringFromDate(currentDate) == month {
+                label.textColor = UIColor.todaitGray()
+            }else{
+                label.textColor = UIColor.todaitLightGray()
+            }
             
             
             
@@ -226,28 +248,6 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
             }
             
             
-            
-            
-            /*
-            let button = cell.buttons[index]
-            button.delegate = self.delegate
-            button.setTitle(dateForm.stringFromDate(currentDate), forState: UIControlState.Normal)
-            button.dateNumber = getDateNumberFromDate(currentDate)
-            
-            
-            if monthForm.stringFromDate(currentDate) == month {
-                button.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
-            }else{
-                button.setTitleColor(UIColor.todaitLightGray(), forState: UIControlState.Normal)
-            }
-            */
-            /*
-            if dateNumber == button.dateNumber {
-                button.backgroundColor = UIColor.todaitWhiteGray()
-            }else{
-                button.backgroundColor = UIColor.whiteColor()
-            }
-            */
         }
         
         return cell
@@ -274,18 +274,6 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         
         return dateForm.stringFromDate(currentDate)
         
-    }
-    
-    func getCurrentDate(indexPath:NSIndexPath)->NSDate{
-        
-        var adjustDate = getAdjustDate(NSDate())
-        
-        return adjustDate.addMonth(Int(indexPath.row - 500))
-    }
-    
-    func getAdjustDate(date:NSDate)->NSDate{
-        
-        return getDateFromDateNumber(getDateNumberFromDate(date))
     }
     
     

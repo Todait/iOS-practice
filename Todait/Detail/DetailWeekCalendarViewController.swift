@@ -194,19 +194,20 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
                 
 
                 if currentDay.expectAmount.integerValue <= currentDay.doneAmount.integerValue {
-                    button.expectLabel.backgroundColor = UIColor.todaitGreen()
+                    
+                    button.setDateStatus(DateStatus.Completed)
                     button.expectLabel.text = "\(currentDay.doneAmount)"
                     
                     if currentDateNumber == getTodayDateNumber() {
-                        button.expectLabel.backgroundColor = UIColor.todaitDarkGreen()
+                        button.setDateStatus(DateStatus.Complete)
                     }
                     
                 }else{
-                    button.expectLabel.backgroundColor = UIColor.todaitRed().colorWithAlphaComponent(0.8)
+                     button.setDateStatus(DateStatus.UnCompleted)
                     button.expectLabel.text = "\(currentDay.expectAmount)"
                     
                     if currentDateNumber == getTodayDateNumber() {
-                        button.expectLabel.backgroundColor = UIColor.todaitDarkRed()
+                        button.setDateStatus(DateStatus.Progressing)
                     }
                     
                 }
@@ -215,7 +216,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
                 if currentDateNumber.integerValue > getTodayDateNumber().integerValue {
                     
                     button.expectLabel.textColor = UIColor.todaitDarkGray()
-                    button.expectLabel.backgroundColor = UIColor.todaitWhiteGray()
+                    button.setDateStatus(DateStatus.UnStart)
                     
                 }
                 
@@ -223,7 +224,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
                 
                 button.expectLabel.textColor = UIColor.whiteColor()
                 button.expectLabel.text = ""
-                button.expectLabel.backgroundColor = UIColor.clearColor()
+                button.setDateStatus(DateStatus.None)
             }
         }
         
