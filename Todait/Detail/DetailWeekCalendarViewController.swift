@@ -86,10 +86,8 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
             for index in 0...6 {
                 var button = cell.buttons[index]
                 
-                if(button.dateNumber == todayDateNumber){
-                    button.backgroundColor = UIColor.todaitWhiteGray()
-                }else if button.dateNumber == dateNumber {
-                    button.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.05)
+                if button.dateNumber == dateNumber {
+                    button.backgroundColor = UIColor.todaitBlue().colorWithAlphaComponent(0.05)
                 }else{
                     button.backgroundColor = UIColor.whiteColor()
                 }
