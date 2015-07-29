@@ -8,7 +8,21 @@
 
 import UIKit
 
+
+
+enum DateStatus:Int{
+    case Progressing
+    case Completed
+    case Complete
+    case UnCompleted
+    case UnStart
+    case None
+}
+
 class DetailDateButton: UIButton {
+    
+    
+    
     
     
     var dateNumber:NSNumber!
@@ -20,13 +34,18 @@ class DetailDateButton: UIButton {
     var delegate:CalendarDelegate!
     var expectLabel:UILabel!
     
+    var circleImageView:UIImageView!
+    var status:DateStatus!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         setupRatio()
         setupEvent()
-        
+        addCircleImageView()
         addExpectLabel()
+        
+        self.backgroundColor = UIColor.redColor()
     }
     
     
@@ -45,6 +64,7 @@ class DetailDateButton: UIButton {
     
     
     
+    
     func dateUpdate(){
         
         
@@ -53,19 +73,48 @@ class DetailDateButton: UIButton {
         }
     }
     
+    
+    func addCircleImageView(){
+        
+        
+        circleImageView = UIImageView(frame:CGRectMake(width/2 - 7, 6*ratio, 14,14))
+        circleImageView.contentMode = UIViewContentMode.ScaleAspectFill
+        addSubview(circleImageView)
+        
+        
+        setDateStatus(DateStatus.None)
+    }
+    
+    
+    func setDateStatus(status:DateStatus){
+        
+        self.status = status
+        
+        switch status {
+            
+        case .Progressing: circleImageView.image = UIImage(named:"bg_circle_lightred@3x.png")
+        case .Completed: circleImageView.image = UIImage(named:"bg_circle_lightgreen@3x.png")
+        case .Complete: circleImageView.image = UIImage(named:"bg_circle_green@3x.png")
+        case .UnCompleted: circleImageView.image = UIImage(named:"bg_circle_red@3x.png")
+        case .UnStart: circleImageView.image = UIImage(named:"bg_circle_gray@3x.png")
+        default: circleImageView.image = nil
+            
+        }
+        
+    }
+    
+    
+    
     func addExpectLabel(){
         
         
         
         expectLabel = UILabel(frame: CGRectMake(width/2 - 7, 6*ratio, 14, 14))
-        
         expectLabel.adjustsFontSizeToFitWidth = true
         expectLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10)
         expectLabel.textColor = UIColor.whiteColor()
         expectLabel.textAlignment = NSTextAlignment.Center
         expectLabel.backgroundColor = UIColor.clearColor()
-        expectLabel.clipsToBounds = true
-        expectLabel.layer.cornerRadius = 7
         addSubview(expectLabel)
         
         

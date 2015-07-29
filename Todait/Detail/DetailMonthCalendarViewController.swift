@@ -189,21 +189,24 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
                 
                 
                 if currentDay.expectAmount.integerValue <= currentDay.doneAmount.integerValue {
-                    button.expectLabel.backgroundColor = UIColor.todaitGreen()
                     button.expectLabel.text = "\(currentDay.doneAmount)"
                     
+                    
                     if currentDateNumber == getTodayDateNumber() {
-                        button.expectLabel.backgroundColor = UIColor.todaitDarkGreen()
+                        button.setDateStatus(DateStatus.Complete)
+                    }else{
+                        button.setDateStatus(DateStatus.Completed)
                     }
                     
                 }else{
-                    button.expectLabel.backgroundColor = UIColor.todaitRed().colorWithAlphaComponent(0.8)
                     button.expectLabel.text = "\(currentDay.expectAmount)"
                     
-                    
                     if currentDateNumber == getTodayDateNumber() {
-                        button.expectLabel.backgroundColor = UIColor.todaitDarkRed()
+                        button.setDateStatus(DateStatus.Progressing)
+                    }else{
+                        button.setDateStatus(DateStatus.UnCompleted)
                     }
+                    
                 }
                 
                 
@@ -211,7 +214,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
                 if currentDateNumber.integerValue > getTodayDateNumber().integerValue {
                     
                     button.expectLabel.textColor = UIColor.todaitDarkGray()
-                    button.expectLabel.backgroundColor = UIColor.todaitWhiteGray()
+                    button.setDateStatus(DateStatus.UnStart)
                     
                 }
                 
@@ -219,7 +222,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
                 
                 button.expectLabel.textColor = UIColor.whiteColor()
                 button.expectLabel.text = ""
-                button.expectLabel.backgroundColor = UIColor.clearColor()
+                button.setDateStatus(DateStatus.None)
             }
             
             
