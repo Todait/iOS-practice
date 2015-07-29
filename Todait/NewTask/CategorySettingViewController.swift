@@ -218,6 +218,8 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         
         tableView.reloadData()
         
+        confirmButtonClk()
+        
         return false
         
     }

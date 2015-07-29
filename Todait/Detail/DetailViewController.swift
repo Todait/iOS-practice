@@ -85,8 +85,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         selectedWeekOfMonth = getWeekNumber(NSDate())
         
         
-        //setupDay(getTodayDateNumber())
-        //loadDiary()
+        setupDay(getTodayDateNumber())
+        loadDiary()
         
         addHeaderView()
         addCalendarView()

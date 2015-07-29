@@ -305,6 +305,8 @@
 		4C8645E71B6786A300C2F800 /* ic_arrange_folder@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8645E51B6786A300C2F800 /* ic_arrange_folder@3x.png */; };
 		4C8645F71B686AF600C2F800 /* bt_play_gray_a@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8645F51B686AF600C2F800 /* bt_play_gray_a@3x.png */; };
 		4C8645F81B686AF600C2F800 /* bt_play_wt_a@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C8645F61B686AF600C2F800 /* bt_play_wt_a@3x.png */; };
+		4C8645FB1B68AF6500C2F800 /* EditTimerTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8645FA1B68AF6500C2F800 /* EditTimerTaskViewController.swift */; };
+		4C8645FD1B68BEBE00C2F800 /* MainCategoryCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8645FC1B68BEBE00C2F800 /* MainCategoryCollectionViewController.swift */; };
 		4C9085D61B4CD25200BC080B /* stopwatch_bottom_02@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D21B4CD25200BC080B /* stopwatch_bottom_02@3x.png */; };
 		4C9085D71B4CD25200BC080B /* stopwatch_bottom_03@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D31B4CD25200BC080B /* stopwatch_bottom_03@3x.png */; };
 		4C9085D81B4CD25200BC080B /* stopwatch_bottom_04@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C9085D41B4CD25200BC080B /* stopwatch_bottom_04@3x.png */; };
@@ -405,7 +407,7 @@
 		4CD3C5701B2FC98D000AFDA3 /* CategoryRearViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3C56F1B2FC98D000AFDA3 /* CategoryRearViewController.swift */; };
 		4CD3C5871B3026FB000AFDA3 /* list.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD3C5861B3026FB000AFDA3 /* list.png */; };
 		4CD3C5891B3106B4000AFDA3 /* edit.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CD3C5881B3106B4000AFDA3 /* edit.png */; };
-		4CD3C58B1B3108A5000AFDA3 /* EditTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3C58A1B3108A5000AFDA3 /* EditTaskViewController.swift */; };
+		4CD3C58B1B3108A5000AFDA3 /* EditTaskViewControllerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3C58A1B3108A5000AFDA3 /* EditTaskViewControllerOld.swift */; };
 		4CD3C58D1B312914000AFDA3 /* InvestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3C58C1B312914000AFDA3 /* InvestView.swift */; };
 		4CD3C59D1B325B09000AFDA3 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3C59C1B325B09000AFDA3 /* InfoViewController.swift */; };
 		4CD3C59F1B325E23000AFDA3 /* BasicTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD3C59E1B325E23000AFDA3 /* BasicTableViewController.swift */; };
@@ -810,6 +812,8 @@
 		4C8645E51B6786A300C2F800 /* ic_arrange_folder@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_arrange_folder@3x.png"; sourceTree = "<group>"; };
 		4C8645F51B686AF600C2F800 /* bt_play_gray_a@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bt_play_gray_a@3x.png"; sourceTree = "<group>"; };
 		4C8645F61B686AF600C2F800 /* bt_play_wt_a@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "bt_play_wt_a@3x.png"; sourceTree = "<group>"; };
+		4C8645FA1B68AF6500C2F800 /* EditTimerTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EditTimerTaskViewController.swift; path = Edit/EditTimerTaskViewController.swift; sourceTree = "<group>"; };
+		4C8645FC1B68BEBE00C2F800 /* MainCategoryCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainCategoryCollectionViewController.swift; path = Main/MainCategoryCollectionViewController.swift; sourceTree = "<group>"; };
 		4C9085D21B4CD25200BC080B /* stopwatch_bottom_02@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_02@3x.png"; sourceTree = "<group>"; };
 		4C9085D31B4CD25200BC080B /* stopwatch_bottom_03@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_03@3x.png"; sourceTree = "<group>"; };
 		4C9085D41B4CD25200BC080B /* stopwatch_bottom_04@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "stopwatch_bottom_04@3x.png"; sourceTree = "<group>"; };
@@ -926,7 +930,7 @@
 		4CD3C56F1B2FC98D000AFDA3 /* CategoryRearViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CategoryRearViewController.swift; path = Main/CategoryRearViewController.swift; sourceTree = "<group>"; };
 		4CD3C5861B3026FB000AFDA3 /* list.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = list.png; sourceTree = "<group>"; };
 		4CD3C5881B3106B4000AFDA3 /* edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = edit.png; sourceTree = "<group>"; };
-		4CD3C58A1B3108A5000AFDA3 /* EditTaskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EditTaskViewController.swift; path = Detail/EditTaskViewController.swift; sourceTree = "<group>"; };
+		4CD3C58A1B3108A5000AFDA3 /* EditTaskViewControllerOld.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EditTaskViewControllerOld.swift; path = Detail/EditTaskViewControllerOld.swift; sourceTree = "<group>"; };
 		4CD3C58C1B312914000AFDA3 /* InvestView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InvestView.swift; path = NewTask/InvestView.swift; sourceTree = "<group>"; };
 		4CD3C58E1B316FD5000AFDA3 /* Task.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		4CD3C5901B316FF8000AFDA3 /* Week.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Week.swift; sourceTree = "<group>"; };
@@ -1400,6 +1404,15 @@
 			name = circle;
 			sourceTree = "<group>";
 		};
+		4C8645F91B68AF5100C2F800 /* Edit */ = {
+			isa = PBXGroup;
+			children = (
+				4C8645FA1B68AF6500C2F800 /* EditTimerTaskViewController.swift */,
+				4CD3C58A1B3108A5000AFDA3 /* EditTaskViewControllerOld.swift */,
+			);
+			name = Edit;
+			sourceTree = "<group>";
+		};
 		4C9085E61B4CF86E00BC080B /* 06_newgoal */ = {
 			isa = PBXGroup;
 			children = (
@@ -1447,7 +1460,6 @@
 				4CC44BCF1B42CD83002F155B /* FocusViewController.swift */,
 				4C0B89DF1B3C049C0069ED7A /* AmountTextView.swift */,
 				4C4B710D1B3D4DB100BF1F02 /* AmountInputViewController.swift */,
-				4CD3C58A1B3108A5000AFDA3 /* EditTaskViewController.swift */,
 				4C7CBFBA1B1FF139000E271D /* CircleChart.swift */,
 				4C7CBFBC1B1FF60C000E271D /* BarChart.swift */,
 				4CA307081B29E4D6007CFCFF /* WeekChart.swift */,
@@ -1573,6 +1585,7 @@
 		4CB353701B1C030F00E36245 /* Todait */ = {
 			isa = PBXGroup;
 			children = (
+				4C8645F91B68AF5100C2F800 /* Edit */,
 				4C8643FE1B5F3C6E00C2F800 /* Login */,
 				4C5042291B4A771E0050A501 /* Profile */,
 				4C0B89E11B3C0D810069ED7A /* Graph */,
@@ -1655,6 +1668,7 @@
 				4C5042271B4A757A0050A501 /* MainTabbarViewController.swift */,
 				4C5042391B4A84650050A501 /* MainTabbarButton.swift */,
 				4CD3C5691B2FB7C1000AFDA3 /* MainViewController.swift */,
+				4C8645FC1B68BEBE00C2F800 /* MainCategoryCollectionViewController.swift */,
 				4CD77E601B560C24009B77AD /* MainCategoryViewController.swift */,
 				4C8645E21B67822300C2F800 /* MainCategoryTableViewCell.swift */,
 				4C50422C1B4A79620050A501 /* MainViewControllerOld.swift */,
@@ -2173,10 +2187,12 @@
 				4C0459651B5CAF7E00710D96 /* TimerTaskViewController.swift in Sources */,
 				4C8645901B65EB0B00C2F800 /* TimerTaskTableViewCell.swift in Sources */,
 				4C30D8C71B40375900598ADE /* DateButton.swift in Sources */,
+				4C8645FB1B68AF6500C2F800 /* EditTimerTaskViewController.swift in Sources */,
 				4C27DD511B33F4FB00D4911F /* TaskStatisticsViewController.swift in Sources */,
 				4C5042281B4A757A0050A501 /* MainTabbarViewController.swift in Sources */,
 				4C7CC0A01B2827F6000E271D /* Color.swift in Sources */,
 				4C50422B1B4A77360050A501 /* ProfileViewController.swift in Sources */,
+				4C8645FD1B68BEBE00C2F800 /* MainCategoryCollectionViewController.swift in Sources */,
 				4CB353A11B1C2A0D00E36245 /* TaskTableViewCell.swift in Sources */,
 				4CD3C52D1B2E975C000AFDA3 /* TaskTableViewController.swift in Sources */,
 				4CD3C5351B2ECC62000AFDA3 /* TimerViewController.swift in Sources */,
@@ -2249,7 +2265,7 @@
 				4CD77E5F1B5607EC009B77AD /* Localizing.swift in Sources */,
 				4C7CBFC31B2006AD000E271D /* WebViewController.swift in Sources */,
 				4C9085E51B4CE12800BC080B /* NewTaskViewController.swift in Sources */,
-				4CD3C58B1B3108A5000AFDA3 /* EditTaskViewController.swift in Sources */,
+				4CD3C58B1B3108A5000AFDA3 /* EditTaskViewControllerOld.swift in Sources */,
 				4CD3C59D1B325B09000AFDA3 /* InfoViewController.swift in Sources */,
 				4CC44BC71B425810002F155B /* DetailWeekCalendarCell.swift in Sources */,
 				4C8644541B60AB0800C2F800 /* TaskDate.swift in Sources */,

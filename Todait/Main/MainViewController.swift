@@ -49,7 +49,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     var logoImageView:UIImageView!
     
     var mainCategoryVC:MainCategoryViewController!
-
+    var mainCategoryCollectionVC:MainCategoryCollectionViewController!
 
     var isDeleteAnimation:Bool = false
     
@@ -558,12 +558,19 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func addListView(){
         
+        /*
         mainCategoryVC = MainCategoryViewController()
         addChildViewController(mainCategoryVC)
         mainCategoryVC.view.hidden = true
         mainCategoryVC.view.frame = CGRectMake(235*ratio, 64, 85*ratio, height - 64 - 49*ratio)
         view.addSubview(mainCategoryVC.view)
+        */
         
+        mainCategoryCollectionVC = MainCategoryCollectionViewController()
+        addChildViewController(mainCategoryCollectionVC)
+        mainCategoryCollectionVC.view.hidden = true
+        mainCategoryCollectionVC.view.frame = CGRectMake(0*ratio, 64, 320*ratio, 55*ratio)
+        view.addSubview(mainCategoryCollectionVC.view)
         
     }
     
@@ -712,10 +719,17 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func showList(){
         
+        /*
         if mainCategoryVC.view.hidden == true {
             mainCategoryVC.view.hidden = false
         }else{
             mainCategoryVC.view.hidden = true
+        }
+        */
+        if mainCategoryCollectionVC.view.hidden == true {
+            mainCategoryCollectionVC.view.hidden = false
+        }else{
+            mainCategoryCollectionVC.view.hidden = true
         }
         
     }

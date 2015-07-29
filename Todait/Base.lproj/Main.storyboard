@@ -2,8 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Opm-16-Qdv">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
-        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
@@ -183,35 +181,12 @@
                     </view>
                     <navigationItem key="navigationItem" id="Akr-Bb-2mr"/>
                     <connections>
-                        <segue destination="1Wd-ha-yMf" kind="push" identifier="ShowEditTaskView" id="aLR-qm-OBu"/>
                         <segue destination="NKN-R6-fnb" kind="push" identifier="ShowTimerView" id="YdE-GF-mfb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W4U-cC-pk6" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="904" y="-391"/>
-        </scene>
-        <!--Edit Task View Controller-->
-        <scene sceneID="9yF-lO-W8e">
-            <objects>
-                <viewController id="1Wd-ha-yMf" customClass="EditTaskViewController" customModule="Todait" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="af6-u2-hwZ"/>
-                        <viewControllerLayoutGuide type="bottom" id="4cT-IE-R6T"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="AKp-W6-9LE">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="46r-hH-Rmn"/>
-                    <connections>
-                        <segue destination="tio-mE-ZcJ" kind="modal" identifier="ShowPeriodView" modalPresentationStyle="currentContext" id="SnN-hD-Jb2"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="WG5-jX-YnS" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1386" y="-391"/>
         </scene>
         <!--New Task View Controller-->
         <scene sceneID="jSI-VR-3kM">
@@ -228,136 +203,10 @@
                     </view>
                     <navigationItem key="navigationItem" id="eeo-QC-Sf1"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                    <connections>
-                        <segue destination="tio-mE-ZcJ" kind="modal" identifier="ShowPeriodView" modalPresentationStyle="currentContext" id="Bxf-SX-fhr"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xdf-SA-F0x" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="904" y="617"/>
-        </scene>
-        <!--Period View Controller-->
-        <scene sceneID="a9l-JV-gd1">
-            <objects>
-                <viewController id="tio-mE-ZcJ" customClass="PeriodViewController" customModule="Todait" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="mEN-IP-1i1"/>
-                        <viewControllerLayoutGuide type="bottom" id="1vZ-E7-b0Y"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="mxc-6q-fr5">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yfb-IT-kKR">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="jJU-rQ-LxG">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="30일" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LQ7-rx-5Jb">
-                                            <rect key="frame" x="120" y="47" width="81" height="55"/>
-                                            <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="40"/>
-                                            <color key="textColor" red="0.0" green="0.82352941176470584" blue="0.69411764705882351" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="274-jI-K2n">
-                                            <rect key="frame" x="0.0" y="518" width="320" height="50"/>
-                                            <color key="backgroundColor" red="0.0" green="0.82352941176470584" blue="0.69411764705882351" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <constraints>
-                                                <constraint firstAttribute="height" constant="50" id="TMo-rL-ln1"/>
-                                            </constraints>
-                                            <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="20"/>
-                                            <state key="normal" title="완료">
-                                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                            </state>
-                                            <connections>
-                                                <action selector="periodSelectClk:" destination="tio-mE-ZcJ" eventType="touchUpInside" id="DfN-0e-gNR"/>
-                                            </connections>
-                                        </button>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="6월 8일 ~ 7월 10일" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="42b-Sj-yVV">
-                                            <rect key="frame" x="100" y="107" width="121" height="23"/>
-                                            <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="15"/>
-                                            <color key="textColor" red="0.0" green="0.82352941176470584" blue="0.69411764705882351" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                    </subviews>
-                                    <constraints>
-                                        <constraint firstAttribute="trailing" secondItem="274-jI-K2n" secondAttribute="trailing" id="E6O-AN-SRz"/>
-                                        <constraint firstAttribute="bottom" secondItem="274-jI-K2n" secondAttribute="bottom" id="EV2-f5-eYJ"/>
-                                        <constraint firstAttribute="centerY" secondItem="42b-Sj-yVV" secondAttribute="centerY" constant="166" id="KLo-fJ-RRO"/>
-                                        <constraint firstItem="42b-Sj-yVV" firstAttribute="top" secondItem="LQ7-rx-5Jb" secondAttribute="bottom" constant="5" id="Pk3-na-LRD"/>
-                                        <constraint firstAttribute="centerX" secondItem="LQ7-rx-5Jb" secondAttribute="centerX" constant="-0.5" id="QQI-Ta-sTM"/>
-                                        <constraint firstAttribute="centerY" secondItem="LQ7-rx-5Jb" secondAttribute="centerY" constant="209.5" id="XNP-EP-Bza"/>
-                                        <constraint firstAttribute="centerX" secondItem="42b-Sj-yVV" secondAttribute="centerX" constant="-0.5" id="dMQ-FC-SPT"/>
-                                        <constraint firstItem="274-jI-K2n" firstAttribute="leading" secondItem="jJU-rQ-LxG" secondAttribute="leading" id="nBu-zI-ZAd"/>
-                                    </constraints>
-                                </view>
-                                <blurEffect style="light"/>
-                            </visualEffectView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3kY-eT-g9z" userLabel="InputView">
-                                <rect key="frame" x="0.0" y="142" width="320" height="284"/>
-                                <subviews>
-                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="11i-l9-oDB">
-                                        <rect key="frame" x="0.0" y="68" width="320" height="162"/>
-                                        <date key="date" timeIntervalSinceReferenceDate="455428955.491584">
-                                            <!--2015-06-08 04:02:35 +0000-->
-                                        </date>
-                                        <connections>
-                                            <action selector="datePickerChanged:" destination="tio-mE-ZcJ" eventType="valueChanged" id="EyA-6q-ZbG"/>
-                                        </connections>
-                                    </datePicker>
-                                    <segmentedControl opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bordered" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="nYa-sp-a8Q">
-                                        <rect key="frame" x="30" y="20" width="260" height="29"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="nYa-sp-a8Q" secondAttribute="height" multiplier="65:7" id="gaQ-OC-tZJ"/>
-                                        </constraints>
-                                        <segments>
-                                            <segment title="시작 시간"/>
-                                            <segment title="종료 시간"/>
-                                        </segments>
-                                        <color key="tintColor" red="0.0" green="0.82352941176470584" blue="0.69411764705882351" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <connections>
-                                            <action selector="segmentSelected:" destination="tio-mE-ZcJ" eventType="valueChanged" id="93z-C2-huc"/>
-                                        </connections>
-                                    </segmentedControl>
-                                </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstItem="11i-l9-oDB" firstAttribute="top" secondItem="nYa-sp-a8Q" secondAttribute="bottom" constant="20" id="09b-py-hZt"/>
-                                    <constraint firstItem="nYa-sp-a8Q" firstAttribute="top" secondItem="3kY-eT-g9z" secondAttribute="top" constant="20" id="NZO-O5-la5"/>
-                                    <constraint firstAttribute="trailing" secondItem="11i-l9-oDB" secondAttribute="trailing" id="g5n-kD-S7P"/>
-                                    <constraint firstAttribute="trailing" secondItem="nYa-sp-a8Q" secondAttribute="trailing" constant="30" id="pSc-7L-skN"/>
-                                    <constraint firstItem="nYa-sp-a8Q" firstAttribute="leading" secondItem="3kY-eT-g9z" secondAttribute="leading" constant="30" id="yQX-SO-BDW"/>
-                                    <constraint firstItem="11i-l9-oDB" firstAttribute="leading" secondItem="3kY-eT-g9z" secondAttribute="leading" id="ztM-1M-68g"/>
-                                </constraints>
-                            </view>
-                        </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="centerX" secondItem="3kY-eT-g9z" secondAttribute="centerX" id="4Ca-ce-Nfx"/>
-                            <constraint firstItem="3kY-eT-g9z" firstAttribute="height" secondItem="mxc-6q-fr5" secondAttribute="height" multiplier="0.5" id="EIa-qX-p0n"/>
-                            <constraint firstAttribute="width" secondItem="3kY-eT-g9z" secondAttribute="width" id="IDr-ev-QRo"/>
-                            <constraint firstItem="11i-l9-oDB" firstAttribute="width" secondItem="mxc-6q-fr5" secondAttribute="width" id="VHG-xP-LDK"/>
-                            <constraint firstItem="yfb-IT-kKR" firstAttribute="leading" secondItem="mxc-6q-fr5" secondAttribute="leading" id="doh-05-UW1"/>
-                            <constraint firstItem="yfb-IT-kKR" firstAttribute="top" secondItem="mxc-6q-fr5" secondAttribute="top" id="hbt-YW-ryh"/>
-                            <constraint firstAttribute="trailing" secondItem="yfb-IT-kKR" secondAttribute="trailing" id="hlm-qC-jLy"/>
-                            <constraint firstItem="3kY-eT-g9z" firstAttribute="top" secondItem="42b-Sj-yVV" secondAttribute="bottom" constant="12.5" id="ien-lk-QQL"/>
-                            <constraint firstItem="1vZ-E7-b0Y" firstAttribute="top" secondItem="yfb-IT-kKR" secondAttribute="bottom" id="zb6-rM-OIp"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="0G4-Ln-qbv"/>
-                    <connections>
-                        <outlet property="completeButton" destination="274-jI-K2n" id="T6I-fj-LLV"/>
-                        <outlet property="periodDatePicker" destination="11i-l9-oDB" id="qrb-Fb-hGD"/>
-                        <outlet property="periodDayLabel" destination="LQ7-rx-5Jb" id="jmz-Ud-E2C"/>
-                        <outlet property="periodLabel" destination="42b-Sj-yVV" id="Vq9-OA-IHx"/>
-                        <outlet property="periodSegmentedControl" destination="nYa-sp-a8Q" id="cu9-O3-3bj"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="epu-cD-b8T" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1386" y="617"/>
         </scene>
     </scenes>
     <resources>
@@ -370,8 +219,7 @@
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="9wR-hP-Vgj"/>
-        <segue reference="MJ6-d1-7Rc"/>
         <segue reference="hF8-E9-VIJ"/>
-        <segue reference="Bxf-SX-fhr"/>
+        <segue reference="MJ6-d1-7Rc"/>
     </inferredMetricsTieBreakers>
 </document>

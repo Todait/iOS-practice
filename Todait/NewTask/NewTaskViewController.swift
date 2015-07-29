@@ -267,7 +267,7 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
     
     func addSaveButton(){
         
-        saveButton = UIButton(frame: CGRectMake(288*ratio,30,28,20))
+        saveButton = UIButton(frame: CGRectMake(288*ratio,32,22,16))
         saveButton.setImage(UIImage.maskColor("icon_check_wt@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
         saveButton.addTarget(self, action: Selector("saveNewTask"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(saveButton)
