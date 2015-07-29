@@ -85,23 +85,21 @@ class TaskTableViewCell: BasicTableViewCell {
     }
 
     func addTimerButton(){
-        timerButton = UIButton(frame: CGRectMake(23*ratio, 11*ratio, 36*ratio, 36*ratio))
+        timerButton = UIButton(frame: CGRectMake(0*ratio, 0*ratio, 75*ratio, 58*ratio))
         
         timerButton.clipsToBounds = true
         timerButton.layer.cornerRadius = 18*ratio
-        timerButton.layer.borderWidth = 1.0
-        timerButton.layer.borderColor = UIColor.todaitLightGray().CGColor
-        
         
         timerButton.addTarget(self, action: Selector("timerButtonTouchUpOutside"), forControlEvents:UIControlEvents.TouchUpOutside)
         timerButton.addTarget(self, action: Selector("timerButtonTouchDown"), forControlEvents:UIControlEvents.TouchDown)
         timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        timerButton.setImage(UIImage.maskColor("detail_basic_23@3x.png", color: UIColor.todaitLightGray()), forState: UIControlState.Normal)
         
-        timerButton.setImage(UIImage.maskColor("detail_basic_23@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Highlighted)
+        timerButton.setImage(UIImage(named: "bt_play_wt_a@3x.png"), forState: UIControlState.Normal)
         
-        timerButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame:CGRectMake(0,0,36*ratio,36*ratio)), forState: UIControlState.Normal)
-        timerButton.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("#95CCC4").colorWithAlphaComponent(0.5), frame:CGRectMake(0,0,36*ratio,36*ratio)), forState: UIControlState.Highlighted)
+        timerButton.setImage(UIImage(named: "bt_play_gray_a@3x.png"), forState: UIControlState.Highlighted)
+        
+        //timerButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame:CGRectMake(0,0,36*ratio,36*ratio)), forState: UIControlState.Normal)
+        //timerButton.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("#95CCC4").colorWithAlphaComponent(0.5), frame:CGRectMake(0,0,36*ratio,36*ratio)), forState: UIControlState.Highlighted)
         
         timerButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         
@@ -133,7 +131,7 @@ class TaskTableViewCell: BasicTableViewCell {
     
     func setPercentBezierPath(){
         let timerButtonRect = timerButton.frame
-        percentBezierPath = UIBezierPath(arcCenter: timerButton.center, radius:timerButtonRect.size.width/2 - DEFAULT_LINE_WIDTH*ratio/2, startAngle: degreeToRadians(DEFAULT_START_ANGLE), endAngle: degreeToRadians(DEFAULT_END_ANGLE), clockwise: true) as UIBezierPath!
+        percentBezierPath = UIBezierPath(arcCenter:CGPointMake(41*ratio,29*ratio), radius:18*ratio - DEFAULT_LINE_WIDTH*ratio/2, startAngle: degreeToRadians(DEFAULT_START_ANGLE), endAngle: degreeToRadians(DEFAULT_END_ANGLE), clockwise: true) as UIBezierPath!
         
     }
     
@@ -164,7 +162,7 @@ class TaskTableViewCell: BasicTableViewCell {
     }
     
     func addColorBoxView(){
-        colorBoxView = UIView(frame: CGRectMake(0, 0, 2 * DEFAULT_LINE_WIDTH, 58*ratio))
+        colorBoxView = UIView(frame: CGRectMake(0, 0, 4*ratio, 58*ratio))
         colorBoxView.backgroundColor = UIColor.clearColor()
         self.addSubview(colorBoxView)
     }
