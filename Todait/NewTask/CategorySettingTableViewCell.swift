@@ -13,6 +13,7 @@ import UIKit
 class CategorySettingTableViewCell: UITableViewCell {
     var titleLabel : UILabel!
     var colorBoxView : UIView!
+    var selectedImageView: UIImageView!
     
     var ratio : CGFloat!
     
@@ -24,6 +25,7 @@ class CategorySettingTableViewCell: UITableViewCell {
         setupRatio()
         addTitleLabel()
         addColorBoxView()
+        addSelectedImageView()
     }
     
     func setupRatio(){
@@ -44,6 +46,13 @@ class CategorySettingTableViewCell: UITableViewCell {
         colorBoxView = UIView(frame: CGRectMake(0, 0, 4.5*ratio , 50*ratio))
         colorBoxView.backgroundColor = UIColor.clearColor()
         self.addSubview(colorBoxView)
+    }
+    
+    func addSelectedImageView(){
+        
+        selectedImageView = UIImageView(frame:CGRectMake(255*ratio,19*ratio,16*ratio,12*ratio))
+        self.addSubview(selectedImageView)
+        
     }
     
     

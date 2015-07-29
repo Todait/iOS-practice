@@ -785,6 +785,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     }
     
     
+    
     func updateMemo(date:NSDate){
         
         var dateNumber = getDateNumberFromDate(date)
@@ -983,16 +984,6 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             
         }
         
-        if segue.identifier == "ShowEditTaskView" {
-            
-            let editTaskVC = segue.destinationViewController as! EditTaskViewController
-            editTaskVC.editedTask = task
-            editTaskVC.delegate = self
-            editTaskVC.mainColor = task.getColor()
-            editTaskVC.category = task.categoryId
-            
-        }
-        
     }
     
     
@@ -1155,8 +1146,30 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func showEditTaskVC(){
         
-        performSegueWithIdentifier("ShowEditTaskView", sender:self)
         
+        switch task.taskType {
+        case "Timer": showEditTimerTaskVC()
+        default:  showEditTimerTaskVC()
+
+        }
+        
+        
+        
+        
+        //performSegueWithIdentifier("ShowEditTaskView", sender:self)
+        
+    }
+    
+    func showEditTimerTaskVC(){
+        
+        let editTaskVC = EditTimerTaskViewController()
+        
+        editTaskVC.editedTask = task
+        editTaskVC.delegate = self
+        editTaskVC.mainColor = task.getColor()
+        editTaskVC.category = task.categoryId
+        
+        self.navigationController?.pushViewController(editTaskVC, animated: true)
     }
     
     func showCompletePopup(){

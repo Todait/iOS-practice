@@ -449,7 +449,7 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
     
         if segue.identifier == "ShowEditTaskView" {
             
-            let editTaskVC = segue.destinationViewController as! EditTaskViewController
+            let editTaskVC = segue.destinationViewController as! EditTaskViewControllerOld
             editTaskVC.editedTask = task
             editTaskVC.delegate = self
             editTaskVC.mainColor = task.getColor()

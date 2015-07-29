@@ -11,6 +11,10 @@ import CoreData
 
 class CategorySettingViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource,UITextFieldDelegate{
     
+    
+    var selectedCategory:Category!
+    
+    
     var filterView:UIImageView!
     var categoryView:UIView!
     var addButton:UIButton!
@@ -57,6 +61,13 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         var error: NSError?
         
         categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Category]
+        
+        if let category = selectedCategory {
+            
+        }else{
+            selectedCategory = categoryData.first
+        }
+        
         
         NSLog("Category results %@",categoryData)
     }
@@ -203,13 +214,14 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
-        selectedIndex = indexPath.row
+        selectedCategory = categoryData[indexPath.row]
         
         tableView.reloadData()
         
         return false
         
     }
+    
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
@@ -219,6 +231,14 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(category.color)
         cell.titleLabel.text = category.name
         
+        
+        
+        if category == selectedCategory {
+            
+            cell.selectedImageView.image = UIImage.maskColor("icon_check_wt@3x.png", color: UIColor.todaitGreen())
+        }else{
+            cell.selectedImageView.image = nil
+        }
         
         
         
@@ -253,7 +273,7 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         }else{
             
             //확인
-            categoryEdited(categoryData[selectedIndex])
+            categoryEdited(selectedCategory)
         }
         
         /*

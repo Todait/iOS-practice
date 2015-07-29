@@ -1,78 +1,105 @@
 //
-//  TimerTaskViewController.swift
+//  EditTimerTaskViewController.swift
 //  Todait
 //
-//  Created by CruzDiary on 2015. 7. 20..
+//  Created by CruzDiary on 2015. 7. 29..
 //  Copyright (c) 2015년 GpleLab. All rights reserved.
 //
 
 import UIKit
 
-class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,CategoryDelegate{
+class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,CategoryDelegate,TodaitNavigationDelegate{
+   
+    var editedTask:Task!
+    var category:Category!
+    var delegate: CategoryUpdateDelegate!
     var mainColor: UIColor!
-    
     var categoryButton: UIButton!
     
     
     var taskTextField: UITextField!
+    var aimString:String!
     
     var saveButton: UIButton!
-    var investButton: UIButton!
+    
     var currentTextField: UITextField!
     
     
     var dateForm: NSDateFormatter!
     var startDate: NSDate!
     
-    var periodStartDate:NSDate!
-    var periodEndDate:NSDate!
-    var periodDayLabel:UILabel!
     var periodDayString:String = "30일"
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
-    var aimString:String! = ""
-    var unitString:String! = ""
     
     
     var timeTaskTableView:UITableView!
-    var totalButton:UIButton!
-    var rangeButton:UIButton!
-    var unitButton:UIButton!
     
     var option:OptionStatus = OptionStatus.everyDay
-    var isTotal:Bool! = true
-    var rangeList:[[String:String]] = []
-    
-    
-    
-    var aimAmount:Int! = 0
-    var startRangeAmount:Int! = 0
-    var endRangeAmount:Int! = 0
-    var dayAmount:Int! = 0
-    var category:Category!
+    var deleteButton:UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupTimeTaskViewController()
         addTimeTaskTableView()
-        
-        
+        addDeleteButton()
     }
     
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.todaitNavBar.hidden = true
+        todaitNavBar.todaitDelegate = self
+        todaitNavBar.backButton.hidden = false
+        
+        self.titleLabel.text = "Edit"
+        self.screenName = "Detail Activity"
+        
+        todaitNavBar.shadowImage = UIImage()
+        
+        addSaveButton()
         
     }
     
+    
+    
+    func addSaveButton(){
+        
+        saveButton = UIButton(frame: CGRectMake(288*ratio,30,24,20))
+        saveButton.setImage(UIImage.maskColor("icon_check_wt@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
+        saveButton.addTarget(self, action: Selector("saveEditedTask"), forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(saveButton)
+    }
+    
+    func saveEditedTask(){
+        
+        editedTask.name = taskTextField.text
+        editedTask.categoryId = category
+        
+        var error: NSError?
+        managedObjectContext?.save(&error)
+        
+        if let err = error {
+            //에러처리
+        }else{
+            
+            
+            backButtonClk()
+        }
+        
+    }
+    
+    
+    func backButtonClk() {
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    
+    
     func setupTimeTaskViewController(){
         startDate = NSDate()
-        periodStartDate = NSDate()
-        periodEndDate = NSDate(timeIntervalSinceNow: 24*60*60 * 29)
         
         dateForm = NSDateFormatter()
         dateForm.dateFormat = "a h시 m분"
@@ -81,7 +108,7 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     
     
     func addTimeTaskTableView(){
-        timeTaskTableView = UITableView(frame: CGRectMake(0,0,width,view.frame.size.height), style: UITableViewStyle.Plain)
+        timeTaskTableView = UITableView(frame: CGRectMake(0,navigationHeight,width,view.frame.size.height - navigationHeight), style: UITableViewStyle.Plain)
         timeTaskTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         timeTaskTableView.separatorStyle = UITableViewCellSeparatorStyle.None
         timeTaskTableView.contentInset = UIEdgeInsetsMake(0*ratio, 0, 0, 0)
@@ -95,6 +122,33 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         view.addSubview(timeTaskTableView)
     }
     
+    func addDeleteButton(){
+        
+        deleteButton = UIButton(frame:CGRectMake(3*ratio,height - 55*ratio, 314*ratio,52*ratio))
+        deleteButton.setTitle("목표삭제", forState: UIControlState.Normal)
+        deleteButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        deleteButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitRed(), frame:CGRectMake(0,0,314*ratio,52*ratio)), forState: UIControlState.Normal)
+        deleteButton.addTarget(self, action: Selector("deleteButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(deleteButton)
+        
+    }
+    
+    func deleteButtonClk(){
+        
+        managedObjectContext?.deleteObject(editedTask)
+        
+        var error: NSError?
+        managedObjectContext?.save(&error)
+        
+        if let err = error {
+            //에러처리
+        }else{
+            
+            self.navigationController?.popToRootViewControllerAnimated(true)
+        
+        }
+        
+    }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
@@ -126,30 +180,10 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
-        if indexPath.row == 1 && indexPath.section == 0 {
-            showPeriodVC()
-        }
-        
         
         return false
     }
     
-    func showPeriodVC(){
-        
-        //로딩전에 기간시간 추가
-        let periodVC = PeriodViewController()
-        
-        periodVC.startDate = periodStartDate
-        periodVC.endDate = periodEndDate
-        periodVC.delegate = self
-        periodVC.mainColor = mainColor
-        periodVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
-        periodVC.delegate = self
-        self.navigationController?.presentViewController(periodVC, animated: false, completion: { () -> Void in
-            
-        })
-        
-    }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
@@ -214,7 +248,7 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         taskTextField.returnKeyType = UIReturnKeyType.Next
         taskTextField.backgroundColor = UIColor.whiteColor()
         taskTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        taskTextField.text = aimString
+        taskTextField.text = editedTask.name
         taskTextField.tintColor = UIColor.todaitGreen()
         taskTextField.delegate = self
         currentTextField = taskTextField
@@ -223,20 +257,6 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         addLineView(cell)
     }
     
-    /*
-    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
-        
-        currentTextField = textField
-        
-        if currentTextField == unitTextField {
-            unitView.hidden = false
-        }else{
-            unitView.hidden = true
-        }
-        
-        return true
-    }
-    */
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
@@ -257,11 +277,14 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     func addCategoryButton(cell:UITableViewCell){
         
         categoryButton = UIButton(frame: CGRectMake(280*ratio,9.5*ratio, 30*ratio, 30*ratio))
+
         
-        categoryButton.setImage(UIImage(named: "category@3x.png"), forState: UIControlState.Normal)
+        categoryButton.layer.borderColor = UIColor.clearColor().CGColor
+        categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
+        categoryButton.backgroundColor = editedTask.getColor()
+     
         categoryButton.layer.cornerRadius = 15*ratio
         categoryButton.layer.borderWidth = 1
-        categoryButton.layer.borderColor = UIColor.todaitGray().CGColor
         categoryButton.clipsToBounds = true
         categoryButton.addTarget(self, action: Selector("showCategorySettingVC"), forControlEvents: UIControlEvents.TouchUpInside)
         cell.contentView.addSubview(categoryButton)
@@ -272,6 +295,7 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         
         var categoryVC = CategorySettingViewController()
         //categoryVC.delegate = self
+        
         categoryVC.selectedCategory = category
         categoryVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         categoryVC.delegate = self
@@ -288,7 +312,7 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         categoryButton.layer.borderColor = UIColor.clearColor().CGColor
         categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
         categoryButton.backgroundColor = UIColor.colorWithHexString(editedCategory.color)
-     
+        
         self.category = editedCategory
     }
     
@@ -303,53 +327,6 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     
     
     
-    func updateUnitAllEvents(textField:UITextField){
-        unitString = textField.text
-    }
-    
-    
-    func addRangeTextField(cell:UITableViewCell,indexPath:NSIndexPath){
-        
-        
-        let periodStartTextField = UITextField(frame:CGRectMake(15*ratio, 28*ratio, 140*ratio, 20*ratio))
-        periodStartTextField.placeholder = "시작"
-        periodStartTextField.textAlignment = NSTextAlignment.Center
-        periodStartTextField.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
-        periodStartTextField.textColor = UIColor.todaitDarkGray()
-        periodStartTextField.addTarget(self, action: Selector("updateStartTime:"), forControlEvents: UIControlEvents.AllEvents)
-        periodStartTextField.tag = indexPath.row
-        cell.contentView.addSubview(periodStartTextField)
-        
-        
-        let middleBox = UIView(frame: CGRectMake(158*ratio, 37.5*ratio, 4*ratio, 1*ratio))
-        middleBox.backgroundColor = UIColor.todaitDarkGray()
-        cell.contentView.addSubview(middleBox)
-        
-        
-        let periodEndTextField = UITextField(frame:CGRectMake(165*ratio, 28*ratio, 140*ratio, 20*ratio))
-        periodEndTextField.placeholder = "종료"
-        periodEndTextField.textAlignment = NSTextAlignment.Center
-        periodEndTextField.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
-        periodEndTextField.textColor = UIColor.todaitDarkGray()
-        periodEndTextField.addTarget(self, action: Selector("updateEndTime:"), forControlEvents: UIControlEvents.AllEvents)
-        periodEndTextField.tag = indexPath.row
-        cell.contentView.addSubview(periodEndTextField)
-        
-        
-        var line = UIView(frame:CGRectMake(20*ratio, 52*ratio, 272*ratio, 0.5*ratio))
-        line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
-        cell.contentView.addSubview(line)
-        
-        
-        
-        if rangeList.count > 0 {
-            
-            var rangeData = rangeList[indexPath.row]
-            
-            periodStartTextField.text = rangeData["startTime"]
-            periodEndTextField.text = rangeData["endTime"]
-        }
-    }
     
     func updateStartTime(textField:UITextField){
         let index = textField.tag
@@ -388,55 +365,6 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         */
     }
     
-    func addAimDateSubView(cell:UITableViewCell){
-        
-        
-        let infoLabel = UILabel(frame: CGRectMake(20*ratio, 30*ratio, 200*ratio, 16*ratio))
-        infoLabel.text = "기간"
-        infoLabel.textAlignment = NSTextAlignment.Left
-        infoLabel.textColor = UIColor.todaitDarkGray()
-        infoLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
-        cell.contentView.addSubview(infoLabel)
-        
-        
-        
-        
-        let periodStartLabel = UILabel(frame:CGRectMake(15*ratio, 28*ratio, 140*ratio, 20*ratio))
-        periodStartLabel.text = getDateString(getDateNumberFromDate(periodStartDate))
-        periodStartLabel.textAlignment = NSTextAlignment.Right
-        periodStartLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
-        periodStartLabel.textColor = UIColor.todaitDarkGray()
-        cell.contentView.addSubview(periodStartLabel)
-        
-        
-        let middleBox = UIView(frame: CGRectMake(158*ratio, 37.5*ratio, 4*ratio, 1*ratio))
-        middleBox.backgroundColor = UIColor.todaitDarkGray()
-        cell.contentView.addSubview(middleBox)
-        
-        
-        let periodEndLabel = UILabel(frame:CGRectMake(165*ratio, 28*ratio, 140*ratio, 20*ratio))
-        periodEndLabel.text = getDateString(getDateNumberFromDate(periodEndDate))
-        periodEndLabel.textAlignment = NSTextAlignment.Left
-        periodEndLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
-        periodEndLabel.textColor = UIColor.todaitDarkGray()
-        cell.contentView.addSubview(periodEndLabel)
-        
-        
-        
-        
-        
-        
-        periodDayLabel = UILabel(frame: CGRectMake(272*ratio, 30*ratio, 33*ratio, 16*ratio))
-        periodDayLabel.text = periodDayString
-        periodDayLabel.textAlignment = NSTextAlignment.Left
-        periodDayLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10*ratio)
-        periodDayLabel.textColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.7)
-        cell.contentView.addSubview(periodDayLabel)
-        
-        var line = UIView(frame:CGRectMake(20*ratio, 52*ratio, 272*ratio, 0.5*ratio))
-        line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
-        cell.contentView.addSubview(line)
-    }
     
     func getDateString(dateNumber:NSNumber)->String{
         
@@ -449,89 +377,13 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     }
     
     
-    func totalButtonClk(){
-        
-        isTotal = true
-        
-        timeTaskTableView.reloadData()
-        
-        setAmountButtonHighlight(totalButton, highlight: isTotal)
-        setAmountButtonHighlight(rangeButton, highlight: !isTotal)
-        
-        
-        
-    }
-    
-    
-    func rangeButtonClk(){
-        
-        isTotal = false
-        timeTaskTableView.reloadData()
-        setAmountButtonHighlight(totalButton, highlight: isTotal)
-        setAmountButtonHighlight(rangeButton, highlight: !isTotal)
-    }
-    
-    func setAmountButtonHighlight(button:UIButton, highlight:Bool){
-        
-        if highlight {
-            button.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 89*ratio, 32*ratio)), forState: UIControlState.Normal)
-            button.setBackgroundImage(UIImage.colorImage(UIColor.todaitDarkGreen(), frame: CGRectMake(0, 0, 89*ratio, 32*ratio)), forState: UIControlState.Highlighted)
-            
-            button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-            button.layer.borderColor = UIColor.todaitGreen().CGColor
-            button.layer.borderWidth = 0.5*ratio
-        }else{
-            
-            button.setBackgroundImage(UIImage.colorImage(UIColor.whiteColor(), frame: CGRectMake(0, 0, 89*ratio, 32*ratio)), forState: UIControlState.Normal)
-            button.setBackgroundImage(UIImage.colorImage(UIColor.todaitLightGray(), frame: CGRectMake(0, 0, 89*ratio, 32*ratio)), forState: UIControlState.Highlighted)
-            button.setTitleColor(UIColor.todaitDarkGray(), forState: UIControlState.Normal)
-            button.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
-            button.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
-            button.layer.borderColor = UIColor.colorWithHexString("#B2B2B2").CGColor
-            button.layer.borderWidth = 0.5*ratio
-        }
-        
-    }
-    
-    
     
     func addOptionView(cell:UITableViewCell){
         
-        //addDayOptionView(cell)
         addAlarmOptionView(cell)
-        //addreviewOptionView(cell)
-        //addreReadOptionView(cell)
         
     }
     
-    func addDayOptionView(cell:UITableViewCell){
-        
-        
-        var dayOption = UIButton(frame:CGRectMake(2*ratio,12*ratio,157*ratio,52*ratio))
-        dayOption.backgroundColor = UIColor.clearColor()
-        dayOption.addTarget(self, action: Selector("dayOptionClk"), forControlEvents: UIControlEvents.TouchDown)
-        cell.contentView.addSubview(dayOption)
-        
-        
-        var iconImageView = UIImageView(frame: CGRectMake(20*ratio, 6*ratio, 40*ratio, 40*ratio))
-        dayOption.addSubview(iconImageView)
-        
-        
-        var titleLabel = UILabel(frame: CGRectMake(68*ratio, 15*ratio, 92*ratio, 22.5*ratio))
-        titleLabel.text = "요일지정"
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        dayOption.addSubview(titleLabel)
-        
-        
-        if option == OptionStatus.everyDay {
-            iconImageView.image = UIImage(named: "icon_week_wt@3x.png")
-            titleLabel.textColor = UIColor.todaitGreen()
-        }else{
-            iconImageView.image = UIImage(named: "icon_week@3x.png")
-            titleLabel.textColor = UIColor.todaitGray()
-        }
-        
-    }
     
     func dayOptionClk(){
         
@@ -676,29 +528,7 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        if segue.identifier == "ShowPeriodView" {
-            //로딩전에 기간시간 추가
-            let periodVC = segue.destinationViewController as! PeriodViewController
-            periodVC.startDate = periodStartDate
-            periodVC.endDate = periodEndDate
-            periodVC.delegate = self
-            periodVC.mainColor = mainColor
-        }
-        
-    }
-    
-    func updatePeriodEndDate(date: NSDate) {
-        periodEndDate = date
-    }
-    
-    func updatePeriodStartDate(date: NSDate) {
-        periodStartDate = date
-    }
-    
-    func updatePeriodDay(day: String) {
-        periodDayLabel.text = day
-        periodDayString = day
+      
     }
     
     func settingTime(date:NSDate){
