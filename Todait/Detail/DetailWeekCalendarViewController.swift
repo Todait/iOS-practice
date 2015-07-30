@@ -84,6 +84,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
         if let cell = weekView.cellForItemAtIndexPath(selectedIndex) as? DetailWeekCalendarCell {
             
             for index in 0...6 {
+                
                 var button = cell.buttons[index]
                 
                 if button.dateNumber == dateNumber {

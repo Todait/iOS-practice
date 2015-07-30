@@ -113,7 +113,7 @@ class MainCategoryCollectionViewController: BasicViewController,UICollectionView
             
             
             
-            let sortImageView = UIImageView(frame: CGRectMake(22.5*ratio, 14*ratio, 15*ratio, 15*ratio))
+            let sortImageView = UIImageView(frame: CGRectMake(22.5*ratio, 12*ratio, 15*ratio, 15*ratio))
             sortImageView.contentMode = UIViewContentMode.ScaleAspectFill
             sortImageView.image = UIImage(named: "ic_arrange_arrange@3x.png")
             cell.contentView.addSubview(sortImageView)
@@ -129,13 +129,13 @@ class MainCategoryCollectionViewController: BasicViewController,UICollectionView
             cell.contentView.addSubview(titleLabel)
             
             
-            let line = UIView(frame:CGRectMake(63.5*ratio,10*ratio,1*ratio,35*ratio))
+            let line = UIView(frame:CGRectMake(59.5*ratio,10*ratio,1*ratio,35*ratio))
             line.backgroundColor = UIColor.whiteColor().colorWithAlphaComponent(0.1)
             cell.contentView.addSubview(line)
             
         }else if indexPath.section == 2 {
             
-            let sortImageView = UIImageView(frame: CGRectMake(22.5*ratio, 15*ratio, 15*ratio, 15*ratio))
+            let sortImageView = UIImageView(frame: CGRectMake(22.5*ratio, 12*ratio, 15*ratio, 15*ratio))
             sortImageView.contentMode = UIViewContentMode.ScaleAspectFill
             sortImageView.image = UIImage(named: "ic_arrange_folder@3x.png")
             cell.contentView.addSubview(sortImageView)

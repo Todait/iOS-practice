@@ -179,20 +179,21 @@ class DiaryViewController: BasicViewController,TodaitNavigationDelegate,UIImageP
         todaitNavBar.backButton.hidden = false
         
         if let task = task {
-            
             let category = task.categoryId
             titleLabel.text = category.name + " - " + task.name
-        
         }
         
         addDoneButton()
         
     }
     
+    
+
     func addDoneButton(){
         
-        doneButton = UIButton(frame: CGRectMake(280*ratio, 32, 24, 24))
-        doneButton.backgroundColor = UIColor.yellowColor()
+        doneButton = UIButton(frame: CGRectMake(288*ratio, 32, 22, 16))
+        doneButton.setImage(UIImage.maskColor("icon_check_wt@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
+        
         doneButton.addTarget(self, action: Selector("doneButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(doneButton)
         

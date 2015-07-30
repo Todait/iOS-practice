@@ -44,7 +44,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         addRegisterButton()
         
         
-        showMainTabbarVC()
+        //showMainTabbarVC()
     }
     
     
@@ -269,6 +269,11 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     }
     
     func validationFailed(errors: [UITextField:ValidationError]){
+        
+        
+        
+        
+        
         NSLog("error")
     }
     
