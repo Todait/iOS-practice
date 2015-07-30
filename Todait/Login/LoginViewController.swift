@@ -228,8 +228,9 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         
         let validator = Validator()
         
-        validator.registerField(emailTextField, rules:[EmailRule(message:"Invalid email")])
-        validator.registerField(passwordField, rules:[PasswordRule]())
+        
+        validator.registerField(emailTextField, rules:[MinLengthRule(length: 1, message: "이메일을 입력해주세요."),EmailRule(message:"올바른 이메일을 입력해주세요."),])
+        validator.registerField(passwordField, rules:[MinLengthRule(length: 1, message: "비밀번호를 입력해주세요."),MinLengthRule(length: 8, message: "비밀번호는 8자 이상입니다."),PasswordRule(message:"올바른 비밀번호를 입력해주세요")])
         validator.validate(self)
         
     }
@@ -271,10 +272,14 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     func validationFailed(errors: [UITextField:ValidationError]){
         
         
-        
-        
-        
-        NSLog("error")
+        for ( textField , error) in errors {
+            
+            let alert = UIAlertView(title: "Invalid", message: error.errorMessage, delegate: nil, cancelButtonTitle: "Cancel")
+            
+            alert.show()
+            
+            return
+        }
     }
     
     func showMainTabbarVC(){
