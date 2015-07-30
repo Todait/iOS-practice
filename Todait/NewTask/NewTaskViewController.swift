@@ -27,7 +27,7 @@ enum OptionStatus {
 
 
 
-class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
+class NewTaskViewController: BasicViewController,TodaitNavigationDelegate,ValidationDelegate{
     
     
     var mainColor: UIColor!
@@ -267,11 +267,45 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
     
     func addSaveButton(){
         
+        if saveButton != nil {
+            return
+        }
+        
         saveButton = UIButton(frame: CGRectMake(288*ratio,32,22,16))
         saveButton.setImage(UIImage.maskColor("icon_check_wt@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
-        saveButton.addTarget(self, action: Selector("saveNewTask"), forControlEvents: UIControlEvents.TouchUpInside)
+        saveButton.addTarget(self, action: Selector("saveButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(saveButton)
     }
+    
+    
+    func saveButtonClk(){
+        
+        
+        let validator = Validator()
+        
+        
+        validator.registerField(timerTaskVC.taskTextField, rules:[MinLengthRule(length: 1, message: "목표를 입력해주세요.")])
+        validator.validate(self)
+        
+    }
+    
+    func validationSuccessful(){
+        saveNewTask()
+    }
+    
+    func validationFailed(errors: [UITextField:ValidationError]){
+        
+        
+        for ( textField , error) in errors {
+            
+            let alert = UIAlertView(title: "Invalid", message: error.errorMessage, delegate: nil, cancelButtonTitle: "Cancel")
+            
+            alert.show()
+            
+            return
+        }
+    }
+
     
     
     
