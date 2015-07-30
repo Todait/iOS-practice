@@ -10,6 +10,9 @@ import UIKit
 
 
 
+public let CREDENTIAL_ACCESS_KEY:String = "AKIAJS3V26L2Z3N64B6A"
+public let CREDENTIAL_SECRET_KEY:String = "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"
+public let AWSS3_BUCKET_NAME:String = "todait-images"
 
 
 public func getTodayDateNumber()->NSNumber{
@@ -75,7 +78,19 @@ public func getFirstDateOfMonth(date:NSDate)->NSDate{
 }
 
 
+public func getNewUUIDString()->String {
+    
+    var uuid = NSUUID().UUIDString.lowercaseString
+    
+    return "\(Int(NSDate().timeIntervalSince1970))-" + uuid
+}
 
+public func getNewUUIDFileNameString()->String {
+    
+    var uuid = NSUUID().UUIDString.lowercaseString
+    
+    return "\(Int(NSDate().timeIntervalSince1970))-" + uuid + ".jpg"
+}
 
 public func getTimeStringFromSeconds(seconds : NSTimeInterval ) -> String {
     

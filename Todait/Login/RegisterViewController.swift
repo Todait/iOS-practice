@@ -10,7 +10,8 @@ import UIKit
 import MobileCoreServices
 import Alamofire
 
-class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate,ListInputDelegate{
+
+class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate,ListInputDelegate,ValidationDelegate{
 
     
     var scrollView:UIScrollView!
@@ -40,6 +41,10 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     var selectedIndexPath:NSIndexPath!
     var jobData:[String] = []
     
+    
+    
+    var fileName:String! = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -56,6 +61,8 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         addObjectField()
         
         addRegisterButton()
+        
+        
     }
     
     func addScrollView(){
@@ -169,7 +176,6 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     func showDiaryPhotoVC(){
         
         
-        
     }
     
     
@@ -184,13 +190,121 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
             
             let image = info[UIImagePickerControllerOriginalImage] as! UIImage
             
-            profileButton.setImage(image, forState: UIControlState.Normal)
+            //profileButton.setImage(image, forState: UIControlState.Normal)
+            
+            
+            
+            var error:NSError?
+            let fileManager = NSFileManager.defaultManager()
+            
+            
+            
+            let newUUIDFileName = getNewUUIDFileNameString()
+            
+            
+            
+            print(NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true))
+            
+            
+            var path = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! String
+            var paths = path + "/" + newUUIDFileName
+            
+            
+            let success = UIImageJPEGRepresentation(image, 1.0).writeToFile(paths, atomically: true) as Bool
+            
+            if success == true {
+                
+                print("저장성공")
+                
+            }else {
+                print("저장실패")
+                
+            }
+            
+    
+            
+            
+            
+            if fileManager.fileExistsAtPath(paths){
+                print("y")
+                
+                profileButton.setImage(UIImage(contentsOfFile: paths), forState: UIControlState.Normal)
+                
+                uploadImageFileToS3(path,fileName:newUUIDFileName)
+                
+                
+            }else{
+                print("n")
+            }
+            
+            
             
             if newMedia == true {
                 UIImageWriteToSavedPhotosAlbum(image, self, "image:didFinishSavingWithError:contextInfo:", nil)
             }
         }
     }
+    
+    func uploadImageFileToS3(path:String , fileName:String){
+        
+        
+        let uploadURL = NSURL(fileURLWithPath: path + "/" + fileName)
+        
+        
+       
+        
+        
+        let transferManager =  AWSS3TransferManager.defaultS3TransferManager()
+        
+        let uploadRequest = AWSS3TransferManagerUploadRequest.new()
+        uploadRequest.bucket = AWSS3_BUCKET_NAME
+        uploadRequest.key = "development/" + fileName
+        uploadRequest.body = uploadURL
+        
+        
+        
+        transferManager.upload(uploadRequest).continueWithBlock({ (task) -> AnyObject! in
+            
+            if let error = task.error {
+                if error.domain == AWSS3TransferManagerErrorDomain as String {
+                    if let errorCode = AWSS3TransferManagerErrorType(rawValue: error.code) {
+                        switch (errorCode) {
+                        case .Cancelled, .Paused:
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                //self.collectionView.reloadData()
+                            })
+                            break;
+                            
+                        default:
+                            println("upload() failed: [\(error)]")
+                            break;
+                        }
+                    } else {
+                        println("upload() failed: [\(error)]")
+                    }
+                } else {
+                    println("upload() failed: [\(error)]")
+                }
+            }
+            
+            if let exception = task.exception {
+                println("upload() failed: [\(exception)]")
+            }
+            
+            if (task.result != nil) {
+                
+                let output = task.result
+                
+                self.fileName = path + "/" + fileName
+                
+                
+            }
+       
+            return nil
+       
+        })
+    }
+    
     
     func image(image:UIImage, didFinishSavingWithError error:NSErrorPointer, contextInfo:UnsafePointer<Void>){
         
@@ -263,8 +377,11 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
         jobField.text = string
         scrollView.scrollRectToVisible(jobField.frame, animated: true)
-        
+        objectField.becomeFirstResponder()
+        currentTextField = objectField
     }
+    
+    
     
     func addEmailField(){
         
@@ -282,12 +399,16 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
     }
     
+    
+    
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
         
         if textField == jobField {
             
             resignAllKeyBoard()
             showJobInputView()
+            
+            return false
             
         }else{
             currentTextField = textField
@@ -367,6 +488,8 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         scrollView.addSubview(objectField)
     }
     
+    
+    
     func addRegisterButton(){
         
         registerButton = UIButton(frame: CGRectMake(0, 501*ratio , width, 35*ratio))
@@ -382,8 +505,28 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
     }
     
-    
     func registerButtonClk(){
+        
+        
+        let validator = Validator()
+        
+        
+        validator.registerField(nameField, rules:[MinLengthRule(length: 1, message: "이름을 입력해주세요.")])
+        
+        validator.registerField(emailField, rules:[MinLengthRule(length: 1, message: "이메일을 입력해주세요."),EmailRule(message:"올바른 이메일을 입력해주세요."),])
+        
+        validator.registerField(passwordField, rules:[MinLengthRule(length: 1, message: "비밀번호를 입력해주세요."),MinLengthRule(length: 8, message: "비밀번호는 8자 이상입니다."),PasswordRule(message:"올바른 비밀번호를 입력해주세요")])
+        validator.registerField(confirmField, rules:[MinLengthRule(length: 1, message: "비밀번호를 입력해주세요."),MinLengthRule(length: 8, message: "비밀번호는 8자 이상입니다."),PasswordRule(message:"올바른 비밀번호를 입력해주세요")])
+        
+        validator.validate(self)
+        
+    }
+    
+    func validationSuccessful(){
+        requestRegister()
+    }
+    
+    func requestRegister(){
         
         var params:[String:AnyObject] = [:]
         
@@ -397,7 +540,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
         
         
-        params["user"] = ["email":email,"name":name,"password":password,"password_confirmation":confirm,"grade":job,"image_names":"test.jpeg"]
+        params["user"] = ["email":email,"name":name,"password":password,"password_confirmation":confirm,"grade":job,"image_names":fileName]
         
         
         var manager = Alamofire.Manager.sharedInstance
@@ -414,7 +557,18 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     }
     
     
-    
+    func validationFailed(errors: [UITextField:ValidationError]){
+        
+        
+        for ( textField , error) in errors {
+            
+            let alert = UIAlertView(title: "Invalid", message: error.errorMessage, delegate: nil, cancelButtonTitle: "Cancel")
+            
+            alert.show()
+            
+            return
+        }
+    }
     
     
     override func viewWillAppear(animated: Bool) {

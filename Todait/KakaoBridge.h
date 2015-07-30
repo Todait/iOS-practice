@@ -23,4 +23,7 @@
 #import "GAITrackedViewController.h"
 #import "GAITracker.h"
 
+#import <AWSCore/AWSCore.h>
+#import <AWSS3/AWSS3.h>
+
 #endif

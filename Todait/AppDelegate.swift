@@ -21,6 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         appearanceSetup()
         notificationSetup(application)
+        
+        awsSetup()
         googleAnalyticsSetup()
         
         
@@ -48,6 +50,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let settings = UIUserNotificationSettings(forTypes: notiTypes, categories: nil)
         
         application.registerUserNotificationSettings(settings)
+    }
+    
+    func awsSetup(){
+        
+        
+        let credentialProvider = AWSStaticCredentialsProvider(accessKey: CREDENTIAL_ACCESS_KEY, secretKey: CREDENTIAL_SECRET_KEY)
+        
+        let configuration = AWSServiceConfiguration(region: .APNortheast1, credentialsProvider: credentialProvider)
+        
+        
+        AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
+
+    
     }
     
     func googleAnalyticsSetup(){
