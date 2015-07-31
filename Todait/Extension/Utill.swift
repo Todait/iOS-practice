@@ -15,6 +15,23 @@ public let CREDENTIAL_SECRET_KEY:String = "AisL25f74Aaf5N5XpkyoTuOAc6ccw0TGDwPDx
 public let AWSS3_BUCKET_NAME:String = "todait-images"
 
 
+public func getTimeString(time:Int)->String{
+    
+    let hour = time.toHour()
+    let minute = time.toMinute()
+    
+    if hour == 0 {
+        return "\(minute)분"
+    }else{
+        if minute == 0 {
+            return "\(hour)시간"
+        }else{
+            return "\(hour)시간 \(minute)분"
+        }
+    }
+}
+
+
 public func getTodayDateNumber()->NSNumber{
     
     return getDateNumberFromDate(NSDate())

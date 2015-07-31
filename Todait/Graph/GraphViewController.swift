@@ -20,9 +20,10 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
     var totalTimeLabel:UILabel!
     
     var weekDashView:UIView!
+    var weekDoneAmountLabel:UILabel!
+    var weekDoneTimeLabel:UILabel!
     
     var focusDashView:UIView!
-    
     var trendDashView:UIView!
     
     
@@ -171,6 +172,14 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         weekDashView.addSubview(amountInfoLabel)
         
         
+        weekDoneAmountLabel = UILabel(frame: CGRectMake(15*ratio, 56*ratio, 165*ratio, 20*ratio))
+        weekDoneAmountLabel.text = "8/11문제"
+        weekDoneAmountLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 8*ratio)
+        weekDoneAmountLabel.textColor = UIColor.todaitGray()
+        weekDoneAmountLabel.textAlignment = NSTextAlignment.Center
+        weekDashView.addSubview(weekDoneAmountLabel)
+        
+        
         let periodInfoLabel = UILabel(frame:CGRectMake(15*ratio, 193*ratio, 165*ratio, 17*ratio))
         periodInfoLabel.text = "시간"
         periodInfoLabel.textColor = UIColor.todaitDarkGray()
@@ -178,11 +187,22 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         periodInfoLabel.font = UIFont(name:"AppleSDGothicNeo-SemiBold",size:15*ratio)
         weekDashView.addSubview(periodInfoLabel)
         
+        
+        weekDoneTimeLabel = UILabel(frame: CGRectMake(15*ratio, 213*ratio, 165*ratio, 20*ratio))
+        weekDoneTimeLabel.text = "0시간 50분/1시간 00분"
+        weekDoneTimeLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 8*ratio)
+        weekDoneTimeLabel.textColor = UIColor.todaitGray()
+        weekDoneTimeLabel.textAlignment = NSTextAlignment.Center
+        weekDashView.addSubview(weekDoneTimeLabel)
+        
+        
     }
     
     
     
     func addWeekAmountChart(){
+        
+        let weekAmountProgressData = task.getWeekAmountProgressData(NSDate())
         
         
         var weekChart = WeekMaxChart(frame: CGRectMake(15*ratio, 75*ratio, 165*ratio, 74*ratio))
@@ -191,13 +211,20 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         weekChart.backColor = UIColor.colorWithHexString("#F9EAEA")
         weekChart.chartWidth = 10*ratio
         weekChart.chartFont = UIFont(name: "AppleSDGothicNeo-UltraLight", size: 8*ratio)
-        
-        
-        //weekChart.updateChart([["doneAmount":15,"expectAmount":50],["doneAmount":15,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":10,"expectAmount":35],["doneAmount":20,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":30,"expectAmount":55]])
-        
-        weekChart.updateChart(task.getWeekAmountProgressData(NSDate()))
-        
+        weekChart.updateChart(weekAmountProgressData)
         weekDashView.addSubview(weekChart)
+        
+        
+        var weekExpectAmount:Int = 0
+        var weekDoneAmount:Int = 0
+        
+        for chartItem in weekAmountProgressData {
+            weekDoneAmount = weekDoneAmount + chartItem["done"]!.integerValue
+            weekExpectAmount = weekExpectAmount + chartItem["expect"]!.integerValue
+        }
+        
+        weekDoneAmountLabel.text = getAmountWeekProgressString(weekDoneAmount, expectAmount: weekExpectAmount)
+        
         
         
         var weekLabel = WeekLabel(frame: CGRectMake(15*ratio, 153*ratio, 165*ratio, 9*ratio))
@@ -208,8 +235,14 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         
     }
     
+    
+    func getAmountWeekProgressString(doneAmount:Int,expectAmount:Int)->String{
+        return "\(doneAmount)/\(expectAmount)" + task.unit
+    }
+    
     func addWeekPeriodChart(){
         
+        let weekSecondProgressData = task.getWeekTimeProgressData(NSDate())
         
         var weekChart = WeekMaxChart(frame: CGRectMake(15*ratio, 230*ratio, 165*ratio, 74*ratio))
         weekChart.direction = weekChartDirection.upDirection
@@ -217,12 +250,20 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         weekChart.backColor = UIColor.colorWithHexString("#DAEAF6")
         weekChart.chartWidth = 10*ratio
         weekChart.chartFont = UIFont(name: "AppleSDGothicNeo-UltraLight", size: 8*ratio)
-        
-        //weekChart.updateChart([["doneAmount":15,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":60,"expectAmount":70],["doneAmount":40,"expectAmount":20],["doneAmount":15,"expectAmount":20],["doneAmount":80,"expectAmount":60]])
-        
-        weekChart.updateTimeChart(task.getWeekTimeProgressData(NSDate()))
-        
+        weekChart.updateTimeChart(weekSecondProgressData)
         weekDashView.addSubview(weekChart)
+        
+        
+        var weekExpectSecond:Int = 0
+        var weekDoneSecond:Int = 0
+        
+        for chartItem in weekSecondProgressData {
+            weekDoneSecond = weekDoneSecond + chartItem["done"]!.integerValue
+            weekExpectSecond = weekExpectSecond + chartItem["expect"]!.integerValue
+        }
+        
+        weekDoneTimeLabel.text = getTimeWeekProgressString(weekDoneSecond, expectSecond: weekExpectSecond)
+        
         
         
         var weekLabel = WeekLabel(frame: CGRectMake(15*ratio, 308*ratio, 165*ratio, 9*ratio))
@@ -232,6 +273,11 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         weekDashView.addSubview(weekLabel)
         
         
+    }
+    
+    func getTimeWeekProgressString(doneSecond:Int,expectSecond:Int)->String{
+        
+        return getTimeString(doneSecond) + " / " + getTimeString(expectSecond)
     }
     
     
