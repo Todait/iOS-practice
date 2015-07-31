@@ -30,6 +30,7 @@ PODS:
     - AWSCore (= 2.2.2)
   - AWSSQS (2.2.2):
     - AWSCore (= 2.2.2)
+  - GMImagePicker (0.0.1)
 
 DEPENDENCIES:
   - AWSAutoScaling
@@ -48,6 +49,7 @@ DEPENDENCIES:
   - AWSSimpleDB
   - AWSSNS
   - AWSSQS
+  - GMImagePicker (~> 0.0.1)
 
 SPEC CHECKSUMS:
   AWSAutoScaling: 4a178f86ecc44d8d3e2f1cb807e9d303762f8636
@@ -66,5 +68,6 @@ SPEC CHECKSUMS:
   AWSSimpleDB: b5b2113a68ee82cf37cb4f988a8cd7b38f15c39b
   AWSSNS: a984cf9ea5286e57a3cbd8f819cc9f71cf270dec
   AWSSQS: d60d84d7e5c759d893c880fb0315d7801c85f105
+  GMImagePicker: e9c726e514c275c914c1b3390d6bb7c3c3e87ead
 
 COCOAPODS: 0.36.0

@@ -204,6 +204,8 @@
 		4C5F69F11B43CDC300F66A75 /* detail_diary_input_star@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C5F69F01B43CDC300F66A75 /* detail_diary_input_star@3x.png */; };
 		4C6AEA021B6A054200CE7625 /* Todait.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4CB353751B1C030F00E36245 /* Todait.xcdatamodeld */; };
 		4C6AEA521B6A158E00CE7625 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD3C54C1B2EE829000AFDA3 /* SystemConfiguration.framework */; };
+		4C6AEA621B6A349700CE7625 /* ic_main_add@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6AEA601B6A349700CE7625 /* ic_main_add@3x.png */; };
+		4C6AEA631B6A349700CE7625 /* ic_main_timelog@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C6AEA611B6A349700CE7625 /* ic_main_timelog@3x.png */; };
 		4C79032E1B383F1900B48656 /* MainPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C79032D1B383F1900B48656 /* MainPhotoViewController.swift */; };
 		4C7903301B3842F800B48656 /* MainPhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C79032F1B3842F800B48656 /* MainPhotoCell.swift */; };
 		4C7903361B395CCB00B48656 /* CategorySortViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C7903351B395CCB00B48656 /* CategorySortViewController.swift */; };
@@ -724,6 +726,8 @@
 		4C6AEA181B6A157B00CE7625 /* AWSSimpleDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSimpleDB.framework; sourceTree = "<group>"; };
 		4C6AEA191B6A157B00CE7625 /* AWSSNS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSNS.framework; sourceTree = "<group>"; };
 		4C6AEA1A1B6A157B00CE7625 /* AWSSQS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = AWSSQS.framework; sourceTree = "<group>"; };
+		4C6AEA601B6A349700CE7625 /* ic_main_add@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_main_add@3x.png"; sourceTree = "<group>"; };
+		4C6AEA611B6A349700CE7625 /* ic_main_timelog@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ic_main_timelog@3x.png"; sourceTree = "<group>"; };
 		4C79032D1B383F1900B48656 /* MainPhotoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainPhotoViewController.swift; path = Main/MainPhotoViewController.swift; sourceTree = "<group>"; };
 		4C79032F1B3842F800B48656 /* MainPhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainPhotoCell.swift; path = Main/MainPhotoCell.swift; sourceTree = "<group>"; };
 		4C7903351B395CCB00B48656 /* CategorySortViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CategorySortViewController.swift; path = Main/CategorySortViewController.swift; sourceTree = "<group>"; };
@@ -1228,6 +1232,8 @@
 				4CB231E51B5E3A0100FE94AA /* category_goal@3x.png */,
 				4C8645B21B663A2200C2F800 /* bt_play_gray@3x.png */,
 				4C8645E01B6762C300C2F800 /* bt_play@3x.png */,
+				4C6AEA601B6A349700CE7625 /* ic_main_add@3x.png */,
+				4C6AEA611B6A349700CE7625 /* ic_main_timelog@3x.png */,
 				4C5042371B4A7E0E0050A501 /* 01_main_basic_gray@3x_12.png */,
 				4C50422F1B4A7B740050A501 /* 01_main_basic_gray@3x_03.png */,
 				4C5042301B4A7B740050A501 /* 01_main_basic_gray@3x_05.png */,
@@ -2050,6 +2056,7 @@
 				4C2329B91B342005006CA462 /* ic_fragment_task_info_stopwatch_start_pressed.png in Resources */,
 				4C2329E01B342005006CA462 /* ic_pause_circle.png in Resources */,
 				4CB353AF1B1C544000E36245 /* test.png in Resources */,
+				4C6AEA621B6A349700CE7625 /* ic_main_add@3x.png in Resources */,
 				4C23298B1B342005006CA462 /* ic_drawer_item_history.png in Resources */,
 				4C23299E1B342005006CA462 /* ic_fragment_diary_rating_disabled.png in Resources */,
 				4C8645F81B686AF600C2F800 /* bt_play_wt_a@3x.png in Resources */,
@@ -2139,6 +2146,7 @@
 				4C9085FE1B4D188700BC080B /* icon_week@3x.png in Resources */,
 				4C8645C31B663BC900C2F800 /* bt_check@3x.png in Resources */,
 				4C8644941B60EA2D00C2F800 /* whiteBack.png in Resources */,
+				4C6AEA631B6A349700CE7625 /* ic_main_timelog@3x.png in Resources */,
 				4C232A001B342005006CA462 /* progress_secondary_holo_light.9.png in Resources */,
 				4C9085EA1B4CF87800BC080B /* category@3x.png in Resources */,
 				4C9085FD1B4D188700BC080B /* icon_week_wt@3x.png in Resources */,
