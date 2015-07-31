@@ -66,7 +66,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     var panStart:CGPoint!
     var panEnd:CGPoint!
     
-    var isCalendarShow:Bool = false
+    var isCalendarDown:Bool = false
     var button:UIButton!
     
     
@@ -176,6 +176,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         
     }
+    
     
     
     
@@ -371,7 +372,20 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         timeY = min(max(timeY,baseOriginY + 48*ratio),baseOriginY + 48*6*ratio)
         */
         
-        if diaryTableView.frame.origin.y >= 250*ratio {
+        
+        var scrollLine = headerMinHeight*ratio + 0.5 * monthCalendarHeight * ratio
+        
+        if isCalendarDown == true {
+            scrollLine = headerMinHeight*ratio + 0.9 * monthCalendarHeight
+        }else {
+            scrollLine = headerMinHeight*ratio + 0.3 * monthCalendarHeight
+        }
+        
+        
+        
+        if diaryTableView.frame.origin.y >= scrollLine {
+            
+            isCalendarDown = true
             
             UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
                 
@@ -387,6 +401,9 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
                     self.weekCalendarVC.view.hidden = true
             })
         }else{
+            
+            isCalendarDown = false
+            
             UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
                 
                 
@@ -1143,6 +1160,11 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     }
     
     func addEditButton(){
+        
+        if editButton != nil {
+            return
+        }
+        
         editButton = UIButton(frame: CGRectMake(288*ratio,30,28,28))
         editButton.setImage(UIImage.maskColor("bt_edit@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
         editButton.addTarget(self, action: Selector("showEditTaskVC"), forControlEvents: UIControlEvents.TouchUpInside)
@@ -1220,6 +1242,10 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     }
     
     func addGraphButton(){
+        
+        if graphButton != nil {
+            return
+        }
         
         graphButton = UIButton(frame: CGRectMake(254*ratio,30,28,28))
         graphButton.setImage(UIImage.maskColor("bt_graph@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
