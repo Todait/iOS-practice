@@ -8,8 +8,193 @@
 
 import UIKit
 
-class Step3ChartBox: BasicView {
+class ThumbChartBox: BasicView {
 
+    
+    var frontView:UIView!
+    var backView:UIView!
+    
+    var frontOnColor:UIColor! = UIColor.orangeColor()
+    var frontOffColor:UIColor! = UIColor.lightGrayColor()
+    var maxColor:UIColor! = UIColor.yellowColor()
+    
+    var currentValue:CGFloat! = 0
+    var maxValue:CGFloat! = 0
+    
+    var thumbImageView:ThumbImageView!
+
+    var isMax:Bool = false
+    var isAnimating:Bool = false
+    var chartOn:Bool! = false
+    
+    var delegate:ThumbChartDelegate!
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        backgroundColor = UIColor.todaitBackgroundGray()
+        clipsToBounds = true
+        
+        
+        var newFrame = frame
+        newFrame.origin.x = 0
+        newFrame.origin.y = frame.size.height
+        newFrame.size.height = 0
+        
+        
+        frontView = UIView(frame:newFrame)
+        addSubview(frontView)
+        
+        thumbImageView = ThumbImageView(frame: CGRectMake(0, 0, 44*ratio, 60*ratio))
+        thumbImageView.center = CGPointMake(frame.size.width/2, frame.size.height)
+        
+        thumbImageView.onImage = UIImage(named: "newgoal_arrowhandle_green@3x.png")
+        thumbImageView.offImage = UIImage(named: "newgoal_arrowhandle_gray@3x.png")
+        thumbImageView.selectedImage = UIImage(named: "newgoal_arrowhandle_lightgreen@3x.png")
+        thumbImageView.zeroImage = UIImage(named: "newgoal_arrowhandle_gray_up@3x.png")
+        
+        thumbImageView.userInteractionEnabled = true
+        addSubview(thumbImageView)
+        
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action:"moveThumb:")
+        thumbImageView.addGestureRecognizer(panGesture)
+        
+        
+    }
+    
+    func moveThumb(gesture:UIPanGestureRecognizer){
+        
+        let newPoint = gesture.locationInView(self)
+        var newCenter = CGPointMake(thumbImageView.center.x, newPoint.y)
+        
+        
+        let halfx = CGRectGetMidX(self.bounds);
+        newCenter.x = max(halfx, newCenter.x)
+        newCenter.x = min(self.superview!.bounds.size.width - halfx, newCenter.x);
+        
+        let halfy = CGRectGetMidY(self.bounds);
+        newCenter.y = max(0, newCenter.y);
+        newCenter.y = min(frame.size.height, newCenter.y);
+        
+        
+        thumbImageView.center = newCenter
+        
+        
+        gesture.setTranslation(CGPointMake(0, 0), inView: self)
+        
+        println(newPoint.y)
+        
+        frontView.frame = CGRectMake(0, frame.size.height, frontView.frame.size.width, -(frame.size.height-newCenter.y))
+        
+        backgroundColor = UIColor.todaitBackgroundGray().colorWithAlphaComponent(newCenter.y/frame.size.height)
+        
+        
+        
+        
+        if gesture.state == UIGestureRecognizerState.Began {
+            
+            
+            if isMax == true {
+               
+                thumbImageView.setImageSelected(true)
+                
+            }else if chartOn == true {
+                
+                thumbImageView.setImageOn(true)
+                
+            }else{
+                
+                thumbImageView.setImageOn(false)
+                
+            }
+            
+        }else if gesture.state == UIGestureRecognizerState.Ended {
+            
+            if isMax == true {
+                
+                thumbImageView.setImageSelected(true)
+                
+            }else if chartOn == true {
+                
+                thumbImageView.setImageOn(true)
+                
+            }else{
+                
+                thumbImageView.setImageOn(false)
+                
+            }
+            
+        }
+        
+        
+        if frame.size.height == newCenter.y {
+            thumbImageView.setZeroImage()
+        }
+        
+        currentValue = CGFloat(maxValue) * CGFloat(1 - (newCenter.y/frame.size.height))
+        self.delegate.needToChartUpdate()
+    }
+
+    required init(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func setChartOn(on:Bool){
+        
+        isMax = false
+        thumbImageView.setImageOn(on)
+        
+        if on == true {
+            
+            chartOn = true
+            frontView.backgroundColor = frontOnColor
+        
+        }else{
+        
+            chartOn = false
+            frontView.backgroundColor = frontOffColor
+            
+        }
+        
+    }
+    
+    func setChartMax(){
+        
+        isMax = true
+        
+        thumbImageView.setImageSelected(true)
+        frontView.backgroundColor = maxColor
+        
+    }
+    
+    func setMaxValue(maxValue:CGFloat){
+        
+        if isAnimating == true {
+            return
+        }
+        
+        self.maxValue = maxValue
+        let height =  CGFloat(currentValue)/CGFloat(maxValue) * frame.size.height
+        
+        var newFrame = frontView.frame
+        newFrame.size.height = -height
+        
+        UIView.animateWithDuration(0.2, animations: { () -> Void in
+            self.frontView.frame = newFrame
+            self.thumbImageView.center = CGPointMake(self.frame.size.width/2, self.frame.size.height-height)
+        }) { (Bool) -> Void in
+            self.isAnimating = false
+        }
+        
+    }
+    
+    func setStroke(){
+        
+        setMaxValue(maxValue)
+        
+    }
+    
     /*
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
