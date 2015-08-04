@@ -59,6 +59,8 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     let weekValue = [1,2,4,8,16,32,64]
     var selectedWeekDays:Int = 0
     
+    
+    var startDate:NSDate!
     var dayAmount:CGFloat! = 0
     var totalAmount:CGFloat! = 0
     
@@ -103,8 +105,12 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         baseView.addSubview(dateInfoLabel)
         
         
+        let dateForm = NSDateFormatter()
+        dateForm.dateFormat = "yyyy.MM.dd (E)"
+        
+        
         startLabel = UILabel(frame: CGRectMake(59*ratio, 0, 109*ratio, 55*ratio))
-        startLabel.text = "2015.07.30 (목)"
+        startLabel.text = dateForm.stringFromDate(startDate)
         startLabel.textColor = UIColor.todaitGray()
         startLabel.textAlignment = NSTextAlignment.Right
         startLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 14*ratio)
@@ -119,7 +125,7 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         baseView.addSubview(dashLabel)
         
         endLabel = UILabel(frame: CGRectMake(180*ratio, 0, 109*ratio, 55*ratio))
-        endLabel.text = "2015.08.04 (화)"
+        endLabel.text = "2015.08.12 (화)"
         endLabel.textColor = UIColor.todaitDarkGray()
         endLabel.textAlignment = NSTextAlignment.Left
         endLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 16*ratio)
@@ -163,10 +169,10 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         
         
         
-        weekendButton = ColorButton(frame:CGRectMake(92*ratio, 66*ratio, 30*ratio, 17*ratio))
+        weekendButton = ColorButton(frame:CGRectMake(92*ratio, 66*ratio, 30*ratio, 16*ratio))
         weekendButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Light", size: 8*ratio)
         weekendButton.setTitle("주말", forState: UIControlState.Normal)
-        weekendButton.layer.cornerRadius = 3
+        weekendButton.layer.cornerRadius = 5
         weekendButton.clipsToBounds = true
         weekendButton.normalTitleColor = UIColor.todaitDarkGray()
         weekendButton.highlightedTitleColor = UIColor.whiteColor()
@@ -182,7 +188,7 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         
         for var index = 0 ; index < 7 ; index++ {
             
-            let amountLabel = ColorLabel(frame:CGRectMake(7*ratio + CGFloat(index)*44*ratio,90*ratio,44*ratio,22*ratio))
+            let amountLabel = ColorLabel(frame:CGRectMake(1*ratio + CGFloat(index)*45*ratio,90*ratio,44*ratio,22*ratio))
             amountLabel.textAlignment = NSTextAlignment.Center
             amountLabel.textOnColor = UIColor.todaitGray()
             amountLabel.textOffColor = UIColor.todaitBackgroundGray()
@@ -199,7 +205,7 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         
         for var index = 0 ; index < 7 ; index++ {
             
-            let thumbChartBox = ThumbChartBox(frame:CGRectMake(20*ratio + CGFloat(index)*44*ratio,113*ratio,20*ratio,160*ratio))
+            let thumbChartBox = ThumbChartBox(frame:CGRectMake(14*ratio + CGFloat(index)*45*ratio,113*ratio,20*ratio,160*ratio))
             thumbChartBox.frontOnColor = UIColor.todaitGreen()
             thumbChartBox.frontOffColor = UIColor.todaitLightGray()
             thumbChartBox.maxColor = UIColor.colorWithHexString("#95CCC4")
@@ -223,7 +229,7 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         
         for var index = 0 ; index < 7 ; index++ {
             
-            let weekButton = ColorButton(frame:CGRectMake(7*ratio + CGFloat(index)*44*ratio,280*ratio,44*ratio,19*ratio))
+            let weekButton = ColorButton(frame:CGRectMake(1*ratio + CGFloat(index)*45*ratio,280*ratio,44*ratio,19*ratio))
             weekButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 8*ratio)
             weekButton.setTitle(weekTitle[index], forState: UIControlState.Normal)
             //weekButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
@@ -382,6 +388,47 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         
         
         
+        var isAllOff:Bool = false
+        var currentZero:Bool = true
+        
+        for var index = 0 ; index < 7 ; index++ {
+            if mask[index] == true {
+                isAllOff = true
+            }
+            
+            if data[index] > 0 {
+                currentZero = false
+            }
+        }
+        
+        
+        if isAllOff == false || currentZero == true {
+            endLabel.text = "-"
+            return
+        }
+        
+        
+        
+        var startOfWeek = getDayOfWeek(getDateFromDateNumber(getTodayDateNumber()))
+        var tempSum:CGFloat! = totalAmount
+        var day = 0
+        
+        for ; tempSum > 0 ; day++ {
+            
+            let arrayIndex = (day + startOfWeek - 1)%7
+            
+            if mask[arrayIndex] == true {
+                tempSum = tempSum - data[arrayIndex]
+            }else{
+                
+            }
+        }
+        
+        
+        let dateForm = NSDateFormatter()
+        dateForm.dateFormat = "yyyy.MM.dd (E)"
+        
+        endLabel.text = dateForm.stringFromDate(startDate.addDay(day))
     }
     
     func dateCalulate(data:[CGFloat],mask:[Bool])->[ChartStatus]{
