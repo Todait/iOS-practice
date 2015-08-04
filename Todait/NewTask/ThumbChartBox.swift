@@ -170,23 +170,11 @@ class ThumbChartBox: BasicView {
     
     func setMaxValue(maxValue:CGFloat){
         
-        if isAnimating == true {
-            return
-        }
-        
         self.maxValue = maxValue
         let height =  CGFloat(currentValue)/CGFloat(maxValue) * frame.size.height
         
-        var newFrame = frontView.frame
-        newFrame.size.height = -height
-        
-        UIView.animateWithDuration(0.2, animations: { () -> Void in
-            self.frontView.frame = newFrame
-            self.thumbImageView.center = CGPointMake(self.frame.size.width/2, self.frame.size.height-height)
-        }) { (Bool) -> Void in
-            self.isAnimating = false
-        }
-        
+        self.frontView.frame = CGRectMake(0, frame.size.height, frontView.frame.size.width, -height)
+        self.thumbImageView.center = CGPointMake(self.frame.size.width/2, self.frame.size.height-height)
     }
     
     func setStroke(){

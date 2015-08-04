@@ -59,10 +59,13 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     let weekValue = [1,2,4,8,16,32,64]
     var selectedWeekDays:Int = 0
     
+    var maxValue:CGFloat! = 0
     
     var startDate:NSDate!
     var dayAmount:CGFloat! = 0
     var totalAmount:CGFloat! = 0
+    var titleString:String! = ""
+    var unitString:String! = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -143,7 +146,7 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         everydayButton = ColorButton(frame:CGRectMake(16*ratio, 66*ratio, 30*ratio, 17*ratio))
         everydayButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Light", size: 8*ratio)
         everydayButton.setTitle("매일", forState: UIControlState.Normal)
-        everydayButton.layer.cornerRadius = 3
+        everydayButton.layer.cornerRadius = 5
         everydayButton.clipsToBounds = true
         everydayButton.normalTitleColor = UIColor.todaitDarkGray()
         everydayButton.highlightedTitleColor = UIColor.whiteColor()
@@ -157,7 +160,7 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         weekdayButton = ColorButton(frame:CGRectMake(54*ratio, 66*ratio, 30*ratio, 17*ratio))
         weekdayButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Light", size: 8*ratio)
         weekdayButton.setTitle("주중", forState: UIControlState.Normal)
-        weekdayButton.layer.cornerRadius = 3
+        weekdayButton.layer.cornerRadius = 5
         weekdayButton.clipsToBounds = true
         weekdayButton.normalTitleColor = UIColor.todaitDarkGray()
         weekdayButton.highlightedTitleColor = UIColor.whiteColor()
@@ -366,16 +369,25 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         
         var chartStatus:[ChartStatus] = dateCalulate(data, mask: mask)
         
+        var sumData:CGFloat = 0
+        var maxData:CGFloat = 0
         
         for var index = 0 ; index < 7 ; index++ {
             
             let status = chartStatus[index]
             let chart = weekCharts[index]
+            let button = weekButtons[index]
             let label = amountLabels[index]
             let data = data[index]
             label.text = String(format: "%.0f개", arguments: [data])
             
+            
+            sumData = sumData + data
         
+            if maxData < data {
+                maxData = data
+            }
+            
             
             switch status {
             case .On: chart.setChartOn(true)
@@ -384,6 +396,14 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
             default: return
             }
             
+        }
+        
+        maxValue = 1.2 * maxData
+        
+        for var index = 0 ; index < 7 ; index++ {
+            let chart = weekCharts[index]
+            chart.setMaxValue(maxValue)
+       
         }
         
         
