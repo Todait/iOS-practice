@@ -224,7 +224,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         
         
-        for index in 0...3 {
+        for index in 0...9 {
             
             
             let name:String = String.categoryTestNameAtIndex(index)
@@ -249,7 +249,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         let taskED = NSEntityDescription.entityForName("Task", inManagedObjectContext:managedObjectContext!)
         
-        for index in 0...5 {
+        for index in 0...15 {
             
             let name:String = String.categoryTestNameAtIndex(Int(rand()%20))
             let color:String = String.categoryColorStringAtIndex(Int(rand()%20))
@@ -261,8 +261,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             task.priority = NSDate().timeIntervalSince1970 + taskTestCount
             task.unit = "회"
             task.taskType = String.taskTestTaskType(Int(rand()%4))
-            task.startDate = 20150710
-            task.endDate = 20150810
+            task.startDate = getTodayDateNumber()
+            task.endDate = getTodayDateNumber()
             task.categoryId = category
             createTestWeek(task)
             
@@ -278,13 +278,13 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         let week = Week(entity:weekED!,insertIntoManagedObjectContext:managedObjectContext!)
         
         week.taskId = task
-        week.mon = Int(rand()%5)
-        week.sun = Int(rand()%5)
-        week.wed = Int(rand()%5)
-        week.thu = Int(rand()%5)
-        week.tue = Int(rand()%5)
-        week.sat = Int(rand()%5)
-        week.fri = Int(rand()%5)
+        week.mon = Int(rand()%10000)
+        week.sun = Int(rand()%20000)
+        week.wed = Int(rand()%20000)
+        week.thu = Int(rand()%20000)
+        week.tue = Int(rand()%20000)
+        week.sat = Int(rand()%20000)
+        week.fri = Int(rand()%10000)
         
     }
     
@@ -693,29 +693,17 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     
     func addListButton(){
-        listButton = UIButton(frame:CGRectMake(308*ratio - 24,33,19,19))
-        listButton.setImage(UIImage(named: "bt_hamburger@3x.png"),forState: UIControlState.Normal)
-        listButton.addTarget(self, action:Selector("showList"), forControlEvents: UIControlEvents.TouchUpInside)
-        view.addSubview(listButton)
         
-        addStudyButton()
-        addCategoryButton()
-        addSortButton()
         
+        if listButton == nil {
+            
+            listButton = UIButton(frame:CGRectMake(320*ratio - 44 ,20,44,44))
+            listButton.setImage(UIImage(named: "bt_hamburger_h@3x.png"),forState: UIControlState.Normal)
+            listButton.addTarget(self, action:Selector("showList"), forControlEvents: UIControlEvents.TouchUpInside)
+            view.addSubview(listButton)
+            
+        }
     }
-    
-    func addStudyButton(){
-        
-    }
-    
-    func addCategoryButton(){
-        
-    }
-    
-    func addSortButton(){
-        
-    }
-    
     
     func showList(){
         
@@ -727,8 +715,13 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         }
         */
         if mainCategoryCollectionVC.view.hidden == true {
+            
+            listButton.setImage(UIImage(named: "bt_closed_h@3x.png"),forState: UIControlState.Normal)
             mainCategoryCollectionVC.view.hidden = false
+            
         }else{
+            
+            listButton.setImage(UIImage(named: "bt_hamburger_h@3x.png"),forState: UIControlState.Normal)
             mainCategoryCollectionVC.view.hidden = true
         }
         
@@ -756,8 +749,6 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             let day:Day! = task.getDay(getTodayDateNumber())
             timerVC.task = task
             timerVC.day = day
-            
-            //timerVC.task =
             
         }else if segue.identifier == "ShowNewTaskView" {
             let newTaskVC = segue.destinationViewController as! NewTaskViewController

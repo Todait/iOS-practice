@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class MainTabbarViewController: BasicViewController,UITabBarDelegate{
+class MainTabbarViewController: BasicViewController,UITabBarDelegate,SelectTaskDelegate{
     
     var viewControllers:[BasicViewController] = []
     var tabButtons:[MainTabbarButton] = []
@@ -97,14 +97,14 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
         
         let profileVC = ProfileViewController()
         addChildViewController(profileVC)
-        //viewControllers.append(profileVC)
+        viewControllers.append(profileVC)
     }
     
     func setupLoginViewController(){
         
         let loginVC = LoginViewController()
         addChildViewController(loginVC)
-        viewControllers.append(loginVC)
+        //viewControllers.append(loginVC)
     }
     
     func addTabbarView(){
@@ -144,8 +144,8 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
         
         timeTableButton = MainTabbarButton(frame: CGRectMake(tabbarWidth, 0, tabbarWidth, 49*ratio))
         
-        timeTableButton.normalImage = UIImage.maskColor("01_main_basic_gray@3x_05.png", color: UIColor.todaitDarkGray())
-        timeTableButton.highlightImage = UIImage.maskColor("01_main_basic_gray@3x_05.png", color: UIColor.whiteColor())
+        timeTableButton.normalImage = UIImage.maskColor("ic_main_timelog@3x.png", color: UIColor.todaitDarkGray())
+        timeTableButton.highlightImage = UIImage.maskColor("ic_main_timelog@3x.png", color: UIColor.whiteColor())
         timeTableButton.setupSelected(false)
         timeTableButton.buttonLabel.text = getTimeTableString()
         timeTableButton.buttonLabel.adjustsFontSizeToFitWidth = true
@@ -159,16 +159,58 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
         newTaskButton = MainTabbarButton(frame: CGRectMake(tabbarWidth*2, 0, tabbarWidth, 49*ratio))
         
         newTaskButton.iconImageView.frame = CGRectMake((tabbarWidth-35*ratio)/2, 7*ratio, 35*ratio, 35*ratio)
-        newTaskButton.iconImageView.image = UIImage(named: "01_main_basic_gray@3x_12.png")
+        newTaskButton.iconImageView.image = UIImage(named: "ic_main_add@3x.png")
         newTaskButton.addTarget(self, action: Selector("showNewTaskVC"), forControlEvents: UIControlEvents.TouchUpInside)
         
         tabbarView.addSubview(newTaskButton)
     }
     
+    func showTimerVC(){
+        
+       
+        //performSegueWithIdentifier("ShowNewTaskView", sender: self)
+        
+        let timerTaskVC = TimerTaskViewController()
+        let navigationVC = UINavigationController(rootViewController: timerTaskVC)
+        self.navigationController?.presentViewController(navigationVC, animated: true, completion: { () -> Void in
+            
+        })
+    }
+    
+    func showTaskVC(){
+        
+        let newGoalStep1VC = NewGoalStep1ViewController()
+        let navigationVC = UINavigationController(rootViewController: newGoalStep1VC)
+        self.navigationController?.presentViewController(navigationVC, animated: true, completion: { () -> Void in
+        
+        })
+    }
+    
     func showNewTaskVC(){
         
-        performSegueWithIdentifier("ShowNewTaskView", sender: self)
+        //performSegueWithIdentifier("ShowNewTaskView", sender: self)
+       
         
+        var selectTaskVC = SelectTaskViewController()
+        selectTaskVC.delegate = self
+        selectTaskVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        
+        self.navigationController?.presentViewController(selectTaskVC, animated: false, completion: { () -> Void in
+            
+        })
+        
+        /*
+        
+        let newGoalStep1VC = NewGoalStep1ViewController()
+        let navigationVC = UINavigationController(rootViewController: newGoalStep1VC)
+       
+        
+        
+        self.navigationController?.presentViewController(navigationVC, animated: true, completion: { () -> Void in
+            
+            
+        })
+        */
         
     }
     
@@ -181,7 +223,6 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
             //newTaskVC.delegate = self
             newTaskVC.mainColor = UIColor.todaitGreen()
             newTaskVC.category = getDefaultCategory()
-            
             
             
             if isShowAllCategory == true {

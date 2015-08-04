@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,CategoryDelegate{
+class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,CategoryDelegate,TodaitNavigationDelegate{
     var mainColor: UIColor!
     
     var categoryButton: UIButton!
@@ -76,8 +76,14 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.todaitNavBar.hidden = true
-        
+        self.todaitNavBar.hidden = false
+        self.titleLabel.text = "기간 계산"
+        self.todaitNavBar.backButton.hidden = false
+        self.todaitNavBar.todaitDelegate = self
+    }
+    
+    func backButtonClk(){
+        self.navigationController?.popViewControllerAnimated(true)
     }
     
     func setupTimeTaskViewController(){
@@ -109,7 +115,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     }
     
     func addTimeTaskTableView(){
-        timeTaskTableView = UITableView(frame: CGRectMake(0,0,width,view.frame.size.height), style: UITableViewStyle.Plain)
+        timeTaskTableView = UITableView(frame: CGRectMake(0,navigationHeight,width,view.frame.size.height - navigationHeight), style: UITableViewStyle.Plain)
         timeTaskTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         timeTaskTableView.separatorStyle = UITableViewCellSeparatorStyle.None
         timeTaskTableView.contentInset = UIEdgeInsetsMake(0*ratio, 0, 0, 0)

@@ -83,7 +83,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         taskTextField = UITextField(frame: CGRectMake(20*ratio, 10*ratio, 255*ratio, 30*ratio))
         taskTextField.placeholder = "이곳에 목표를 입력해주세요"
         taskTextField.textAlignment = NSTextAlignment.Left
-        taskTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10*ratio)
+        taskTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
         taskTextField.textColor = UIColor.todaitGray()
         taskTextField.returnKeyType = UIReturnKeyType.Next
         taskTextField.backgroundColor = UIColor.whiteColor()
@@ -250,12 +250,12 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         keyboardHelpView.hidden = true
         
         
-        let leftButton = UIButton(frame: CGRectMake(15*ratio, 0, 38*ratio, 38*ratio))
+        let leftButton = UIButton(frame: CGRectMake(7*ratio, 0, 38*ratio, 38*ratio))
         leftButton.setImage(UIImage(named: "bt_keybord_left@3x.png"), forState: UIControlState.Normal)
         leftButton.addTarget(self, action: Selector("leftButtonClk"), forControlEvents: UIControlEvents.TouchDown)
         keyboardHelpView.addSubview(leftButton)
     
-        let rightButton = UIButton(frame: CGRectMake(58*ratio, 0, 38*ratio, 38*ratio))
+        let rightButton = UIButton(frame: CGRectMake(50*ratio, 0, 38*ratio, 38*ratio))
         rightButton.setImage(UIImage(named: "bt_keybord_right@3x.png"), forState: UIControlState.Normal)
         rightButton.addTarget(self, action: Selector("rightButtonClk"), forControlEvents: UIControlEvents.TouchDown)
         keyboardHelpView.addSubview(rightButton)
@@ -295,7 +295,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     func rightButtonClk(){
         
         switch currentStatus as NewGoalStep2Status {
-        case .Goal: currentStatus = .Date ; showDatePicker()
+        case .Goal: totalAmountField.becomeFirstResponder() ; currentStatus = .Total//currentStatus = .Date ; showDatePicker()
         case .Date: totalAmountField.becomeFirstResponder() ; currentStatus = .Total
         case .Total: dayAmountField.becomeFirstResponder() ; currentStatus = .Day
         case .Day: unitTextField.becomeFirstResponder() ; currentStatus = .Unit
@@ -571,6 +571,8 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         let step3AmountVC = NewGoalStep3AmountViewController()
         step3AmountVC.startDate = datePicker.date
+        step3AmountVC.titleString = taskTextField.text 
+        step3AmountVC.unitString = unitTextField.text
         
         if let totalAmount = totalAmountField.text.toInt() {
             step3AmountVC.totalAmount = CGFloat(totalAmount)
@@ -584,8 +586,10 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         if let dayAmount = dayAmountField.text.toInt() {
             step3AmountVC.dayAmount = CGFloat(dayAmount)
+            step3AmountVC.maxValue = CGFloat(dayAmount) * 2
         }else{
             step3AmountVC.dayAmount = 0
+            step3AmountVC.maxValue = step3AmountVC.totalAmount
         }
         
         self.navigationController?.pushViewController(step3AmountVC, animated: true)

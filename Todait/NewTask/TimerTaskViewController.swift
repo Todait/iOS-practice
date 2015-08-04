@@ -52,6 +52,10 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     var dayAmount:Int! = 0
     var category:Category!
     
+    
+    
+    var closeButton:UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -65,8 +69,30 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.todaitNavBar.hidden = true
+        self.todaitNavBar.hidden = false
+        self.titleLabel.text = "시간 측정"
+        self.titleLabel.hidden = false
+        addCloseButton()
         
+    }
+    
+    func addCloseButton(){
+        
+        if closeButton != nil {
+            return
+        }
+        
+        closeButton = UIButton(frame: CGRectMake(10, 30, 28, 28))
+        closeButton.setBackgroundImage(UIImage(named: "newgoal_closed@3x.png"), forState: UIControlState.Normal)
+        closeButton.addTarget(self, action: Selector("closeButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(closeButton)
+    }
+    
+    func closeButtonClk(){
+        
+        self.dismissViewControllerAnimated(true, completion: { () -> Void in
+            
+        })
     }
     
     func setupTimeTaskViewController(){
@@ -81,7 +107,7 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
     
     
     func addTimeTaskTableView(){
-        timeTaskTableView = UITableView(frame: CGRectMake(0,0,width,view.frame.size.height), style: UITableViewStyle.Plain)
+        timeTaskTableView = UITableView(frame: CGRectMake(0,navigationHeight,width,view.frame.size.height - navigationHeight), style: UITableViewStyle.Plain)
         timeTaskTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         timeTaskTableView.separatorStyle = UITableViewCellSeparatorStyle.None
         timeTaskTableView.contentInset = UIEdgeInsetsMake(0*ratio, 0, 0, 0)
@@ -208,7 +234,7 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         
         taskTextField = UITextField(frame: CGRectMake(20*ratio, 9.5*ratio, 255*ratio, 30*ratio))
         taskTextField.placeholder = "이곳에 목표를 입력해주세요"
-        taskTextField.textAlignment = NSTextAlignment.Center
+        taskTextField.textAlignment = NSTextAlignment.Left
         taskTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         taskTextField.textColor = UIColor.colorWithHexString("#969696")
         taskTextField.returnKeyType = UIReturnKeyType.Next
@@ -733,24 +759,8 @@ class TimerTaskViewController: BasicViewController,UITableViewDelegate,UITableVi
         */
     }
     
-    
-    
-    func getTimeString(time:Int)->String{
-        
-        let hour = time.toHour()
-        let minute = time.toMinute()
-        
-        if hour == 0 {
-            return "주 \(minute)분"
-        }else{
-            if minute == 0 {
-                return "주 \(hour)시간"
-            }else{
-                return "주 \(hour)시간 \(minute)분"
-            }
-        }
-        
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        taskTextField.resignFirstResponder()
     }
-    
     
 }

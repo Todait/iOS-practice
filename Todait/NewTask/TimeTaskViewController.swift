@@ -989,22 +989,4 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
     }
     
     
-    func getTimeString(time:Int)->String{
-        
-        let hour = time.toHour()
-        let minute = time.toMinute()
-        
-        if hour == 0 {
-            return "주 \(minute)분"
-        }else{
-            if minute == 0 {
-                return "주 \(hour)시간"
-            }else{
-                return "주 \(hour)시간 \(minute)분"
-            }
-        }
-        
-    }
-    
-    
 }

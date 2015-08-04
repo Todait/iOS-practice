@@ -89,7 +89,6 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate,Valida
     
     var timerTaskVC:TimerTaskViewController!
     var timeTaskVC:TimeTaskViewController!
-    var amountTaskVC:AmountTaskViewController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -167,7 +166,6 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate,Valida
         setButtonHighlight(amountTaskButton, highlight: true)
         
         clearTaskView()
-        taskView.addSubview(amountTaskVC.view)
         
     }
     
@@ -214,13 +212,6 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate,Valida
         timeTaskVC = TimeTaskViewController()
         timeTaskVC.view.frame = CGRectMake(0, 0, 320*ratio, height - navigationHeight - 40*ratio)
         addChildViewController(timeTaskVC)
-    }
-    
-    func setupAmountTaskViewController(){
-        amountTaskVC = AmountTaskViewController()
-        amountTaskVC.view.frame = CGRectMake(0, 0, 320*ratio, height - navigationHeight - 40*ratio)
-        addChildViewController(amountTaskVC)
-        
     }
     
     func setupCategory(){
