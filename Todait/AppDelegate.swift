@@ -32,6 +32,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         application.registerUserNotificationSettings(settings)
         
         
+        
+        downloadDefaultImagesFromS3()
+        
+        
         return true
     }
     
@@ -75,6 +79,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     }
 
+    
+    func downloadDefaultImagesFromS3(){
+        
+        let transferManager =  AWSS3TransferManager.defaultS3TransferManager()
+        
+        let downloadRequest = AWSS3TransferManagerDownloadRequest.new()
+        downloadRequest.bucket = AWSS3_BUCKET_NAME
+        //downloadRequest.key = "base/" + fileName
+        //downloadRequest.body = uploadURL
+        
+    }
     
     
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
