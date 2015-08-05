@@ -141,6 +141,16 @@ public func getTimeStringOfTwoArgumentsFromSeconds(seconds : NSTimeInterval ) ->
 }
 
 
+public func getTimeStringOfHourMinuteFromSeconds(seconds : NSTimeInterval ) -> String {
+    
+    
+    let remainder : Int = Int(seconds % 3600 )
+    let hour : Int = Int(seconds / 3600)
+    let minute : Int = Int(remainder / 60)
+    let second : Int = Int(remainder % 60)
+    
+    return String(format:  "%02lu:%02lu", arguments: [hour,minute])
+}
 
 
 
