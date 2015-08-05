@@ -136,6 +136,11 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     func textFieldDidBeginEditing(textField: UITextField) {
         
+        
+        if status == Status.Date {
+            hideDatePicker()
+        }
+        
         currentTextField.textColor = UIColor.todaitGray()
         currentTextField = textField
         currentTextField.textColor = UIColor.todaitRed()
@@ -276,7 +281,6 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         keyboardHelpView = UIView(frame: CGRectMake(0, height , width, 38*ratio + 185*ratio))
         keyboardHelpView.backgroundColor = UIColor.whiteColor()
-        keyboardHelpView.hidden = true
         
         
         let leftButton = UIButton(frame: CGRectMake(7*ratio, 0, 38*ratio, 38*ratio))
@@ -311,9 +315,10 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     func leftButtonClk(){
         
+        
         switch status as Status {
         case .Date: status = .Goal ; hideDatePicker(); goalTextField.becomeFirstResponder()
-        case .Total: status = .Date ; showDatePicker()
+        case .Total: goalTextField.becomeFirstResponder() ; status = .Goal
         case .Day: totalAmountField.becomeFirstResponder() ; status = .Total
         case .Unit: dayAmountField.becomeFirstResponder() ; status = .Day
         default: status = .None ; confirmButtonClk()
@@ -325,7 +330,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         switch status as Status {
         case .Goal: totalAmountField.becomeFirstResponder() ; status = .Total//status = .Date ; showDatePicker()
-        case .Date: totalAmountField.becomeFirstResponder() ; status = .Total
+        case .Date:  hideDatePicker() ; totalAmountField.becomeFirstResponder() ; status = .Total
         case .Total: dayAmountField.becomeFirstResponder() ; status = .Day
         case .Day: unitTextField.becomeFirstResponder() ; status = .Unit
         default: status = .None ; confirmButtonClk()
@@ -349,10 +354,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             self.datePickerView.transform = CGAffineTransformMakeTranslation(0, -185*self.ratio - 38*self.ratio)
-            
-            if needToAnimate == true {
-                self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, -185*self.ratio - 38*self.ratio)
-            }
+            self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, -185*self.ratio - 38*self.ratio)
             
         }) { (Bool) -> Void in
             
@@ -367,13 +369,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             
             self.datePickerView.transform = CGAffineTransformMakeTranslation(0, 0*self.ratio)
-            
-            if let status = self.status{
-                
-                if status == Status.None  {
-                    self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, 0)
-                }
-            }
+             self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, 0)
             
             }) { (Bool) -> Void in
                 
@@ -536,17 +532,13 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         */
         
         
-        self.keyboardHelpView.hidden = false
-        
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             
-            if self.status != Status.None {
-                self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height - 38*self.ratio)
-            }
+            self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height - 38*self.ratio)
             
             }) { (Bool) -> Void in
                 
-                self.keyboardHelpView.hidden = false
+                
         }
         
     }
@@ -563,15 +555,10 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             
             
-            if self.status != Status.Date {
-                self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0,0)
-            }
+           self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0,0)
             
             }) { (Bool) -> Void in
                 
-                if self.status != Status.Date {
-                    self.keyboardHelpView.hidden = true
-                }
         }
         
     }
@@ -589,7 +576,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         nextButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
         nextButton.setTitle("Next", forState: UIControlState.Normal)
-        nextButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18*ratio)
+        nextButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
         nextButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         nextButton.addTarget(self, action: Selector("nextButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         nextButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right
