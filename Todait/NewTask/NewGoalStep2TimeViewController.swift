@@ -7,21 +7,34 @@
 //
 
 import UIKit
+import CoreData 
 
 class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,CategoryDelegate,TodaitNavigationDelegate{
+    
+    
+    private enum Status{
+        case Goal
+        case Total
+        case Start
+        case End
+        case Unit
+        case None
+    }
+    
+    
     var mainColor: UIColor!
     
     var categoryButton: UIButton!
     
     
-    var taskTextField: UITextField!
+    var goalTextField: UITextField!
     var unitTextField: UITextField!
     var unitView: UnitInputView!
     
     
-    var totalTextField: UITextField!
-    var startRangeTextField: UITextField!
-    var endRangeTextField: UITextField!
+    var totalAmountField: UITextField!
+    var startAmountField: UITextField!
+    var endAmountField: UITextField!
     var dayTextField: UITextField!
     
     var saveButton: UIButton!
@@ -55,20 +68,52 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     
     
     
-    var aimAmount:Int! = 0
-    var startRangeAmount:Int! = 0
-    var endRangeAmount:Int! = 0
-    var dayAmount:Int! = 0
+    
+    
+    var totalAmount:Int!
+    var startRangeAmount:Int!
+    var endRangeAmount:Int!
+    var dayAmount:Int!
+    
+    
+    var nextButton:UIButton!
+    var category:Category!
+    
+    var keyboardHelpView:UIView!
+    private var status:Status! = Status.None
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = UIColor.todaitBackgroundGray()
+        
+        
+        loadDefaultCategory()
         setupTimeTaskViewController()
         
+        initCellSubViews()
         addUnitView()
         addTimeTaskTableView()
+        addKeyboardHelpView()
         
+        
+    }
+    
+    func loadDefaultCategory(){
+        
+        let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
+        let request = NSFetchRequest()
+        
+        request.entity = entityDescription
+        
+        var error: NSError?
+        
+        var categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as? [Category]
+        
+        if let categoryData = categoryData {
+            category = categoryData.first
+        }
         
     }
     
@@ -80,10 +125,114 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         self.titleLabel.text = "기간 계산"
         self.todaitNavBar.backButton.hidden = false
         self.todaitNavBar.todaitDelegate = self
+        
+        addNextButton()
+        registerForKeyboardNotification()
+        
     }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        resignForKeyboardNotification()
+    }
+    
+    func resignForKeyboardNotification(){
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+        
+    }
+    
+    
+    func registerForKeyboardNotification(){
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWasShown:"), name: UIKeyboardWillShowNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillBeHidden:"), name: UIKeyboardWillHideNotification, object: nil)
+        
+    }
+    
+    func keyboardWasShown(aNotification:NSNotification){
+        
+        var info:[NSObject:AnyObject] = aNotification.userInfo!
+        var kbSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)!.CGRectValue().size as CGSize
+        
+        
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            
+            if self.status != Status.None {
+                self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height - 38*self.ratio)
+            }
+            
+            }) { (Bool) -> Void in
+                
+        }
+        
+    }
+    
+    func keyboardWillBeHidden(aNotification:NSNotification){
+        
+        var contentInsets = UIEdgeInsetsZero
+        
+        
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            
+            self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0,0)
+            
+            }) { (Bool) -> Void in
+                
+        }
+        
+    }
+    
     
     func backButtonClk(){
         self.navigationController?.popViewControllerAnimated(true)
+    }
+    
+    func addNextButton(){
+        
+        if nextButton != nil {
+            return
+        }
+        
+        nextButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
+        nextButton.setTitle("Next", forState: UIControlState.Normal)
+        nextButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18*ratio)
+        nextButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        nextButton.addTarget(self, action: Selector("nextButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        nextButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right
+        view.addSubview(nextButton)
+    }
+    
+    func nextButtonClk(){
+        
+        
+        let step3TimeVC = NewGoalStep3TimeViewController()
+        step3TimeVC.startDate = periodStartDate
+        step3TimeVC.endDate = periodEndDate
+        step3TimeVC.titleString = goalTextField.text
+        step3TimeVC.unitString = unitTextField.text
+        
+        
+        if let totalAmount = totalAmountField.text.toInt() {
+        
+            step3TimeVC.totalAmount = CGFloat(totalAmount)
+       
+        }else{
+            step3TimeVC.totalAmount = 0
+            
+            let alert = UIAlertView(title: "Invalid", message: "전체분량을 입력해주세요.", delegate: nil, cancelButtonTitle: "Cancel")
+            alert.show()
+            return
+        }
+        
+        
+        self.navigationController?.pushViewController(step3TimeVC, animated: true)
+        
+        
     }
     
     func setupTimeTaskViewController(){
@@ -96,6 +245,114 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
     }
     
+    func initCellSubViews(){
+        goalTextField = UITextField(frame: CGRectMake(20*ratio, 10*ratio, 255*ratio, 30*ratio))
+        goalTextField.placeholder = "이곳에 목표를 입력해주세요"
+        goalTextField.textAlignment = NSTextAlignment.Left
+        goalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
+        goalTextField.textColor = UIColor.colorWithHexString("#969696")
+        goalTextField.returnKeyType = UIReturnKeyType.Next
+        goalTextField.backgroundColor = UIColor.whiteColor()
+        goalTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        goalTextField.text = aimString
+        goalTextField.tintColor = mainColor
+        goalTextField.delegate = self
+        status = Status.Goal
+        
+        currentTextField = goalTextField
+        
+        
+        
+        
+        categoryButton = UIButton(frame: CGRectMake(280*ratio,9.5*ratio, 30*ratio, 30*ratio))
+        categoryButton.setImage(UIImage(named: "category@3x.png"), forState: UIControlState.Normal)
+        categoryButton.layer.cornerRadius = 15*ratio
+        categoryButton.layer.borderWidth = 1
+        categoryButton.layer.borderColor = UIColor.todaitGray().CGColor
+        categoryButton.clipsToBounds = true
+        categoryButton.addTarget(self, action: Selector("showCategorySettingVC"), forControlEvents: UIControlEvents.TouchUpInside)
+       
+        categoryEdited(category)
+        
+        
+        
+        periodDayLabel = UILabel(frame: CGRectMake(272*ratio, 30*ratio, 33*ratio, 16*ratio))
+        periodDayLabel.text = periodDayString
+        periodDayLabel.textAlignment = NSTextAlignment.Left
+        periodDayLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10*ratio)
+        periodDayLabel.textColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.7)
+        
+        
+        totalButton = UIButton(frame: CGRectMake(19*ratio, 23*ratio, 89*ratio, 32*ratio))
+        totalButton.setTitle("전체", forState: UIControlState.Normal)
+        totalButton.setTitleColor(UIColor.todaitDarkGray(), forState: UIControlState.Normal)
+        totalButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
+        totalButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
+        totalButton.layer.borderColor = UIColor.colorWithHexString("#B2B2B2").CGColor
+        totalButton.layer.borderWidth = 0.5*ratio
+        totalButton.addTarget(self, action: Selector("totalButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        rangeButton = UIButton(frame: CGRectMake(108*ratio, 23*ratio, 89*ratio, 32*ratio))
+        rangeButton.setTitle("범위", forState: UIControlState.Normal)
+        rangeButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
+        rangeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
+        rangeButton.addTarget(self, action: Selector("rangeButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        setAmountButtonHighlight(totalButton, highlight: isTotal)
+        setAmountButtonHighlight(rangeButton, highlight: !isTotal)
+        
+        unitTextField = UITextField(frame: CGRectMake(206*ratio, 23*ratio, 89*ratio, 32*ratio))
+        unitTextField.placeholder = "단위입력"
+        unitTextField.tintColor = mainColor
+        unitTextField.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
+        unitTextField.textColor = UIColor.colorWithHexString("#969696")
+        unitTextField.returnKeyType = UIReturnKeyType.Next
+        unitTextField.textAlignment = NSTextAlignment.Center
+        unitTextField.backgroundColor = UIColor.whiteColor()
+        unitTextField.text = unitString
+        unitTextField.addTarget(self, action: Selector("updateUnitAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        unitTextField.delegate = self
+        
+        
+        
+        
+        
+        totalAmountField = UITextField(frame: CGRectMake(75*ratio, 21*ratio, 235*ratio, 16*ratio))
+        totalAmountField.textAlignment = NSTextAlignment.Left
+        totalAmountField.placeholder = "분량을 입력하세요"
+        totalAmountField.tintColor = mainColor
+        totalAmountField.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 14*ratio)
+        totalAmountField.textColor = UIColor.colorWithHexString("#969696")
+        totalAmountField.keyboardType = UIKeyboardType.NumberPad
+        totalAmountField.returnKeyType = UIReturnKeyType.Done
+        totalAmountField.backgroundColor = UIColor.whiteColor()
+        totalAmountField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        totalAmountField.delegate = self
+        
+        
+        
+        
+        
+        
+        startAmountField = UITextField(frame:CGRectMake(15*ratio, 20*ratio, 140*ratio, 17*ratio))
+        startAmountField.placeholder = "시작"
+        startAmountField.textAlignment = NSTextAlignment.Center
+        startAmountField.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
+        startAmountField.textColor = UIColor.todaitDarkGray()
+        startAmountField.keyboardType = UIKeyboardType.NumberPad
+        startAmountField.addTarget(self, action: Selector("updateStartAmount:"), forControlEvents: UIControlEvents.AllEvents)
+        startAmountField.delegate = self
+        
+        
+        endAmountField = UITextField(frame:CGRectMake(165*ratio, 20*ratio, 140*ratio, 17*ratio))
+        endAmountField.placeholder = "종료"
+        endAmountField.textAlignment = NSTextAlignment.Center
+        endAmountField.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
+        endAmountField.textColor = UIColor.todaitDarkGray()
+        endAmountField.addTarget(self, action: Selector("updateEndAmount:"), forControlEvents: UIControlEvents.AllEvents)
+        endAmountField.keyboardType = UIKeyboardType.NumberPad
+        endAmountField.delegate = self
+    }
     
     func addUnitView(){
         
@@ -115,7 +372,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     }
     
     func addTimeTaskTableView(){
-        timeTaskTableView = UITableView(frame: CGRectMake(0,navigationHeight,width,view.frame.size.height - navigationHeight), style: UITableViewStyle.Plain)
+        timeTaskTableView = UITableView(frame: CGRectMake(2*ratio,navigationHeight + 2*ratio,316*ratio,view.frame.size.height - navigationHeight - 2*ratio), style: UITableViewStyle.Plain)
         timeTaskTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         timeTaskTableView.separatorStyle = UITableViewCellSeparatorStyle.None
         timeTaskTableView.contentInset = UIEdgeInsetsMake(0*ratio, 0, 0, 0)
@@ -129,6 +386,107 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         view.addSubview(timeTaskTableView)
     }
     
+    
+    func addKeyboardHelpView(){
+        
+        keyboardHelpView = UIView(frame: CGRectMake(0, height , width, 38*ratio + 185*ratio))
+        keyboardHelpView.backgroundColor = UIColor.whiteColor()
+
+        
+        
+        let leftButton = UIButton(frame: CGRectMake(7*ratio, 0, 38*ratio, 38*ratio))
+        leftButton.setImage(UIImage(named: "bt_keybord_left@3x.png"), forState: UIControlState.Normal)
+        leftButton.addTarget(self, action: Selector("leftButtonClk"), forControlEvents: UIControlEvents.TouchDown)
+        keyboardHelpView.addSubview(leftButton)
+        
+        let rightButton = UIButton(frame: CGRectMake(50*ratio, 0, 38*ratio, 38*ratio))
+        rightButton.setImage(UIImage(named: "bt_keybord_right@3x.png"), forState: UIControlState.Normal)
+        rightButton.addTarget(self, action: Selector("rightButtonClk"), forControlEvents: UIControlEvents.TouchDown)
+        keyboardHelpView.addSubview(rightButton)
+        
+        
+        let confirmButton = UIButton(frame: CGRectMake(246*ratio, 0 , 74*ratio, 38*ratio))
+        confirmButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 74*ratio, 38*ratio)), forState: UIControlState.Normal)
+        confirmButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitDarkGreen(), frame: CGRectMake(0, 0, 74*ratio, 38*ratio)), forState: UIControlState.Highlighted)
+        confirmButton.setTitle("확인", forState: UIControlState.Normal)
+        confirmButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        confirmButton.addTarget(self, action: Selector("confirmButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        confirmButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 15*ratio)
+        
+        keyboardHelpView.addSubview(confirmButton)
+        
+        view.addSubview(keyboardHelpView)
+        
+        
+        let line = UIView(frame: CGRectMake(0, 38*ratio-1, width, 1))
+        line.backgroundColor = UIColor.colorWithHexString("#d1d5da")
+        keyboardHelpView.addSubview(line)
+        
+    }
+    
+    
+    
+    
+    func leftButtonClk(){
+        
+        if isTotal == true {
+            
+            switch status as Status {
+            
+            case .Total: goalTextField.becomeFirstResponder() ; status = .Goal
+            case .Unit: totalAmountField.becomeFirstResponder() ; status = .Total
+            default: status = .None ; confirmButtonClk()
+                
+            }
+            
+        }else{
+            
+            switch status as Status {
+            case .Start: goalTextField.becomeFirstResponder() ; status = .Goal
+            case .End: startAmountField.becomeFirstResponder() ; status = .Start
+            case .Unit: endAmountField.becomeFirstResponder() ; status = .End
+            default: status = .None ; confirmButtonClk()
+            }
+            
+        }
+    }
+    
+    
+    func rightButtonClk(){
+        
+        if isTotal == true {
+            
+            switch status as Status {
+            case .Goal: totalAmountField.becomeFirstResponder() ; status = .Total
+            case .Total: unitTextField.becomeFirstResponder() ; status = .Unit
+            default: status = .None ; confirmButtonClk()
+            }
+            
+        }else{
+            
+            switch status as Status {
+            case .Goal: startAmountField.becomeFirstResponder() ; status = .Start
+            case .Start: endAmountField.becomeFirstResponder() ; status = .End
+            case .End: unitTextField.becomeFirstResponder() ; status = .Unit
+            default: status = .None ; confirmButtonClk()
+            }
+            
+        }
+    }
+    
+    
+    func confirmButtonClk(){
+        
+        status = Status.None
+        currentTextField.textColor = UIColor.todaitGray()
+        currentTextField.resignFirstResponder()
+        
+        
+    }
+    
+    
+    
+
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
@@ -144,14 +502,12 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         if indexPath.row == 0 && indexPath.section == 0 {
             
-            addTaskTextField(cell)
+            addGoalTextField(cell)
             addCategoryButton(cell)
             
         }else if(indexPath.row == 1 && indexPath.section == 0){
             
             addAimDateSubView(cell)
-            
-            //addRangeTextField(cell)
             
         }else if(indexPath.row == 2 && indexPath.section == 0){
             
@@ -162,19 +518,12 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
             
             
             if isTotal == true {
-                addTotalTextField(cell)
+                addTotalAmountField(cell)
             }else{
                 addRangeTextField(cell,indexPath:indexPath)
-                //addRangeAmount(cell,indexPath.row)
             }
             
-            
-        }else if(indexPath.section == 2 ){
-            
-            addOptionView(cell)
         }
-        
-        
         return cell
     }
     
@@ -236,9 +585,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         }else if indexPath.row == 1 && indexPath.section == 0 {
             return 53*ratio
         }else if indexPath.row == 2 && indexPath.section == 0 {
-            return 60*ratio
-        }else if indexPath.section == 2 {
-            return 104*ratio
+            return 53*ratio
         }
         
         
@@ -250,71 +597,86 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         switch section {
         case 0: return 3
-        case 1:
-            if isTotal == true {
-                return 1
-            }else{
-                return 1 + rangeList.count
-            }
-        case 2: return 1
+        case 1: return 1
         default: return 0
+            
         }
         
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 3
+        return 2
     }
     
     
     func resignAllTextResponder(){
         
         unitTextField.resignFirstResponder()
-        taskTextField.resignFirstResponder()
-        totalTextField.resignFirstResponder()
-        startRangeTextField.resignFirstResponder()
-        endRangeTextField.resignFirstResponder()
+        goalTextField.resignFirstResponder()
+        
+        totalAmountField.resignFirstResponder()
+        startAmountField.resignFirstResponder()
+        endAmountField.resignFirstResponder()
         dayTextField.resignFirstResponder()
         
     }
     
     
     
-    func addTaskTextField(cell:UITableViewCell){
+    func addGoalTextField(cell:UITableViewCell){
         
-        taskTextField = UITextField(frame: CGRectMake(20*ratio, 9.5*ratio, 255*ratio, 30*ratio))
-        taskTextField.placeholder = "이곳에 목표를 입력해주세요"
-        taskTextField.textAlignment = NSTextAlignment.Center
-        taskTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
-        taskTextField.textColor = UIColor.colorWithHexString("#969696")
-        taskTextField.returnKeyType = UIReturnKeyType.Next
-        taskTextField.backgroundColor = UIColor.whiteColor()
-        taskTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        taskTextField.text = aimString
-        taskTextField.tintColor = mainColor
-        taskTextField.delegate = self
-        currentTextField = taskTextField
-        cell.contentView.addSubview(taskTextField)
+        
+        cell.contentView.addSubview(goalTextField)
         
         addLineView(cell)
     }
     
+    
+    
+    func textFieldDidBeginEditing(textField: UITextField) {
+        
+        currentTextField.textColor = UIColor.todaitGray()
+        currentTextField = textField
+        currentTextField.textColor = UIColor.todaitRed()
+        
+        
+        goalTextField.textColor = UIColor.todaitGray()
+        unitTextField.textColor = UIColor.todaitGray()
+        startAmountField.textColor = UIColor.todaitGray()
+        endAmountField.textColor = UIColor.todaitGray()
+        totalAmountField.textColor = UIColor.todaitGray()
+        
+        switch currentTextField {
+        case totalAmountField: status = Status.Total
+        case unitTextField: status = Status.Unit
+        case goalTextField: status = Status.Goal
+        case startAmountField: status = Status.Start
+        case endAmountField: status = Status.End
+        default : status = Status.None
+        }
+        
+    }
+    
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
         
-        currentTextField = textField
         
+        currentTextField = textField
+        currentTextField.textColor = UIColor.todaitRed()
+        
+        /*
         if currentTextField == unitTextField {
             unitView.hidden = false
         }else{
             unitView.hidden = true
         }
-        
+        */
         return true
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
-        if textField == taskTextField {
+        /*
+        if textField == goalTextField {
             
             unitView.hidden = false
             currentTextField = unitTextField
@@ -324,7 +686,8 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
             unitView.hidden = true
             
         }
-        
+        */
+
         currentTextField.becomeFirstResponder()
         
         return false
@@ -336,14 +699,6 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     
     func addCategoryButton(cell:UITableViewCell){
         
-        categoryButton = UIButton(frame: CGRectMake(280*ratio,9.5*ratio, 30*ratio, 30*ratio))
-        
-        categoryButton.setImage(UIImage(named: "category@3x.png"), forState: UIControlState.Normal)
-        categoryButton.layer.cornerRadius = 15*ratio
-        categoryButton.layer.borderWidth = 1
-        categoryButton.layer.borderColor = UIColor.todaitGray().CGColor
-        categoryButton.clipsToBounds = true
-        categoryButton.addTarget(self, action: Selector("showCategorySettingVC"), forControlEvents: UIControlEvents.TouchUpInside)
         cell.contentView.addSubview(categoryButton)
         
     }
@@ -355,6 +710,8 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         var categoryVC = CategorySettingViewController()
         categoryVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         categoryVC.delegate = self
+        categoryVC.selectedCategory = category
+        
         self.navigationController?.presentViewController(categoryVC, animated: false, completion: { () -> Void in
             
         })
@@ -363,6 +720,12 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     }
     
     func categoryEdited(editedCategory:Category){
+        
+        categoryButton.layer.borderColor = UIColor.clearColor().CGColor
+        categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
+        categoryButton.backgroundColor = UIColor.colorWithHexString(editedCategory.color)
+        
+        self.category = editedCategory
         
     }
     
@@ -384,82 +747,50 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     func addRangeTextField(cell:UITableViewCell,indexPath:NSIndexPath){
         
         
-        let periodStartTextField = UITextField(frame:CGRectMake(15*ratio, 28*ratio, 140*ratio, 20*ratio))
-        periodStartTextField.placeholder = "시작"
-        periodStartTextField.textAlignment = NSTextAlignment.Center
-        periodStartTextField.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
-        periodStartTextField.textColor = UIColor.todaitDarkGray()
-        periodStartTextField.addTarget(self, action: Selector("updateStartTime:"), forControlEvents: UIControlEvents.AllEvents)
-        periodStartTextField.tag = indexPath.row
-        cell.contentView.addSubview(periodStartTextField)
+        let infoLabel = UILabel(frame: CGRectMake(20*ratio, 21*ratio, 200*ratio, 16*ratio))
+        infoLabel.text = "범위"
+        infoLabel.textAlignment = NSTextAlignment.Left
+        infoLabel.textColor = UIColor.todaitDarkGray()
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
+        cell.contentView.addSubview(infoLabel)
+        cell.contentView.addSubview(startAmountField)
         
         
-        let middleBox = UIView(frame: CGRectMake(158*ratio, 37.5*ratio, 4*ratio, 1*ratio))
+        let middleBox = UIView(frame: CGRectMake(158*ratio, 29.5*ratio, 4*ratio, 1*ratio))
         middleBox.backgroundColor = UIColor.todaitDarkGray()
         cell.contentView.addSubview(middleBox)
         
         
-        let periodEndTextField = UITextField(frame:CGRectMake(165*ratio, 28*ratio, 140*ratio, 20*ratio))
-        periodEndTextField.placeholder = "종료"
-        periodEndTextField.textAlignment = NSTextAlignment.Center
-        periodEndTextField.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
-        periodEndTextField.textColor = UIColor.todaitDarkGray()
-        periodEndTextField.addTarget(self, action: Selector("updateEndTime:"), forControlEvents: UIControlEvents.AllEvents)
-        periodEndTextField.tag = indexPath.row
-        cell.contentView.addSubview(periodEndTextField)
+        cell.contentView.addSubview(endAmountField)
         
         
-        var line = UIView(frame:CGRectMake(20*ratio, 52*ratio, 272*ratio, 0.5*ratio))
+        if let value = startRangeAmount {
+            startAmountField.text = "\(value)"
+        }
+        
+        if let value = endRangeAmount {
+            endAmountField.text = "\(value)"
+        }
+        
+        
+        var line = UIView(frame:CGRectMake(20*ratio, 43*ratio, 272*ratio, 0.5*ratio))
         line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
         cell.contentView.addSubview(line)
         
         
         
-        if rangeList.count > 0 {
-            
-            var rangeData = rangeList[indexPath.row]
-            
-            periodStartTextField.text = rangeData["startTime"]
-            periodEndTextField.text = rangeData["endTime"]
-        }
     }
     
-    func updateStartTime(textField:UITextField){
-        let index = textField.tag
-        
-        /*
-        if rangeList.count == index {
-        
-        var rangeData:[String:String] = [:]
-        rangeData["startTime"] = textField.text
-        rangeList.append(rangeData)
-        
-        }else{
-        
-        var rangeData = rangeList[index]
-        rangeData["startTime"] = textField.text
-        
-        }
-        */
+    
+    func updateStartAmount(textField:UITextField){
+        startRangeAmount = textField.text.toInt()
     }
     
-    func updateEndTime(textField:UITextField){
-        let index = textField.tag
-        
-        /*
-        if rangeList.count == index {
-        var rangeData = rangeList[index]
-        rangeData["endTime"] = textField.text
-        
-        }else{
-        
-        var rangeData:[String:String] = [:]
-        rangeData["endTime"] = textField.text
-        rangeList.append(rangeData)
-        
-        }
-        */
+    
+    func updateEndAmount(textField:UITextField){
+        endRangeAmount = textField.text.toInt()
     }
+    
     
     func addAimDateSubView(cell:UITableViewCell){
         
@@ -495,15 +826,6 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         cell.contentView.addSubview(periodEndLabel)
         
         
-        
-        
-        
-        
-        periodDayLabel = UILabel(frame: CGRectMake(272*ratio, 30*ratio, 33*ratio, 16*ratio))
-        periodDayLabel.text = periodDayString
-        periodDayLabel.textAlignment = NSTextAlignment.Left
-        periodDayLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10*ratio)
-        periodDayLabel.textColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.7)
         cell.contentView.addSubview(periodDayLabel)
         
         var line = UIView(frame:CGRectMake(20*ratio, 52*ratio, 272*ratio, 0.5*ratio))
@@ -524,59 +846,16 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     func addAmountButton(cell:UITableViewCell){
         
         
-        
-        totalButton = UIButton(frame: CGRectMake(19*ratio, 23*ratio, 89*ratio, 32*ratio))
-        totalButton.setTitle("전체", forState: UIControlState.Normal)
-        totalButton.setTitleColor(UIColor.todaitDarkGray(), forState: UIControlState.Normal)
-        totalButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
-        totalButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
-        totalButton.layer.borderColor = UIColor.colorWithHexString("#B2B2B2").CGColor
-        totalButton.layer.borderWidth = 0.5*ratio
-        totalButton.addTarget(self, action: Selector("totalButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         cell.addSubview(totalButton)
-        
-        
-        
-        rangeButton = UIButton(frame: CGRectMake(108*ratio, 23*ratio, 89*ratio, 32*ratio))
-        
-        rangeButton.setTitle("범위", forState: UIControlState.Normal)
-        rangeButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
-        rangeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
-        rangeButton.addTarget(self, action: Selector("rangeButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         cell.addSubview(rangeButton)
         
         
         
         setAmountButtonHighlight(totalButton, highlight: isTotal)
         setAmountButtonHighlight(rangeButton, highlight: !isTotal)
-        
-        /*
-        
-        unitButton = UIButton(frame: CGRectMake(206*ratio, 23*ratio, 89*ratio, 32*ratio))
-        unitButton.setTitle("단위선택", forState: UIControlState.Normal)
-        unitButton.setTitleColor(UIColor.todaitDarkGray(), forState: UIControlState.Normal)
-        unitButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10*ratio)
-        unitButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
-        unitButton.layer.borderColor = UIColor.colorWithHexString("#B2B2B2").CGColor
-        unitButton.layer.borderWidth = 0.5*ratio
-        cell.contentView.addSubview(unitButton)
-        
-        */
-        
-        
-        unitTextField = UITextField(frame: CGRectMake(206*ratio, 23*ratio, 89*ratio, 32*ratio))
-        unitTextField.placeholder = "단위입력"
-        unitTextField.tintColor = mainColor
-        unitTextField.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
-        unitTextField.textColor = UIColor.colorWithHexString("#969696")
-        unitTextField.returnKeyType = UIReturnKeyType.Next
-        unitTextField.textAlignment = NSTextAlignment.Center
-        unitTextField.backgroundColor = UIColor.whiteColor()
-        unitTextField.text = unitString
-        unitTextField.addTarget(self, action: Selector("updateUnitAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        unitTextField.delegate = self
-        
         cell.contentView.addSubview(unitTextField)
+        
+        
         
         var line = UIView(frame:CGRectMake(206*ratio,54*ratio,89*ratio,0.5*ratio))
         line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
@@ -875,7 +1154,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     }
     
     
-    func addTotalTextField(cell:UITableViewCell){
+    func addTotalAmountField(cell:UITableViewCell){
         
         
         let infoLabel = UILabel(frame: CGRectMake(20*ratio, 21*ratio, 200*ratio, 16*ratio))
@@ -888,23 +1167,13 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         
         
-        totalTextField = UITextField(frame: CGRectMake(60*ratio, 21*ratio, 235*ratio, 16*ratio))
-        totalTextField.textAlignment = NSTextAlignment.Right
-        totalTextField.placeholder = "분량을 입력하세요"
-        totalTextField.tintColor = mainColor
-        totalTextField.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
-        totalTextField.textColor = UIColor.colorWithHexString("#969696")
-        totalTextField.keyboardType = UIKeyboardType.NumberPad
-        totalTextField.returnKeyType = UIReturnKeyType.Done
-        totalTextField.backgroundColor = UIColor.whiteColor()
-        totalTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        totalTextField.delegate = self
         
-        if let aimAmount = aimAmount {
-            totalTextField.text = "\(aimAmount)"
+        
+        if let totalAmount = totalAmount  {
+            totalAmountField.text = "\(totalAmount)"
         }
         
-        cell.contentView.addSubview(totalTextField)
+        cell.contentView.addSubview(totalAmountField)
         
         var line = UIView(frame:CGRectMake(20*ratio, 43*ratio, 272*ratio, 0.5*ratio))
         line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
@@ -914,9 +1183,9 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     func updateAmountAllEvents(textField:UITextField){
         
         switch textField {
-        case totalTextField : aimAmount = textField.text.toInt()
-        case startRangeTextField : startRangeAmount = textField.text.toInt()
-        case endRangeTextField : endRangeAmount = textField.text.toInt()
+        case totalAmountField : totalAmount = textField.text.toInt()
+        case startAmountField : startRangeAmount = textField.text.toInt()
+        case endAmountField : endRangeAmount = textField.text.toInt()
         case dayTextField : dayAmount = textField.text.toInt()
         default: textField.text = ""
         }
@@ -925,45 +1194,45 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     
     
     
-    func addStartRangeTextField(cell:UITableViewCell){
-        startRangeTextField = UITextField(frame: CGRectMake(15*ratio, 9.5*ratio, 130*ratio, 30*ratio))
-        startRangeTextField.textAlignment = NSTextAlignment.Left
-        startRangeTextField.placeholder = "시작"
-        startRangeTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
-        startRangeTextField.textColor = UIColor.colorWithHexString("#969696")
-        startRangeTextField.tintColor = mainColor
-        startRangeTextField.hidden = true
-        startRangeTextField.keyboardType = UIKeyboardType.NumberPad
-        startRangeTextField.backgroundColor = UIColor.whiteColor()
-        startRangeTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        startRangeTextField.delegate = self
+    func addStartAmountField(cell:UITableViewCell){
+        startAmountField = UITextField(frame: CGRectMake(15*ratio, 9.5*ratio, 130*ratio, 30*ratio))
+        startAmountField.textAlignment = NSTextAlignment.Left
+        startAmountField.placeholder = "시작"
+        startAmountField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
+        startAmountField.textColor = UIColor.colorWithHexString("#969696")
+        startAmountField.tintColor = mainColor
+        startAmountField.hidden = true
+        startAmountField.keyboardType = UIKeyboardType.NumberPad
+        startAmountField.backgroundColor = UIColor.whiteColor()
+        startAmountField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        startAmountField.delegate = self
         
         if startRangeAmount != 0 {
-            startRangeTextField.text = "\(startRangeAmount)"
+            startAmountField.text = "\(startRangeAmount)"
         }
         
-        cell.contentView.addSubview(startRangeTextField)
+        cell.contentView.addSubview(startAmountField)
     }
     
     
-    func addEndRangeTextField(cell:UITableViewCell){
-        endRangeTextField = UITextField(frame: CGRectMake(175*ratio, 9.5*ratio, 130*ratio, 30*ratio))
-        endRangeTextField.textAlignment = NSTextAlignment.Left
-        endRangeTextField.placeholder = "종료"
-        endRangeTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
-        endRangeTextField.textColor = UIColor.colorWithHexString("#969696")
-        endRangeTextField.tintColor = mainColor
-        endRangeTextField.hidden = true
-        endRangeTextField.keyboardType = UIKeyboardType.NumberPad
-        endRangeTextField.backgroundColor = UIColor.whiteColor()
-        endRangeTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        endRangeTextField.delegate = self
+    func addEndAmountField(cell:UITableViewCell){
+        endAmountField = UITextField(frame: CGRectMake(175*ratio, 9.5*ratio, 130*ratio, 30*ratio))
+        endAmountField.textAlignment = NSTextAlignment.Left
+        endAmountField.placeholder = "종료"
+        endAmountField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
+        endAmountField.textColor = UIColor.colorWithHexString("#969696")
+        endAmountField.tintColor = mainColor
+        endAmountField.hidden = true
+        endAmountField.keyboardType = UIKeyboardType.NumberPad
+        endAmountField.backgroundColor = UIColor.whiteColor()
+        endAmountField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        endAmountField.delegate = self
         
         if endRangeAmount != 0 {
-            endRangeTextField.text = "\(endRangeAmount)"
+            endAmountField.text = "\(endRangeAmount)"
         }
         
-        cell.contentView.addSubview(endRangeTextField)
+        cell.contentView.addSubview(endAmountField)
     }
     
     func addDayTextField(cell:UITableViewCell){
@@ -979,7 +1248,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         dayTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         dayTextField.delegate = self
         
-        if dayAmount != 0 {
+        if let value = dayAmount{
             dayTextField.text = "\(dayAmount)"
         }
         

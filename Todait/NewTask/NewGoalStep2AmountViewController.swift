@@ -7,25 +7,29 @@
 //
 
 import UIKit
+import CoreData
 
-enum NewGoalStep2Status{
-    case Goal
-    case Date
-    case Total
-    case Unit
-    case Day
-    case None
-}
 
 
 class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDelegate,CategoryDelegate,UITextFieldDelegate{
    
     
+    private enum Status{
+        case Goal
+        case Date
+        case Total
+        case Unit
+        case Day
+        case None
+    }
+    
+    
+    
     var category:Category!
     var nextButton:UIButton!
     
     var goalView:UIView!
-    var taskTextField:UITextField!
+    var goalTextField:UITextField!
     
     
     var dataView:UIView!
@@ -48,12 +52,18 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     var keyboardHelpView:UIView!
     
     var currentTextField:UITextField!
-    var currentStatus:NewGoalStep2Status!
+    
+    private var status:Status!
+    
+    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.todaitBackgroundGray()
+        
+        loadDefaultCategory()
         
         addGoalView()
         addDataView()
@@ -66,6 +76,23 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
     }
     
+    func loadDefaultCategory(){
+        
+        let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
+        let request = NSFetchRequest()
+        
+        request.entity = entityDescription
+        
+        var error: NSError?
+        
+        var categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as? [Category]
+        
+        if let categoryData = categoryData {
+            category = categoryData.first
+        }
+        
+    }
+    
     func addGoalView(){
         
         goalView = UIView(frame: CGRectMake(2*ratio, 64 + 2*ratio, 316*ratio, 50*ratio))
@@ -74,29 +101,29 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         goalView.clipsToBounds = true
         view.addSubview(goalView)
         
-        addTaskTextField()
+        addgoalTextField()
         addCategoryButton()
     }
     
-    func addTaskTextField(){
+    func addgoalTextField(){
         
-        taskTextField = UITextField(frame: CGRectMake(20*ratio, 10*ratio, 255*ratio, 30*ratio))
-        taskTextField.placeholder = "이곳에 목표를 입력해주세요"
-        taskTextField.textAlignment = NSTextAlignment.Left
-        taskTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
-        taskTextField.textColor = UIColor.todaitGray()
-        taskTextField.returnKeyType = UIReturnKeyType.Next
-        taskTextField.backgroundColor = UIColor.whiteColor()
-        taskTextField.delegate = self
-        //taskTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        //taskTextField.text = aimString
-        taskTextField.tintColor = UIColor.todaitGreen()
-        //taskTextField.delegate = self
+        goalTextField = UITextField(frame: CGRectMake(20*ratio, 10*ratio, 255*ratio, 30*ratio))
+        goalTextField.placeholder = "이곳에 목표를 입력해주세요"
+        goalTextField.textAlignment = NSTextAlignment.Left
+        goalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
+        goalTextField.textColor = UIColor.todaitGray()
+        goalTextField.returnKeyType = UIReturnKeyType.Next
+        goalTextField.backgroundColor = UIColor.whiteColor()
+        goalTextField.delegate = self
+        //goalTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        //goalTextField.text = aimString
+        goalTextField.tintColor = UIColor.todaitGreen()
+        //goalTextField.delegate = self
         
-        currentTextField = taskTextField
+        currentTextField = goalTextField
         currentTextField.becomeFirstResponder()
-        currentStatus = NewGoalStep2Status.Goal
-        goalView.addSubview(taskTextField)
+        status = Status.Goal
+        goalView.addSubview(goalTextField)
     }
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
@@ -113,15 +140,15 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         currentTextField = textField
         currentTextField.textColor = UIColor.todaitRed()
         startDateLabel.textColor = UIColor.todaitGray()
-        taskTextField.textColor = UIColor.todaitGray()
+        goalTextField.textColor = UIColor.todaitGray()
         unitTextField.textColor = UIColor.todaitGray()
         
         switch currentTextField {
-        case totalAmountField: currentStatus = NewGoalStep2Status.Total
-        case unitTextField: currentStatus = NewGoalStep2Status.Unit
-        case taskTextField: currentStatus = NewGoalStep2Status.Goal
-        case dayAmountField: currentStatus = NewGoalStep2Status.Day
-        default : currentStatus = NewGoalStep2Status.Goal
+        case totalAmountField: status = Status.Total
+        case unitTextField: status = Status.Unit
+        case goalTextField: status = Status.Goal
+        case dayAmountField: status = Status.Day
+        default : status = Status.Goal
         }
         
     }
@@ -136,6 +163,8 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         categoryButton.clipsToBounds = true
         categoryButton.addTarget(self, action: Selector("showCategorySettingVC"), forControlEvents: UIControlEvents.TouchUpInside)
         goalView.addSubview(categoryButton)
+        
+        categoryEdited(category)
         
     }
     
@@ -282,24 +311,24 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     func leftButtonClk(){
         
-        switch currentStatus as NewGoalStep2Status {
-        case .Date: currentStatus = .Goal ; hideDatePicker(); taskTextField.becomeFirstResponder()
-        case .Total: currentStatus = .Date ; showDatePicker()
-        case .Day: totalAmountField.becomeFirstResponder() ; currentStatus = .Total
-        case .Unit: dayAmountField.becomeFirstResponder() ; currentStatus = .Day
-        default: currentStatus = .None ; confirmButtonClk()
+        switch status as Status {
+        case .Date: status = .Goal ; hideDatePicker(); goalTextField.becomeFirstResponder()
+        case .Total: status = .Date ; showDatePicker()
+        case .Day: totalAmountField.becomeFirstResponder() ; status = .Total
+        case .Unit: dayAmountField.becomeFirstResponder() ; status = .Day
+        default: status = .None ; confirmButtonClk()
         }
         
     }
     
     func rightButtonClk(){
         
-        switch currentStatus as NewGoalStep2Status {
-        case .Goal: totalAmountField.becomeFirstResponder() ; currentStatus = .Total//currentStatus = .Date ; showDatePicker()
-        case .Date: totalAmountField.becomeFirstResponder() ; currentStatus = .Total
-        case .Total: dayAmountField.becomeFirstResponder() ; currentStatus = .Day
-        case .Day: unitTextField.becomeFirstResponder() ; currentStatus = .Unit
-        default: currentStatus = .None ; confirmButtonClk()
+        switch status as Status {
+        case .Goal: totalAmountField.becomeFirstResponder() ; status = .Total//status = .Date ; showDatePicker()
+        case .Date: totalAmountField.becomeFirstResponder() ; status = .Total
+        case .Total: dayAmountField.becomeFirstResponder() ; status = .Day
+        case .Day: unitTextField.becomeFirstResponder() ; status = .Unit
+        default: status = .None ; confirmButtonClk()
         }
         
     }
@@ -309,11 +338,11 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         var needToAnimate:Bool = false
         
-        if currentStatus == NewGoalStep2Status.None {
+        if status == Status.None {
             needToAnimate = true
         }
         
-        currentStatus = NewGoalStep2Status.Date
+        status = Status.Date
         currentTextField.textColor = UIColor.todaitGray()
         currentTextField.resignFirstResponder()
         startDateLabel.textColor = UIColor.todaitLightRed()
@@ -339,9 +368,9 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
             
             self.datePickerView.transform = CGAffineTransformMakeTranslation(0, 0*self.ratio)
             
-            if let status = self.currentStatus{
+            if let status = self.status{
                 
-                if status == NewGoalStep2Status.None  {
+                if status == Status.None  {
                     self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, 0)
                 }
             }
@@ -440,7 +469,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         currentTextField.textColor = UIColor.todaitGray()
         currentTextField.resignFirstResponder()
         hideDatePicker()
-        currentStatus = NewGoalStep2Status.None
+        status = Status.None
     }
     
     func datePickerChanged(picker:UIDatePicker){
@@ -511,7 +540,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             
-            if self.currentStatus != NewGoalStep2Status.None {
+            if self.status != Status.None {
                 self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height - 38*self.ratio)
             }
             
@@ -534,13 +563,13 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             
             
-            if self.currentStatus != NewGoalStep2Status.Date {
+            if self.status != Status.Date {
                 self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0,0)
             }
             
             }) { (Bool) -> Void in
                 
-                if self.currentStatus != NewGoalStep2Status.Date {
+                if self.status != Status.Date {
                     self.keyboardHelpView.hidden = true
                 }
         }
@@ -571,7 +600,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         let step3AmountVC = NewGoalStep3AmountViewController()
         step3AmountVC.startDate = datePicker.date
-        step3AmountVC.titleString = taskTextField.text 
+        step3AmountVC.titleString = goalTextField.text 
         step3AmountVC.unitString = unitTextField.text
         
         if let totalAmount = totalAmountField.text.toInt() {
