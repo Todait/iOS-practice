@@ -31,17 +31,16 @@ enum ChartStatus: Int{
 }
 
 
-protocol ThumbChartDelegate : NSObjectProtocol {
-    
-    func needToChartUpdate()
-    
-}
+
 
 class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDelegate,ThumbChartDelegate{
 
     var baseView:UIView!
     var startLabel:UILabel!
     var endLabel:UILabel!
+    var infoLabel:UILabel!
+    
+    var nextButton:UIButton!
     
     var everydayButton:ColorButton!
     var weekdayButton:ColorButton!
@@ -49,11 +48,9 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     
     var amountLabels:[ColorLabel] = []
     var weekButtons:[ColorButton] = []
-    //var weekCharts:[UIView] = []
     var weekCharts:[ThumbChartBox] = []
     
-    var infoLabel:UILabel!
-    var nextButton:UIButton!
+
     
     
     let weekValue = [1,2,4,8,16,32,64]
@@ -66,6 +63,8 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     var totalAmount:CGFloat! = 0
     var titleString:String! = ""
     var unitString:String! = ""
+    
+    var maxChangeTimer:NSTimer! 
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -356,6 +355,28 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         }
     }
     
+    
+    func thumbTouchBegan(){
+        
+    }
+    
+    func thumbTouchMoved(){
+        
+        needToChartUpdate()
+        
+    }
+    
+    func thumbTouchEnd(){
+        
+        
+        if maxChangeTimer.valid == true {
+            maxChangeTimer.invalidate()
+        }
+        
+        
+    }
+    
+    
     func needToChartUpdate(){
         
         var data:[CGFloat] = []
@@ -398,7 +419,7 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
             
         }
         
-        maxValue = 1.2 * maxData
+        maxValue = 2*sumData/7
         
         for var index = 0 ; index < 7 ; index++ {
             let chart = weekCharts[index]
@@ -504,7 +525,7 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        titleLabel.text = "인포그래픽 책 읽기"
+        titleLabel.text = titleString
         
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
@@ -529,9 +550,12 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     
     func nextButtonClk(){
         
+        let step4VC = NewGoalStep4ViewController()
+        step4VC.titleString = titleString
+        
+        self.navigationController?.pushViewController(step4VC, animated: true)
         
     }
-    
     
     func backButtonClk(){
         self.navigationController?.popViewControllerAnimated(true)

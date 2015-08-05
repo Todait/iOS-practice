@@ -575,6 +575,9 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
     
     func nextButtonClk(){
         
+        let step4VC = NewGoalStep4ViewController()
+        step4VC.titleString = titleString
+        self.navigationController?.pushViewController(step4VC, animated: true)
         
     }
     
