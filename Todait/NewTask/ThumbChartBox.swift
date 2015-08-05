@@ -8,8 +8,17 @@
 
 import UIKit
 
+protocol ThumbChartDelegate : NSObjectProtocol {
+    
+    func thumbTouchBegan()
+    func thumbTouchMoved()
+    func thumbTouchEnd()
+}
+
+
 class ThumbChartBox: BasicView {
 
+    
     
     var frontView:UIView!
     var backView:UIView!
@@ -23,6 +32,7 @@ class ThumbChartBox: BasicView {
     
     var thumbImageView:ThumbImageView!
 
+    var isThumbed:Bool = false
     var isMax:Bool = false
     var isAnimating:Bool = false
     var chartOn:Bool! = false
@@ -94,6 +104,7 @@ class ThumbChartBox: BasicView {
         
         if gesture.state == UIGestureRecognizerState.Began {
             
+            isThumbed = true
             
             if isMax == true {
                
@@ -109,8 +120,17 @@ class ThumbChartBox: BasicView {
                 
             }
             
-        }else if gesture.state == UIGestureRecognizerState.Ended {
+            thumbTouchBegan()
             
+        }else if gesture.state == UIGestureRecognizerState.Changed{
+            
+            thumbTouchMoved()
+            
+        }else if gesture.state == UIGestureRecognizerState.Ended || gesture.state == UIGestureRecognizerState.Cancelled {
+            
+        
+            isThumbed = false
+        
             if isMax == true {
                 
                 thumbImageView.setImageSelected(true)
@@ -125,6 +145,8 @@ class ThumbChartBox: BasicView {
                 
             }
             
+            thumbTouchEnd()
+            
         }
         
         
@@ -133,8 +155,25 @@ class ThumbChartBox: BasicView {
         }
         
         currentValue = CGFloat(maxValue) * CGFloat(1 - (newCenter.y/frame.size.height))
-        self.delegate.needToChartUpdate()
+
     }
+    
+    func thumbTouchBegan(){
+        self.delegate.thumbTouchBegan()
+    }
+    
+    func thumbTouchMoved(){
+        
+        self.delegate.thumbTouchMoved()
+        
+    }
+    
+    func thumbTouchEnd(){
+        
+        self.delegate.thumbTouchEnd()
+        
+    }
+    
 
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -171,7 +210,16 @@ class ThumbChartBox: BasicView {
     func setMaxValue(maxValue:CGFloat){
         
         self.maxValue = maxValue
-        let height =  CGFloat(currentValue)/CGFloat(maxValue) * frame.size.height
+        
+        var height:CGFloat = 0
+        
+        if maxValue == 0 {
+            height = frame.size.height/2
+        }else{
+            height =  CGFloat(currentValue)/CGFloat(maxValue) * frame.size.height
+        }
+        
+        
         
         self.frontView.frame = CGRectMake(0, frame.size.height, frontView.frame.size.width, -height)
         self.thumbImageView.center = CGPointMake(self.frame.size.width/2, self.frame.size.height-height)
