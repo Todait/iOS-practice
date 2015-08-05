@@ -1,5 +1,5 @@
 //
-//  OptionView.swift
+//  OptionButton.swift
 //  Todait
 //
 //  Created by CruzDiary on 2015. 8. 5..
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class OptionView: BasicView {
+class OptionButton: BasicButton {
 
     /*
     // Only override drawRect: if you perform custom drawing.

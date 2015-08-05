@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate{
+class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,CountDelegate{
    
     
     var optionView:UIView!
@@ -35,59 +35,35 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate{
         optionView.backgroundColor = UIColor.whiteColor()
         view.addSubview(optionView )
         
-        
-        let nib = NSBundle.mainBundle().loadNibNamed("OptionButton", owner: self, options: nil)
-        
-        var optionButton:OptionButton = nib[0] as! OptionButton
-        
-        optionView.addSubview(optionButton)
-        
-        /*
-        addDayOptionView()
         addAlarmOptionView()
         addReviewOptionView()
         addReReadOptionView()
-        */
+        
         
     }
-    
-    func addDayOptionView(){
-        
-    }
-    
     
     func addAlarmOptionView(){
         
         
-        var alarmOption = UIButton(frame:CGRectMake(2*ratio,64*ratio,157*ratio,52*ratio))
+        var alarmOption = OptionButton(frame:CGRectMake(2*ratio,59*ratio,157*ratio,47*ratio))
         alarmOption.backgroundColor = UIColor.clearColor()
         alarmOption.addTarget(self, action: Selector("alarmOptionClk"), forControlEvents: UIControlEvents.TouchDown)
+        alarmOption.onImage = UIImage(named: "icon_alarm_wt@3x.png")
+        alarmOption.offImage = UIImage(named: "icon_alarm@3x.png")
+        alarmOption.onColor = UIColor.todaitGreen()
+        alarmOption.offColor = UIColor.todaitGray()
+        alarmOption.setText("알람없음")
+        alarmOption.setButtonOn(false)
         optionView.addSubview(alarmOption)
         
         
-        var iconImageView = UIImageView(frame: CGRectMake(10*ratio, 6*ratio, 40*ratio, 40*ratio))
-        alarmOption.addSubview(iconImageView)
-        
-        
-        var titleLabel = UILabel(frame: CGRectMake(63*ratio, 15*ratio, 92*ratio, 22.5*ratio))
-        titleLabel.text = "알람 없음"
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        alarmOption.addSubview(titleLabel)
-        
-        
-        
-        if option & OptionStatus.Alarm.rawValue > 0 {
-            iconImageView.image = UIImage(named: "icon_alarm_wt@3x.png")
-            titleLabel.textColor = UIColor.todaitGreen()
-        }else{
-            iconImageView.image = UIImage(named: "icon_alarm@3x.png")
-            titleLabel.textColor = UIColor.todaitGray()
-        }
     }
     
     func alarmOptionClk(){
         
         option = OptionStatus.Alarm.rawValue
+        
+        
         
     }
     
@@ -96,69 +72,70 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate{
         
         
         
-        var reviewOption = UIButton(frame:CGRectMake(2*ratio,12*ratio,157*ratio,52*ratio))
+        var reviewOption = OptionButton(frame:CGRectMake(2*ratio,12*ratio,157*ratio,47*ratio))
 
         reviewOption.backgroundColor = UIColor.clearColor()
         reviewOption.addTarget(self, action: Selector("reviewOptionClk"), forControlEvents: UIControlEvents.TouchDown)
+        reviewOption.onImage = UIImage(named: "icon_review_wt@3x.png")
+        reviewOption.offImage = UIImage(named: "icon_review@3x.png")
+        reviewOption.onColor = UIColor.todaitGreen()
+        reviewOption.offColor = UIColor.todaitGray()
+        reviewOption.setText("복습 0회")
+        reviewOption.setButtonOn(false)
         optionView.addSubview(reviewOption)
         
-        
-        var iconImageView = UIImageView(frame: CGRectMake(10*ratio, 6*ratio, 40*ratio, 40*ratio))
-        reviewOption.addSubview(iconImageView)
-        
-        
-        var titleLabel = UILabel(frame: CGRectMake(63*ratio, 15*ratio, 92*ratio, 22.5*ratio))
-        titleLabel.text = "복습 없음"
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        reviewOption.addSubview(titleLabel)
-        
-        
-        if option & OptionStatus.Review.rawValue > 0 {
-            iconImageView.image = UIImage(named: "icon_review_wt@3x.png")
-            titleLabel.textColor = UIColor.todaitGreen()
-        }else{
-            iconImageView.image = UIImage(named: "icon_review@3x.png")
-            titleLabel.textColor = UIColor.todaitGray()
-        }
     }
     
     func reviewOptionClk(){
         
-        option = option | OptionStatus.Review.rawValue
+        
+        var reviewOptionVC = ReviewViewController()
+        reviewOptionVC.delegate = self
+        reviewOptionVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        
+        self.navigationController?.presentViewController(reviewOptionVC, animated: false, completion: { () -> Void in
+            
+        })
+        
+        
         
     }
     
     func addReReadOptionView(){
         
-        var reReadOption = UIButton(frame:CGRectMake(162*ratio,12*ratio,157*ratio,52*ratio))
+        var reReadOption = OptionButton(frame:CGRectMake(162*ratio,12*ratio,157*ratio,47*ratio))
         reReadOption.backgroundColor = UIColor.clearColor()
         reReadOption.addTarget(self, action: Selector("reReadOptionClk"), forControlEvents: UIControlEvents.TouchDown)
+        reReadOption.onImage = UIImage(named: "icon_reread_wt@3x.png")
+        reReadOption.offImage = UIImage(named: "icon_reread@3x.png")
+        reReadOption.onColor = UIColor.todaitGreen()
+        reReadOption.offColor = UIColor.todaitGray()
+        reReadOption.setText("회독 0회")
+        reReadOption.setButtonOn(false)
         optionView.addSubview(reReadOption)
         
-        
-        var iconImageView = UIImageView(frame: CGRectMake(10*ratio, 6*ratio, 40*ratio, 40*ratio))
-        reReadOption.addSubview(iconImageView)
-        
-        
-        var titleLabel = UILabel(frame: CGRectMake(63*ratio, 15*ratio, 92*ratio, 22.5*ratio))
-        titleLabel.text = "회독 없음"
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        reReadOption.addSubview(titleLabel)
-        
-        
-        if option & OptionStatus.Reread.rawValue > 0 {
-            iconImageView.image = UIImage(named: "icon_reread_wt@3x.png")
-            titleLabel.textColor = UIColor.todaitGreen()
-        }else{
-            iconImageView.image = UIImage(named: "icon_reread@3x.png")
-            titleLabel.textColor = UIColor.todaitGray()
-        }
         
     }
     
     func reReadOptionClk(){
         
         //option = OptionStatus.Reread
+        
+        var readOptionVC = RereadViewController()
+        readOptionVC.delegate = self
+        readOptionVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        
+        self.navigationController?.presentViewController(readOptionVC, animated: false, completion: { () -> Void in
+            
+        })
+        
+        
+        
+    }
+    
+    func count(count:Int){
+        
+        
         
     }
     
@@ -173,6 +150,23 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate{
     }
     
     func addCompleteButton(){
+        
+        if completeButton != nil {
+            return
+        }
+        
+        completeButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
+        completeButton.setTitle("완료", forState: UIControlState.Normal)
+        completeButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18*ratio)
+        completeButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        completeButton.addTarget(self, action: Selector("completeButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        completeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right
+        view.addSubview(completeButton)
+        
+    }
+    
+    func completeButtonClk(){
+        
         
     }
     
