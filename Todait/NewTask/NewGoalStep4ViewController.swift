@@ -12,12 +12,20 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,C
    
     
     var optionView:UIView!
-    var options:[Int] = [1,2,4,8]
+    var options:[Int] = [1,2,4]
     
     var option:Int = 0
+    var eventOption = 0
     
     var titleString:String!
     var completeButton:UIButton!
+    
+    var alarmOption:OptionButton!
+    var reReadOption:OptionButton!
+    var reviewOption:OptionButton!
+    
+    var rereadCount:Int! = 0
+    var reviewCount:Int! = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,7 +53,7 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,C
     func addAlarmOptionView(){
         
         
-        var alarmOption = OptionButton(frame:CGRectMake(2*ratio,59*ratio,157*ratio,47*ratio))
+        alarmOption = OptionButton(frame:CGRectMake(2*ratio,59*ratio,157*ratio,47*ratio))
         alarmOption.backgroundColor = UIColor.clearColor()
         alarmOption.addTarget(self, action: Selector("alarmOptionClk"), forControlEvents: UIControlEvents.TouchDown)
         alarmOption.onImage = UIImage(named: "icon_alarm_wt@3x.png")
@@ -61,7 +69,9 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,C
     
     func alarmOptionClk(){
         
-        option = OptionStatus.Alarm.rawValue
+        eventOption = 0
+        
+        //option = OptionStatus.Alarm.rawValue
         
         
         
@@ -72,7 +82,7 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,C
         
         
         
-        var reviewOption = OptionButton(frame:CGRectMake(2*ratio,12*ratio,157*ratio,47*ratio))
+        reviewOption = OptionButton(frame:CGRectMake(2*ratio,12*ratio,157*ratio,47*ratio))
 
         reviewOption.backgroundColor = UIColor.clearColor()
         reviewOption.addTarget(self, action: Selector("reviewOptionClk"), forControlEvents: UIControlEvents.TouchDown)
@@ -88,9 +98,11 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,C
     
     func reviewOptionClk(){
         
+        eventOption = 1
         
         var reviewOptionVC = ReviewViewController()
         reviewOptionVC.delegate = self
+        reviewOptionVC.count = reviewCount
         reviewOptionVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         
         self.navigationController?.presentViewController(reviewOptionVC, animated: false, completion: { () -> Void in
@@ -103,7 +115,7 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,C
     
     func addReReadOptionView(){
         
-        var reReadOption = OptionButton(frame:CGRectMake(162*ratio,12*ratio,157*ratio,47*ratio))
+        reReadOption = OptionButton(frame:CGRectMake(162*ratio,12*ratio,157*ratio,47*ratio))
         reReadOption.backgroundColor = UIColor.clearColor()
         reReadOption.addTarget(self, action: Selector("reReadOptionClk"), forControlEvents: UIControlEvents.TouchDown)
         reReadOption.onImage = UIImage(named: "icon_reread_wt@3x.png")
@@ -119,10 +131,13 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,C
     
     func reReadOptionClk(){
         
+        
+        eventOption = 2
         //option = OptionStatus.Reread
         
         var readOptionVC = RereadViewController()
         readOptionVC.delegate = self
+        readOptionVC.count = rereadCount
         readOptionVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         
         self.navigationController?.presentViewController(readOptionVC, animated: false, completion: { () -> Void in
@@ -136,7 +151,15 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,C
     func count(count:Int){
         
         
+        switch eventOption {
+        case 1: reviewOption.setText("복습 \(count)회") ; reviewOption.setButtonOn(count != 0) ; reviewCount = count
+        case 2: reReadOption.setText("회독 \(count)회") ; reReadOption.setButtonOn(count != 0) ; rereadCount = count
+        default: eventOption = 0
+        }
         
+        
+        
+        eventOption = 0
     }
     
     override func viewWillAppear(animated: Bool) {

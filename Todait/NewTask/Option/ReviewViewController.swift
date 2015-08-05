@@ -26,6 +26,7 @@ class ReviewViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
     var countPicker:UIPickerView!
     
     
+    var count:Int! = 0
     var taskType:String! = ""
     var unit:String! = ""
     
@@ -115,7 +116,7 @@ class ReviewViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
     
     
     func addConfirmButton(){
-        confirmButton = UIButton(frame: CGRectMake(0*ratio, 232*ratio, 147*ratio, 43*ratio))
+        confirmButton = UIButton(frame: CGRectMake(0*ratio, 232*ratio, 294*ratio, 43*ratio))
         confirmButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         confirmButton.setTitle("확인", forState: UIControlState.Normal)
         confirmButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 294*ratio, 43*ratio)), forState: UIControlState.Normal)
@@ -156,11 +157,11 @@ class ReviewViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
         
         countPicker = UIPickerView(frame: CGRectMake(89*ratio, 48*ratio, 62*ratio, 162*ratio))
         countPicker.delegate = self
-        countPicker.selectRow(1, inComponent: 0, animated: false)
+        countPicker.selectRow(count, inComponent: 0, animated: false)
         popupView.addSubview(countPicker)
         
         let unitLabel = UILabel(frame: CGRectMake(185*ratio, 121*ratio, 62*ratio, 12*ratio))
-        unitLabel.text = unit
+        unitLabel.text = "회"
         unitLabel.textColor = UIColor.todaitGray()
         unitLabel.textAlignment = NSTextAlignment.Left
         unitLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
