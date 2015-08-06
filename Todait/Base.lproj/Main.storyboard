@@ -137,10 +137,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="whiteBack.png" translatesAutoresizingMaskIntoConstraints="NO" id="cjb-WG-u4s">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="timerBack@3x.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="cjb-WG-u4s">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.29999999999999999" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xmX-Uu-smI">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.40000000000000002" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xmX-Uu-smI">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </imageView>
@@ -210,7 +210,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="whiteBack.png" width="720" height="720"/>
+        <image name="timerBack@3x.jpg" width="1500" height="1000"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
@@ -218,8 +218,8 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="9wR-hP-Vgj"/>
-        <segue reference="hF8-E9-VIJ"/>
-        <segue reference="MJ6-d1-7Rc"/>
+        <segue reference="Fak-dM-lxb"/>
+        <segue reference="Opy-KL-cVV"/>
+        <segue reference="Ir7-i8-Tb2"/>
     </inferredMetricsTieBreakers>
 </document>

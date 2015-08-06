@@ -2,31 +2,53 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="7706" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="480" height="480"/>
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Todait" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="kId-c2-rCX">
-                    <rect key="frame" x="20" y="140" width="441" height="43"/>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="36"/>
-                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                    <nil key="highlightedColor"/>
-                </label>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bg@3x.png" translatesAutoresizingMaskIntoConstraints="NO" id="1XE-rY-Hqa">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                </imageView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash_company@3x.png" translatesAutoresizingMaskIntoConstraints="NO" id="f8P-lG-daC">
+                    <rect key="frame" x="123" y="483" width="75" height="35"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="f8P-lG-daC" secondAttribute="height" multiplier="15:7" id="Zni-uo-bbe"/>
+                    </constraints>
+                </imageView>
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash_title@3x.png" translatesAutoresizingMaskIntoConstraints="NO" id="5fh-uq-NzE">
+                    <rect key="frame" x="10" y="161" width="300" height="139"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="5fh-uq-NzE" secondAttribute="height" multiplier="300:139" id="80p-Gz-27P"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.82352941180000006" blue="0.69411764710000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="kId-c2-rCX" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="bottom" multiplier="1/3" constant="1" id="5cJ-9S-tgC"/>
-                <constraint firstAttribute="centerX" secondItem="kId-c2-rCX" secondAttribute="centerX" id="Koa-jz-hwk"/>
-                <constraint firstItem="kId-c2-rCX" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="20" symbolic="YES" id="fvb-Df-36g"/>
+                <constraint firstAttribute="trailing" secondItem="1XE-rY-Hqa" secondAttribute="trailing" id="44m-Ks-rzh"/>
+                <constraint firstItem="1XE-rY-Hqa" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="7Zz-Im-u5X"/>
+                <constraint firstItem="1XE-rY-Hqa" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="eEj-Ri-KLC"/>
+                <constraint firstAttribute="centerX" secondItem="f8P-lG-daC" secondAttribute="centerX" id="erF-tQ-BX5"/>
+                <constraint firstAttribute="bottom" secondItem="1XE-rY-Hqa" secondAttribute="bottom" id="fqf-0G-9L5"/>
+                <constraint firstItem="5fh-uq-NzE" firstAttribute="width" secondItem="1XE-rY-Hqa" secondAttribute="width" multiplier="15:16" id="heP-vy-IJo"/>
+                <constraint firstAttribute="bottom" secondItem="f8P-lG-daC" secondAttribute="bottom" constant="50" id="qjD-OA-70o"/>
+                <constraint firstAttribute="centerY" secondItem="5fh-uq-NzE" secondAttribute="centerY" constant="53.5" id="qvv-m5-Qnl"/>
+                <constraint firstItem="f8P-lG-daC" firstAttribute="width" secondItem="1XE-rY-Hqa" secondAttribute="width" multiplier="15:64" id="rgj-xx-oUa"/>
+                <constraint firstAttribute="centerX" secondItem="5fh-uq-NzE" secondAttribute="centerX" id="vDu-fp-mCu"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
             <point key="canvasLocation" x="548" y="455"/>
         </view>
     </objects>
+    <resources>
+        <image name="bg@3x.png" width="1242" height="2208"/>
+        <image name="splash_company@3x.png" width="285" height="132"/>
+        <image name="splash_title@3x.png" width="1064" height="493"/>
+    </resources>
 </document>
