@@ -261,8 +261,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             task.priority = NSDate().timeIntervalSince1970 + taskTestCount
             task.unit = "회"
             task.taskType = String.taskTestTaskType(Int(rand()%4))
-            task.startDate = getTodayDateNumber()
-            task.endDate = getTodayDateNumber()
+            task.startDate = 20150804
+            task.endDate = 20150804
             task.categoryId = category
             createTestWeek(task)
             
@@ -357,6 +357,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         mainTableView.registerClass(TaskTableViewCell.self, forCellReuseIdentifier: "mainCell")
         mainTableView.registerClass(TimerTaskTableViewCell.self, forCellReuseIdentifier: "timerCell")
         mainTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "emptyCell")
+        mainTableView.registerClass(UncompletedTableViewCell.self, forCellReuseIdentifier:"uncompletedCell")
         
         mainTableView.bounces = false
         mainTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
@@ -397,18 +398,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
     }
     
-    /*
-    func addCalendarButton(){
-        calendarButton = UIButton(frame: CGRectMake((width/5), height-47*ratio,(width/5), 47*ratio))
-        calendarButton.backgroundColor = UIColor.whiteColor()
-        calendarButton.addTarget(self, action: Selector("showCalendarVC"), forControlEvents: UIControlEvents.TouchDown)
-        calendarButton.setTitle("Calendar", forState: UIControlState.Normal)
-        calendarButton.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
-        calendarButton.titleLabel?.font = UIFont(name:"AppleSDGothicNeo-Regular",size:12*ratio)
-        view.addSubview(calendarButton)
-        
-    }
-    */
+    
     func addPhotoButton(){
         
         photoButton = UIButton(frame: CGRectMake(280*ratio, 100*ratio, 24*ratio, 24*ratio))
@@ -691,6 +681,16 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         self.navigationController?.pushViewController(settingVC, animated: true)
     }
     
+    func showSortVC(){
+        
+        let sortVC = SettingMainSortingViewController()
+        let navigationVC = UINavigationController(rootViewController: sortVC)
+        
+        self.navigationController?.presentViewController(navigationVC, animated: true, completion: { () -> Void in
+            
+        })
+        
+    }
     
     func addListButton(){
         
@@ -789,10 +789,20 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        
+        //0은 미완료 목표
+        //1은 일반
+        
+        return 2
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        
+        if section == 0 {
+            return 1
+        }
+        
         
         
         if taskData.isEmpty && !isDeleteAnimation {
@@ -809,6 +819,22 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        
+        
+        if indexPath.section == 0 {
+            
+            
+            let cell = tableView.dequeueReusableCellWithIdentifier("uncompletedCell", forIndexPath: indexPath) as! UncompletedTableViewCell
+            
+            cell.titleLabel.text = "민법해설 외 2개 목표 미완료"
+            cell.contentsLabel.text = "미완료 목표 보기"
+            
+            return cell
+            
+        }
+        
+        
         
         
         if taskData.isEmpty && !isDeleteAnimation {
@@ -870,7 +896,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
                 
             }
             
-            var line = UIView(frame: CGRectMake(0, 57.5*ratio, 320*ratio, 0.5*ratio))
+            var line = UIView(frame: CGRectMake(0, 57.5, 320*ratio, 0.5))
             line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
             cell.contentView.addSubview(line)
             
@@ -912,7 +938,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
                 cell.titleLabel.text = task.name + " | "
             }
 
-            var line = UIView(frame: CGRectMake(0, 57.5*ratio, 320*ratio, 0.5*ratio))
+            var line = UIView(frame: CGRectMake(0, 57.5, 320*ratio, 0.5))
             line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
             cell.contentView.addSubview(line)
             
@@ -942,7 +968,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         }
         
         
-        return 58*ratio
+        return 58
     }
     
     // ScrollView
@@ -966,16 +992,20 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        performSegueWithIdentifier("ShowDetailView", sender:indexPath)
         
-        tableView.reloadData()
-        
-        let cell = tableView.dequeueReusableCellWithIdentifier("mainCell", forIndexPath: indexPath)
-        as! TaskTableViewCell
-        
-        
-        cell.setSelected(false, animated: true)
-        
+        if taskData.isEmpty && !isDeleteAnimation {
+            
+        }else{
+            performSegueWithIdentifier("ShowDetailView", sender:indexPath)
+            
+            tableView.reloadData()
+            
+            let cell = tableView.dequeueReusableCellWithIdentifier("mainCell", forIndexPath: indexPath)
+                as! TaskTableViewCell
+            
+            
+            cell.setSelected(false, animated: true)
+        }
     }
     
     

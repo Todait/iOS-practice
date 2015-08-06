@@ -8,6 +8,6 @@
 
 import UIKit
 
-class UnCompletedViewController: BasicViewController {
+class UncompletedViewController: BasicViewController {
    
 }
