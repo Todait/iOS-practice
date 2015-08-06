@@ -1,5 +1,6 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
+pod 'FLAnimatedImage', '~> 1.0'
 pod 'GMImagePicker', '~> 0.0.1'
 pod 'AWSCore'
 pod 'AWSAutoScaling'

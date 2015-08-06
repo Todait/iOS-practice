@@ -102,6 +102,12 @@
 #define COCOAPODS_VERSION_MINOR_AWSSimpleDB 2
 #define COCOAPODS_VERSION_PATCH_AWSSimpleDB 2
 
+// FLAnimatedImage
+#define COCOAPODS_POD_AVAILABLE_FLAnimatedImage
+#define COCOAPODS_VERSION_MAJOR_FLAnimatedImage 1
+#define COCOAPODS_VERSION_MINOR_FLAnimatedImage 0
+#define COCOAPODS_VERSION_PATCH_FLAnimatedImage 8
+
 // GMImagePicker
 #define COCOAPODS_POD_AVAILABLE_GMImagePicker
 #define COCOAPODS_VERSION_MAJOR_GMImagePicker 0
