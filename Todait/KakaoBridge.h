@@ -10,7 +10,7 @@
 #define Todait_KakaoBridge_h
 
 #import <KakaoOpenSDK/KakaoOpenSDK.h>
-
+#import <FLAnimatedImage/FLAnimatedImage.h>
 #import "SWRevealViewController.h"
 
 #import "GAI.h"
