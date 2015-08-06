@@ -36,7 +36,7 @@ class CategorySettingTableViewCell: UITableViewCell {
     
     func addTitleLabel(){
         titleLabel = UILabel(frame: CGRectMake(29*ratio, 0*ratio, 250*ratio, 50*ratio))
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 11*ratio)
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 13*ratio)
         titleLabel.textColor = UIColor.todaitGray()
         titleLabel.textAlignment = NSTextAlignment.Left
         self.addSubview(titleLabel)
@@ -50,7 +50,7 @@ class CategorySettingTableViewCell: UITableViewCell {
     
     func addSelectedImageView(){
         
-        selectedImageView = UIImageView(frame:CGRectMake(255*ratio,19*ratio,16*ratio,12*ratio))
+        selectedImageView = UIImageView(frame:CGRectMake(294*ratio - 30, 12, 19, 19))
         self.addSubview(selectedImageView)
         
     }

@@ -29,6 +29,7 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     var colorCollectionViewLayout:UICollectionViewFlowLayout!
     
     var categoryData: [Category] = []
+   
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var selectedIndex:Int! = 0
@@ -150,40 +151,48 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     func addButtonClk(){
         
         
-        showAddCategoryView()
+        showAddCategoryView(true)
         
         
     }
     
-    func showAddCategoryView(){
+    func showAddCategoryView(animated:Bool){
         
-        
-        
-        UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-            self.categoryView.transform = CGAffineTransformMakeTranslation(0, 0)
-            }, completion: { (Bool) -> Void in
-                
-                self.addButton.hidden = true
-                self.infoLabel.text = "새 카테고리 생성"
-                self.confirmButton.setTitle("추가", forState: UIControlState.Normal)
-                self.categoryTableView.hidden = true
-                self.categoryTextField.hidden = false
-                self.colorCollectionView.hidden = false
-                self.isAddCategoryView = true
-                
-                UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut , animations: { () -> Void in
-                    self.categoryView.transform = CGAffineTransformMakeTranslation(0, -275*self.ratio)
+        if animated == true {
+            UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+                self.categoryView.transform = CGAffineTransformMakeTranslation(0, 0)
+                }, completion: { (Bool) -> Void in
                     
-                    }) { (Bool) -> Void in
+                    self.addButton.hidden = true
+                    self.infoLabel.text = "새 카테고리 생성"
+                    self.confirmButton.setTitle("추가", forState: UIControlState.Normal)
+                    self.categoryTableView.hidden = true
+                    self.categoryTextField.hidden = false
+                    self.colorCollectionView.hidden = false
+                    self.isAddCategoryView = true
+                    
+                    UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut , animations: { () -> Void in
+                        self.categoryView.transform = CGAffineTransformMakeTranslation(0, -275*self.ratio)
                         
-                }
-                
-                
-        })
+                        }) { (Bool) -> Void in
+                            
+                    }
+                    
+                    
+            })
+        }else{
+            
+            self.addButton.hidden = true
+            self.infoLabel.text = "새 카테고리 생성"
+            self.confirmButton.setTitle("추가", forState: UIControlState.Normal)
+            self.categoryTableView.hidden = true
+            self.categoryTextField.hidden = false
+            self.colorCollectionView.hidden = false
+            self.isAddCategoryView = true
+            self.categoryView.transform = CGAffineTransformMakeTranslation(0, -275*self.ratio)
+        }
         
         
-        
-
     }
     
     func showSettingCategoryView(){
@@ -237,7 +246,7 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         
         if category == selectedCategory {
             
-            cell.selectedImageView.image = UIImage.maskColor("icon_check_wt@3x.png", color: UIColor.todaitGreen())
+            cell.selectedImageView.image = UIImage(named: "bt_check_green@3x.png")
         }else{
             cell.selectedImageView.image = nil
         }
@@ -266,6 +275,10 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     }
     
     func confirmButtonClk(){
+        
+        
+        categoryTextField.resignFirstResponder()
+        
         
         if isAddCategoryView == true {
             
@@ -330,7 +343,6 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
             self.delegate.categoryEdited(category)
             
         }
-        
     }
     
     func addCategoryField(){
@@ -348,6 +360,9 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
         textField.resignFirstResponder()
+        
+        confirmButtonClk()
+        
         
         return false
     }
@@ -457,10 +472,57 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         }
         
         
+        registerForKeyboardNotification()
+        
     }
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        resignForKeyboardNotification()
     }
     
+    func resignForKeyboardNotification(){
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+        
+    }
+    
+    
+    func registerForKeyboardNotification(){
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWasShown:"), name: UIKeyboardWillShowNotification, object: nil)
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillBeHidden:"), name: UIKeyboardWillHideNotification, object: nil)
+        
+    }
+    
+    func keyboardWasShown(aNotification:NSNotification){
+        
+        var info:[NSObject:AnyObject] = aNotification.userInfo!
+        var kbSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)!.CGRectValue().size as CGSize
+        
+        
+        
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            
+            self.categoryView.transform = CGAffineTransformMakeTranslation(0, -self.categoryView.frame.size.height - kbSize.height)
+            
+            }, completion: nil)
+        
+    }
+    
+    func keyboardWillBeHidden(aNotification:NSNotification){
+        
+        
+        
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+            
+            self.categoryView.transform = CGAffineTransformMakeTranslation(0, 0)
+            
+            }, completion: nil)
+    }
+
 }
