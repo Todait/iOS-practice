@@ -381,6 +381,23 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
             endTimer()
         }
         
+        
+        adjustChart()
+        
+    }
+    
+    func adjustChart(){
+        
+        for var index = 0 ; index < 7 ; index++ {
+            let chart = weekCharts[index]
+            let label = weekLabels[index]
+            
+            let data = CGFloat(Int(chart.currentValue/600)*600)
+            chart.currentValue = data
+            label.text = getTimeStringOfHourMinuteFromSeconds(NSTimeInterval(data))
+
+            chart.setStroke()
+        }
     }
     
     func needToChartUpdate(){
@@ -517,6 +534,8 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
             
         }
         
+        
+        
         if needChange == true {
             
             maxChangeTimeCount = maxChangeTimeCount + 1
@@ -531,10 +550,16 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
             }
             
             for var index = 0 ; index < 7 ; index++ {
+                
                 let chart = weekCharts[index]
+                let label = timeLabels[index]
+                let data = Int(chart.currentValue/600)*600
+                
                 if chart.isThumbed == true && chart.currentValue == maxTime{
                     chart.currentValue = maxTime + addUnit
                 }
+                
+                label.text = getTimeStringOfHourMinuteFromSeconds(NSTimeInterval(data))
                 
                 chart.setMaxValue(maxTime + addUnit)
             }
@@ -545,6 +570,7 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
             endTimer()
         }
     }
+    
     
     
     
