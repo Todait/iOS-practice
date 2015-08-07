@@ -14,12 +14,25 @@ class UncompletedTableViewCell: BasicTableViewCell {
     var titleLabel:UILabel!
     var contentsLabel:UILabel!
     
+    var detailImageView:UIImageView!
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
     
         backgroundColor = UIColor.todaitRed()
         addAlertImageView()
+        addTitleLabel()
+        addContentsLabel()
+        addDetailImageView()
+        setCustomBackgroundView()
+        
+    }
     
+    func setCustomBackgroundView(){
+        
+        let backView = UIView()
+        backView.backgroundColor = UIColor.todaitDarkRed()
+        selectedBackgroundView = backView
     }
     
     func addAlertImageView(){
@@ -46,6 +59,13 @@ class UncompletedTableViewCell: BasicTableViewCell {
         contentsLabel.textColor = UIColor.whiteColor()
         contentsLabel.textAlignment = NSTextAlignment.Left
         self.addSubview(contentsLabel)
+    }
+    
+    func addDetailImageView(){
+        
+        detailImageView = UIImageView(frame: CGRectMake(320*ratio - 26.5, 19 , 11.5, 20))
+        detailImageView.image = UIImage(named: "bt_arrange_arrow_wt@3x.png")
+        addSubview(detailImageView)
     }
     
     required init(coder aDecoder: NSCoder) {
