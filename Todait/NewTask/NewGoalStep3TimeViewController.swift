@@ -566,7 +566,7 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
         
         nextButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
         nextButton.setTitle("Next", forState: UIControlState.Normal)
-        nextButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18*ratio)
+        nextButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
         nextButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         nextButton.addTarget(self, action: Selector("nextButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         nextButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right

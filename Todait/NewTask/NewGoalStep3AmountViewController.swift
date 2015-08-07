@@ -65,6 +65,7 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     var unitString:String! = ""
     
     var maxChangeTimer:NSTimer! 
+    var isThumbed:Bool! = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -369,11 +370,12 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     func thumbTouchEnd(){
         
         
-        if maxChangeTimer.valid == true {
-            maxChangeTimer.invalidate()
+        
+        if let timer = maxChangeTimer {
+            if maxChangeTimer.valid == true {
+                maxChangeTimer.invalidate()
+            }
         }
-        
-        
     }
     
     
@@ -470,6 +472,25 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         dateForm.dateFormat = "yyyy.MM.dd (E)"
         
         endLabel.text = dateForm.stringFromDate(startDate.addDay(day))
+        
+        
+        /*
+        if isThumbed == true {
+            
+            if let timer = maxChangeTimer {
+                
+                if timer.valid == false {
+                    maxChangeTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("changeMaxTime"), userInfo: nil, repeats: true)
+                }
+                
+                
+            }else {
+                maxChangeTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("changeMaxTime"), userInfo: nil, repeats: true)
+                
+            }
+        }
+        */
+        
     }
     
     func dateCalulate(data:[CGFloat],mask:[Bool])->[ChartStatus]{
@@ -507,6 +528,10 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         return calculateData
     }
     
+    func changeMaxTime(){
+        
+        
+    }
     
     func getDayOfWeek(date:NSDate)->Int{
         
@@ -541,7 +566,7 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         
         nextButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
         nextButton.setTitle("Next", forState: UIControlState.Normal)
-        nextButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18*ratio)
+        nextButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
         nextButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         nextButton.addTarget(self, action: Selector("nextButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         nextButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right

@@ -15,13 +15,12 @@ protocol CategoryUpdateDelegate : NSObjectProtocol{
 }
 
 
-enum OptionStatus {
+enum OptionStatus:Int {
     
-    case none
-    case everyDay
-    case alarm
-    case review
-    case reRead
+    case None = 0
+    case Review = 1
+    case Reread = 2
+    case Alarm = 4
     
 }
 
@@ -275,7 +274,7 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate,Valida
         let validator = Validator()
         
         
-        validator.registerField(timerTaskVC.taskTextField, rules:[MinLengthRule(length: 1, message: "목표를 입력해주세요.")])
+        validator.registerField(timerTaskVC.goalTextField, rules:[MinLengthRule(length: 1, message: "목표를 입력해주세요.")])
         validator.validate(self)
         
     }
@@ -306,7 +305,7 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate,Valida
         let entityDescription = NSEntityDescription.entityForName("Task", inManagedObjectContext:managedObjectContext!)
         let task = Task(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         
-        task.name = timerTaskVC.taskTextField.text
+        task.name = timerTaskVC.goalTextField.text
         task.unit = ""
         
         
@@ -364,7 +363,7 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate,Valida
         
         
         let notification = UILocalNotification()
-        notification.alertBody = timerTaskVC.taskTextField.text
+        notification.alertBody = timerTaskVC.goalTextField.text
         notification.timeZone = NSTimeZone.defaultTimeZone()
         notification.fireDate = NSDate().dateByAddingTimeInterval(5)
         notification.soundName = UILocalNotificationDefaultSoundName

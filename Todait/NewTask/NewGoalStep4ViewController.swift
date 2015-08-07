@@ -19,6 +19,7 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,C
     
     var titleString:String!
     var completeButton:UIButton!
+
     
     var alarmOption:OptionButton!
     var reReadOption:OptionButton!
@@ -179,8 +180,8 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,C
         }
         
         completeButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
-        completeButton.setTitle("완료", forState: UIControlState.Normal)
-        completeButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18*ratio)
+        completeButton.setTitle("Done", forState: UIControlState.Normal)
+        completeButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
         completeButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         completeButton.addTarget(self, action: Selector("completeButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         completeButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right

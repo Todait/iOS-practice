@@ -14,6 +14,10 @@ class NewGoalStep1ViewController: BasicViewController {
     var dateCalculatorView:UIView!
     var closeButton:UIButton!
     
+    
+    var amountImage:UIImageView!
+    var dateImage:UIImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -36,24 +40,33 @@ class NewGoalStep1ViewController: BasicViewController {
         addAmountContentsView()
         
         
-        let gesture = UITapGestureRecognizer(target: self, action: Selector("showAmountCalculatorVC"))
+        let gesture = UITapGestureRecognizer(target: self, action: Selector("showAmountCalculatorVC:"))
         amountCalculatorView.addGestureRecognizer(gesture)
         
     }
     
-    func showAmountCalculatorVC(){
+    func showAmountCalculatorVC(gesture:UIGestureRecognizer){
         
-        let step2AmountVC = NewGoalStep2AmountViewController()
-        self.navigationController?.pushViewController(step2AmountVC, animated: true)
         
+        if gesture.state == UIGestureRecognizerState.Began{
+            amountImage.image = UIImage(named: "newgoal_step1_amount_push@3x.png")
+            
+        }else if gesture.state == UIGestureRecognizerState.Ended || gesture.state == UIGestureRecognizerState.Cancelled {
+            
+            amountImage.image = UIImage(named: "newgoal_step1_amount@3x.png")
+            
+            let step2AmountVC = NewGoalStep2AmountViewController()
+            self.navigationController?.pushViewController(step2AmountVC, animated: true)
+            
+        }
     }
     
     func addAmountContentsView(){
         
-        let iconImageView = UIImageView(frame: CGRectMake(0, 0, 55*ratio, 55*ratio))
-        iconImageView.image = UIImage(named: "newgoal_step1_amount@3x.png")
-        iconImageView.center = CGPointMake(153*ratio,55*ratio)
-        amountCalculatorView.addSubview(iconImageView)
+        amountImage = UIImageView(frame: CGRectMake(0, 0, 55*ratio, 55*ratio))
+        amountImage.image = UIImage(named: "newgoal_step1_amount@3x.png")
+        amountImage.center = CGPointMake(153*ratio,55*ratio)
+        amountCalculatorView.addSubview(amountImage)
         
         let titleLabel = UILabel(frame: CGRectMake(20*ratio, 111*ratio, 266*ratio, 16*ratio))
         titleLabel.text = "공부량 계산"
@@ -86,25 +99,33 @@ class NewGoalStep1ViewController: BasicViewController {
         
         addDateContentsView()
         
-        let gesture = UITapGestureRecognizer(target: self, action: Selector("showTimeCalculatorVC"))
+        let gesture = UITapGestureRecognizer(target: self, action: Selector("showTimeCalculatorVC:"))
         dateCalculatorView.addGestureRecognizer(gesture)
         
     }
     
-    func showTimeCalculatorVC(){
+    func showTimeCalculatorVC(gesture:UIGestureRecognizer){
         
-        let step2TimeVC = NewGoalStep2TimeViewController()
-        self.navigationController?.pushViewController(step2TimeVC, animated: true)
+        
+        dateImage.image = UIImage(named: "newgoal_step1_time_push@3x.png")
+        
+        if gesture.state == UIGestureRecognizerState.Ended || gesture.state == UIGestureRecognizerState.Cancelled {
+            
+            dateImage.image = UIImage(named: "newgoal_step1_time@3x.png")
+            
+            let step2TimeVC = NewGoalStep2TimeViewController()
+            self.navigationController?.pushViewController(step2TimeVC, animated: true)
+        }
         
     }
     
     
     func addDateContentsView(){
         
-        let iconImageView = UIImageView(frame: CGRectMake(0, 0, 55*ratio, 55*ratio))
-        iconImageView.image = UIImage(named: "newgoal_step1_time@3x.png")
-        iconImageView.center = CGPointMake(153*ratio,55*ratio)
-        dateCalculatorView.addSubview(iconImageView)
+        dateImage = UIImageView(frame: CGRectMake(0, 0, 55*ratio, 55*ratio))
+        dateImage.image = UIImage(named: "newgoal_step1_time@3x.png")
+        dateImage.center = CGPointMake(153*ratio,55*ratio)
+        dateCalculatorView.addSubview(dateImage)
         
         let titleLabel = UILabel(frame: CGRectMake(20*ratio, 111*ratio, 266*ratio, 16*ratio))
         titleLabel.text = "기간 계산"
@@ -140,8 +161,8 @@ class NewGoalStep1ViewController: BasicViewController {
             return
         }
         
-        closeButton = UIButton(frame: CGRectMake(10, 30, 28, 28))
-        closeButton.setBackgroundImage(UIImage(named: "newgoal_closed@3x.png"), forState: UIControlState.Normal)
+        closeButton = UIButton(frame: CGRectMake(2, 22, 44, 44))
+        closeButton.setBackgroundImage(UIImage(named: "nav_bt_closed@3x.png"), forState: UIControlState.Normal)
         closeButton.addTarget(self, action: Selector("closeButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(closeButton)
     }

@@ -95,19 +95,19 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     func addGoalView(){
         
-        goalView = UIView(frame: CGRectMake(2*ratio, 64 + 2*ratio, 316*ratio, 50*ratio))
+        goalView = UIView(frame: CGRectMake(2*ratio, 64 + 2*ratio, 316*ratio, 43*ratio))
         goalView.backgroundColor = UIColor.whiteColor()
         goalView.layer.cornerRadius = 1
         goalView.clipsToBounds = true
         view.addSubview(goalView)
         
-        addgoalTextField()
+        addGoalTextField()
         addCategoryButton()
     }
     
-    func addgoalTextField(){
+    func addGoalTextField(){
         
-        goalTextField = UITextField(frame: CGRectMake(20*ratio, 10*ratio, 255*ratio, 30*ratio))
+        goalTextField = UITextField(frame: CGRectMake(20*ratio, 15.5*ratio, 255*ratio, 12*ratio))
         goalTextField.placeholder = "이곳에 목표를 입력해주세요"
         goalTextField.textAlignment = NSTextAlignment.Left
         goalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
@@ -160,7 +160,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     func addCategoryButton(){
         
-        categoryButton = UIButton(frame: CGRectMake(275*ratio,10*ratio, 30*ratio, 30*ratio))
+        categoryButton = UIButton(frame: CGRectMake(275*ratio,7*ratio, 29*ratio, 29*ratio))
         categoryButton.setImage(UIImage(named: "category@3x.png"), forState: UIControlState.Normal)
         categoryButton.layer.cornerRadius = 15*ratio
         categoryButton.layer.borderWidth = 1
@@ -202,7 +202,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     func addDataView(){
         
-        dataView = UIView(frame: CGRectMake(2*ratio, 64 + 54*ratio, 316*ratio, 163*ratio))
+        dataView = UIView(frame: CGRectMake(2*ratio, 64 + 47*ratio, 316*ratio, 163*ratio))
         dataView.backgroundColor = UIColor.whiteColor()
         dataView.layer.cornerRadius = 1
         dataView.clipsToBounds = true
@@ -238,6 +238,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         startDateLabel.textColor = UIColor.todaitDarkGray()
         startDateLabel.text = dateForm.stringFromDate(getDateFromDateNumber(getTodayDateNumber()))
         startDateLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
+        startDateLabel.setKern(2)
         dataView.addSubview(startDateLabel)
         
         
@@ -501,21 +502,6 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         var info:[NSObject:AnyObject] = aNotification.userInfo!
         var kbSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)!.CGRectValue().size as CGSize
         
-        /*
-        var contentInsets = UIEdgeInsetsMake(0, 0, kbSize.height, 0)
-        scrollView.contentInset = contentInsets
-        scrollView.scrollIndicatorInsets = contentInsets
-        
-        var aRect = self.view.frame
-        aRect.size.height = aRect.size.height - kbSize.height
-        
-        if (!CGRectContainsPoint(aRect, findButton.frame.origin)) {
-            
-            scrollView.scrollRectToVisible(findButton.frame, animated: true)
-            
-        }
-        */
-        
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             
@@ -531,11 +517,6 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     func keyboardWillBeHidden(aNotification:NSNotification){
         
         var contentInsets = UIEdgeInsetsZero
-        //scrollView.contentInset = contentInsets
-        //scrollView.scrollIndicatorInsets = contentInsets
-        
-        
-       
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             

@@ -280,7 +280,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     }
     
     func initCellSubViews(){
-        goalTextField = UITextField(frame: CGRectMake(20*ratio, 12*ratio, 255*ratio, 30*ratio))
+        goalTextField = UITextField(frame: CGRectMake(20*ratio, 19*ratio, 255*ratio, 12*ratio))
         goalTextField.placeholder = "이곳에 목표를 입력해주세요"
         goalTextField.textAlignment = NSTextAlignment.Left
         goalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
@@ -298,7 +298,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         
         
-        categoryButton = UIButton(frame: CGRectMake(280*ratio,12*ratio, 30*ratio, 30*ratio))
+        categoryButton = UIButton(frame: CGRectMake(280*ratio,7*ratio, 29*ratio, 29*ratio))
         categoryButton.setImage(UIImage(named: "category@3x.png"), forState: UIControlState.Normal)
         categoryButton.layer.cornerRadius = 15*ratio
         categoryButton.layer.borderWidth = 1
@@ -601,6 +601,8 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
             return 53*ratio
         }else if indexPath.row == 1 && indexPath.section == 1 {
             return 53*ratio
+        }else if indexPath.row == 0 && indexPath.section == 0 {
+            return 43*ratio
         }
         
         
@@ -818,11 +820,12 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         
         
-        let periodStartLabel = UILabel(frame:CGRectMake(15*ratio, 28*ratio, 140*ratio, 20*ratio))
+        let periodStartLabel = UILabel(frame:CGRectMake(15*ratio, 28*ratio, 137*ratio, 20*ratio))
         periodStartLabel.text = getDateString(getDateNumberFromDate(periodStartDate))
         periodStartLabel.textAlignment = NSTextAlignment.Right
         periodStartLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
         periodStartLabel.textColor = UIColor.todaitDarkGray()
+        periodStartLabel.setKern(2)
         cell.contentView.addSubview(periodStartLabel)
         
         
@@ -831,11 +834,12 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         cell.contentView.addSubview(middleBox)
         
         
-        let periodEndLabel = UILabel(frame:CGRectMake(165*ratio, 28*ratio, 140*ratio, 20*ratio))
+        let periodEndLabel = UILabel(frame:CGRectMake(168*ratio, 28*ratio, 140*ratio, 20*ratio))
         periodEndLabel.text = getDateString(getDateNumberFromDate(periodEndDate))
         periodEndLabel.textAlignment = NSTextAlignment.Left
         periodEndLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
         periodEndLabel.textColor = UIColor.todaitDarkGray()
+        periodEndLabel.setKern(2)
         cell.contentView.addSubview(periodEndLabel)
         
         
