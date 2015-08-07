@@ -11,11 +11,12 @@ import CoreData
 import Photos
 import Alamofire
 
+
 class MainViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate,TaskTableViewCellDelegate,UpdateDelegate,touchDelegate,CategoryUpdateDelegate{
     
     var parallelView: ParallelHeaderView!
     var mainTableView: UITableView!
-    var createTaskButton: UIButton!
+    
     var settingButton: UIButton!
     var listButton: UIButton!
     
@@ -31,6 +32,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     var profileButton: UIButton!
     
     let headerHeight: CGFloat = 212
+    
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var timeChart:TimeChart!
@@ -40,7 +42,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     var category:Category!
     var dayData:[Day] = []
     var taskData:[Task] = []
-    
+    var uncompletedTaskData:[Task] = []
     var taskTestCount:NSTimeInterval = 0
     
     
@@ -56,6 +58,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func needToUpdate(){
         
         loadTaskData()
+        loadUncompletedTaskData()
         loadDayData()
         mainTableView.reloadData()
         
@@ -113,15 +116,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             parallelView.backgroundColor = UIColor.todaitGreen()
         }
         
-        if let check = createTaskButton {
-            let backgroundImage = UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 50*ratio, 50*ratio))
-            createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
-        }
-    
         
         isShowAllCategory = true
        
         loadTaskData()
+        loadUncompletedTaskData()
         loadDayData()
         
         if let check = mainTableView {
@@ -138,6 +137,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func updateCategory(category:Category,from:String){
         
         loadTaskData()
+        loadUncompletedTaskData()
         loadDayData()
         
         if let check = mainTableView {
@@ -191,7 +191,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
                         popCircle.removeFromSuperview()
                         popUp.removeFromSuperview()
                 })
-                
+        
         }
         
     }
@@ -199,7 +199,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //createTestData()
+        createTestData()
         
         addParallelView()
         addMainTableView()
@@ -210,12 +210,22 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         setupCoreDataInit()
         
         loadTaskData()
+        loadUncompletedTaskData()
         loadDayData()
         mainTableView.reloadData()
         
         
         addListView()
     
+        
+        /*
+        let image = FLAnimatedImage(animatedGIFData:NSData(contentsOfFile:NSBundle.mainBundle().pathForResource("ttt.gif", ofType: nil)!))
+        let imageView = FLAnimatedImageView()
+        imageView.animatedImage = image
+        imageView.frame = CGRectMake(50, 50, 200, 200)
+        self.view.addSubview(imageView)
+        */
+        
     }
     
     func createTestData(){
@@ -261,9 +271,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             task.priority = NSDate().timeIntervalSince1970 + taskTestCount
             task.unit = "회"
             task.taskType = String.taskTestTaskType(Int(rand()%4))
-            task.startDate = 20150804
-            task.endDate = 20150804
+            task.startDate = 20140804
+            task.endDate = 20150820
             task.categoryId = category
+            task.amount = Int(rand()%250)
             createTestWeek(task)
             
             taskTestCount = taskTestCount + 1
@@ -291,7 +302,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func addParallelView(){
         parallelView = ParallelHeaderView(frame: CGRectMake(0, 0, width, headerHeight*ratio))
-        parallelView.backgroundColor = UIColor.colorWithHexString("#00D2B1")
+        parallelView.backgroundColor = UIColor.todaitRed()
         parallelView.backgroundImageView.clipsToBounds = true
         parallelView.backgroundImageView.contentMode = UIViewContentMode.ScaleAspectFill
        
@@ -359,35 +370,20 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         mainTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "emptyCell")
         mainTableView.registerClass(UncompletedTableViewCell.self, forCellReuseIdentifier:"uncompletedCell")
         
+        mainTableView.backgroundColor = UIColor.todaitBackgroundGray()
         mainTableView.bounces = false
         mainTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
         mainTableView.delegate = self
         mainTableView.dataSource = self
-        mainTableView.contentOffset.y = 0
         mainTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-
+        mainTableView.sectionFooterHeight = 0
+        mainTableView.sectionHeaderHeight = 0
+        
+        
         view.addSubview(mainTableView)
         
     }
     
-    func addTaskButton(){
-        
-        
-        let backgroundImage = UIImage.colorImage(UIColor.colorWithHexString("#00D2B1"), frame: CGRectMake(0, 0, 30*ratio, 30*ratio))
-        
-        createTaskButton = UIButton(frame: CGRectMake(145*ratio,height-39.5*ratio, 30*ratio, 30*ratio))
-        createTaskButton.setBackgroundImage(backgroundImage, forState: UIControlState.Normal);
-        createTaskButton.setTitle("+", forState: UIControlState.Normal)
-        createTaskButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        createTaskButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 30*ratio)
-        createTaskButton.clipsToBounds = true
-        createTaskButton.layer.cornerRadius = 15*ratio
-        createTaskButton.layer.borderColor = UIColor.whiteColor().CGColor
-        createTaskButton.layer.borderWidth = 1*ratio
-        createTaskButton.addTarget(self, action: Selector("showNewTaskVC"), forControlEvents: UIControlEvents.TouchUpInside)
-        
-        view.addSubview(createTaskButton)
-    }
     
     
     func addTabbarView(){
@@ -591,7 +587,32 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
     }
     
-    
+    func loadUncompletedTaskData(){
+        let entityDescription = NSEntityDescription.entityForName("Task",inManagedObjectContext:managedObjectContext!)
+        
+        let request = NSFetchRequest()
+        request.entity = entityDescription
+        
+       
+        
+        let predicate = NSPredicate(format: "completed == %@" , false)
+        request.predicate = predicate
+        
+        var error: NSError?
+        var allTasks = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Task]
+        
+        uncompletedTaskData = allTasks.filter({(task:Task?) -> (Bool) in
+            
+            if let task = task {
+                if task.amount.integerValue > task.getTotalDoneAmount().integerValue {
+                    return true
+                }
+            }
+            
+            return false
+        })
+        
+    }
     
     
     override func viewWillAppear(animated: Bool) {
@@ -698,7 +719,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         if listButton == nil {
             
             listButton = UIButton(frame:CGRectMake(320*ratio - 44 ,20,44,44))
-            listButton.setImage(UIImage(named: "bt_hamburger_h@3x.png"),forState: UIControlState.Normal)
+            listButton.setImage(UIImage(named: "nav_bt_hamburger@3x.png"),forState: UIControlState.Normal)
             listButton.addTarget(self, action:Selector("showList"), forControlEvents: UIControlEvents.TouchUpInside)
             view.addSubview(listButton)
             
@@ -716,24 +737,17 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         */
         if mainCategoryCollectionVC.view.hidden == true {
             
-            listButton.setImage(UIImage(named: "bt_closed_h@3x.png"),forState: UIControlState.Normal)
+            listButton.setImage(UIImage(named: "nav_bt_closed@3x.png"),forState: UIControlState.Normal)
             mainCategoryCollectionVC.view.hidden = false
             
         }else{
             
-            listButton.setImage(UIImage(named: "bt_hamburger_h@3x.png"),forState: UIControlState.Normal)
+            listButton.setImage(UIImage(named: "nav_bt_hamburger@3x.png"),forState: UIControlState.Normal)
             mainCategoryCollectionVC.view.hidden = true
         }
         
     }
     
-    
-    func showNewTaskVC(){
-        
-        performSegueWithIdentifier("ShowNewTaskView", sender: self)
-        
-        
-    }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         //let destination = segue.destinationViewController as! NewTaskViewController
@@ -750,25 +764,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             timerVC.task = task
             timerVC.day = day
             
-        }else if segue.identifier == "ShowNewTaskView" {
-            let newTaskVC = segue.destinationViewController as! NewTaskViewController
-            newTaskVC.delegate = self
-            
-            if isShowAllCategory == true {
-                newTaskVC.mainColor = UIColor.todaitGreen()
-                newTaskVC.category = getDefaultCategory()
-            }else {
-                newTaskVC.mainColor = UIColor.colorWithHexString(category.color)
-                newTaskVC.category = category
-            }
-        }else if segue.identifier == "ShowDetailView" {
-            
-            let detailVC = segue.destinationViewController as! DetailViewController
-            let indexPath:NSIndexPath = sender as! NSIndexPath
-            
-            detailVC.task = taskData[indexPath.row]
-           
         }
+        
     }
     
     func getDefaultCategory()->Category{
@@ -800,7 +797,12 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         
         if section == 0 {
-            return 1
+            
+            if uncompletedTaskData.count != 0 {
+                return 1
+            }else{
+                return 0
+            }
         }
         
         
@@ -815,7 +817,13 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-        return parallelView
+        if section == 0 {
+            return parallelView
+        }else{
+            
+            return nil
+        }
+        
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -827,7 +835,17 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             
             let cell = tableView.dequeueReusableCellWithIdentifier("uncompletedCell", forIndexPath: indexPath) as! UncompletedTableViewCell
             
-            cell.titleLabel.text = "민법해설 외 2개 목표 미완료"
+            
+            let task = uncompletedTaskData[indexPath.row]
+            
+            if uncompletedTaskData.count == 1 {
+                cell.titleLabel.text = task.name + " 목표 미완료"
+            }else{
+                cell.titleLabel.text = task.name + " 외 \(uncompletedTaskData.count-1)개 목표 미완료"
+            }
+            
+            
+            
             cell.contentsLabel.text = "미완료 목표 보기"
             
             return cell
@@ -847,7 +865,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             
             
             let emptyImageView = UIImageView(frame:CGRectMake(0,0,width,272*ratio))
-            
+            emptyImageView.contentMode = UIViewContentMode.ScaleAspectFill
             if height == 480 {
                 emptyImageView.image = UIImage(named:"bg_nodata4s@3x.png")
             }else{
@@ -951,17 +969,32 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     }
     
     func timerButtonClk(indexPath:NSIndexPath) {
-        performSegueWithIdentifier("ShowTimerView", sender:indexPath)
+        
+        let timerVC = TimerViewController()
+        let task = taskData[indexPath.row]
+        let day:Day! = task.getDay(getTodayDateNumber())
+        timerVC.task = task
+        timerVC.day = day
+        self.navigationController?.pushViewController(timerVC, animated: true)
+        
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return headerHeight * ratio
+        
+        if section == 0 {
+            
+            return headerHeight * ratio
+            
+        }else{
+            return 0
+        }
+        
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
         
-        if taskData.isEmpty && !isDeleteAnimation {
+        if taskData.isEmpty && !isDeleteAnimation && indexPath.section == 1 {
             
             return 272*ratio
             
@@ -975,8 +1008,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func scrollViewDidScroll(scrollView: UIScrollView) {
         
+        
         var newFrame = parallelView.frame
-        if (scrollView.contentOffset.y > 0){
+        if (scrollView.contentOffset.y >= 0){
             parallelView.scrollViewDidScroll(scrollView)
         }else{
             scrollView.contentOffset.y = 0
@@ -992,22 +1026,40 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        
-        if taskData.isEmpty && !isDeleteAnimation {
+        if indexPath.section == 0 {
+            
+            showUncompletedVC()
             
         }else{
-            performSegueWithIdentifier("ShowDetailView", sender:indexPath)
             
-            tableView.reloadData()
+            if taskData.isEmpty && !isDeleteAnimation {
+                
+            }else{
+                
+                let detailVC = DetailViewController()
+                detailVC.task = taskData[indexPath.row]
+                self.navigationController?.pushViewController(detailVC, animated: true)
+                
+                
+                
+                tableView.reloadData()
+                
+                let cell = tableView.dequeueReusableCellWithIdentifier("mainCell", forIndexPath: indexPath)
+                    as! TaskTableViewCell
+                
+                
+                cell.setSelected(false, animated: true)
+            }
             
-            let cell = tableView.dequeueReusableCellWithIdentifier("mainCell", forIndexPath: indexPath)
-                as! TaskTableViewCell
-            
-            
-            cell.setSelected(false, animated: true)
         }
+        
     }
     
+    func showUncompletedVC(){
+        
+        self.navigationController?.pushViewController(UncompletedViewController(), animated: true)
+        
+    }
     
     func Done(UITableViewRowAction!,
         NSIndexPath!) -> Void {
@@ -1031,6 +1083,19 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         return [deleteButton]
         
     }
+    
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        
+        if indexPath.row == 0 && indexPath.section == 0{
+            return false
+        }else if taskData.count == 0 {
+            return false
+        }
+        
+        
+        return true
+    }
+    
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
