@@ -9,12 +9,14 @@
 import UIKit
 import CoreData
 
-class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDelegate,TimeLogDelegate,AmountLogDelegate{
+class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDelegate,TimeLogDelegate,AmountLogDelegate,ExitDelegate{
     
     var amountLabel: UILabel!
     var subAmountLabel: UILabel!
-    var backgroundImageView: UIImageView!
     
+    
+    var backgroundImageView: UIImageView!
+    var filterView:UIImageView!
     
     
     var mainTimerLabel:UILabel!
@@ -58,6 +60,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     var timerView:TimerView!
     
+    var isSaved:Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,10 +68,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         
         totalTime = NSTimeInterval(day.doneSecond)
         
+        addBackgroundImageView()
         
         addAmountTextView()
-        
-        
         addTotalTimeLabel()
         
         addResetButton()
@@ -88,6 +90,19 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         
         startTimer()
         
+    }
+    
+    func addBackgroundImageView(){
+        
+        backgroundImageView = UIImageView(frame:view.frame)
+        backgroundImageView.image = UIImage(named: "timerBack2@3x.png")
+        backgroundImageView.contentMode = UIViewContentMode.ScaleAspectFill
+        backgroundImageView.clipsToBounds = true
+        view.addSubview(backgroundImageView)
+        
+        filterView = UIImageView(frame:view.frame)
+        filterView.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.4)
+        backgroundImageView.addSubview(filterView)
     }
     
     func addAmountTextView(){
@@ -128,7 +143,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     func addResetButton(){
         resetButton = UIButton(frame: CGRectMake(0, height, 80*ratio, 55*ratio))
-        resetButton.setImage(UIImage(named: "bt_nitialization@3x.png"), forState: UIControlState.Normal)
+        resetButton.setImage(UIImage(named: "bt_initialization@3x.png"), forState: UIControlState.Normal)
+        resetButton.setBackgroundImage(UIImage.colorImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0.3), frame: CGRectMake(0,0,80*ratio,55*ratio)), forState: UIControlState.Highlighted)
         resetButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
         resetButton.addTarget(self, action: Selector("resetButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(resetButton)
@@ -154,8 +170,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         timeLog.timestamp = NSDate().timeIntervalSince1970
         timeLog.createdAt = NSDate()
         timeLog.beforeSecond = day.doneSecond
-        day.doneSecond = Int(day.doneSecond) + Int(totalTime)
-        timeLog.afterSecond = day.doneSecond.integerValue
+        day.doneSecond = Int(day.doneSecond) + Int(currentTime)
+        currentTime = 0
+        timeLog.afterSecond = day.doneSecond
         timeLog.createdAt = NSDate()
         timeLog.updatedAt = NSDate()
         
@@ -174,6 +191,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         currentTime = 0
         
         updateTimeLabel()
+        isSaved = true
     }
     
     
@@ -200,9 +218,13 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     func addTimeButton(){
         timeLogButton = UIButton(frame: CGRectMake(80*ratio, height, 80*ratio, 55*ratio))
-        timeLogButton.setBackgroundImage(UIImage(named: "bt_stopwatch@3x.png"), forState: UIControlState.Normal)
+        timeLogButton.setImage(UIImage(named: "bt_stopwatch@3x.png"), forState: UIControlState.Normal)
         timeLogButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
         timeLogButton.addTarget(self, action: Selector("timeButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        
+        
+        timeLogButton.setBackgroundImage(UIImage.colorImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0.3), frame: CGRectMake(0,0,80*ratio,55*ratio)), forState: UIControlState.Highlighted)
+        
         timeLogButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         view.addSubview(timeLogButton)
     }
@@ -254,6 +276,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         amountLogButton = UIButton(frame: CGRectMake(160*ratio, height, 80*ratio, 55*ratio))
         amountLogButton.setImage(UIImage(named: "bt_amount@3x.png"), forState: UIControlState.Normal)
         amountLogButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.1)
+        
+        amountLogButton.setBackgroundImage(UIImage.colorImage(UIColor(red: 0, green: 0, blue: 0, alpha: 0.3), frame: CGRectMake(0,0,80*ratio,55*ratio)), forState: UIControlState.Highlighted)
+        
         amountLogButton.addTarget(self, action: Selector("amountButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(amountLogButton)
     }
@@ -315,10 +340,17 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     func doneButtonClk(){
         
         
-        recordTimeLog(currentTime)
+        updateTimeLabel()
         saveTimeLog()
-        backButtonClk()
         
+        if timer.valid == true {
+            timerButtonClk()
+        }
+        
+        isSaved = true
+        
+        
+        //backButtonClk()
         
     }
     
@@ -387,7 +419,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         
         timerButton = UIButton(frame: CGRectMake(113*ratio, 209*ratio, 94*ratio, 122*ratio))
         timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_stop@3x.png"), forState: UIControlState.Normal)
-        timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_play@3x.png"), forState: UIControlState.Highlighted)
+        timerButton.setBackgroundImage(UIImage.maskColor("02_stopwatch_stop@3x.png", color:UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)), forState: UIControlState.Highlighted)
         timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(timerButton)
         
@@ -402,7 +434,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
             showButtons(true)
             
             timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_play@3x.png"), forState: UIControlState.Normal)
-            timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_stop@3x.png"), forState: UIControlState.Highlighted)
+            timerButton.setBackgroundImage(UIImage.maskColor("02_stopwatch_play@3x.png", color:UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)), forState: UIControlState.Highlighted)
             
             timer.invalidate()
             
@@ -419,7 +451,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
             startTimer()
             
             timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_stop@3x.png"), forState: UIControlState.Normal)
-            timerButton.setBackgroundImage(UIImage(named: "02_stopwatch_play@3x.png"), forState: UIControlState.Highlighted)
+            timerButton.setBackgroundImage(UIImage.maskColor("02_stopwatch_stop@3x.png", color:UIColor(red: 0, green: 0, blue: 0, alpha: 0.3)), forState: UIControlState.Highlighted)
             
         }
 
@@ -509,6 +541,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         currentTime = currentTime + 1
         totalTime = totalTime + 1
         
+        isSaved = false
         updateTimeLabel()
         
     }
@@ -568,7 +601,39 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     
     func backButtonClk() {
-        self.navigationController?.popViewControllerAnimated(true)
+        
+        if isSaved == true {
+            self.navigationController?.popViewControllerAnimated(true)
+        }else{
+            
+            
+            if timer.valid == true {
+                timerButtonClk()
+            }
+            
+            var exitVC = ExitViewController()
+            exitVC.delegate = self
+            exitVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+            //exitVC.delegate = self
+            self.navigationController?.presentViewController(exitVC, animated: false, completion: { () -> Void in
+                
+            })
+            
+        }
+    }
+    
+    func saveAndExitTimeLog() {
+        doneButtonClk()
+        isSaved = true
+        backButtonClk()
+    }
+    
+    func resetAndExitTimeLog() {
+        
+        
+        isSaved = true
+        backButtonClk()
+        
     }
     
 }

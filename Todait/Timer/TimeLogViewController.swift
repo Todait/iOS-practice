@@ -205,7 +205,14 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
         return 1
     }
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        closeButtonClk()
+        
+        let touch: AnyObject? = (touches as NSSet).anyObject()
+        let touchPoint:CGPoint! = touch?.locationInView(view)
+        
+        if touchPoint.y < height - 275*ratio {
+            closeButtonClk()
+        }
+        
     }
     
     override func viewWillAppear(animated: Bool) {
