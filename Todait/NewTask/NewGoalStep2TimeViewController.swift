@@ -9,7 +9,7 @@
 import UIKit
 import CoreData 
 
-class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,CategoryDelegate,TodaitNavigationDelegate,ValidationDelegate{
+class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,CategoryDelegate,TodaitNavigationDelegate,ValidationDelegate,KeyboardHelpDelegate{
     
     
     private enum Status{
@@ -79,7 +79,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     var nextButton:UIButton!
     var category:Category!
     
-    var keyboardHelpView:UIView!
+    var keyboardHelpView:KeyboardHelpView!
     private var status:Status! = Status.None
     
     
@@ -424,32 +424,12 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     
     func addKeyboardHelpView(){
         
-        keyboardHelpView = UIView(frame: CGRectMake(0, height , width, 38*ratio + 185*ratio))
+        keyboardHelpView = KeyboardHelpView(frame: CGRectMake(0, height , width, 38*ratio + 185*ratio))
         keyboardHelpView.backgroundColor = UIColor.whiteColor()
-
-        
-        
-        let leftButton = UIButton(frame: CGRectMake(7*ratio, 0, 38*ratio, 38*ratio))
-        leftButton.setImage(UIImage(named: "bt_keybord_left@3x.png"), forState: UIControlState.Normal)
-        leftButton.addTarget(self, action: Selector("leftButtonClk"), forControlEvents: UIControlEvents.TouchDown)
-        keyboardHelpView.addSubview(leftButton)
-        
-        let rightButton = UIButton(frame: CGRectMake(50*ratio, 0, 38*ratio, 38*ratio))
-        rightButton.setImage(UIImage(named: "bt_keybord_right@3x.png"), forState: UIControlState.Normal)
-        rightButton.addTarget(self, action: Selector("rightButtonClk"), forControlEvents: UIControlEvents.TouchDown)
-        keyboardHelpView.addSubview(rightButton)
-        
-        
-        let confirmButton = UIButton(frame: CGRectMake(246*ratio, 0 , 74*ratio, 38*ratio))
-        confirmButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 74*ratio, 38*ratio)), forState: UIControlState.Normal)
-        confirmButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitDarkGreen(), frame: CGRectMake(0, 0, 74*ratio, 38*ratio)), forState: UIControlState.Highlighted)
-        confirmButton.setTitle("확인", forState: UIControlState.Normal)
-        confirmButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        confirmButton.addTarget(self, action: Selector("confirmButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        confirmButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 15*ratio)
-        
-        keyboardHelpView.addSubview(confirmButton)
-        
+        keyboardHelpView.leftImageName = "bt_keybord_left@3x.png"
+        keyboardHelpView.rightImageName = "bt_keybord_right@3x.png"
+        keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        keyboardHelpView.delegate = self
         view.addSubview(keyboardHelpView)
         
         
@@ -468,8 +448,8 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
             
             switch status as Status {
             
-            case .Total: goalTextField.becomeFirstResponder() ; status = .Goal
-            case .Unit: totalAmountField.becomeFirstResponder() ; status = .Total
+            case .Total: goalTextField.becomeFirstResponder() ; status = .Goal ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
+            case .Unit: totalAmountField.becomeFirstResponder() ; status = .Total ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
             default: status = .None ; confirmButtonClk()
                 
             }
@@ -477,9 +457,9 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         }else{
             
             switch status as Status {
-            case .Start: goalTextField.becomeFirstResponder() ; status = .Goal
-            case .End: startAmountField.becomeFirstResponder() ; status = .Start
-            case .Unit: endAmountField.becomeFirstResponder() ; status = .End
+            case .Start: goalTextField.becomeFirstResponder() ; status = .Goal ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
+            case .End: startAmountField.becomeFirstResponder() ; status = .Start ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+            case .Unit: endAmountField.becomeFirstResponder() ; status = .End ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
             default: status = .None ; confirmButtonClk()
             }
             
@@ -492,17 +472,17 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         if isTotal == true {
             
             switch status as Status {
-            case .Goal: totalAmountField.becomeFirstResponder() ; status = .Total
-            case .Total: unitTextField.becomeFirstResponder() ; status = .Unit
+            case .Goal: totalAmountField.becomeFirstResponder() ; status = .Total ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+            case .Total: unitTextField.becomeFirstResponder() ; status = .Unit ; keyboardHelpView.setStatus(KeyboardHelpStatus.End)
             default: status = .None ; confirmButtonClk()
             }
             
         }else{
             
             switch status as Status {
-            case .Goal: startAmountField.becomeFirstResponder() ; status = .Start
-            case .Start: endAmountField.becomeFirstResponder() ; status = .End
-            case .End: unitTextField.becomeFirstResponder() ; status = .Unit
+            case .Goal: startAmountField.becomeFirstResponder() ; status = .Start ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+            case .Start: endAmountField.becomeFirstResponder() ; status = .End ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+            case .End: unitTextField.becomeFirstResponder() ; status = .Unit ; keyboardHelpView.setStatus(KeyboardHelpStatus.End)
             default: status = .None ; confirmButtonClk()
             }
             
@@ -680,11 +660,11 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         totalAmountField.textColor = UIColor.todaitGray()
         
         switch currentTextField {
-        case totalAmountField: status = Status.Total
-        case unitTextField: status = Status.Unit
-        case goalTextField: status = Status.Goal
-        case startAmountField: status = Status.Start
-        case endAmountField: status = Status.End
+        case totalAmountField: status = Status.Total ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case unitTextField: status = Status.Unit ; keyboardHelpView.setStatus(KeyboardHelpStatus.End)
+        case goalTextField: status = Status.Goal ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
+        case startAmountField: status = Status.Start ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case endAmountField: status = Status.End ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
         default : status = Status.None
         }
         
