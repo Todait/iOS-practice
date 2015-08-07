@@ -205,7 +205,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         let weekAmountProgressData = task.getWeekAmountProgressData(NSDate())
         
         
-        var weekChart = WeekMaxChart(frame: CGRectMake(15*ratio, 75*ratio, 165*ratio, 74*ratio))
+        var weekChart = WeekMaxChart(frame: CGRectMake(10*ratio, 75*ratio, 180*ratio, 74*ratio))
         weekChart.direction = weekChartDirection.upDirection
         weekChart.frontColor = UIColor.todaitRed()
         weekChart.backColor = UIColor.colorWithHexString("#F9EAEA")
@@ -227,7 +227,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         
         
         
-        var weekLabel = WeekLabel(frame: CGRectMake(15*ratio, 153*ratio, 165*ratio, 9*ratio))
+        var weekLabel = WeekLabel(frame: CGRectMake(10*ratio, 153*ratio, 180*ratio, 9*ratio))
         weekLabel.weekFont = UIFont(name: "AppleSDGothicNeo-Medium", size: 7*ratio)
         weekLabel.weekColor = UIColor.todaitGray()
         weekLabel.updateLabelText(task.getWeekDateNumberShortString(NSDate()))
@@ -244,7 +244,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         
         let weekSecondProgressData = task.getWeekTimeProgressData(NSDate())
         
-        var weekChart = WeekMaxChart(frame: CGRectMake(15*ratio, 230*ratio, 165*ratio, 74*ratio))
+        var weekChart = WeekMaxChart(frame: CGRectMake(10*ratio, 230*ratio, 180*ratio, 74*ratio))
         weekChart.direction = weekChartDirection.upDirection
         weekChart.frontColor = UIColor.todaitBlue()
         weekChart.backColor = UIColor.colorWithHexString("#DAEAF6")
@@ -266,7 +266,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         
         
         
-        var weekLabel = WeekLabel(frame: CGRectMake(15*ratio, 308*ratio, 165*ratio, 9*ratio))
+        var weekLabel = WeekLabel(frame: CGRectMake(10*ratio, 308*ratio, 180*ratio, 9*ratio))
         weekLabel.weekFont = UIFont(name: "AppleSDGothicNeo-Medium", size: 7*ratio)
         weekLabel.weekColor = UIColor.todaitGray()
         weekLabel.updateLabelText(task.getWeekDateNumberShortString(NSDate()))
@@ -394,7 +394,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         
         addYAxisLabel()
         
-        var trendChart = TrendChartView(frame:CGRectMake(40*ratio,45*ratio,270*ratio,107*ratio))
+        var trendChart = TrendChartView(frame:CGRectMake(28*ratio,36*ratio,270*ratio,123*ratio))
         trendChart.backgroundColor = UIColor.clearColor()
         trendChart.width = 40*ratio
         trendChart.updateChart(task.getTrendData())
@@ -414,8 +414,8 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         
         for index in 0...5 {
             
-            let yAxixLabel = UILabel(frame: CGRectMake(15*ratio, 65*ratio + CGFloat(index)*CGFloat(16*ratio), 50*ratio, 8*ratio))
-            yAxixLabel.text = String(format: "%.0f", arguments: [(120-CGFloat(index)*20)])
+            let yAxixLabel = UILabel(frame: CGRectMake(15*ratio, 30.5*ratio + CGFloat(index)*CGFloat(16*ratio), 50*ratio, 9*ratio))
+            yAxixLabel.text = String(format: "%.0f%", arguments: [(120-CGFloat(index)*20)])
             
             yAxixLabel.textAlignment = NSTextAlignment.Left
             yAxixLabel.textColor = UIColor.todaitGray()
@@ -429,13 +429,13 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
             
             if index == 1 {
                 
-                let line = UIView(frame:CGRectMake(44*ratio, 70*ratio + CGFloat(index)*CGFloat(16*ratio) , 278*ratio, 2))
+                let line = UIView(frame:CGRectMake(28*ratio, 35*ratio + CGFloat(index)*CGFloat(16*ratio) , 278*ratio, 2))
                 line.backgroundColor = UIColor.todaitBackgroundGray()
                 trendDashView.addSubview(line)
                 
             }else{
                 
-                let line = UIView(frame:CGRectMake(44*ratio, 70*ratio + CGFloat(index)*CGFloat(16*ratio) , 278*ratio, 1))
+                let line = UIView(frame:CGRectMake(28*ratio, 35*ratio + CGFloat(index)*CGFloat(16*ratio) , 278*ratio, 1))
                 line.backgroundColor = UIColor.todaitBackgroundGray()
                 trendDashView.addSubview(line)
             }

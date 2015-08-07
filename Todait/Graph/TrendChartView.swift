@@ -39,7 +39,7 @@ class TrendChartView: UIScrollView {
         contentSize = CGSizeMake(CGFloat(axisCount)*width, frame.size.height)
         
         
-        var maxValue = CGFloat(24*60*60)//CGFloat(data[0]["max"]! as! NSNumber)
+        var maxValue = CGFloat(data[0]["max"]! as! NSNumber)
         
         
         for index in 0...dataCount {
@@ -84,9 +84,8 @@ class TrendChartView: UIScrollView {
             if maxValue != 0 {
                 nextYPosition = CGFloat(frame.size.height-30*ratio)*CGFloat(1-chartData[index]/(maxValue*1.5))
                 
-                if chartData[index] > maxValue {
-                    nextYPosition = 0
-                }
+            }else{
+                nextYPosition = CGFloat(frame.size.height-30*ratio)
             }
             
             nextPoint = CGPointMake(nextXPosition,nextYPosition)
