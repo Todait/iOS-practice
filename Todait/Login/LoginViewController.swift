@@ -10,9 +10,11 @@ import UIKit
 import Alamofire
 
 
-class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDelegate{
+class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDelegate,KeyboardHelpDelegate{
    
     var scrollView:UIScrollView!
+    
+    var backgroundImage:UIImageView!
     
     var logoImageView:UIImageView!
     
@@ -26,27 +28,48 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     var findButton:UIButton!
     var registerButton:UIButton!
     
+    
+    
+    
+    private enum Status{
+        case Email
+        case Password
+        case None
+    }
+    
+    private var status:Status! = Status.None
+    
+    
+    var keyboardHelpView:KeyboardHelpView!
+    
     override func viewDidLoad(){
         super.viewDidLoad()
         view.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.8)
         
+        addBackgroundImage()
         addScrollView()
-        
         
         
         addLogoImageView()
         
-        addSkipButton()
         addEmailField()
         addPasswordField()
         addFindButton()
         addLoginButton()
         addRegisterButton()
         
+        addKeyboardHelpView()
         
         //showMainTabbarVC()
     }
     
+    func addBackgroundImage(){
+        
+        backgroundImage = UIImageView(frame: view.frame)
+        backgroundImage.image = UIImage(named: "bg@3x.png")
+        view.addSubview(backgroundImage)
+        
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -100,7 +123,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-            //self.unitView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-40*self.ratio)
+            self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-38*self.ratio)
             }, completion: nil)
         
     }
@@ -114,12 +137,16 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-            //self.unitView.transform = CGAffineTransformMakeTranslation(0, 40*self.ratio)
+            
+            self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, 0*self.ratio)
+            
             }) { (Bool) -> Void in
                 //self.unitView.hidden = true
         }
         
     }
+    
+    
     
     
     func addScrollView(){
@@ -152,16 +179,6 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     }
     
     
-    func addSkipButton(){
-        
-        skipButton = UIButton(frame: CGRectMake(15*ratio, 182*ratio, 295*ratio, 35*ratio))
-        skipButton.setTitle("건너뛰고 시작하기", forState: UIControlState.Normal)
-        skipButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        skipButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Light", size: 11*ratio)
-        skipButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right
-        scrollView.addSubview(skipButton)
-        
-    }
     
     func addEmailField(){
         
@@ -331,8 +348,60 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     func textFieldDidBeginEditing(textField: UITextField) {
     
         currentTextField = textField
+        
+        switch currentTextField {
+        case emailTextField: keyboardHelpView.setStatus(KeyboardHelpStatus.Start) ; status = .Email
+        case passwordField: keyboardHelpView.setStatus(KeyboardHelpStatus.End) ; status = .Password
+        default : return
+        }
     
     }
     
     
+    
+    
+    func addKeyboardHelpView(){
+        
+        keyboardHelpView = KeyboardHelpView(frame: CGRectMake(0, height , width, 38*ratio + 185*ratio))
+        keyboardHelpView.backgroundColor = UIColor.whiteColor()
+        keyboardHelpView.leftImageName = "bt_keybord_left@3x.png"
+        keyboardHelpView.rightImageName = "bt_keybord_right@3x.png"
+        keyboardHelpView.delegate = self
+        keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        
+        view.addSubview(keyboardHelpView)
+        
+        
+        let line = UIView(frame: CGRectMake(0, 38*ratio-1, width, 1))
+        line.backgroundColor = UIColor.colorWithHexString("#d1d5da")
+        keyboardHelpView.addSubview(line)
+        
+    }
+    
+    func leftButtonClk(){
+        
+        if let status = status {
+            
+            switch status as Status {
+            case .Password: self.status = .Email ; emailTextField.becomeFirstResponder() ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
+            default: self.status = .None ; confirmButtonClk()
+            }
+        }
+    }
+    
+    
+    
+    func rightButtonClk(){
+        
+        if let status = status {
+            switch status as Status {
+            case .Email: passwordField.becomeFirstResponder() ; self.status = .Password ; keyboardHelpView.setStatus(KeyboardHelpStatus.End)
+            default: self.status = .None ; confirmButtonClk()
+            }
+        }
+    }
+
+    func confirmButtonClk() {
+        currentTextField.resignFirstResponder()
+    }
 }

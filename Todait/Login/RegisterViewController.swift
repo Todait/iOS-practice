@@ -11,7 +11,7 @@ import MobileCoreServices
 import Alamofire
 
 
-class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate,ListInputDelegate,ValidationDelegate{
+class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate,ListInputDelegate,ValidationDelegate,KeyboardHelpDelegate{
 
     
     var scrollView:UIScrollView!
@@ -30,7 +30,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     var confirmField:PaddingTextField!
     
     var jobField:PaddingTextField!
-    var objectField:PaddingTextField!
+    var goalField:PaddingTextField!
     
     var currentTextField:UITextField!
     
@@ -40,10 +40,24 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     
     var selectedIndexPath:NSIndexPath!
     var jobData:[String] = []
-    
-    
-    
     var fileName:String! = ""
+    
+    
+    var keyboardHelpView:KeyboardHelpView!
+    
+    private enum Status{
+        case Name
+        case Email
+        case Password
+        case Confirm
+        case Job
+        case Goal
+        case None
+    }
+    
+    private var status:Status! = Status.None 
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,11 +72,11 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         addPasswordField()
         addConfirmField()
         addJobField()
-        addObjectField()
+        addGoalField()
         
         addRegisterButton()
         
-        
+        addKeyboardHelpView()
     }
     
     func addScrollView(){
@@ -377,8 +391,8 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
         jobField.text = string
         scrollView.scrollRectToVisible(jobField.frame, animated: true)
-        objectField.becomeFirstResponder()
-        currentTextField = objectField
+        goalField.becomeFirstResponder()
+        currentTextField = goalField
     }
     
     
@@ -399,6 +413,23 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
     }
     
+    
+    func textFieldDidBeginEditing(textField: UITextField) {
+        
+        currentTextField = textField
+        
+        switch currentTextField {
+        
+        case nameField: keyboardHelpView.setStatus(KeyboardHelpStatus.Start) ; status = .Name
+        case emailField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Email
+        case passwordField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Password
+        case confirmField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Confirm
+        case jobField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Job
+        case goalField: keyboardHelpView.setStatus(KeyboardHelpStatus.End) ; status = .Goal
+        default : return
+        }
+        
+    }
     
     
     func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
@@ -472,20 +503,20 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         scrollView.addSubview(jobField)
     }
     
-    func addObjectField(){
+    func addGoalField(){
         
-        objectField = PaddingTextField(frame: CGRectMake(0, 448*ratio, width, 48*ratio))
-        objectField.padding = 30*ratio
-        objectField.attributedPlaceholder = NSAttributedString.getAttributedString("목표",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
+        goalField = PaddingTextField(frame: CGRectMake(0, 448*ratio, width, 48*ratio))
+        goalField.padding = 30*ratio
+        goalField.attributedPlaceholder = NSAttributedString.getAttributedString("목표",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
         
-        objectField.textAlignment = NSTextAlignment.Left
-        objectField.delegate = self
-        objectField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
-        objectField.textColor = UIColor.whiteColor()
-        objectField.returnKeyType = UIReturnKeyType.Join
-        objectField.tintColor = UIColor.whiteColor()
-        objectField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
-        scrollView.addSubview(objectField)
+        goalField.textAlignment = NSTextAlignment.Left
+        goalField.delegate = self
+        goalField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
+        goalField.textColor = UIColor.whiteColor()
+        goalField.returnKeyType = UIReturnKeyType.Join
+        goalField.tintColor = UIColor.whiteColor()
+        goalField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
+        scrollView.addSubview(goalField)
     }
     
     
@@ -536,7 +567,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         let password = passwordField.text as String
         let confirm = confirmField.text as String
         let job = jobField.text as String
-        let object = objectField.text as String
+        let object = goalField.text as String
         
         
         
@@ -569,6 +600,65 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
             return
         }
     }
+    
+    
+    
+    func addKeyboardHelpView(){
+        
+        keyboardHelpView = KeyboardHelpView(frame: CGRectMake(0, height , width, 38*ratio + 185*ratio))
+        keyboardHelpView.backgroundColor = UIColor.whiteColor()
+        keyboardHelpView.leftImageName = "bt_keybord_left@3x.png"
+        keyboardHelpView.rightImageName = "bt_keybord_right@3x.png"
+        keyboardHelpView.delegate = self
+        keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        
+        view.addSubview(keyboardHelpView)
+        
+        
+        let line = UIView(frame: CGRectMake(0, 38*ratio-1, width, 1))
+        line.backgroundColor = UIColor.colorWithHexString("#d1d5da")
+        keyboardHelpView.addSubview(line)
+        
+    }
+    
+    func leftButtonClk(){
+        
+        
+        switch status as Status {
+        case .Email: status = .Name ; goalField.becomeFirstResponder() ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
+        case .Password: goalField.becomeFirstResponder() ; status = .Email  ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Confirm: passwordField.becomeFirstResponder() ; status = .Password  ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Job: confirmField.becomeFirstResponder() ; status = .Confirm  ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Goal: jobField.becomeFirstResponder() ; status = .Job ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        default: status = .None ; confirmButtonClk()
+        }
+        
+    }
+    
+    
+    
+    func rightButtonClk(){
+        
+        switch status as Status {
+        case .Name: nameField.becomeFirstResponder() ; status = .Email ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Email: passwordField.becomeFirstResponder() ; status = .Password ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Password: confirmField.becomeFirstResponder() ; status = .Confirm ;  keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Confirm: jobField.becomeFirstResponder() ; status = .Job ;  keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Job: goalField.becomeFirstResponder() ; status = .Goal  ; keyboardHelpView.setStatus(KeyboardHelpStatus.End)
+            
+        default: status = .None ; confirmButtonClk()
+        }
+        
+    }
+    
+    func confirmButtonClk() {
+    
+        if let currentField = currentTextField {
+            currentField.resignFirstResponder()
+        }
+        
+    }
+    
     
     
     override func viewWillAppear(animated: Bool) {
@@ -622,7 +712,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-            //self.unitView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-40*self.ratio)
+            self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-38*self.ratio)
             }, completion: nil)
         
     }
@@ -636,9 +726,9 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-            //self.unitView.transform = CGAffineTransformMakeTranslation(0, 40*self.ratio)
+            
+            self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, 0*self.ratio)
             }) { (Bool) -> Void in
-                //self.unitView.hidden = true
         }
         
     }
