@@ -11,7 +11,7 @@ import CoreData
 
 
 
-class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDelegate,CategoryDelegate,UITextFieldDelegate{
+class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDelegate,CategoryDelegate,UITextFieldDelegate,ValidationDelegate{
    
     
     private enum Status{
@@ -192,7 +192,9 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         categoryButton.layer.borderColor = UIColor.clearColor().CGColor
         categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
-        categoryButton.backgroundColor = UIColor.colorWithHexString(editedCategory.color)
+        
+        categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.colorWithHexString(editedCategory.color)), forState: UIControlState.Normal)
+        categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.todaitLightGray()), forState: UIControlState.Highlighted)
         
         self.category = editedCategory
     }
@@ -585,9 +587,20 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     func nextButtonClk(){
         
+        let validator = Validator()
+        validator.registerField(goalTextField, rules:[MinLengthRule(length: 1, message: "목표를 입력해주세요.")])
+        validator.registerField(totalAmountField, rules: [MinLengthRule(length: 1, message: "전체분량을 입력해주세요.")])
+        validator.registerField(unitTextField, rules: [MinLengthRule(length: 1, message: "단위를 입력해주세요.")])
+        validator.validate(self)
+        
+        
+    }
+    
+    
+    func showNextStep(){
         let step3AmountVC = NewGoalStep3AmountViewController()
         step3AmountVC.startDate = datePicker.date
-        step3AmountVC.titleString = goalTextField.text 
+        step3AmountVC.titleString = goalTextField.text
         step3AmountVC.unitString = unitTextField.text
         
         if let totalAmount = totalAmountField.text.toInt() {
@@ -609,8 +622,24 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         }
         
         self.navigationController?.pushViewController(step3AmountVC, animated: true)
-        
-        
     }
+    
+    func validationSuccessful(){
+        showNextStep()
+    }
+    
+    func validationFailed(errors: [UITextField:ValidationError]){
+        
+        
+        for ( textField , error) in errors {
+            
+            let alert = UIAlertView(title: "Invalid", message: error.errorMessage, delegate: nil, cancelButtonTitle: "Cancel")
+            
+            alert.show()
+            
+            return
+        }
+    }
+
     
 }
