@@ -272,7 +272,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             task.unit = "회"
             task.taskType = String.taskTestTaskType(Int(rand()%4))
             task.startDate = 20140804
-            task.endDate = 20150820
+            task.endDate = 2015 * 10000 + Int(rand()%9 + 1) * 100 + Int(rand()%20 + 1)
             task.categoryId = category
             task.amount = Int(rand()%250)
             createTestWeek(task)
@@ -583,7 +583,20 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         request.predicate = predicate
         
         var error: NSError?
-        taskData = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Task]
+        var sortedTasks = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Task]
+        
+        var todayDateNumber = getTodayDateNumber()
+        taskData = sortedTasks.filter({ (task:Task?) -> Bool in
+            
+            if let task = task {
+                if task.endDate >= todayDateNumber {
+                    return true
+                }
+            }
+            
+            
+            return false
+        })
         
     }
     
@@ -601,10 +614,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         var error: NSError?
         var allTasks = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Task]
         
+        var todayDateNumber = getTodayDateNumber()
         uncompletedTaskData = allTasks.filter({(task:Task?) -> (Bool) in
             
             if let task = task {
-                if task.amount.integerValue > task.getTotalDoneAmount().integerValue {
+                if task.amount.integerValue > task.getTotalDoneAmount().integerValue && task.endDate < todayDateNumber {
                     return true
                 }
             }
