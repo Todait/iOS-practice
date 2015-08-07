@@ -36,7 +36,9 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
     
     var timeTaskTableView:UITableView!
     
-    var option:OptionStatus = OptionStatus.everyDay
+    
+    var options:[Int] = [1,2,4,8]
+    var option:Int! = 0
     var deleteButton:UIButton!
     
     override func viewDidLoad() {
@@ -67,6 +69,10 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
     
     func addSaveButton(){
         
+        if saveButton != nil {
+            return
+        }
+        
         saveButton = UIButton(frame: CGRectMake(288*ratio,32,22,16))
         saveButton.setImage(UIImage.maskColor("icon_check_wt@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
         saveButton.addTarget(self, action: Selector("saveEditedTask"), forControlEvents: UIControlEvents.TouchUpInside)
@@ -74,6 +80,10 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
     }
     
     func saveEditedTask(){
+        
+        
+        
+        
         
         editedTask.name = taskTextField.text
         editedTask.categoryId = category
@@ -387,7 +397,7 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
     
     func dayOptionClk(){
         
-        option = OptionStatus.everyDay
+        //option = OptionStatus.everyDay
         timeTaskTableView.reloadData()
         
     }
@@ -412,7 +422,7 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
         
         
         
-        if option == OptionStatus.alarm {
+        if option & OptionStatus.Alarm.rawValue > 0 {
             iconImageView.image = UIImage(named: "icon_alarm_wt@3x.png")
             titleLabel.textColor = UIColor.todaitGreen()
         }else{
@@ -426,7 +436,7 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
         
         showAlarmVC()
         
-        option = OptionStatus.alarm
+        option = option | OptionStatus.Alarm.rawValue
         timeTaskTableView.reloadData()
         
     }
@@ -461,7 +471,7 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
         reviewOption.addSubview(titleLabel)
         
         
-        if option == OptionStatus.review {
+        if option & OptionStatus.Review.rawValue > 0 {
             iconImageView.image = UIImage(named: "icon_review_wt@3x.png")
             titleLabel.textColor = UIColor.todaitGreen()
         }else{
@@ -472,7 +482,7 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
     
     func reviewOptionClk(){
         
-        option = OptionStatus.review
+        //option = option | OptionStatus.Review
         timeTaskTableView.reloadData()
         
     }
@@ -495,7 +505,7 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
         reReadOption.addSubview(titleLabel)
         
         
-        if option == OptionStatus.reRead {
+        if option & OptionStatus.Reread.rawValue > 0 {
             iconImageView.image = UIImage(named: "icon_reread_wt@3x.png")
             titleLabel.textColor = UIColor.todaitGreen()
         }else{
@@ -507,7 +517,7 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
     
     func reReadOptionClk(){
         
-        option = OptionStatus.reRead
+        //option = OptionStatus.Reread
         timeTaskTableView.reloadData()
         
     }
@@ -565,22 +575,8 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
     
     
     
-    func getTimeString(time:Int)->String{
-        
-        let hour = time.toHour()
-        let minute = time.toMinute()
-        
-        if hour == 0 {
-            return "주 \(minute)분"
-        }else{
-            if minute == 0 {
-                return "주 \(hour)시간"
-            }else{
-                return "주 \(hour)시간 \(minute)분"
-            }
-        }
-        
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        taskTextField.resignFirstResponder()
     }
-    
     
 }
