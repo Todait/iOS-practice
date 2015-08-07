@@ -9,7 +9,7 @@
 import UIKit
 import CoreData 
 
-class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,CategoryDelegate,TodaitNavigationDelegate{
+class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,CategoryDelegate,TodaitNavigationDelegate,ValidationDelegate{
     
     
     private enum Status{
@@ -62,7 +62,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     var rangeButton:UIButton!
     var unitButton:UIButton!
     
-    var option:OptionStatus = OptionStatus.everyDay
+    var option:OptionStatus = OptionStatus.None
     var isTotal:Bool! = true
     var rangeList:[[String:String]] = []
     
@@ -200,7 +200,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         nextButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
         nextButton.setTitle("Next", forState: UIControlState.Normal)
-        nextButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18*ratio)
+        nextButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
         nextButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         nextButton.addTarget(self, action: Selector("nextButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         nextButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right
@@ -210,6 +210,24 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     func nextButtonClk(){
         
         
+        let validator = Validator()
+        validator.registerField(goalTextField, rules:[MinLengthRule(length: 1, message: "목표를 입력해주세요.")])
+        validator.registerField(unitTextField, rules: [MinLengthRule(length: 1, message: "단위를 입력해주세요.")])
+        
+        if isTotal == true {
+            validator.registerField(totalAmountField, rules: [MinLengthRule(length: 1, message: "전체분량을 입력해주세요.")])
+        }else{
+            validator.registerField(startAmountField, rules: [MinLengthRule(length: 1, message: "시작범위를 입력해주세요.")])
+            validator.registerField(endAmountField, rules: [MinLengthRule(length: 1, message: "종료범위를 입력해주세요.")])
+        }
+        
+        
+        validator.validate(self)
+        
+    }
+    
+    
+    func showNextStep(){
         let step3TimeVC = NewGoalStep3TimeViewController()
         step3TimeVC.startDate = periodStartDate
         step3TimeVC.endDate = periodEndDate
@@ -218,9 +236,9 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         
         if let totalAmount = totalAmountField.text.toInt() {
-        
+            
             step3TimeVC.totalAmount = CGFloat(totalAmount)
-       
+            
         }else{
             step3TimeVC.totalAmount = 0
             
@@ -228,12 +246,28 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
             alert.show()
             return
         }
-        
-        
+
         self.navigationController?.pushViewController(step3TimeVC, animated: true)
-        
-        
+    
     }
+    
+    func validationSuccessful(){
+        showNextStep()
+    }
+    
+    func validationFailed(errors: [UITextField:ValidationError]){
+        
+        
+        for ( textField , error) in errors {
+            
+            let alert = UIAlertView(title: "Invalid", message: error.errorMessage, delegate: nil, cancelButtonTitle: "Cancel")
+            
+            alert.show()
+            
+            return
+        }
+    }
+    
     
     func setupTimeTaskViewController(){
         startDate = NSDate()
@@ -246,7 +280,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     }
     
     func initCellSubViews(){
-        goalTextField = UITextField(frame: CGRectMake(20*ratio, 10*ratio, 255*ratio, 30*ratio))
+        goalTextField = UITextField(frame: CGRectMake(20*ratio, 12*ratio, 255*ratio, 30*ratio))
         goalTextField.placeholder = "이곳에 목표를 입력해주세요"
         goalTextField.textAlignment = NSTextAlignment.Left
         goalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
@@ -264,7 +298,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         
         
-        categoryButton = UIButton(frame: CGRectMake(280*ratio,9.5*ratio, 30*ratio, 30*ratio))
+        categoryButton = UIButton(frame: CGRectMake(280*ratio,12*ratio, 30*ratio, 30*ratio))
         categoryButton.setImage(UIImage(named: "category@3x.png"), forState: UIControlState.Normal)
         categoryButton.layer.cornerRadius = 15*ratio
         categoryButton.layer.borderWidth = 1
@@ -372,17 +406,18 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     }
     
     func addTimeTaskTableView(){
-        timeTaskTableView = UITableView(frame: CGRectMake(2*ratio,navigationHeight + 2*ratio,316*ratio,view.frame.size.height - navigationHeight - 2*ratio), style: UITableViewStyle.Plain)
+        timeTaskTableView = UITableView(frame: CGRectMake(2*ratio,navigationHeight + 2*ratio,316*ratio,view.frame.size.height - navigationHeight - 2*ratio), style: UITableViewStyle.Grouped)
         timeTaskTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
         timeTaskTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        timeTaskTableView.contentInset = UIEdgeInsetsMake(0*ratio, 0, 0, 0)
+        timeTaskTableView.contentInset = UIEdgeInsetsMake(-35, 0, 0, 0)
         timeTaskTableView.delegate = self
         timeTaskTableView.dataSource = self
         timeTaskTableView.sectionHeaderHeight = 0
-        timeTaskTableView.sectionFooterHeight = 0
+        timeTaskTableView.sectionFooterHeight = 2
         timeTaskTableView.pagingEnabled = false
         timeTaskTableView.bounces = false
         timeTaskTableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        timeTaskTableView.backgroundColor = UIColor.todaitBackgroundGray()
         view.addSubview(timeTaskTableView)
     }
     
@@ -505,16 +540,16 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
             addGoalTextField(cell)
             addCategoryButton(cell)
             
-        }else if(indexPath.row == 1 && indexPath.section == 0){
+        }else if(indexPath.row == 0 && indexPath.section == 1){
             
             addAimDateSubView(cell)
             
-        }else if(indexPath.row == 2 && indexPath.section == 0){
+        }else if(indexPath.row == 1 && indexPath.section == 1){
             
             
             addAmountButton(cell)
             
-        }else if indexPath.section == 1 {
+        }else if indexPath.row == 2 && indexPath.section == 1 {
             
             
             if isTotal == true {
@@ -531,7 +566,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
-        if indexPath.row == 1 && indexPath.section == 0 {
+        if indexPath.row == 0 && indexPath.section == 1 {
             showPeriodVC()
         }
         
@@ -570,7 +605,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     }
     
     func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0*ratio
+        return 2
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -580,11 +615,11 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
         
-        if indexPath.row == 2 && indexPath.section == 2 {
+        if indexPath.row == 0 && indexPath.section == 3 {
             return 120*ratio
-        }else if indexPath.row == 1 && indexPath.section == 0 {
+        }else if indexPath.row == 0 && indexPath.section == 1 {
             return 53*ratio
-        }else if indexPath.row == 2 && indexPath.section == 0 {
+        }else if indexPath.row == 1 && indexPath.section == 1 {
             return 53*ratio
         }
         
@@ -596,8 +631,8 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         
         switch section {
-        case 0: return 3
-        case 1: return 1
+        case 0: return 1
+        case 1: return 3
         default: return 0
             
         }
@@ -627,9 +662,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         
         cell.contentView.addSubview(goalTextField)
-        
-        addLineView(cell)
-    }
+            }
     
     
     
@@ -723,8 +756,8 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         categoryButton.layer.borderColor = UIColor.clearColor().CGColor
         categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
-        categoryButton.backgroundColor = UIColor.colorWithHexString(editedCategory.color)
-        
+        categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.colorWithHexString(editedCategory.color)), forState: UIControlState.Normal)
+        categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.todaitLightGray()), forState: UIControlState.Highlighted)
         self.category = editedCategory
         
     }
@@ -908,173 +941,6 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     }
     
     
-    
-    func addOptionView(cell:UITableViewCell){
-        
-        addDayOptionView(cell)
-        addAlarmOptionView(cell)
-        addreviewOptionView(cell)
-        addreReadOptionView(cell)
-        
-        
-    }
-    
-    func addDayOptionView(cell:UITableViewCell){
-        
-        
-        var dayOption = UIButton(frame:CGRectMake(2*ratio,12*ratio,157*ratio,52*ratio))
-        dayOption.backgroundColor = UIColor.clearColor()
-        dayOption.addTarget(self, action: Selector("dayOptionClk"), forControlEvents: UIControlEvents.TouchDown)
-        cell.contentView.addSubview(dayOption)
-        
-        
-        var iconImageView = UIImageView(frame: CGRectMake(20*ratio, 6*ratio, 40*ratio, 40*ratio))
-        dayOption.addSubview(iconImageView)
-        
-        
-        var titleLabel = UILabel(frame: CGRectMake(68*ratio, 15*ratio, 92*ratio, 22.5*ratio))
-        titleLabel.text = "매일"
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        dayOption.addSubview(titleLabel)
-        
-        
-        if option == OptionStatus.everyDay {
-            iconImageView.image = UIImage(named: "icon_week_wt@3x.png")
-            titleLabel.textColor = UIColor.todaitGreen()
-        }else{
-            iconImageView.image = UIImage(named: "icon_week@3x.png")
-            titleLabel.textColor = UIColor.todaitGray()
-        }
-        
-    }
-    
-    func dayOptionClk(){
-        
-        option = OptionStatus.everyDay
-        timeTaskTableView.reloadData()
-        
-    }
-    
-    func addAlarmOptionView(cell:UITableViewCell){
-        
-        
-        var alarmOption = UIButton(frame:CGRectMake(161*ratio,12*ratio,157*ratio,52*ratio))
-        alarmOption.backgroundColor = UIColor.clearColor()
-        alarmOption.addTarget(self, action: Selector("alarmOptionClk"), forControlEvents: UIControlEvents.TouchDown)
-        cell.contentView.addSubview(alarmOption)
-        
-        
-        var iconImageView = UIImageView(frame: CGRectMake(10*ratio, 6*ratio, 40*ratio, 40*ratio))
-        alarmOption.addSubview(iconImageView)
-        
-        
-        var titleLabel = UILabel(frame: CGRectMake(63*ratio, 15*ratio, 92*ratio, 22.5*ratio))
-        titleLabel.text = "알람 없음"
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        alarmOption.addSubview(titleLabel)
-        
-        
-        
-        if option == OptionStatus.alarm {
-            iconImageView.image = UIImage(named: "icon_alarm_wt@3x.png")
-            titleLabel.textColor = UIColor.todaitGreen()
-        }else{
-            iconImageView.image = UIImage(named: "icon_alarm@3x.png")
-            titleLabel.textColor = UIColor.todaitGray()
-        }
-    }
-    
-    func alarmOptionClk(){
-        
-        option = OptionStatus.alarm
-        timeTaskTableView.reloadData()
-        
-    }
-    
-    func addreviewOptionView(cell:UITableViewCell){
-        
-        
-        var reviewOption = UIButton(frame:CGRectMake(2*ratio,64*ratio,157*ratio,52*ratio))
-        reviewOption.backgroundColor = UIColor.clearColor()
-        reviewOption.addTarget(self, action: Selector("reviewOptionClk"), forControlEvents: UIControlEvents.TouchDown)
-        cell.contentView.addSubview(reviewOption)
-        
-        
-        var iconImageView = UIImageView(frame: CGRectMake(20*ratio, 6*ratio, 40*ratio, 40*ratio))
-        reviewOption.addSubview(iconImageView)
-        
-        
-        var titleLabel = UILabel(frame: CGRectMake(68*ratio, 15*ratio, 92*ratio, 22.5*ratio))
-        titleLabel.text = "반복 없음"
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        reviewOption.addSubview(titleLabel)
-        
-        
-        if option == OptionStatus.review {
-            iconImageView.image = UIImage(named: "icon_review_wt@3x.png")
-            titleLabel.textColor = UIColor.todaitGreen()
-        }else{
-            iconImageView.image = UIImage(named: "icon_review@3x.png")
-            titleLabel.textColor = UIColor.todaitGray()
-        }
-    }
-    
-    func reviewOptionClk(){
-        
-        option = OptionStatus.review
-        timeTaskTableView.reloadData()
-        
-    }
-    
-    func addreReadOptionView(cell:UITableViewCell){
-        
-        var reReadOption = UIButton(frame:CGRectMake(161*ratio,64*ratio,157*ratio,52*ratio))
-        reReadOption.backgroundColor = UIColor.clearColor()
-        reReadOption.addTarget(self, action: Selector("reReadOptionClk"), forControlEvents: UIControlEvents.TouchDown)
-        cell.contentView.addSubview(reReadOption)
-        
-        
-        var iconImageView = UIImageView(frame: CGRectMake(10*ratio, 6*ratio, 40*ratio, 40*ratio))
-        reReadOption.addSubview(iconImageView)
-        
-        
-        var titleLabel = UILabel(frame: CGRectMake(63*ratio, 15*ratio, 92*ratio, 22.5*ratio))
-        titleLabel.text = "회독 없음"
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        reReadOption.addSubview(titleLabel)
-        
-        
-        if option == OptionStatus.reRead {
-            iconImageView.image = UIImage(named: "icon_reread_wt@3x.png")
-            titleLabel.textColor = UIColor.todaitGreen()
-        }else{
-            iconImageView.image = UIImage(named: "icon_reread@3x.png")
-            titleLabel.textColor = UIColor.todaitGray()
-        }
-        
-    }
-    
-    func reReadOptionClk(){
-        
-        option = OptionStatus.reRead
-        timeTaskTableView.reloadData()
-        
-    }
-    
-    func showreviewVC(){
-        
-        /*
-        let reviewVC = reviewViewcontroller()
-        reviewVC.mainColor = mainColor
-        reviewVC.delegate = self
-        reviewVC.count = 1
-        reviewVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
-        
-        self.navigationController?.presentViewController(reviewVC, animated: true, completion: { () -> Void in
-        
-        })
-        */
-    }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
