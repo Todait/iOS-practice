@@ -11,7 +11,7 @@ import CoreData
 
 
 
-class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDelegate,CategoryDelegate,UITextFieldDelegate,ValidationDelegate{
+class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDelegate,CategoryDelegate,UITextFieldDelegate,ValidationDelegate,KeyboardHelpDelegate{
    
     
     private enum Status{
@@ -49,7 +49,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     var unitTextField:UITextField!
     
     
-    var keyboardHelpView:UIView!
+    var keyboardHelpView:KeyboardHelpView!
     
     var currentTextField:UITextField!
     
@@ -149,11 +149,11 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         unitTextField.textColor = UIColor.todaitGray()
         
         switch currentTextField {
-        case totalAmountField: status = Status.Total
-        case unitTextField: status = Status.Unit
-        case goalTextField: status = Status.Goal
-        case dayAmountField: status = Status.Day
-        default : status = Status.Goal
+        case totalAmountField: status = Status.Total ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case unitTextField: status = Status.Unit ; keyboardHelpView.setStatus(KeyboardHelpStatus.End)
+        case goalTextField: status = Status.Goal ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
+        case dayAmountField: status = Status.Day ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        default : status = Status.Goal ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
         }
         
     }
@@ -281,30 +281,12 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     func addKeyboardHelpView(){
         
-        keyboardHelpView = UIView(frame: CGRectMake(0, height , width, 38*ratio + 185*ratio))
+        keyboardHelpView = KeyboardHelpView(frame: CGRectMake(0, height , width, 38*ratio + 185*ratio))
         keyboardHelpView.backgroundColor = UIColor.whiteColor()
-        
-        
-        let leftButton = UIButton(frame: CGRectMake(7*ratio, 0, 38*ratio, 38*ratio))
-        leftButton.setImage(UIImage(named: "bt_keybord_left@3x.png"), forState: UIControlState.Normal)
-        leftButton.addTarget(self, action: Selector("leftButtonClk"), forControlEvents: UIControlEvents.TouchDown)
-        keyboardHelpView.addSubview(leftButton)
-    
-        let rightButton = UIButton(frame: CGRectMake(50*ratio, 0, 38*ratio, 38*ratio))
-        rightButton.setImage(UIImage(named: "bt_keybord_right@3x.png"), forState: UIControlState.Normal)
-        rightButton.addTarget(self, action: Selector("rightButtonClk"), forControlEvents: UIControlEvents.TouchDown)
-        keyboardHelpView.addSubview(rightButton)
-        
-        
-        let confirmButton = UIButton(frame: CGRectMake(246*ratio, 0 , 74*ratio, 38*ratio))
-        confirmButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 74*ratio, 38*ratio)), forState: UIControlState.Normal)
-        confirmButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitDarkGreen(), frame: CGRectMake(0, 0, 74*ratio, 38*ratio)), forState: UIControlState.Highlighted)
-        confirmButton.setTitle("확인", forState: UIControlState.Normal)
-        confirmButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        confirmButton.addTarget(self, action: Selector("confirmButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        confirmButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 15*ratio)
-        
-        keyboardHelpView.addSubview(confirmButton)
+        keyboardHelpView.leftImageName = "bt_keybord_left@3x.png"
+        keyboardHelpView.rightImageName = "bt_keybord_right@3x.png"
+        keyboardHelpView.delegate = self
+        keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
         
         view.addSubview(keyboardHelpView)
         
@@ -319,22 +301,23 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         
         switch status as Status {
-        case .Date: status = .Goal ; hideDatePicker(); goalTextField.becomeFirstResponder()
+        case .Date: status = .Goal ; hideDatePicker(); goalTextField.becomeFirstResponder() ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
         case .Total: goalTextField.becomeFirstResponder() ; status = .Goal
         case .Day: totalAmountField.becomeFirstResponder() ; status = .Total
-        case .Unit: dayAmountField.becomeFirstResponder() ; status = .Day
+        case .Unit: dayAmountField.becomeFirstResponder() ; status = .Day  ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
         default: status = .None ; confirmButtonClk()
         }
         
     }
     
+    
+    
     func rightButtonClk(){
         
         switch status as Status {
-        case .Goal: totalAmountField.becomeFirstResponder() ; status = .Total//status = .Date ; showDatePicker()
-        case .Date:  hideDatePicker() ; totalAmountField.becomeFirstResponder() ; status = .Total
+        case .Goal: totalAmountField.becomeFirstResponder() ; status = .Total ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
         case .Total: dayAmountField.becomeFirstResponder() ; status = .Day
-        case .Day: unitTextField.becomeFirstResponder() ; status = .Unit
+        case .Day: unitTextField.becomeFirstResponder() ; status = .Unit ;  keyboardHelpView.setStatus(KeyboardHelpStatus.End)
         default: status = .None ; confirmButtonClk()
         }
         
