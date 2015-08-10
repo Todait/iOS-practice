@@ -20,6 +20,14 @@ class SettingCategoryTableViewCell: BasicTableViewCell {
         
         addCategoryImage()
         addTitleLabel()
+        setCustomBackgroundView()
+    }
+    
+    func setCustomBackgroundView(){
+        
+        let backView = UIView()
+        backView.backgroundColor = UIColor.todaitWhiteGray()
+        selectedBackgroundView = backView
     }
     
     func addCategoryImage(){

@@ -15,6 +15,35 @@ public let CREDENTIAL_SECRET_KEY:String = "AisL25f74Aaf5N5XpkyoTuOAc6ccw0TGDwPDx
 public let AWSS3_BUCKET_NAME:String = "todait-images"
 
 
+public func getIndexFromCategoryColorString(color:String)->Int{
+    
+    switch color{
+    case "#FFF2F2F2": return 0
+    case "#FFFFD094": return 1
+    case "#FFFDE039": return 2
+    case "#FFFFB95A": return 3
+    case "#FFE8716E": return 4
+    case "#FFFF9EC7": return 5
+    case "#FFFA5B85": return 6
+    case "#FFC552A6": return 7
+    case "#FFCC9DF2": return 8
+    case "#FF957AC6": return 9
+    case "#FFA3E5E4": return 10
+    case "#FF8CC5FF": return 11
+    case "#FF4FA0FE": return 12
+    case "#FF23C4CE": return 13
+    case "#FF286883": return 14
+    case "#FF75EC75": return 15
+    case "#FFB0DE8F": return 16
+    case "#FF70C79E": return 17
+    case "#FFD2D392": return 18
+    case "#FFCEA37A": return 19
+    default: return 0
+        
+    }
+    
+}
+
 public func getTimeString(time:Int)->String{
     
     let hour = time.toHour()
