@@ -83,8 +83,6 @@ class DetailViewControllerOld: BasicViewController,TodaitNavigationDelegate,UITa
             default: return 200*ratio
         }
         
-        
-        return 80*ratio
     }
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {

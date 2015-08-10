@@ -8,12 +8,34 @@
 
 import UIKit
 
-class BasicViewController: GAITrackedViewController,UIGestureRecognizerDelegate {
+
+
+@IBDesignable class BasicViewController: GAITrackedViewController,UIGestureRecognizerDelegate {
     
     let defaults : NSUserDefaults! = NSUserDefaults.standardUserDefaults()
     let navigationHeight : CGFloat = 64.0
     
-    var todaitNavBar : TodaitNavigationBar!
+    @IBInspectable var todaitNavBar : TodaitNavigationBar! {
+        didSet {
+            
+            if let check = todaitNavBar{
+                return
+            }
+            
+            self.navigationController?.setNavigationBarHidden(true, animated: false)
+            todaitNavBar = TodaitNavigationBar(frame: CGRectMake(0, 0, width, navigationHeight))
+            view.addSubview(todaitNavBar)
+        }
+    }
+    
+    @IBInspectable var navBarColor : UIColor! = UIColor.todaitGreen() {
+        
+        didSet {
+            todaitNavBar.setBackgroundImage(UIImage.colorImage(navBarColor,frame:CGRectMake(0,0,width,64)), forBarMetrics: UIBarMetrics.Default)
+        }
+        
+    }
+    
     var titleLabel : UILabel!
     var ratio : CGFloat!
     var width : CGFloat!
@@ -71,8 +93,8 @@ class BasicViewController: GAITrackedViewController,UIGestureRecognizerDelegate 
         }
         
         
-        titleLabel = UILabel(frame: CGRectMake(30*ratio, 30.5, 260*ratio, 24))
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 20)
+        titleLabel = UILabel(frame: CGRectMake(30*ratio, 32, 260*ratio, 24))
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
         titleLabel.textColor = UIColor.whiteColor()
         titleLabel.textAlignment = NSTextAlignment.Center
         view.addSubview(titleLabel)

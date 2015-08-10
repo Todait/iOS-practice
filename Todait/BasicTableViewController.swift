@@ -10,6 +10,7 @@
 import UIKit
 
 class BasicTableViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate{
+    
     var tableView:UITableView!
     
     var sectionTitles:[String] = []
@@ -30,7 +31,7 @@ class BasicTableViewController: BasicViewController,UITableViewDataSource,UITabl
         
         tableView = UITableView(frame: CGRectMake(0,navigationHeight,width,height - navigationHeight), style: UITableViewStyle.Grouped)
         tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "basic")
-        tableView.contentInset = UIEdgeInsetsMake(-15*ratio, 0, 0, 0)
+        tableView.contentInset = UIEdgeInsetsMake(-16*ratio, 0, 0, 0)
         tableView.sectionFooterHeight = 0.0
         tableView.delegate = self
         tableView.dataSource = self
@@ -63,11 +64,11 @@ class BasicTableViewController: BasicViewController,UITableViewDataSource,UITabl
     }
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 35*ratio
+        return 35
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 45*ratio
+        return 45
     }
     
     
@@ -78,10 +79,10 @@ class BasicTableViewController: BasicViewController,UITableViewDataSource,UITabl
             view.removeFromSuperview()
         }
         
-        let titleLabel = UILabel(frame: CGRectMake(15*ratio, 0*ratio, 270*ratio, 35*ratio))
+        let titleLabel = UILabel(frame: CGRectMake(15, 0, 270, 35))
         titleLabel.textAlignment = NSTextAlignment.Left
-        titleLabel.textColor = UIColor.colorWithHexString("#606060")
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
+        titleLabel.textColor = UIColor.todaitDarkGray()
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 11*ratio)
         titleLabel.text = cellTitles[indexPath.section][indexPath.row]
         cell.contentView.addSubview(titleLabel)
         
@@ -93,11 +94,11 @@ class BasicTableViewController: BasicViewController,UITableViewDataSource,UITabl
       
         let headerView = UIView()
         
-        let sectionTitleLabel = UILabel(frame: CGRectMake(15*ratio,23*ratio, 250*ratio, 13*ratio))
+        let sectionTitleLabel = UILabel(frame: CGRectMake(15,23, 250, 13))
         sectionTitleLabel.text = sectionTitles[section]
         sectionTitleLabel.textAlignment = NSTextAlignment.Left
-        sectionTitleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
-        sectionTitleLabel.textColor = UIColor.colorWithHexString("#595959")
+        sectionTitleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10)
+        sectionTitleLabel.textColor = UIColor.todaitDarkGray()
         
         headerView.addSubview(sectionTitleLabel)
         
