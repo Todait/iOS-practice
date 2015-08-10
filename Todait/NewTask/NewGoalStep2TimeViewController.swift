@@ -650,16 +650,17 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     
     func textFieldDidBeginEditing(textField: UITextField) {
         
-        currentTextField.textColor = UIColor.todaitGray()
-        currentTextField = textField
-        currentTextField.textColor = UIColor.todaitRed()
-        
-        
         goalTextField.textColor = UIColor.todaitGray()
         unitTextField.textColor = UIColor.todaitGray()
         startAmountField.textColor = UIColor.todaitGray()
         endAmountField.textColor = UIColor.todaitGray()
         totalAmountField.textColor = UIColor.todaitGray()
+        
+        currentTextField = textField
+        currentTextField.textColor = UIColor.todaitRed()
+        
+        
+        
         
         switch currentTextField {
         case totalAmountField: status = Status.Total ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
