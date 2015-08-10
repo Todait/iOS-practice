@@ -10,8 +10,10 @@ import UIKit
 
 class NewGoalStep1ViewController: BasicViewController {
    
-    var amountCalculatorView:UIView!
-    var dateCalculatorView:UIView!
+    var amountCalculatorView:UIButton!
+    var dateCalculatorView:UIButton!
+    
+    
     var closeButton:UIButton!
     
     
@@ -31,35 +33,39 @@ class NewGoalStep1ViewController: BasicViewController {
     
     func addAmountCalculatorView(){
         
-        amountCalculatorView = UIView(frame: CGRectMake(7*ratio, 64 + 7*ratio, 306*ratio, 200*ratio))
+        amountCalculatorView = UIButton(frame: CGRectMake(7*ratio, 64 + 7*ratio, 306*ratio, 200*ratio))
         amountCalculatorView.backgroundColor = UIColor.whiteColor()
         amountCalculatorView.layer.cornerRadius = 5
         amountCalculatorView.clipsToBounds = true
+        amountCalculatorView.setBackgroundImage(UIImage.colorImage(UIColor.whiteColor(), frame: CGRectMake(0,0,306*ratio,200*ratio)), forState: UIControlState.Normal)
+        
+        amountCalculatorView.setBackgroundImage(UIImage.colorImage(UIColor.todaitLightGray(), frame: CGRectMake(0,0,306*ratio,200*ratio)), forState: UIControlState.Highlighted)
         view.addSubview(amountCalculatorView)
         
         addAmountContentsView()
         
         
-        let gesture = UITapGestureRecognizer(target: self, action: Selector("showAmountCalculatorVC:"))
-        amountCalculatorView.addGestureRecognizer(gesture)
         
+        amountCalculatorView.addTarget(self, action: "amountButtonTouchDown", forControlEvents: UIControlEvents.TouchDown)
+        amountCalculatorView.addTarget(self, action: "amountButtonTouchUpInside", forControlEvents: UIControlEvents.TouchUpInside)
+        amountCalculatorView.addTarget(self, action: "amountButtonTouchUpOutside", forControlEvents: UIControlEvents.TouchUpOutside)
     }
     
-    func showAmountCalculatorVC(gesture:UIGestureRecognizer){
-        
-        
-        if gesture.state == UIGestureRecognizerState.Began{
-            amountImage.image = UIImage(named: "newgoal_step1_amount_push@3x.png")
-            
-        }else if gesture.state == UIGestureRecognizerState.Ended || gesture.state == UIGestureRecognizerState.Cancelled {
-            
-            amountImage.image = UIImage(named: "newgoal_step1_amount@3x.png")
-            
-            let step2AmountVC = NewGoalStep2AmountViewController()
-            self.navigationController?.pushViewController(step2AmountVC, animated: true)
-            
-        }
+    func amountButtonTouchDown(){
+        amountImage.image = UIImage(named: "newgoal_step1_amount_push@3x.png")
     }
+    
+    func amountButtonTouchUpInside(){
+        amountImage.image = UIImage(named: "newgoal_step1_amount@3x.png")
+        let step2AmountVC = NewGoalStep2AmountViewController()
+        self.navigationController?.pushViewController(step2AmountVC, animated: true)
+        
+        
+    }
+    func amountButtonTouchUpOutside(){
+        amountImage.image = UIImage(named: "newgoal_step1_amount@3x.png")
+    }
+    
     
     func addAmountContentsView(){
         
@@ -90,34 +96,42 @@ class NewGoalStep1ViewController: BasicViewController {
     
     func addDateCalculatorView(){
         
-        dateCalculatorView = UIView(frame: CGRectMake(7*ratio, 64 + 214*ratio, 306*ratio, 200*ratio))
+        dateCalculatorView = UIButton(frame: CGRectMake(7*ratio, 64 + 214*ratio, 306*ratio, 200*ratio))
         dateCalculatorView.backgroundColor = UIColor.whiteColor()
         dateCalculatorView.layer.cornerRadius = 5
         dateCalculatorView.clipsToBounds = true
+        
+        
+        
+        dateCalculatorView.setBackgroundImage(UIImage.colorImage(UIColor.whiteColor(), frame: CGRectMake(0,0,306*ratio,200*ratio)), forState: UIControlState.Normal)
+        
+        dateCalculatorView.setBackgroundImage(UIImage.colorImage(UIColor.todaitLightGray(), frame: CGRectMake(0,0,306*ratio,200*ratio)), forState: UIControlState.Highlighted)
         view.addSubview(dateCalculatorView)
         
         
         addDateContentsView()
         
-        let gesture = UITapGestureRecognizer(target: self, action: Selector("showTimeCalculatorVC:"))
-        dateCalculatorView.addGestureRecognizer(gesture)
         
+        dateCalculatorView.addTarget(self, action: "dateButtonTouchDown", forControlEvents: UIControlEvents.TouchDown)
+        dateCalculatorView.addTarget(self, action: "dateButtonTouchUpInside", forControlEvents: UIControlEvents.TouchUpInside)
+        dateCalculatorView.addTarget(self, action: "dateButtonTouchUpOutside", forControlEvents: UIControlEvents.TouchUpOutside)
     }
     
-    func showTimeCalculatorVC(gesture:UIGestureRecognizer){
-        
-        
+    func dateButtonTouchDown(){
         dateImage.image = UIImage(named: "newgoal_step1_time_push@3x.png")
+    }
+    
+    func dateButtonTouchUpInside(){
         
-        if gesture.state == UIGestureRecognizerState.Ended || gesture.state == UIGestureRecognizerState.Cancelled {
-            
-            dateImage.image = UIImage(named: "newgoal_step1_time@3x.png")
-            
-            let step2TimeVC = NewGoalStep2TimeViewController()
-            self.navigationController?.pushViewController(step2TimeVC, animated: true)
-        }
+        dateImage.image = UIImage(named: "newgoal_step1_time@3x.png")
+        let step2TimeVC = NewGoalStep2TimeViewController()
+        self.navigationController?.pushViewController(step2TimeVC, animated: true)
         
     }
+    func dateButtonTouchUpOutside(){
+        dateImage.image = UIImage(named: "newgoal_step1_time@3x.png")
+    }
+    
     
     
     func addDateContentsView(){
