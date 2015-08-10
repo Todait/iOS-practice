@@ -85,16 +85,10 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         selectedWeekOfMonth = getWeekNumber(NSDate())
         
         
-        setupDay(getTodayDateNumber())
-        loadDiary()
+
         
         addHeaderView()
-        addCalendarView()
-        
         addMemoView()
-        addCalendarView()
-        
-        
         addDetailTable()
         
         
@@ -152,20 +146,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         addMemoView()
     }
     
-    func addCalendarView(){
-        calendarView = UIView(frame: CGRectMake(0, 255*ratio, width, 60*ratio))
-        calendarView.clipsToBounds = true
-        //view.addSubview(calendarView)
-        
-    }
-    
     func addDetailView(){
         detailView = DetailView(frame: CGRectMake(0, 0, width, detailViewHeight*ratio))
-        detailView.dateLabel.text = task.getStringOfPeriodProgress()
-        detailView.timeLabel.text = task.getDoneTimeString()
-        detailView.amountLabel.text = task.getDoneAmountString()
-        detailView.categoryLabel.text = task.categoryId.name
-        detailView.categoryCircle.backgroundColor = task.getColor()
         detailView.mainImageView.image = UIImage(named: "track.jpg")
         
         
@@ -192,6 +174,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         dateLabel.textColor = UIColor.todaitGray()
         dateLabel.font = UIFont(name:"AppleSDGothicNeo-Medium", size: 10*ratio)
         dateLabel.textAlignment = NSTextAlignment.Center
+        
+        
         headerView.addSubview(dateLabel)
         
         updateDateLabel(getDateFromDateNumber(getTodayDateNumber()))
@@ -211,6 +195,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             weekDayLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 8*ratio)
             weekDayLabel.textColor = UIColor.todaitGray()
             weekDayLabel.backgroundColor = UIColor.clearColor()
+            
             headerView.addSubview(weekDayLabel)
             
             if index == 0 {
@@ -219,6 +204,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
                 weekDayLabel.textColor = UIColor.todaitBlue()
             }
             
+            weekDayLabel.setKern(1)
         }
         
         let line = UIView(frame:CGRectMake(0, 42.5*ratio, width, 0.5*ratio))
@@ -376,9 +362,9 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         var scrollLine = headerMinHeight*ratio + 0.5 * monthCalendarHeight * ratio
         
         if isCalendarDown == true {
-            scrollLine = headerMinHeight*ratio + 0.9 * monthCalendarHeight
+            scrollLine = headerMinHeight*ratio + 0.95 * monthCalendarHeight*ratio
         }else {
-            scrollLine = headerMinHeight*ratio + 0.3 * monthCalendarHeight
+            scrollLine = headerMinHeight*ratio + 0.2 * monthCalendarHeight*ratio
         }
         
         
@@ -480,7 +466,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         shadowLayer.frame = CGRectMake(0, 2*ratio, width, 2*ratio)
         shadowLayer.startPoint = CGPointMake(0.5, 1.0)
         shadowLayer.endPoint = CGPointMake(0.5, 0)
-        shadowLayer.colors = [UIColor.clearColor().CGColor,UIColor.todaitBackgroundGray().CGColor]
+        shadowLayer.colors = [UIColor.clearColor().CGColor,UIColor.todaitBackgroundGray().colorWithAlphaComponent(0.5).CGColor]
         shadowLayer.locations = [NSNumber(float: 0.5),NSNumber(float: 1.0)]
         view.layer.addSublayer(shadowLayer)
         
@@ -582,7 +568,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         weekCalendarVC.task = task
         weekCalendarVC.delegate = self
         weekCalendarVC.dateNumber = selectedDateNumber
-        weekCalendarVC.view.frame = CGRectMake(0,detailViewHeight*ratio + 43*ratio,width,47*ratio)
+        weekCalendarVC.view.frame = CGRectMake(0,detailViewHeight*ratio + 43*ratio,width,49*ratio)
         
         addChildViewController(weekCalendarVC)
         view.addSubview(weekCalendarVC.view)
@@ -795,6 +781,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         let dateForm = NSDateFormatter()
         dateForm.dateFormat = "yyyy.MM"
         dateLabel.text = dateForm.stringFromDate(date)
+        dateLabel.setKern(1)
         selectedWeekOfMonth = getWeekNumber(date)
         
         
@@ -984,10 +971,12 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func timerButtonClk(){
         
-        //var timer
+        let timerVC = TimerViewController()
         
-        performSegueWithIdentifier("ShowTimerView", sender: self)
-        
+        let day:Day! = task.getDay(getTodayDateNumber())
+        timerVC.task = task
+        timerVC.day = day
+        self.navigationController?.pushViewController(timerVC, animated: true)
         
         
     }
@@ -1101,6 +1090,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         refreshHeaderText()
         
         updateMemo(refreshDateNumber)
+        weekCalendarVC.weekView.reloadData()
+        monthCalendarVC.monthView.reloadData()
         //detailTableView.reloadData()
         
     }
@@ -1153,9 +1144,11 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         addGraphButton()
         
         
-        loadDiary()
+        //setupDay(getTodayDateNumber())
+        //loadDiary()
         refreshView()
-        diaryTableView.reloadData()
+        
+        //diaryTableView.reloadData()
         
     }
     
@@ -1165,8 +1158,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             return
         }
         
-        editButton = UIButton(frame: CGRectMake(288*ratio,30,28,28))
-        editButton.setImage(UIImage.maskColor("bt_edit@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
+        editButton = UIButton(frame: CGRectMake(320*ratio - 44 - 6,22,44,44))
+        editButton.setImage(UIImage.maskColor("nav_bt_edit@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
         editButton.addTarget(self, action: Selector("showEditTaskVC"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(editButton)
     }
@@ -1176,7 +1169,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         switch task.taskType {
         case "Timer": showEditTimerTaskVC()
-        default:  showEditTimerTaskVC()
+        default:  showEditGoalVC()
 
         }
         
@@ -1197,6 +1190,19 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         editTaskVC.category = task.categoryId
         
         self.navigationController?.pushViewController(editTaskVC, animated: true)
+    }
+    
+    func showEditGoalVC(){
+        
+        let editGoalVC = EditGoalViewController()
+        
+        editGoalVC.editedTask = task
+        editGoalVC.delegate = self
+        editGoalVC.category = task.categoryId
+        
+        self.navigationController?.pushViewController(editGoalVC, animated: true)
+        
+        
     }
     
     func showCompletePopup(){
@@ -1247,8 +1253,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             return
         }
         
-        graphButton = UIButton(frame: CGRectMake(254*ratio,30,28,28))
-        graphButton.setImage(UIImage.maskColor("bt_graph@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
+        graphButton = UIButton(frame: CGRectMake(320*ratio - 88 - 6,22,44,44))
+        graphButton.setImage(UIImage.maskColor("nav_bt_graph@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
         graphButton.addTarget(self, action: Selector("showGraphVC"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(graphButton)
         
@@ -1256,11 +1262,22 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func showGraphVC(){
         
-        var graphVC = GraphViewController()
-        graphVC.mainColor = task.getColor()
-        graphVC.task = task
         
-        self.navigationController?.pushViewController(graphVC, animated: true)
+        if task.taskType == "Timer" {
+            
+            var timerGraphVC = TimerGraphViewController()
+            timerGraphVC.mainColor = task.getColor()
+            timerGraphVC.task = task
+            self.navigationController?.pushViewController(timerGraphVC, animated: true)
+            
+        }else {
+            
+            var graphVC = GraphViewController()
+            graphVC.mainColor = task.getColor()
+            graphVC.task = task
+            
+            self.navigationController?.pushViewController(graphVC, animated: true)
+        }
         
     }
     

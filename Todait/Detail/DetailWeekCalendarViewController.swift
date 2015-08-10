@@ -217,6 +217,8 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
                     button.expectLabel.textColor = UIColor.todaitDarkGray()
                     button.setDateStatus(DateStatus.UnStart)
                     
+                }else{
+                    button.expectLabel.textColor = UIColor.whiteColor()
                 }
                 
             }else{

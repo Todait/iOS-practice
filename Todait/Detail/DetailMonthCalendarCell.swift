@@ -90,7 +90,7 @@ class DetailMonthCalendarCell: UICollectionViewCell {
             
             let i = Int(index)
             let originY = CGFloat(i)*height
-            let line = UIView(frame:CGRectMake(0,originY-0.5,320*ratio,1))
+            let line = UIView(frame:CGRectMake(0,originY,320*ratio,1))
             line.backgroundColor = UIColor.todaitWhiteGray()
             
             addSubview(line)
