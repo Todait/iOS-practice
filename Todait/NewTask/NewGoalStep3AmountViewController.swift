@@ -369,8 +369,6 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     
     func thumbTouchEnd(){
         
-        
-        
         if let timer = maxChangeTimer {
             if maxChangeTimer.valid == true {
                 maxChangeTimer.invalidate()

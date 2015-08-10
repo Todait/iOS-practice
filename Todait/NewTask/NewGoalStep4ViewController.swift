@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,CountDelegate{
+class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,CountDelegate,AlarmDelegate{
    
     
     var optionView:UIView!
@@ -25,6 +25,9 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,C
     var reReadOption:OptionButton!
     var reviewOption:OptionButton!
     
+    
+    var isAlarmOn:Bool = false
+    var alarmTime:NSDate?
     var rereadCount:Int! = 0
     var reviewCount:Int! = 0
     
@@ -72,10 +75,56 @@ class NewGoalStep4ViewController: BasicViewController,TodaitNavigationDelegate,C
         
         eventOption = 0
         
+        var alarmVC = AlarmViewController()
+        alarmVC.delegate = self
+        alarmVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        
+        self.navigationController?.presentViewController(alarmVC, animated: false, completion: { () -> Void in
+            
+        })
+        
+        
         //option = OptionStatus.Alarm.rawValue
         
         
         
+    }
+    
+    func getAlarmStatus()->Bool{
+        
+        
+        
+        return isAlarmOn
+    }
+    
+    func getAlarmTime() -> NSDate? {
+        
+        return alarmTime
+        
+    }
+    
+    func updateAlarmTime(date: NSDate) {
+        alarmTime = date
+    }
+    
+    func updateAlarmStatus(status: Bool) {
+        
+        
+        isAlarmOn = status
+        
+        
+        if isAlarmOn == true {
+            
+            var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: alarmTime!)
+            
+            alarmOption.setText("\(comp.hour):\(comp.minute)")
+            
+            
+        }else{
+            alarmOption.setText("알람없음")
+        }
+        
+        alarmOption.setButtonOn(isAlarmOn)
     }
     
     func addReviewOptionView(){

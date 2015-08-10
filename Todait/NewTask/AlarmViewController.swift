@@ -8,13 +8,25 @@
 
 import UIKit
 
+
+protocol AlarmDelegate: NSObjectProtocol {
+    
+    func updateAlarmTime(date:NSDate)
+    func updateAlarmStatus(status:Bool)
+    func getAlarmTime()->NSDate?
+    func getAlarmStatus()->Bool
+}
+
+
+
 class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerViewDelegate{
     
     var filterView:UIImageView!
     var backgroundView:UIView!
     var resetButton:UIButton!
     var confirmButton:UIButton!
-    var delegate:TimeLogDelegate!
+    
+    var delegate:AlarmDelegate?
     
     var hourPicker:UIPickerView!
     var minutePicker:UIPickerView!
@@ -29,20 +41,38 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
     var alarmLabel:UILabel!
     var isAlarmOn:Bool! = false
     
+    var hour:Int! = 0
+    var minute:Int! = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         addFilterView()
         addBackgroundView()
         addInfoView()
-        addconfirmButton()
+        addConfirmButton()
         addPickerViews()
         addRepeatButton()
         addAlarmButton()
         
-        setPickerDate(NSDate())
-        setAlarmOn(isAlarmOn)
         
+        
+        if let delegate =  self.delegate {
+            
+            if delegate.respondsToSelector("getAlarmTime"){
+                
+                if let date = delegate.getAlarmTime() {
+                    setPickerDate(date)
+                }else{
+                    setPickerDate(NSDate())
+                }
+            }
+            
+            
+            if delegate.respondsToSelector("getAlarmStatus") {
+                setAlarmOn(delegate.getAlarmStatus())
+            }
+        }
     }
     
     func addFilterView(){
@@ -109,7 +139,7 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
     }
     
     
-    func addconfirmButton(){
+    func addConfirmButton(){
         confirmButton = UIButton(frame: CGRectMake(0, 282*ratio, 294*ratio, 43*ratio))
         confirmButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         confirmButton.setTitle("확인", forState: UIControlState.Normal)
@@ -121,19 +151,21 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
     
     func confirmButtonClk(){
         
-        closeButtonClk()
-
         
-        /*
-        if self.delegate.respondsToSelector("saveTimeLog:"){
+
+        if let delegate = self.delegate {
             
+            if delegate.respondsToSelector("updateAlarmTime:"){
+                delegate.updateAlarmTime(getPickerDate())
+            }
             
-            let time = getTimeLog()
-            self.delegate.saveTimeLog(time)
+            if delegate.respondsToSelector("updateAlarmStatus:"){
+                delegate.updateAlarmStatus(isAlarmOn)
+            }
             
-            closeButtonClk()
         }
-        */
+        
+        closeButtonClk()
     }
     
     
@@ -256,12 +288,26 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
         hourPicker.selectRow(comp.hour, inComponent: 0, animated: true)
         minutePicker.selectRow(comp.minute, inComponent: 0, animated: true)
         
+        hour = comp.hour
+        minute = comp.minute
+        
         setAmPmLabelColor(comp.hour)
         
     }
     
+    func getPickerDate()->NSDate{
+        
+        var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: getDateFromDateNumber(getTodayDateNumber()))
+        comp.hour = hour
+        comp.minute = minute
+        
+        return NSCalendar.currentCalendar().dateFromComponents(comp)!
+    }
+    
     func setAlarmOn(alarm:Bool){
         
+        isAlarmOn = alarm
+
         if alarm == true {
             alarmLabel.text = "ON"
             alarmButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 111*ratio, 54*ratio)), forState: UIControlState.Normal)
@@ -291,7 +337,10 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
         if pickerView == hourPicker {
             
             setAmPmLabelColor(row)
+            hour = row
+        }else if pickerView == minutePicker {
             
+            minute = row
         }
         
     }
