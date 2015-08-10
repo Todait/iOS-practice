@@ -73,7 +73,7 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate,SelectTaskD
     
     func setupMainViewController(){
         
-        var mainVC = self.storyboard?.instantiateViewControllerWithIdentifier("mainVC") as! MainViewController
+        let mainVC =   MainViewController()
         addChildViewController(mainVC)
         viewControllers.append(mainVC)
     }

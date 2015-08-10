@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="7701" systemVersion="14C1514" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="AmountLog" representedClassName="Todait.AmountLog" syncable="YES">
+        <attribute name="afterDoneAmount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="archived" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="beforeDoneAmount" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dirtyFlag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="serverDayId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="serverId" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="timestamp" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="dayId" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Day" inverseName="amountLogList" inverseEntity="Day" syncable="YES"/>
+    </entity>
+    <entity name="AmountRange" representedClassName="PRODUCT_MODULE_NAME.AmountRange" syncable="YES">
+        <attribute name="doneAmount" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="endPoint" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="startPoint" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="dayId" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Day" inverseName="amountRangeList" inverseEntity="Day" syncable="YES"/>
+    </entity>
+    <entity name="Category" representedClassName="Todait.Category" syncable="YES">
+        <attribute name="archivedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="categoryType" optional="YES" attributeType="String" minValueString="0" maxValueString="255" syncable="YES"/>
+        <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dirtyFlag" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="hidden" optional="YES" attributeType="Boolean" defaultValueString="0" syncable="YES"/>
+        <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
+        <attribute name="serverId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="taskList" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Task" inverseName="categoryId" inverseEntity="Task" syncable="YES"/>
+        <relationship name="userId" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="User" syncable="YES"/>
+    </entity>
+    <entity name="CheckLog" representedClassName="PRODUCT_MODULE_NAME.CheckLog" syncable="YES">
+        <attribute name="afterChecked" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="beforeChecked" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="timestamp" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="dayId" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Day" inverseName="checkLogList" inverseEntity="Day" syncable="YES"/>
+        <relationship name="reviewDayId" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReviewDay" inverseName="checkLogList" inverseEntity="ReviewDay" syncable="YES"/>
+    </entity>
+    <entity name="Day" representedClassName="Todait.Day" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="dayOfWeek" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="done" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="doneAmount" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="doneSecond" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="expectAmount" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="off" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="score" optional="YES" attributeType="Float" defaultValueString="0.0" syncable="YES"/>
+        <relationship name="amountLogList" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="AmountLog" inverseName="dayId" inverseEntity="AmountLog" syncable="YES"/>
+        <relationship name="amountRangeList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="AmountRange" inverseName="dayId" inverseEntity="AmountRange" syncable="YES"/>
+        <relationship name="checkLogList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CheckLog" inverseName="dayId" inverseEntity="CheckLog" syncable="YES"/>
+        <relationship name="diaryList" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Diary" inverseName="dayId" inverseEntity="Diary" syncable="YES"/>
+        <relationship name="reviewDayList" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReviewDay" inverseName="dayId" inverseEntity="ReviewDay" syncable="YES"/>
+        <relationship name="taskId" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Task" inverseName="dayList" inverseEntity="Task" syncable="YES"/>
+        <relationship name="timeHistoryList" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="TimeHistory" inverseName="dayId" inverseEntity="TimeHistory" syncable="YES"/>
+        <relationship name="timeLogList" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="TimeLog" inverseName="dayId" inverseEntity="TimeLog" syncable="YES"/>
+    </entity>
+    <entity name="Diary" representedClassName="Todait.Diary" syncable="YES">
+        <attribute name="body" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
+        <attribute name="diryFlag" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="timestamp" optional="YES" attributeType="Integer 64" minValueString="0" maxValueString="45" defaultValueString="0" syncable="YES"/>
+        <relationship name="dayId" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Day" inverseName="diaryList" inverseEntity="Day" syncable="YES"/>
+        <relationship name="imageList" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ImageData" inverseName="diaryId" inverseEntity="ImageData" syncable="YES"/>
+    </entity>
+    <entity name="ImageData" representedClassName="Todait.ImageData" syncable="YES">
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="image" optional="YES" attributeType="Binary" allowsExternalBinaryDataStorage="YES" syncable="YES"/>
+        <relationship name="diaryId" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Diary" inverseName="imageList" inverseEntity="Diary" syncable="YES"/>
+        <relationship name="taskId" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Task" inverseName="imageDataList" inverseEntity="Task" syncable="YES"/>
+    </entity>
+    <entity name="ReviewDay" representedClassName="PRODUCT_MODULE_NAME.ReviewDay" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="done" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="localId" optional="YES" attributeType="String" minValueString="0" maxValueString="255" syncable="YES"/>
+        <relationship name="checkLogList" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CheckLog" inverseName="reviewDayId" inverseEntity="CheckLog" syncable="YES"/>
+        <relationship name="dayId" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Day" inverseName="reviewDayList" inverseEntity="Day" syncable="YES"/>
+        <relationship name="timeLogList" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TimeLog" inverseName="reviewDay" inverseEntity="TimeLog" syncable="YES"/>
+    </entity>
+    <entity name="Task" representedClassName="Todait.Task" syncable="YES">
+        <attribute name="amount" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="completed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="dirtyFlag" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="endDate" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="imageNames" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
+        <attribute name="lastUpdateDate" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="localId" optional="YES" attributeType="String" minValueString="0" maxValueString="255" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
+        <attribute name="notificationMode" optional="YES" attributeType="Boolean" minValueString="0" maxValueString="45" syncable="YES"/>
+        <attribute name="notificationTime" optional="YES" attributeType="String" minValueString="0" maxValueString="255" syncable="YES"/>
+        <attribute name="priority" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="repeatCount" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="reviewCount" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="reviewType" optional="YES" attributeType="String" minValueString="0" maxValueString="255" syncable="YES"/>
+        <attribute name="serverCategoryId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="serverId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="startPoint" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="taskType" optional="YES" attributeType="String" minValueString="0" maxValueString="255" elementID="amount_type" syncable="YES"/>
+        <attribute name="unit" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
+        <relationship name="categoryId" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Category" inverseName="taskList" inverseEntity="Category" syncable="YES"/>
+        <relationship name="dayList" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Day" inverseName="taskId" inverseEntity="Day" syncable="YES"/>
+        <relationship name="imageDataList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ImageData" inverseName="taskId" inverseEntity="ImageData" syncable="YES"/>
+        <relationship name="week" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Week" inverseName="taskId" inverseEntity="Week" syncable="YES"/>
+    </entity>
+    <entity name="TaskDate" representedClassName="PRODUCT_MODULE_NAME.TaskDate" syncable="YES">
+        <attribute name="endDate" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="localId" optional="YES" attributeType="String" minValueString="0" maxValueString="255" syncable="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="state" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <relationship name="dayList" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Day" syncable="YES"/>
+        <relationship name="taskId" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Task" syncable="YES"/>
+        <relationship name="week" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Week" syncable="YES"/>
+    </entity>
+    <entity name="TimeHistory" representedClassName="Todait.TimeHistory" syncable="YES">
+        <attribute name="doneMillis" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="endedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="startedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="dayId" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Day" inverseName="timeHistoryList" inverseEntity="Day" syncable="YES"/>
+    </entity>
+    <entity name="TimeLog" representedClassName="Todait.TimeLog" syncable="YES">
+        <attribute name="afterSecond" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="beforeSecond" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="timestamp" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Date" syncable="YES"/>
+        <relationship name="dayId" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Day" inverseName="timeLogList" inverseEntity="Day" syncable="YES"/>
+        <relationship name="reviewDay" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ReviewDay" inverseName="timeLogList" inverseEntity="ReviewDay" syncable="YES"/>
+    </entity>
+    <entity name="User" representedClassName="Todait.User" syncable="YES">
+        <attribute name="authenicationToken" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
+        <attribute name="email" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
+        <attribute name="imageNames" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
+    </entity>
+    <entity name="Week" representedClassName="Todait.Week" syncable="YES">
+        <attribute name="fri" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="mon" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="sat" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="sun" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="thu" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="tue" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="wed" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="taskId" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="Task" inverseName="week" inverseEntity="Task" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="AmountLog" positionX="396" positionY="477" width="128" height="195"/>
+        <element name="AmountRange" positionX="-351" positionY="135" width="128" height="105"/>
+        <element name="Category" positionX="-387" positionY="117" width="128" height="225"/>
+        <element name="CheckLog" positionX="-360" positionY="126" width="128" height="120"/>
+        <element name="Day" positionX="225" positionY="162" width="128" height="315"/>
+        <element name="Diary" positionX="412" positionY="143" width="128" height="120"/>
+        <element name="ImageData" positionX="414" positionY="396" width="128" height="105"/>
+        <element name="ReviewDay" positionX="-369" positionY="117" width="128" height="135"/>
+        <element name="Task" positionX="-234" positionY="63" width="128" height="420"/>
+        <element name="TaskDate" positionX="-378" positionY="108" width="128" height="150"/>
+        <element name="TimeHistory" positionX="216" positionY="563" width="128" height="105"/>
+        <element name="TimeLog" positionX="18" positionY="485" width="128" height="150"/>
+        <element name="User" positionX="-585" positionY="117" width="128" height="105"/>
+        <element name="Week" positionX="97" positionY="-48" width="128" height="165"/>
+    </elements>
+</model>
