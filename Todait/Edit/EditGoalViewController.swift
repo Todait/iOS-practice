@@ -97,7 +97,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     
     
     var doneButton:UIButton!
-
+    var deleteButton:UIButton!
     
     var keyboardHelpView:KeyboardHelpView!
     private var status:Status! = Status.None
@@ -120,6 +120,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         
         addUnitView()
         addKeyboardHelpView()
+        addDeleteButton()
         
         totalUpdate()
         
@@ -215,11 +216,12 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         
         
         
-        periodStartLabel = UILabel(frame:CGRectMake(15*ratio, 26*ratio, 140*ratio, 20*ratio))
+        periodStartLabel = UILabel(frame:CGRectMake(15*ratio, 26*ratio, 137*ratio, 20*ratio))
         periodStartLabel.text = getDateString(getDateNumberFromDate(periodStartDate))
         periodStartLabel.textAlignment = NSTextAlignment.Right
         periodStartLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
         periodStartLabel.textColor = UIColor.todaitDarkGray()
+        periodStartLabel.setKern(2)
         dataView.addSubview(periodStartLabel)
         
         
@@ -228,11 +230,12 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         dataView.addSubview(dashLine)
         
         
-        periodEndLabel = UILabel(frame:CGRectMake(165*ratio, 26*ratio, 140*ratio, 20*ratio))
+        periodEndLabel = UILabel(frame:CGRectMake(168*ratio, 26*ratio, 140*ratio, 20*ratio))
         periodEndLabel.text = getDateString(getDateNumberFromDate(periodEndDate))
         periodEndLabel.textAlignment = NSTextAlignment.Left
         periodEndLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
         periodEndLabel.textColor = UIColor.todaitDarkGray()
+        periodEndLabel.setKern(2)
         dataView.addSubview(periodEndLabel)
         
         
@@ -241,16 +244,19 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         dataView.addSubview(line)
 
         
-    }
-    
-    func addButtonView(){
-        
-        periodDayLabel = UILabel(frame: CGRectMake(272*ratio, 30*ratio, 33*ratio, 16*ratio))
+        periodDayLabel = UILabel(frame: CGRectMake(272*ratio, 28*ratio, 33*ratio, 16*ratio))
         periodDayLabel.text = periodDayString
         periodDayLabel.textAlignment = NSTextAlignment.Left
         periodDayLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10*ratio)
         periodDayLabel.textColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.7)
         dataView.addSubview(periodDayLabel)
+        
+        
+    }
+    
+    func addButtonView(){
+        
+
         
         totalButton = UIButton(frame: CGRectMake(19*ratio, 73*ratio, 89*ratio, 32*ratio))
         totalButton.setTitle("전체", forState: UIControlState.Normal)
@@ -364,7 +370,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         let detailLabel = UILabel(frame: CGRectMake(66*ratio,0,200*ratio,46*ratio))
         detailLabel.text = "요일별 상세설정"
         detailLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 12*ratio)
-        detailLabel.textColor = UIColor.todaitDarkGray()
+        detailLabel.textColor = UIColor.todaitGray()
         detailLabel.textAlignment = NSTextAlignment.Left
         detailView.addSubview(detailLabel)
         
@@ -1041,6 +1047,36 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         
         totalUpdate()
     }
+    
+    func addDeleteButton(){
+        
+        deleteButton = UIButton(frame:CGRectMake(3*ratio,height - 55*ratio, 314*ratio,52*ratio))
+        deleteButton.setTitle("목표삭제", forState: UIControlState.Normal)
+        deleteButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        deleteButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitRed(), frame:CGRectMake(0,0,314*ratio,52*ratio)), forState: UIControlState.Normal)
+        deleteButton.addTarget(self, action: Selector("deleteButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        view.addSubview(deleteButton)
+        
+    }
+    
+    func deleteButtonClk(){
+        
+        managedObjectContext?.deleteObject(editedTask)
+        
+        var error: NSError?
+        managedObjectContext?.save(&error)
+        
+        if let err = error {
+            //에러처리
+        }else{
+            
+            self.navigationController?.popToRootViewControllerAnimated(true)
+            
+        }
+        
+    }
+
+    
     
     func totalUpdate(){
         
