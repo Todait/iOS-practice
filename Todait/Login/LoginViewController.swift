@@ -60,7 +60,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         
         addKeyboardHelpView()
         
-        //showMainTabbarVC()
+        showMainTabbarVC()
     }
     
     func addBackgroundImage(){
@@ -341,7 +341,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
     func registerButtonClk(){
         
-        self.navigationController?.pushViewController(RegisterViewController(), animated: true)
+        self.navigationController?.pushViewController(RegisterViewController(), animated: false)
         
     }
     

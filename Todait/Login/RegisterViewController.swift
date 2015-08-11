@@ -9,7 +9,7 @@
 import UIKit
 import MobileCoreServices
 import Alamofire
-
+import AWSS3
 
 class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate,ListInputDelegate,ValidationDelegate,KeyboardHelpDelegate{
 
@@ -57,12 +57,14 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     
     private var status:Status! = Status.None 
     
+    var backgroundImage:UIImageView!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.8)
+        addBackgroundImage()
         addScrollView()
         addLoginButton()
         addProfileButton()
@@ -77,6 +79,13 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         addRegisterButton()
         
         addKeyboardHelpView()
+    }
+    func addBackgroundImage(){
+        
+        backgroundImage = UIImageView(frame: view.frame)
+        backgroundImage.image = UIImage(named: "bg@3x.png")
+        view.addSubview(backgroundImage)
+        
     }
     
     func addScrollView(){
@@ -626,7 +635,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
         switch status as Status {
         case .Email: status = .Name ; goalField.becomeFirstResponder() ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
-        case .Password: goalField.becomeFirstResponder() ; status = .Email  ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Password: emailField.becomeFirstResponder() ; status = .Email  ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
         case .Confirm: passwordField.becomeFirstResponder() ; status = .Password  ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
         case .Job: confirmField.becomeFirstResponder() ; status = .Confirm  ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
         case .Goal: jobField.becomeFirstResponder() ; status = .Job ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
@@ -640,7 +649,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     func rightButtonClk(){
         
         switch status as Status {
-        case .Name: nameField.becomeFirstResponder() ; status = .Email ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Name: emailField.becomeFirstResponder() ; status = .Email ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
         case .Email: passwordField.becomeFirstResponder() ; status = .Password ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
         case .Password: confirmField.becomeFirstResponder() ; status = .Confirm ;  keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
         case .Confirm: jobField.becomeFirstResponder() ; status = .Job ;  keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
