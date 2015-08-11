@@ -32,11 +32,6 @@ PODS:
     - AWSCore (= 2.2.2)
   - FLAnimatedImage (1.0.8)
   - GMImagePicker (0.0.1)
-  - Realm (0.94.1):
-    - Realm/Headers (= 0.94.1)
-  - Realm/Headers (0.94.1)
-  - RealmSwift (0.94.1):
-    - Realm (= 0.94.1)
 
 DEPENDENCIES:
   - AWSAutoScaling
@@ -57,7 +52,6 @@ DEPENDENCIES:
   - AWSSQS
   - FLAnimatedImage (~> 1.0)
   - GMImagePicker (~> 0.0.1)
-  - RealmSwift
 
 SPEC CHECKSUMS:
   AWSAutoScaling: 4a178f86ecc44d8d3e2f1cb807e9d303762f8636
@@ -78,7 +72,5 @@ SPEC CHECKSUMS:
   AWSSQS: d60d84d7e5c759d893c880fb0315d7801c85f105
   FLAnimatedImage: f9422f796135aff80d8c00b2afc48015bb746e24
   GMImagePicker: e9c726e514c275c914c1b3390d6bb7c3c3e87ead
-  Realm: d999a6cf0b41577a077349c9cc9d496cc62a7d17
-  RealmSwift: 06b60ff5b1338755654d39aab44ac38001600f76
 
 COCOAPODS: 0.36.0
