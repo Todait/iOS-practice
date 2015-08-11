@@ -8,16 +8,24 @@
 
 import UIKit
 
-class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,CategoryDelegate,TodaitNavigationDelegate{
+class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryDelegate,TodaitNavigationDelegate,AlarmDelegate{
    
     var editedTask:Task!
     var category:Category!
     var delegate: CategoryUpdateDelegate!
     var mainColor: UIColor!
+   
+    
+    
+    var goalView:UIView!
+    var goalTextField: UITextField!
     var categoryButton: UIButton!
     
     
-    var taskTextField: UITextField!
+    var optionView:UIView!
+    var alarmOption:OptionButton!
+    
+    
     var aimString:String!
     
     var saveButton: UIButton!
@@ -26,28 +34,223 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
     
     
     var dateForm: NSDateFormatter!
-    var startDate: NSDate!
     
-    var periodDayString:String = "30일"
+    
+    
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     
-    
-    var timeTaskTableView:UITableView!
-    
-    
     var options:[Int] = [1,2,4,8]
     var option:Int! = 0
+    var isAlarmOn:Bool! = false
+    var alarmTime:NSDate?
     var deleteButton:UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        view.backgroundColor = UIColor.todaitBackgroundGray()
+        
+        
+        loadDefaultCategory()
         setupTimeTaskViewController()
-        addTimeTaskTableView()
+        
+        addGoalView()
+        addOptionView()
+        
         addDeleteButton()
     }
+    
+    func loadDefaultCategory(){
+        
+        let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
+        let request = NSFetchRequest()
+        
+        request.entity = entityDescription
+        
+        var error: NSError?
+        
+        var categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as? [Category]
+        
+        if let categoryData = categoryData {
+            category = categoryData.first
+        }
+        
+    }
+
+    
+    func addGoalView(){
+        
+        goalView = UIView(frame: CGRectMake(2*ratio, 64 + 2*ratio, 316*ratio, 43*ratio))
+        goalView.backgroundColor = UIColor.whiteColor()
+        goalView.layer.cornerRadius = 1
+        goalView.clipsToBounds = true
+        view.addSubview(goalView)
+        
+        addGoalTextField()
+        addCategoryButton()
+    }
+    
+    func addGoalTextField(){
+        goalTextField = UITextField(frame: CGRectMake(20*ratio, 19*ratio, 255*ratio, 12*ratio))
+        goalTextField.placeholder = "이곳에 목표를 입력해주세요"
+        goalTextField.textAlignment = NSTextAlignment.Left
+        goalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
+        goalTextField.textColor = UIColor.colorWithHexString("#969696")
+        goalTextField.returnKeyType = UIReturnKeyType.Next
+        goalTextField.backgroundColor = UIColor.whiteColor()
+        goalTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        goalTextField.text = aimString
+        goalTextField.delegate = self
+        goalView.addSubview(goalTextField)
+        
+        
+        currentTextField = goalTextField
+    }
+    
+    func addCategoryButton(){
+        categoryButton = UIButton(frame: CGRectMake(280*ratio,7*ratio, 29*ratio, 29*ratio))
+        categoryButton.setImage(UIImage(named: "category@3x.png"), forState: UIControlState.Normal)
+        categoryButton.layer.cornerRadius = 14.5*ratio
+        categoryButton.layer.borderWidth = 1
+        categoryButton.layer.borderColor = UIColor.todaitGray().CGColor
+        categoryButton.clipsToBounds = true
+        categoryButton.addTarget(self, action: Selector("showCategorySettingVC"), forControlEvents: UIControlEvents.TouchUpInside)
+        goalView.addSubview(categoryButton)
+        
+        categoryEdited(category)
+    }
+
+    
+    func showCategorySettingVC(){
+        
+        var categoryVC = CategorySettingViewController()
+        //categoryVC.delegate = self
+        
+        categoryVC.selectedCategory = category
+        categoryVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        categoryVC.delegate = self
+        self.navigationController?.presentViewController(categoryVC, animated: false, completion: { () -> Void in
+            
+        })
+        
+        
+    }
+    
+    func categoryEdited(editedCategory:Category) {
+        
+        
+        categoryButton.layer.borderColor = UIColor.clearColor().CGColor
+        categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
+        categoryButton.backgroundColor = UIColor.colorWithHexString(editedCategory.color)
+        
+        self.category = editedCategory
+    }
+    
+    
+    
+    func addOptionView(){
+        
+        
+        if let notificationId = editedTask.notificationId {
+            
+            isAlarmOn = true
+            
+            for notification in UIApplication().scheduledLocalNotifications {
+                
+                let notification:UILocalNotification! = notification as! UILocalNotification
+                
+                let userInfo:[String:AnyObject?]! = notification.userInfo as! [String:AnyObject]
+                
+                let notiId:String = userInfo["notificationId"] as! String
+                
+                if notiId == notificationId {
+                    alarmTime = notification.fireDate
+                }
+            }
+        }
+        
+        
+        
+        
+        optionView = UIView(frame: CGRectMake(2*ratio, 64 + 47*ratio, 316*ratio, 55*ratio))
+        optionView.backgroundColor = UIColor.whiteColor()
+        view.addSubview(optionView)
+        
+        addAlarmOptionView()
+        
+    }
+    
+    func addAlarmOptionView(){
+        
+        
+        alarmOption = OptionButton(frame:CGRectMake(2*ratio,0*ratio,157*ratio,55*ratio))
+        alarmOption.backgroundColor = UIColor.clearColor()
+        alarmOption.addTarget(self, action: Selector("alarmOptionClk"), forControlEvents: UIControlEvents.TouchDown)
+        alarmOption.onImage = UIImage(named: "icon_alarm_wt@3x.png")
+        alarmOption.offImage = UIImage(named: "icon_alarm@3x.png")
+        alarmOption.onColor = UIColor.todaitGreen()
+        alarmOption.offColor = UIColor.todaitGray()
+        alarmOption.setText("알람없음")
+        alarmOption.setButtonOn(false)
+        optionView.addSubview(alarmOption)
+        
+        
+        alarmOption.iconImageView.center = CGPointMake(37*ratio, 27.5*ratio)
+        alarmOption.textLabel.frame = CGRectMake(63*ratio, 12*ratio, 92*ratio, 31*ratio)
+        
+    }
+    
+    func alarmOptionClk(){
+        
+        var alarmVC = AlarmViewController()
+        alarmVC.delegate = self
+        alarmVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        
+        self.navigationController?.presentViewController(alarmVC, animated: false, completion: { () -> Void in
+            
+        })
+    }
+    
+    
+    func getAlarmStatus()->Bool{
+        
+        
+        
+        return isAlarmOn
+    }
+    
+    func getAlarmTime() -> NSDate? {
+        
+        return alarmTime
+        
+    }
+    
+    func updateAlarmTime(date: NSDate) {
+        alarmTime = date
+    }
+    
+    func updateAlarmStatus(status: Bool) {
+        
+        
+        isAlarmOn = status
+        
+        
+        if isAlarmOn == true {
+            
+            var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: alarmTime!)
+            
+            alarmOption.setText("\(comp.hour):\(comp.minute)")
+            //alarmOption.setText(dateForm.stringFromDate(alarmTime!))
+            
+        }else{
+            alarmOption.setText("알람없음")
+        }
+        
+        alarmOption.setButtonOn(isAlarmOn)
+    }
+
     
     
     override func viewWillAppear(animated: Bool) {
@@ -85,7 +288,7 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
         
         
         
-        editedTask.name = taskTextField.text
+        editedTask.name = goalTextField.text
         editedTask.categoryId = category
         
         var error: NSError?
@@ -109,28 +312,12 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
     
     
     func setupTimeTaskViewController(){
-        startDate = NSDate()
         
         dateForm = NSDateFormatter()
         dateForm.dateFormat = "a h시 m분"
         
     }
     
-    
-    func addTimeTaskTableView(){
-        timeTaskTableView = UITableView(frame: CGRectMake(0,navigationHeight,width,view.frame.size.height - navigationHeight), style: UITableViewStyle.Plain)
-        timeTaskTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        timeTaskTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        timeTaskTableView.contentInset = UIEdgeInsetsMake(0*ratio, 0, 0, 0)
-        timeTaskTableView.delegate = self
-        timeTaskTableView.dataSource = self
-        timeTaskTableView.sectionHeaderHeight = 0
-        timeTaskTableView.sectionFooterHeight = 0
-        timeTaskTableView.pagingEnabled = false
-        timeTaskTableView.bounces = false
-        timeTaskTableView.separatorStyle = UITableViewCellSeparatorStyle.None
-        view.addSubview(timeTaskTableView)
-    }
     
     func addDeleteButton(){
         
@@ -160,171 +347,6 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
         
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
-        
-        
-        for view in cell.contentView.subviews{
-            view.removeFromSuperview()
-        }
-        
-        cell.contentView.clipsToBounds = true
-        cell.contentView.autoresizingMask = UIViewAutoresizing.FlexibleHeight | UIViewAutoresizing.FlexibleWidth
-        
-        if indexPath.row == 0 && indexPath.section == 0 {
-            
-            addTaskTextField(cell)
-            addCategoryButton(cell)
-            
-        }else if(indexPath.section == 1){
-            
-            addOptionView(cell)
-        }
-        
-        
-        return cell
-    }
-    
-    
-    
-    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        
-        
-        return false
-    }
-    
-    
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        let headerView = UIView()
-        
-        
-        let line = UIView(frame: CGRectMake(0, 0, 320*ratio, 0.5*ratio))
-        line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
-        headerView.addSubview(line)
-        
-        
-        return headerView
-    }
-    
-    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 0*ratio
-    }
-    
-    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 0
-    }
-    
-    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        
-        
-        if indexPath.section == 0 {
-            return 54*ratio
-        }else if indexPath.section == 1 {
-            return 52*ratio
-        }
-        
-        
-        return 54*ratio
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return 1
-        
-    }
-    
-    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 2
-    }
-    
-    
-    func resignAllTextResponder(){
-        
-        taskTextField.resignFirstResponder()
-        
-    }
-    
-    
-    
-    func addTaskTextField(cell:UITableViewCell){
-        
-        taskTextField = UITextField(frame: CGRectMake(20*ratio, 9.5*ratio, 255*ratio, 30*ratio))
-        taskTextField.placeholder = "이곳에 목표를 입력해주세요"
-        taskTextField.textAlignment = NSTextAlignment.Center
-        taskTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
-        taskTextField.textColor = UIColor.colorWithHexString("#969696")
-        taskTextField.returnKeyType = UIReturnKeyType.Next
-        taskTextField.backgroundColor = UIColor.whiteColor()
-        taskTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        taskTextField.text = editedTask.name
-        taskTextField.tintColor = UIColor.todaitGreen()
-        taskTextField.delegate = self
-        currentTextField = taskTextField
-        cell.contentView.addSubview(taskTextField)
-        
-        addLineView(cell)
-    }
-    
-    
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
-        
-        if textField == taskTextField {
-            
-            
-        }
-        
-        currentTextField.becomeFirstResponder()
-        
-        return false
-    }
-    
-    func updateAllEvents(textField:UITextField){
-        aimString = textField.text
-    }
-    
-    func addCategoryButton(cell:UITableViewCell){
-        
-        categoryButton = UIButton(frame: CGRectMake(280*ratio,9.5*ratio, 30*ratio, 30*ratio))
-
-        
-        categoryButton.layer.borderColor = UIColor.clearColor().CGColor
-        categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
-        categoryButton.backgroundColor = editedTask.getColor()
-     
-        categoryButton.layer.cornerRadius = 15*ratio
-        categoryButton.layer.borderWidth = 1
-        categoryButton.clipsToBounds = true
-        categoryButton.addTarget(self, action: Selector("showCategorySettingVC"), forControlEvents: UIControlEvents.TouchUpInside)
-        cell.contentView.addSubview(categoryButton)
-        
-    }
-    
-    func showCategorySettingVC(){
-        
-        var categoryVC = CategorySettingViewController()
-        //categoryVC.delegate = self
-        
-        categoryVC.selectedCategory = category
-        categoryVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
-        categoryVC.delegate = self
-        self.navigationController?.presentViewController(categoryVC, animated: false, completion: { () -> Void in
-            
-        })
-        
-        
-    }
-    
-    func categoryEdited(editedCategory:Category) {
-        
-        
-        categoryButton.layer.borderColor = UIColor.clearColor().CGColor
-        categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
-        categoryButton.backgroundColor = UIColor.colorWithHexString(editedCategory.color)
-        
-        self.category = editedCategory
-    }
     
     
     
@@ -387,196 +409,8 @@ class EditTimerTaskViewController: BasicViewController,UITableViewDelegate,UITab
     }
     
     
-    
-    func addOptionView(cell:UITableViewCell){
-        
-        addAlarmOptionView(cell)
-        
-    }
-    
-    
-    func dayOptionClk(){
-        
-        //option = OptionStatus.everyDay
-        timeTaskTableView.reloadData()
-        
-    }
-    
-    func addAlarmOptionView(cell:UITableViewCell){
-        
-        
-        var alarmOption = UIButton(frame:CGRectMake(161*ratio,12*ratio,157*ratio,52*ratio))
-        alarmOption.backgroundColor = UIColor.clearColor()
-        alarmOption.addTarget(self, action: Selector("alarmOptionClk"), forControlEvents: UIControlEvents.TouchDown)
-        cell.contentView.addSubview(alarmOption)
-        
-        
-        var iconImageView = UIImageView(frame: CGRectMake(10*ratio, 6*ratio, 40*ratio, 40*ratio))
-        alarmOption.addSubview(iconImageView)
-        
-        
-        var titleLabel = UILabel(frame: CGRectMake(63*ratio, 15*ratio, 92*ratio, 22.5*ratio))
-        titleLabel.text = "알람 없음"
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        alarmOption.addSubview(titleLabel)
-        
-        
-        
-        if option & OptionStatus.Alarm.rawValue > 0 {
-            iconImageView.image = UIImage(named: "icon_alarm_wt@3x.png")
-            titleLabel.textColor = UIColor.todaitGreen()
-        }else{
-            iconImageView.image = UIImage(named: "icon_alarm@3x.png")
-            titleLabel.textColor = UIColor.todaitGray()
-        }
-    }
-    
-    func alarmOptionClk(){
-        
-        
-        showAlarmVC()
-        
-        option = option | OptionStatus.Alarm.rawValue
-        timeTaskTableView.reloadData()
-        
-    }
-    
-    func showAlarmVC(){
-        
-        var alarmVC = AlarmViewController()
-        //alarmVC.delegate = self
-        alarmVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
-        
-        self.navigationController?.presentViewController(alarmVC, animated: false, completion: { () -> Void in
-            
-        })
-    }
-    
-    func addreviewOptionView(cell:UITableViewCell){
-        
-        
-        var reviewOption = UIButton(frame:CGRectMake(2*ratio,64*ratio,157*ratio,52*ratio))
-        reviewOption.backgroundColor = UIColor.clearColor()
-        reviewOption.addTarget(self, action: Selector("reviewOptionClk"), forControlEvents: UIControlEvents.TouchDown)
-        cell.contentView.addSubview(reviewOption)
-        
-        
-        var iconImageView = UIImageView(frame: CGRectMake(20*ratio, 6*ratio, 40*ratio, 40*ratio))
-        reviewOption.addSubview(iconImageView)
-        
-        
-        var titleLabel = UILabel(frame: CGRectMake(68*ratio, 15*ratio, 92*ratio, 22.5*ratio))
-        titleLabel.text = "반복 없음"
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        reviewOption.addSubview(titleLabel)
-        
-        
-        if option & OptionStatus.Review.rawValue > 0 {
-            iconImageView.image = UIImage(named: "icon_review_wt@3x.png")
-            titleLabel.textColor = UIColor.todaitGreen()
-        }else{
-            iconImageView.image = UIImage(named: "icon_review@3x.png")
-            titleLabel.textColor = UIColor.todaitGray()
-        }
-    }
-    
-    func reviewOptionClk(){
-        
-        //option = option | OptionStatus.Review
-        timeTaskTableView.reloadData()
-        
-    }
-    
-    func addreReadOptionView(cell:UITableViewCell){
-        
-        var reReadOption = UIButton(frame:CGRectMake(161*ratio,64*ratio,157*ratio,52*ratio))
-        reReadOption.backgroundColor = UIColor.clearColor()
-        reReadOption.addTarget(self, action: Selector("reReadOptionClk"), forControlEvents: UIControlEvents.TouchDown)
-        cell.contentView.addSubview(reReadOption)
-        
-        
-        var iconImageView = UIImageView(frame: CGRectMake(10*ratio, 6*ratio, 40*ratio, 40*ratio))
-        reReadOption.addSubview(iconImageView)
-        
-        
-        var titleLabel = UILabel(frame: CGRectMake(63*ratio, 15*ratio, 92*ratio, 22.5*ratio))
-        titleLabel.text = "회독 없음"
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
-        reReadOption.addSubview(titleLabel)
-        
-        
-        if option & OptionStatus.Reread.rawValue > 0 {
-            iconImageView.image = UIImage(named: "icon_reread_wt@3x.png")
-            titleLabel.textColor = UIColor.todaitGreen()
-        }else{
-            iconImageView.image = UIImage(named: "icon_reread@3x.png")
-            titleLabel.textColor = UIColor.todaitGray()
-        }
-        
-    }
-    
-    func reReadOptionClk(){
-        
-        //option = OptionStatus.Reread
-        timeTaskTableView.reloadData()
-        
-    }
-    
-    func showreviewVC(){
-        
-        /*
-        let reviewVC = reviewViewcontroller()
-        reviewVC.mainColor = mainColor
-        reviewVC.delegate = self
-        reviewVC.count = 1
-        reviewVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
-        
-        self.navigationController?.presentViewController(reviewVC, animated: true, completion: { () -> Void in
-        
-        })
-        */
-    }
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-      
-    }
-    
-    func settingTime(date:NSDate){
-        startDate = date
-    }
-    
-    
-    func addreviewTimeSubView(cell:UITableViewCell){
-        
-        let infoLabel = UILabel(frame: CGRectMake(15*ratio, 9.5*ratio, 200*ratio, 30*ratio))
-        infoLabel.text = "반복"
-        infoLabel.textColor = UIColor.colorWithHexString("#969696")
-        infoLabel.textAlignment = NSTextAlignment.Left
-        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
-        cell.contentView.addSubview(infoLabel)
-        
-        let dateLabel = UILabel(frame: CGRectMake(160*ratio, 9.5*ratio, 145*ratio, 30*ratio))
-        dateLabel.text = "1회"
-        dateLabel.textAlignment = NSTextAlignment.Right
-        dateLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
-        dateLabel.textColor = mainColor
-        cell.contentView.addSubview(dateLabel)
-    }
-    
-    func addInvestChartView(cell:UITableViewCell){
-        /*
-        investChart = InvestChartView(frame: CGRectMake(15*ratio, 15*ratio, 290*ratio, 110*ratio))
-        investChart.mainColor = mainColor
-        investChart.setupChart()
-        
-        cell.contentView.addSubview(investChart)
-        */
-    }
-    
-    
-    
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        taskTextField.resignFirstResponder()
+        goalTextField.resignFirstResponder()
     }
     
 }

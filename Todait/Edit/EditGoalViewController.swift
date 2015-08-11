@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputViewDelegate,CategoryDelegate,TodaitNavigationDelegate,ValidationDelegate,KeyboardHelpDelegate,CountDelegate{
+class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputViewDelegate,CategoryDelegate,TodaitNavigationDelegate,ValidationDelegate,KeyboardHelpDelegate,CountDelegate,AlarmDelegate{
     
     
     var editedTask:Task!
@@ -30,7 +30,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     
     var goalView:UIView!
     var goalTextField: UITextField!
-    var unitTextField: UITextField!
+    var unitTextField: PaddingTextField!
     var unitView: UnitInputView!
     
     
@@ -102,6 +102,8 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     var keyboardHelpView:KeyboardHelpView!
     private var status:Status! = Status.None
     
+    var isAlarmOn:Bool! = false
+    var alarmTime:NSDate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -278,16 +280,23 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         setAmountButtonHighlight(totalButton, highlight: isTotal)
         setAmountButtonHighlight(rangeButton, highlight: !isTotal)
         
-        unitTextField = UITextField(frame: CGRectMake(206*ratio, 73*ratio, 89*ratio, 32*ratio))
+        
+        
+        
+        unitTextField = PaddingTextField(frame: CGRectMake(206*ratio, 73*ratio, 89*ratio, 32*ratio))
+        unitTextField.padding = 5
         unitTextField.placeholder = "단위입력"
         unitTextField.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
         unitTextField.textColor = UIColor.colorWithHexString("#969696")
         unitTextField.returnKeyType = UIReturnKeyType.Next
-        unitTextField.textAlignment = NSTextAlignment.Center
+        unitTextField.textAlignment = NSTextAlignment.Left
         unitTextField.backgroundColor = UIColor.whiteColor()
         unitTextField.text = unitString
         unitTextField.addTarget(self, action: Selector("updateUnitAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         unitTextField.delegate = self
+        
+        unitTextField.layer.borderColor = UIColor.colorWithHexString("#B2B2B2").CGColor
+        unitTextField.layer.borderWidth = 0.5*ratio
         dataView.addSubview(unitTextField)
         
         
@@ -416,13 +425,54 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     
     func alarmOptionClk(){
         
-        eventOption = 0
+        var alarmVC = AlarmViewController()
+        alarmVC.delegate = self
+        alarmVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         
-        //option = OptionStatus.Alarm.rawValue
+        self.navigationController?.presentViewController(alarmVC, animated: false, completion: { () -> Void in
+            
+        })
+    }
+    
+    
+    func getAlarmStatus()->Bool{
         
         
+        
+        return isAlarmOn
+    }
+    
+    func getAlarmTime() -> NSDate? {
+        
+        return alarmTime
         
     }
+    
+    func updateAlarmTime(date: NSDate) {
+        alarmTime = date
+    }
+    
+    func updateAlarmStatus(status: Bool) {
+        
+        
+        isAlarmOn = status
+        
+        
+        if isAlarmOn == true {
+            
+            var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: alarmTime!)
+            
+            alarmOption.setText("\(comp.hour):\(comp.minute)")
+            //alarmOption.setText(dateForm.stringFromDate(alarmTime!))
+            
+        }else{
+            alarmOption.setText("알람없음")
+        }
+        
+        alarmOption.setButtonOn(isAlarmOn)
+    }
+
+    
     
     func addReviewOptionView(){
         
@@ -621,32 +671,45 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     }
     
     
-    func showNextStep(){
-        let step3TimeVC = NewGoalStep3TimeViewController()
-        step3TimeVC.startDate = periodStartDate
-        step3TimeVC.endDate = periodEndDate
-        step3TimeVC.titleString = goalTextField.text
-        step3TimeVC.unitString = unitTextField.text
-        
-        
-        if let totalAmount = totalAmountField.text.toInt() {
-            
-            step3TimeVC.totalAmount = CGFloat(totalAmount)
-            
-        }else{
-            step3TimeVC.totalAmount = 0
-            
-            let alert = UIAlertView(title: "Invalid", message: "전체분량을 입력해주세요.", delegate: nil, cancelButtonTitle: "Cancel")
-            alert.show()
-            return
-        }
-        
-        self.navigationController?.pushViewController(step3TimeVC, animated: true)
-        
-    }
     
     func validationSuccessful(){
-        showNextStep()
+       
+        
+        if isAlarmOn == true {
+            
+            let notificationId = NSUUID().UUIDString
+            editedTask.notificationId = notificationId
+            registerAlarm(notificationId)
+            
+        }
+        
+        
+        var error: NSError?
+        managedObjectContext?.save(&error)
+        
+        if let err = error {
+            //에러처리
+        }else{
+            
+            NSLog("Task 저장성공",1)
+            
+            self.navigationController?.popViewControllerAnimated(true)
+        }
+    }
+    
+    func registerAlarm(notificationId:String){
+        
+        
+        let notification = UILocalNotification()
+        notification.alertBody = goalTextField.text
+        notification.timeZone = NSTimeZone.systemTimeZone()
+        notification.fireDate = alarmTime
+        notification.soundName = UILocalNotificationDefaultSoundName
+        notification.hasAction = true
+        notification.userInfo?.updateValue(notificationId, forKey: "notificationId")
+        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        
+        
     }
     
     func validationFailed(errors: [UITextField:ValidationError]){
@@ -668,8 +731,33 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         periodStartDate = NSDate()
         periodEndDate = NSDate(timeIntervalSinceNow: 24*60*60 * 29)
         
+        aimString = editedTask.name
+        unitString = editedTask.unit
+        
         dateForm = NSDateFormatter()
         dateForm.dateFormat = "a h시 m분"
+        
+        
+        if let notificationId = editedTask.notificationId {
+            
+            
+            isAlarmOn = true
+            
+            var notifications = UIApplication().scheduledLocalNotifications
+            
+            for notification in notifications {
+                
+                let notification:UILocalNotification! = notification as! UILocalNotification
+                
+                let userInfo:[String:AnyObject?]! = notification.userInfo as! [String:AnyObject]
+                
+                let notiId:String = userInfo["notificationId"] as! String
+                
+                if notiId == notificationId {
+                    alarmTime = notification.fireDate
+                }
+            }
+        }
         
     }
     
@@ -1060,6 +1148,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     }
     
     func deleteButtonClk(){
+        
         
         managedObjectContext?.deleteObject(editedTask)
         
