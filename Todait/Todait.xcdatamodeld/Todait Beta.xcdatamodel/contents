@@ -90,6 +90,7 @@
         <attribute name="lastUpdateDate" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="localId" optional="YES" attributeType="String" minValueString="0" maxValueString="255" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
+        <attribute name="notificationId" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="notificationMode" optional="YES" attributeType="Boolean" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="notificationTime" optional="YES" attributeType="String" minValueString="0" maxValueString="255" syncable="YES"/>
         <attribute name="priority" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -156,7 +157,7 @@
         <element name="Diary" positionX="412" positionY="143" width="128" height="120"/>
         <element name="ImageData" positionX="414" positionY="396" width="128" height="105"/>
         <element name="ReviewDay" positionX="-369" positionY="117" width="128" height="135"/>
-        <element name="Task" positionX="-234" positionY="63" width="128" height="420"/>
+        <element name="Task" positionX="-234" positionY="63" width="128" height="435"/>
         <element name="TaskDate" positionX="-378" positionY="108" width="128" height="150"/>
         <element name="TimeHistory" positionX="216" positionY="563" width="128" height="105"/>
         <element name="TimeLog" positionX="18" positionY="485" width="128" height="150"/>
