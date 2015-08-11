@@ -19,4 +19,12 @@ public extension NSAttributedString {
         
     }
 
+    
+    static func getAttributedString(string:String,font:UIFont,color:UIColor,paraStyle:NSParagraphStyle) -> NSAttributedString{
+        
+        let attributedString = NSMutableAttributedString(string: string, attributes: [NSForegroundColorAttributeName:color,NSFontAttributeName:font,NSParagraphStyleAttributeName:paraStyle])
+        
+        return attributedString
+        
+    }
 }
