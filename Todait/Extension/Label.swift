@@ -8,14 +8,20 @@
 
 import UIKit
 
-class Label: UILabel {
-
-    /*
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func drawRect(rect: CGRect) {
-        // Drawing code
+extension UILabel {
+    
+    func setKern(kern:CGFloat){
+        
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = textAlignment
+        
+        
+        
+        
+        
+        self.attributedText = NSMutableAttributedString(string:text!, attributes: [NSKernAttributeName:kern,NSForegroundColorAttributeName:textColor,NSFontAttributeName:font,NSParagraphStyleAttributeName:paragraphStyle])
+    
     }
-    */
-
+    
 }
