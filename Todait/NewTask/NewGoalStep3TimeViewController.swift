@@ -100,6 +100,7 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
             let amountLabel = ColorLabel(frame:CGRectMake(1*ratio + CGFloat(index)*45*ratio,28*ratio,44*ratio,30*ratio))
             amountLabel.textAlignment = NSTextAlignment.Center
             amountLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 14*ratio)
+            amountLabel.adjustsFontSizeToFitWidth = true
             amountLabel.text = "10개"
             baseView.addSubview(amountLabel)
             
@@ -392,11 +393,21 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
             let chart = weekCharts[index]
             let label = weekLabels[index]
             
-            let data = CGFloat(Int(chart.currentValue/600)*600)
+            
+            
+            var minute = Int(chart.currentValue/600)
+            var second = Int(chart.currentValue%600)
+            if second > 300 {
+                minute = minute + 1
+            }
+            
+            let data = CGFloat(Int(minute)*600)
             chart.currentValue = data
             label.text = getTimeStringOfHourMinuteFromSeconds(NSTimeInterval(data))
 
-            chart.setStroke()
+            UIView.animateWithDuration(0.7, animations: { () -> Void in
+                chart.setStroke()
+            })
         }
     }
     
@@ -467,6 +478,13 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
             chart.setMaxValue(maxTime)
             
         }
+        
+        
+        
+        
+        
+        
+        calculateAmountLabels()
     }
 
     
@@ -514,6 +532,57 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
         return dayOfWeek.weekday
     }
 
+    
+    
+    
+    func calculateAmountLabels(){
+        
+        var startOfWeek = getDayOfWeek(startDate)
+        var tempSum:CGFloat! = totalAmount
+        var day = 0
+        
+        var diff = Int(endDate.timeIntervalSinceDate(startDate) / (24*60*60))
+        
+        var times:[CGFloat] = [CGFloat](count: 7, repeatedValue: 0)
+        
+        
+        for ; day < diff ; day++ {
+            
+            let dayOfWeek = (day + startOfWeek - 1)%7
+            
+            let chart:ThumbChartBox = weekCharts[dayOfWeek]
+            let button:ColorButton = weekButtons[dayOfWeek]
+            
+            if button.buttonOn == true {
+                times[dayOfWeek] = times[dayOfWeek] + chart.currentValue
+            }
+        }
+
+        var sum:CGFloat! = 0
+        
+        for var dayOfWeek = 0 ; dayOfWeek < 7 ; dayOfWeek++ {
+            sum = sum + times[dayOfWeek]
+        }
+        
+        var totalMinute = sum / 60
+        var amountPerMinute = totalAmount / totalMinute
+        
+        
+        for var index = 0 ; index < 7 ; index++ {
+            
+            let label = amountLabels[index]
+            
+            if amountPerMinute < 1 {
+                label.text = "1개"
+            }else{
+                let chart:ThumbChartBox = weekCharts[index]
+                label.text = String(format: "%.0f개", arguments: [(chart.currentValue / 60) * amountPerMinute])
+            }
+        }
+        
+    }
+    
+    
     
     func endTimer(){
         
