@@ -26,6 +26,8 @@ class ListInputViewController: BasicViewController,UITableViewDelegate,UITableVi
     
     var delegate:ListInputDelegate!
     
+    var selectedIndex:Int! = 0
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -85,7 +87,7 @@ class ListInputViewController: BasicViewController,UITableViewDelegate,UITableVi
         
         let title:String = dataSource[indexPath.row]
         
-        let titleLabel = UILabel(frame:CGRectMake(15*ratio,5*ratio,250*ratio,35*ratio))
+        let titleLabel = UILabel(frame:CGRectMake(15,5,250*ratio,39))
         titleLabel.text = title
         titleLabel.font = UIFont(name:"AppleSDGothicNeo-Light",size:14*ratio)
         titleLabel.textColor = UIColor.todaitGray()
@@ -97,10 +99,16 @@ class ListInputViewController: BasicViewController,UITableViewDelegate,UITableVi
         line.backgroundColor = UIColor.todaitBackgroundGray()
         cell.contentView.addSubview(line)
         
-        
+        if selectedIndex == indexPath.row {
+            
+            let checkImage = UIImageView(frame:CGRectMake(294*ratio - 30, 15, 19, 19))
+            checkImage.image = UIImage(named: "bt_check_green@3x.png")
+            cell.contentView.addSubview(checkImage)
+            
+        }
+            
         return cell
-        
-        
+    
     }
     
     func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -137,7 +145,7 @@ class ListInputViewController: BasicViewController,UITableViewDelegate,UITableVi
     
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
-        return 49*ratio
+        return 49
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

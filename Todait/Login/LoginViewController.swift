@@ -60,7 +60,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         
         addKeyboardHelpView()
         
-        showMainTabbarVC()
+        //showMainTabbarVC()
     }
     
     func addBackgroundImage(){
@@ -307,12 +307,13 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
     func addFindButton(){
         
+        
         findButton = UIButton(frame: CGRectMake(10*ratio, 354*ratio, 300*ratio, 35*ratio))
         findButton.setTitle("이메일이나 비밀번호가 생각나지 않는다면?", forState: UIControlState.Normal)
         findButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         findButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right
         findButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Light", size: 11*ratio)
-        scrollView.addSubview(findButton)
+        //scrollView.addSubview(findButton)
         
     }
     

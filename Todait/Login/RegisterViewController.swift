@@ -318,7 +318,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
                 
                 let output = task.result
                 
-                self.fileName = path + "/" + fileName
+                self.fileName = fileName
                 
                 
             }
@@ -387,6 +387,9 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         listInputVC.tableTitle = "직업"
         listInputVC.buttonTitle = "취소"
         listInputVC.delegate = self
+        
+        listInputVC.selectedIndex = listInputVC.dataSource.indexOfObject(jobField.text)
+
         listInputVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         
         self.navigationController?.presentViewController(listInputVC, animated: false, completion: { () -> Void in

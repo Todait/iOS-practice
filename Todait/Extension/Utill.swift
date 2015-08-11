@@ -7,13 +7,31 @@
 //
 
 import UIKit
-
+import Foundation
 
 
 public let CREDENTIAL_ACCESS_KEY:String = "AKIAJS3V26L2Z3N64B6A"
 public let CREDENTIAL_SECRET_KEY:String = "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"
 public let AWSS3_BUCKET_NAME:String = "todait-images"
 
+
+extension Array {
+    
+    func find(includedElement: T -> Bool) -> Int? {
+        for (idx, element) in enumerate(self) {
+            if includedElement(element) {
+                return idx
+            }
+        }
+        return nil
+    }
+    
+    func indexOfObject(object : AnyObject) -> NSInteger
+    {
+        return (self as! NSArray).indexOfObject(object)
+    }
+    
+}
 
 
 extension UIView {
