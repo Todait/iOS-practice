@@ -1,5 +1,7 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
+use_frameworks!
+
 pod 'FLAnimatedImage', '~> 1.0'
 pod 'GMImagePicker', '~> 0.0.1'
 pod 'AWSCore'
@@ -18,3 +20,4 @@ pod 'AWSSimpleDB'
 pod 'AWSSNS'
 pod 'AWSSQS'
 pod 'AWSCognito'
+pod 'RealmSwift'

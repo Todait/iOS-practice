@@ -1,0 +1,6 @@
+framework module AWSSQS {
+  umbrella header "Pods-AWSSQS-umbrella.h"
+
+  export *
+  module * { export * }
+}

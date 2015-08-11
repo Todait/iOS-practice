@@ -1,0 +1,6 @@
+framework module AWSKinesis {
+  umbrella header "Pods-AWSKinesis-umbrella.h"
+
+  export *
+  module * { export * }
+}
