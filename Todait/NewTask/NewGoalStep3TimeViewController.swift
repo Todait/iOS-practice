@@ -433,8 +433,18 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
             let chart = weekCharts[index]
             let button = weekButtons[index]
             let label = timeLabels[index]
-            let data = Int(data[index]/600)*600
             
+            
+            var minute = Int(chart.currentValue/600)
+            var second = Int(chart.currentValue%600)
+            if second > 300 {
+                minute = minute + 1
+            }
+            
+            let data = CGFloat(Int(minute)*600)
+            
+            
+            chart.currentValue = data
             label.text = getTimeStringOfHourMinuteFromSeconds(NSTimeInterval(data))
             
             sumData = sumData + CGFloat(data)

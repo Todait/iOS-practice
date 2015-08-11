@@ -28,7 +28,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     
     
     var goalTextField: UITextField!
-    var unitTextField: UITextField!
+    var unitTextField: PaddingTextField!
     var unitView: UnitInputView!
     
     
@@ -335,18 +335,24 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         setAmountButtonHighlight(totalButton, highlight: isTotal)
         setAmountButtonHighlight(rangeButton, highlight: !isTotal)
         
-        unitTextField = UITextField(frame: CGRectMake(206*ratio, 23*ratio, 89*ratio, 32*ratio))
+        
+        
+        
+        unitTextField = PaddingTextField(frame: CGRectMake(206*ratio, 23*ratio, 89*ratio, 32*ratio))
+        unitTextField.padding = 5
         unitTextField.placeholder = "단위입력"
         unitTextField.tintColor = mainColor
         unitTextField.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 10*ratio)
         unitTextField.textColor = UIColor.colorWithHexString("#969696")
         unitTextField.returnKeyType = UIReturnKeyType.Next
-        unitTextField.textAlignment = NSTextAlignment.Center
+        unitTextField.textAlignment = NSTextAlignment.Left
         unitTextField.backgroundColor = UIColor.whiteColor()
         unitTextField.text = unitString
         unitTextField.addTarget(self, action: Selector("updateUnitAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         unitTextField.delegate = self
         
+        unitTextField.layer.borderColor = UIColor.colorWithHexString("#B2B2B2").CGColor
+        unitTextField.layer.borderWidth = 0.5*ratio
         
         
         

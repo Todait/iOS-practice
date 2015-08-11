@@ -46,7 +46,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     var unitView:UIView!
     var unitImageView:UIImageView!
-    var unitTextField:UITextField!
+    var unitTextField:PaddingTextField!
     
     
     var keyboardHelpView:KeyboardHelpView!
@@ -265,16 +265,22 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     func addUnitView(){
         
         unitView = UIView(frame: CGRectMake(211*ratio, 68*ratio, 90*ratio, 33*ratio))
-        unitView.backgroundColor = UIColor.todaitBackgroundGray()
+        //unitView.backgroundColor = UIColor.todaitBackgroundGray()
         dataView.addSubview(unitView)
         
-        unitTextField = UITextField(frame: CGRectMake(5*ratio, 5*ratio, 80*ratio, 23*ratio))
-        unitTextField.backgroundColor = UIColor.todaitWhiteGray()
-        //unitTextField.attributedPlaceholder = NSAttributedString.getAttributedString("단위선택", font: UIFont(name: "AppleSDGothicNeo-Medium", size: 10*ratio)!, color: UIColor.todaitGray())
-        unitTextField.placeholder = "단위선택"
+        
+        
+        unitTextField = PaddingTextField(frame: CGRectMake(5*ratio, 0*ratio, 80*ratio, 32*ratio))
+        unitTextField.padding = 5
+        unitTextField.backgroundColor = UIColor.whiteColor()
+        unitTextField.placeholder = "단위입력"
         unitTextField.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10*ratio)
+        unitTextField.textAlignment = NSTextAlignment.Left
         unitTextField.textColor = UIColor.todaitGray()
         unitTextField.delegate = self
+        unitTextField.layer.borderColor = UIColor.colorWithHexString("#B2B2B2").CGColor
+        unitTextField.layer.borderWidth = 0.5*ratio
+        
         unitView.addSubview(unitTextField)
         
         
