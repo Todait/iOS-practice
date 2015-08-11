@@ -215,6 +215,8 @@ class ThumbChartBox: BasicView {
         
         if maxValue == 0 {
             height = frame.size.height/2
+        }else if currentValue > maxValue {
+            height = frame.size.height
         }else{
             height =  CGFloat(currentValue)/CGFloat(maxValue) * frame.size.height
         }
@@ -223,6 +225,9 @@ class ThumbChartBox: BasicView {
         
         self.frontView.frame = CGRectMake(0, frame.size.height, frontView.frame.size.width, -height)
         self.thumbImageView.center = CGPointMake(self.frame.size.width/2, self.frame.size.height-height)
+        
+        backgroundColor = UIColor.todaitBackgroundGray().colorWithAlphaComponent(self.thumbImageView.center.y/frame.size.height)
+        
     }
     
     func setStroke(){
