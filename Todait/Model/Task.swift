@@ -20,6 +20,7 @@ class Task: NSManagedObject {
     @NSManaged var name: String
     @NSManaged var notificationMode: NSNumber
     @NSManaged var notificationTime: String
+    @NSManaged var notificationId: String?
     @NSManaged var serverCategoryId: NSNumber
     @NSManaged var serverId: NSNumber
     @NSManaged var startDate: NSNumber
@@ -29,7 +30,7 @@ class Task: NSManagedObject {
     @NSManaged var reviewType: String
     @NSManaged var createdAt: NSDate
     @NSManaged var reviewCount: NSNumber
-    @NSManaged var completed: NSNumber
+    @NSManaged var completed: Bool
     @NSManaged var repeatCount: NSNumber
     @NSManaged var priority: NSNumber
     @NSManaged var categoryId: Category
@@ -153,6 +154,8 @@ class Task: NSManagedObject {
     
     
     func getWeekAmountProgressData(date:NSDate)->[[String:NSNumber]]{
+        
+        
         var datas:[[String:NSNumber]] = []
         var adjustDate:NSDate! = getAdjustDate(date)
         
@@ -276,7 +279,7 @@ class Task: NSManagedObject {
             let day = makeDay(dateNumber)
             return day
             
-        }else if taskType == "timer"{
+        }else if taskType == "Timer" && dateNumber == getTodayDateNumber(){
             let day = makeDay(dateNumber)
         }
         
@@ -463,6 +466,11 @@ class Task: NSManagedObject {
             let todayDateNumber = getTodayDateNumber()
             let progressDay:Int = getProgressDayFromDateNumber(todayDateNumber, endDateNumber:endDate).integerValue
             
+            
+            if progressDay < 0 {
+                return 0
+            }
+            
             for index in 0...progressDay {
                 
                 let expectIndex = Int((Int(day.dayOfWeek) + Int(index))%7)
@@ -571,22 +579,29 @@ class Task: NSManagedObject {
         
         let dateFormatter = NSDateFormatter()
         dateFormatter.dateFormat = "yyyyMMdd"
-        let startDate:NSDate! = dateFormatter.dateFromString("\(startDateNumber)")
-        
-        let startComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitDay, fromDate: startDate)
-        startComp.hour = self.defaults.integerForKey("finishHourOfDay")
-        startComp.minute = self.defaults.integerForKey("finishMinuteOfDay") + 1
         
         
+        if let startDate = dateFormatter.dateFromString("\(startDateNumber)") {
+            
+            let startComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitDay, fromDate: startDate)
+            startComp.hour = self.defaults.integerForKey("finishHourOfDay")
+            startComp.minute = self.defaults.integerForKey("finishMinuteOfDay") + 1
+            
+            
+            if let endDate = dateFormatter.dateFromString("\(endDateNumber)") {
+                
+                let endComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitDay, fromDate: endDate)
+                
+                endComp.hour = self.defaults.integerForKey("finishHourOfDay")
+                endComp.minute = self.defaults.integerForKey("finishMinuteOfDay") - 1
+                
+                
+                return getProgressDay(startDate, endDate:endDate)
+                
+            }
+        }
         
-        let endDate:NSDate! = dateFormatter.dateFromString("\(endDateNumber)")
-        
-        let endComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitDay, fromDate: endDate)
-        endComp.hour = self.defaults.integerForKey("finishHourOfDay")
-        endComp.minute = self.defaults.integerForKey("finishMinuteOfDay") - 1
-        
-        
-        return getProgressDay(startDate, endDate:endDate)
+        return 0
         
     }
     

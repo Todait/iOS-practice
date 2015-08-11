@@ -77,7 +77,11 @@ class RepeatViewcontroller: BasicViewController {
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        
         todaitNavBar.hidden = true
+
+        
     }
+
     
 }

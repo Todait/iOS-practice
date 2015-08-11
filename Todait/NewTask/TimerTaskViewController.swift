@@ -240,6 +240,18 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         task.categoryId = category
         task.taskType = "Timer"
         
+        
+        if isAlarmOn == true {
+            
+            let notificationId = NSUUID().UUIDString
+            task.notificationId = notificationId
+            registerAlarm(notificationId)
+        
+        }
+        
+        
+        
+        
         saveNewWeek(task)
         
         var error: NSError?
@@ -250,7 +262,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         }else{
             
             NSLog("Task 저장성공",1)
-            registerAlarm()
+            
             self.navigationController?.popViewControllerAnimated(true)
         }
     }
@@ -278,17 +290,18 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         
     }
     
-    func registerAlarm(){
+    func registerAlarm(notificationId:String){
         
         
         let notification = UILocalNotification()
         notification.alertBody = goalTextField.text
-        notification.timeZone = NSTimeZone.defaultTimeZone()
-        notification.fireDate = NSDate().dateByAddingTimeInterval(5)
+        notification.timeZone = NSTimeZone.systemTimeZone()
+        notification.fireDate = alarmTime
         notification.soundName = UILocalNotificationDefaultSoundName
         notification.hasAction = true
-        
+        notification.userInfo?.updateValue(notificationId, forKey: "notificationId")
         UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        
         
     }
 

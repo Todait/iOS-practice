@@ -13,7 +13,7 @@ import UIKit
 class SortViewController: BasicTableViewController,TodaitNavigationDelegate,UITableViewDataSource,UITableViewDelegate{
 
     
-    let sortTitle:[[String]] = [["기본 정렬","이름 정렬","카테고리 정렬","사용자 정렬"],["오늘 목표","오늘 쉬는 목표","완료 목표","미완료 목표","시작전 목표"]]
+    var sortTitle:[[String]] = [["시간 순 정렬","이름 순 정렬","카테고리 순 정렬","사용자 정렬"],["오늘 목표","오늘 쉬는 목표","완료 목표","미완료 목표","시작전 목표"]]
     //var sortTableView:UITableView!
     
     var sortIndex = 1
