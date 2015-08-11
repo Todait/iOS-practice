@@ -8,8 +8,32 @@
 
 import UIKit
 
-class ProgressView: BasicView {
+class ProgressView: UIView {
 
+    @IBOutlet weak var progressImage: UIImageView!
+    
+    required init(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        
+        
+    }
+    
+    func startAnimation(){
+        
+        let animation = CABasicAnimation(keyPath: "transform.rotation.z")
+        animation.toValue = M_PI * 2.0
+        animation.repeatCount = Float.infinity
+        animation.duration = 1
+        animation.cumulative = true
+        progressImage.layer.addAnimation(animation, forKey: "rotation")
+        
+    }
+    
+    func stopAnimation(){
+        
+        
+    }
+    
     /*
     // Only override drawRect: if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
