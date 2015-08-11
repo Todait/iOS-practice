@@ -55,7 +55,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
         weekView.dataSource = self
         weekView.pagingEnabled = true
         weekView.showsHorizontalScrollIndicator = false
-        weekView.contentOffset = CGPointMake(500*width, weekView.contentOffset.y)
+        weekView.contentOffset = CGPointMake(100*width, weekView.contentOffset.y)
         
         view.addSubview(weekView)
         
@@ -128,7 +128,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1000
+        return 200
     }
     
     func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
@@ -179,16 +179,6 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
             let todayDateNumber:NSNumber! = getTodayDateNumber()
             
             
-            if(button.dateNumber == todayDateNumber){
-                button.backgroundColor = UIColor.todaitWhiteGray()
-            }else if self.dateNumber == button.dateNumber {
-                button.backgroundColor = UIColor.whiteColor()
-            }else{
-                button.backgroundColor = UIColor.whiteColor()
-            }
-            
-
-            
             if let currentDay = task.getDay(currentDateNumber) {
                 
 
@@ -227,6 +217,13 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
                 button.expectLabel.text = ""
                 button.setDateStatus(DateStatus.None)
             }
+            
+            
+            if button.dateNumber == dateNumber {
+                button.backgroundColor = UIColor.todaitBlue().colorWithAlphaComponent(0.05)
+            }else{
+                button.backgroundColor = UIColor.whiteColor()
+            }
         }
         
         return cell
@@ -235,8 +232,8 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
     func getCurrentDate(indexPath:NSIndexPath)->NSDate{
         
         var adjustDate = getAdjustDate(NSDate())
-        //NSLog("Week %@",adjustDate.addWeek(Int(indexPath.row - 500)))
-        return adjustDate.addWeek(Int(indexPath.row - 500))
+        
+        return adjustDate.addWeek(Int(indexPath.row - 100))
     }
     
     func getAdjustDate(date:NSDate)->NSDate{

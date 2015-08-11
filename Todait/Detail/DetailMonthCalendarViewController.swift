@@ -62,7 +62,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         
         var adjustDate = getAdjustDate(NSDate())
         
-        return adjustDate.addMonth(Int(indexPath.row - 500))
+        return adjustDate.addMonth(Int(indexPath.row - 100))
     }
     
     func getAdjustDate(date:NSDate)->NSDate{
@@ -117,7 +117,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         monthView.pagingEnabled = true
         monthView.showsHorizontalScrollIndicator = false
         monthView.contentInset = UIEdgeInsetsMake(-15*ratio, 0, 0, 0)
-        monthView.contentOffset = CGPointMake(width * 500, 0)
+        monthView.contentOffset = CGPointMake(width * 100, 0)
         
         view.addSubview(monthView)
         
@@ -129,7 +129,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1000
+        return 200
     }
     
     
@@ -187,16 +187,6 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
             
             let todayDateNumber:NSNumber! = getTodayDateNumber()
             
-            
-            if(button.dateNumber == todayDateNumber){
-                button.backgroundColor = UIColor.todaitWhiteGray()
-            }else if self.dateNumber == button.dateNumber {
-                button.backgroundColor = UIColor.whiteColor()
-            }else{
-                button.backgroundColor = UIColor.whiteColor()
-            }
-            
-            
             var month = monthForm.stringFromDate(monthDate)
             
             if monthForm.stringFromDate(currentDate) == month {
@@ -249,6 +239,12 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
                 button.setDateStatus(DateStatus.None)
             }
             
+            
+            if button.dateNumber == dateNumber {
+                button.backgroundColor = UIColor.todaitBlue().colorWithAlphaComponent(0.05)
+            }else{
+                button.backgroundColor = UIColor.whiteColor()
+            }
             
         }
         

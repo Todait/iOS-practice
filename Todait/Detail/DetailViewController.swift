@@ -81,6 +81,8 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         super.viewDidLoad()
         view.backgroundColor = UIColor.whiteColor()
         
+        ProgressManager.show()
+        
         selectedDateNumber = getDateNumberFromDate(NSDate())
         selectedWeekOfMonth = getWeekNumber(NSDate())
         
@@ -229,7 +231,6 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
             var gesture = gestureRecognizer as! UIPanGestureRecognizer
             var velocity = gesture.velocityInView(self.view)
             
-            NSLog("time velocity %f",velocity.y)
             
             if ( abs(velocity.y) > abs(velocity.x) && velocity.y > 0 && diaryTableView.contentOffset.y < 15*ratio) {
                 diaryTableView.scrollEnabled = false
@@ -1128,6 +1129,11 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         return task.getPercentOfPeriodProgress()
     }
     
+    override func viewDidAppear(animated: Bool) {
+        
+        refreshView()
+        ProgressManager.hide()
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -1147,7 +1153,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         
         //setupDay(getTodayDateNumber())
         //loadDiary()
-        refreshView()
+        
         
         //diaryTableView.reloadData()
         
