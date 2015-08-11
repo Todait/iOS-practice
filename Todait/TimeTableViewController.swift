@@ -43,7 +43,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     var panEnd:CGPoint!
     
     var isLongPressed:Bool! = false
-    
+    var isCalendarDown:Bool! = false
     
     var shadowView:UIView!
    
@@ -327,7 +327,23 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         timeY = min(max(timeY,baseOriginY + 48*ratio),baseOriginY + 48*6*ratio)
         */
         
-        if timeTableView.frame.origin.y >= 250*ratio {
+        
+        var scrollLine = baseOriginY
+        
+        if isCalendarDown == true {
+            
+            scrollLine = baseOriginY + 0.8*monthCalendarHeight*ratio
+            
+        }else{
+            
+            scrollLine = baseOriginY + 0.2*monthCalendarHeight*ratio
+            
+        }
+        
+        
+        if timeTableView.frame.origin.y >= scrollLine {
+            
+            isCalendarDown = true
             
             UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
                 self.categoryView.frame = CGRectMake(245*self.ratio, baseOriginY + 48*6*self.ratio, 75*self.ratio, self.timeTableView.frame.size.height)
@@ -341,6 +357,9 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
                 self.weekCalendarVC.view.hidden = true
             })
         }else{
+            
+            isCalendarDown = false
+            
             UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
                 self.timeTableView.frame = CGRectMake(0, baseOriginY + 48*self.ratio, 245*self.ratio, self.timeTableView.frame.size.height)
                 self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-48*self.ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, 48*6*self.ratio)

@@ -85,12 +85,9 @@ class MainCategoryCollectionViewController: BasicViewController,UICollectionView
         switch section {
         case 0: return 1
         case 1: return categoryData.count
-        case 2: return categoryData.count
         default: return 1
             
         }
-        
-        return categoryData.count
         
     }
     
@@ -191,23 +188,40 @@ class MainCategoryCollectionViewController: BasicViewController,UICollectionView
     
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
         
-        let cell = collectionView.cellForItemAtIndexPath(indexPath)
-        
-        cell!.selected = true
-        
-        let category = categoryData[indexPath.row]
-        category.hidden = !category.hidden
-        
-        var error: NSError?
-        managedObjectContext?.save(&error)
-        
-        if error == nil {
-            NSNotificationCenter.defaultCenter().postNotificationName("categoryDataMainUpdate", object: nil)
+        if indexPath.section == 0 {
+            showSortVC()
+        }else{
+            let cell = collectionView.cellForItemAtIndexPath(indexPath)
+            
+            cell!.selected = true
+            
+            let category = categoryData[indexPath.row]
+            category.hidden = !category.hidden
+            
+            var error: NSError?
+            managedObjectContext?.save(&error)
+            
+            if error == nil {
+                NSNotificationCenter.defaultCenter().postNotificationName("categoryDataMainUpdate", object: nil)
+            }
+            
+            collectionView.reloadItemsAtIndexPaths([indexPath])
+
         }
         
-        collectionView.reloadItemsAtIndexPaths([indexPath])
+    }
+    
+    func showSortVC(){
+        
+        let sortVC = SettingMainSortingViewController()
+        let navigationVC = UINavigationController(rootViewController: sortVC)
+        
+        self.navigationController?.presentViewController(navigationVC, animated: true, completion: { () -> Void in
+            
+        })
         
     }
+    
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         

@@ -22,7 +22,7 @@ class SettingMainSortingViewController: BasicTableViewController {
         super.viewDidLoad()
         
         sectionTitles = ["정렬 방식","보기 설정"]
-        cellTitles = [["시간 순 정렬","이름 순 정렬","카테고리 순 정렬","사용자 정렬"],["카테고리 정렬 설정","사용자 정렬 설정","미완료 목표 표시"]]
+        cellTitles = [["시간 순 정렬","이름 순 정렬","카테고리 순 정렬","사용자 정렬"],["카테고리 정렬 설정","사용자 정렬 설정"]]
         setupIndex()
         
         //addSortTableView()
@@ -69,7 +69,12 @@ class SettingMainSortingViewController: BasicTableViewController {
         
         
         
-        var checkImage = UIImageView(frame: CGRectMake(290*ratio, 12, 19, 19))
+        let backView = UIView()
+        backView.backgroundColor = UIColor.todaitWhiteGray()
+        cell.selectedBackgroundView = backView
+        
+        
+        var checkImage = UIImageView(frame: CGRectMake(320*ratio - 34, 12, 19, 19))
         cell.contentView.addSubview(checkImage)
         
         if indexPath.section == 0 && sortIndex & checkValue[indexPath.row] == checkValue[indexPath.row] {
@@ -78,14 +83,14 @@ class SettingMainSortingViewController: BasicTableViewController {
             
         }else if indexPath.section == 1 {
             
-            let detailImage = UIImageView(frame: CGRectMake(320*ratio - 25, 16.5, 5, 10))
+            let detailImage = UIImageView(frame: CGRectMake(320*ratio - 23, 13, 8, 16))
             detailImage.image = UIImage(named: "bt_arrange_arrow@3x.png")
             cell.contentView.addSubview(detailImage)
          
             
             if indexPath.row == 2 {
                 
-                let completeLabel = UILabel(frame: CGRectMake(200*ratio, 0, 85*ratio,43))
+                let completeLabel = UILabel(frame: CGRectMake(200*ratio, 0, 90*ratio,43))
                 completeLabel.text = "표시안함"
                 completeLabel.textAlignment = NSTextAlignment.Right
                 completeLabel.font = UIFont(name: "AppleSDGothicNeo-Semibold", size: 12)
@@ -100,7 +105,8 @@ class SettingMainSortingViewController: BasicTableViewController {
         
     }
     
-    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
         
         if indexPath.section == 0 {
@@ -117,11 +123,16 @@ class SettingMainSortingViewController: BasicTableViewController {
             }
             
             
-            if indexPath.row == 1 {
+            if indexPath.row == 0 {
+                
+                let categorySortVC = SettingCategorySortingViewController()
+                self.navigationController?.pushViewController(categorySortVC, animated: true)
+                
+            }else if indexPath.row == 1 {
                 
                 let userSortVC = UserSortViewController()
                 self.navigationController?.pushViewController(userSortVC, animated: true)
-            
+                
             }
             
         }
@@ -131,9 +142,7 @@ class SettingMainSortingViewController: BasicTableViewController {
         
         tableView.reloadData()
         
-        return false
     }
-    
     
     override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 29

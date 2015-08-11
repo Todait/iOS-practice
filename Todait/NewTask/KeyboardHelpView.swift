@@ -34,8 +34,8 @@ class KeyboardHelpView: BasicView {
     var isEndPoint:Bool! = false
     
     
-    var leftImageName:String!
-    var rightImageName:String!
+    var leftImageName:String! = ""
+    var rightImageName:String! = ""
     
     weak var delegate:KeyboardHelpDelegate?
     

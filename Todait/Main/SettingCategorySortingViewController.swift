@@ -61,7 +61,9 @@ class SettingCategorySortingViewController: BasicViewController,UITableViewDataS
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.allowsMultipleSelectionDuringEditing = true
+        tableView.allowsMultipleSelectionDuringEditing = false
+        tableView.editing = true
+        
         view.addSubview(tableView)
         
         //tableView.setEditing(true, animated: true)
@@ -108,7 +110,7 @@ class SettingCategorySortingViewController: BasicViewController,UITableViewDataS
         
         cancelButton.hidden = isDeleteMode
         isDeleteMode = !isDeleteMode
-        
+        tableView.allowsMultipleSelectionDuringEditing = isDeleteMode
         if isDeleteMode == true {
             deleteButton.setBackgroundImage(UIImage(named: "bt_delete_red@3x.png"), forState: UIControlState.Normal)
         }else{
@@ -186,20 +188,54 @@ class SettingCategorySortingViewController: BasicViewController,UITableViewDataS
         }
     }
     
+    
+    
+    func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
+        
+        
+        
+        
+        
+        return UITableViewCellEditingStyle.None
+    }
+    
+    
+    
+    func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return true
+    }
+    
+    func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        return false
+    }
+    
+    
+    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        
+        return !isDeleteMode
+    }
+    
+    func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+
+        
+    }
+    
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        selectedIndex = indexPath.row
-        
-        let category = categoryData[indexPath.row]
-        
-        let categoryEditVC = CategoryEditViewController()
-        categoryEditVC.editedCategory = category
-        categoryEditVC.delegate = self
-        categoryEditVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
-        
-        self.navigationController?.presentViewController(categoryEditVC, animated: false, completion: { () -> Void in
+        if !isDeleteMode {
+            selectedIndex = indexPath.row
             
-        })
+            let category = categoryData[indexPath.row]
+            
+            let categoryEditVC = CategoryEditViewController()
+            categoryEditVC.editedCategory = category
+            categoryEditVC.delegate = self
+            categoryEditVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+            
+            self.navigationController?.presentViewController(categoryEditVC, animated: false, completion: { () -> Void in
+                
+            })
+        }
         
     }
     
@@ -207,9 +243,13 @@ class SettingCategorySortingViewController: BasicViewController,UITableViewDataS
     func categoryEdited(editedCategory: Category) {
         loadCategoryData()
         
-        tableView.beginUpdates()
-        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: selectedIndex, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
-        tableView.endUpdates()
+        if !categoryData.isEmpty {
+            tableView.beginUpdates()
+            tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: selectedIndex, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
+            tableView.endUpdates()
+        }else{
+            tableView.reloadData()
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -256,7 +296,7 @@ class SettingCategorySortingViewController: BasicViewController,UITableViewDataS
         
         cell.categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.colorWithHexString(category.color)), forState: UIControlState.Normal)
         cell.titleLabel.text = category.name
-        cell.setEditing(tableView.editing, animated: true)
+        cell.setEditing(isDeleteMode, animated: true)
         
         return cell
     }

@@ -49,7 +49,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
     var rangeButton:UIButton!
     var unitButton:UIButton!
     
-    var option:OptionStatus = OptionStatus.everyDay
+    var option:OptionStatus = OptionStatus.None
     var isTotal:Bool! = true
     var rangeList:[[String:String]] = []
     
@@ -652,7 +652,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         titleLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
         dayOption.addSubview(titleLabel)
         
-        
+        /*
         if option == OptionStatus.everyDay {
             iconImageView.image = UIImage(named: "icon_week_wt@3x.png")
             titleLabel.textColor = UIColor.todaitGreen()
@@ -660,12 +660,12 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
             iconImageView.image = UIImage(named: "icon_week@3x.png")
             titleLabel.textColor = UIColor.todaitGray()
         }
-        
+        */
     }
     
     func dayOptionClk(){
         
-        option = OptionStatus.everyDay
+        //option = OptionStatus.everyDay
         timeTaskTableView.reloadData()
         
     }
@@ -690,7 +690,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         
         
         
-        if option == OptionStatus.alarm {
+        if option == OptionStatus.Alarm {
             iconImageView.image = UIImage(named: "icon_alarm_wt@3x.png")
             titleLabel.textColor = UIColor.todaitGreen()
         }else{
@@ -701,7 +701,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
     
     func alarmOptionClk(){
         
-        option = OptionStatus.alarm
+        option = OptionStatus.Alarm
         timeTaskTableView.reloadData()
         
     }
@@ -725,7 +725,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         reviewOption.addSubview(titleLabel)
         
         
-        if option == OptionStatus.review {
+        if option == OptionStatus.Review {
             iconImageView.image = UIImage(named: "icon_review_wt@3x.png")
             titleLabel.textColor = UIColor.todaitGreen()
         }else{
@@ -736,7 +736,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
     
     func reviewOptionClk(){
         
-        option = OptionStatus.review
+        option = OptionStatus.Review
         timeTaskTableView.reloadData()
         
     }
@@ -759,7 +759,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         reReadOption.addSubview(titleLabel)
         
         
-        if option == OptionStatus.reRead {
+        if option == OptionStatus.Reread {
             iconImageView.image = UIImage(named: "icon_reread_wt@3x.png")
             titleLabel.textColor = UIColor.todaitGreen()
         }else{
@@ -771,7 +771,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
     
     func reReadOptionClk(){
         
-        option = OptionStatus.reRead
+        option = OptionStatus.Reread
         timeTaskTableView.reloadData()
         
     }

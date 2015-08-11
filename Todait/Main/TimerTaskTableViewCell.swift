@@ -34,8 +34,8 @@ class TimerTaskTableViewCell: BasicTableViewCell {
         
         
         addTitleLabel()
-        //addContentsLabel()
         addContentsTextView()
+        
         addTimerButton()
         addPercentLabel()
         addColorBoxView()
@@ -43,8 +43,8 @@ class TimerTaskTableViewCell: BasicTableViewCell {
     
     
     func addTitleLabel(){
-        titleLabel = UILabel(frame: CGRectMake(70*ratio, 11*ratio, 250*ratio, 14*ratio))
-        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
+        titleLabel = UILabel(frame: CGRectMake(70, 11, 250, 14))
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11)
         titleLabel.textColor = UIColor.todaitGray()
         titleLabel.textAlignment = NSTextAlignment.Left
         self.addSubview(titleLabel)
@@ -53,10 +53,10 @@ class TimerTaskTableViewCell: BasicTableViewCell {
     
     func addContentsTextView(){
         
-        contentsTextView = TimerTextView(frame: CGRectMake(70*ratio, 20*ratio, 250*ratio, 32*ratio))
+        contentsTextView = TimerTextView(frame: CGRectMake(70, 20, 250, 32))
         contentsTextView.stringColor = UIColor.todaitGray()
-        contentsTextView.stringFont = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
-        contentsTextView.numberFont = UIFont(name: "AppleSDGothicNeo-Medium", size: 16*ratio)
+        contentsTextView.stringFont = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
+        contentsTextView.numberFont = UIFont(name: "AppleSDGothicNeo-Medium", size: 16)
         contentsTextView.numberColor = UIColor.todaitDarkGray()
         contentsTextView.baseLine = 0
         contentsTextView.textContainer.lineFragmentPadding = 0
@@ -72,10 +72,10 @@ class TimerTaskTableViewCell: BasicTableViewCell {
     }
     
     func addTimerButton(){
-        timerButton = UIButton(frame: CGRectMake(0*ratio, 0*ratio, 68*ratio, 58*ratio))
+        timerButton = UIButton(frame: CGRectMake(0, 0, 68, 58))
         
         timerButton.clipsToBounds = true
-        timerButton.layer.cornerRadius = 18*ratio
+        timerButton.layer.cornerRadius = 18
         
         timerButton.addTarget(self, action: Selector("timerButtonTouchUpOutside"), forControlEvents:UIControlEvents.TouchUpOutside)
         timerButton.addTarget(self, action: Selector("timerButtonTouchDown"), forControlEvents:UIControlEvents.TouchDown)
@@ -85,8 +85,8 @@ class TimerTaskTableViewCell: BasicTableViewCell {
         
         timerButton.setImage(UIImage(named: "bt_play_gray_a@3x.png"), forState: UIControlState.Highlighted)
         
-        //timerButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame:CGRectMake(0,0,36*ratio,36*ratio)), forState: UIControlState.Normal)
-        //timerButton.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("#95CCC4").colorWithAlphaComponent(0.5), frame:CGRectMake(0,0,36*ratio,36*ratio)), forState: UIControlState.Highlighted)
+        //timerButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame:CGRectMake(0,0,36,36)), forState: UIControlState.Normal)
+        //timerButton.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("#95CCC4").colorWithAlphaComponent(0.5), frame:CGRectMake(0,0,36,36)), forState: UIControlState.Highlighted)
         timerButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
         
         self.addSubview(timerButton)
@@ -117,7 +117,7 @@ class TimerTaskTableViewCell: BasicTableViewCell {
     
     func setPercentBezierPath(){
         let timerButtonRect = timerButton.frame
-        percentBezierPath = UIBezierPath(arcCenter:CGPointMake(38*ratio,29*ratio), radius:18*ratio - DEFAULT_LINE_WIDTH*ratio/2, startAngle: degreeToRadians(DEFAULT_START_ANGLE), endAngle: degreeToRadians(DEFAULT_END_ANGLE), clockwise: true) as UIBezierPath!
+        percentBezierPath = UIBezierPath(arcCenter:CGPointMake(38,29), radius:18 - DEFAULT_LINE_WIDTH/2, startAngle: degreeToRadians(DEFAULT_START_ANGLE), endAngle: degreeToRadians(DEFAULT_END_ANGLE), clockwise: true) as UIBezierPath!
         
     }
     
@@ -132,15 +132,15 @@ class TimerTaskTableViewCell: BasicTableViewCell {
         percentLayer.strokeColor = UIColor.colorWithHexString("#FFFB887E").CGColor
         percentLayer.strokeStart = 0.0
         percentLayer.strokeEnd = 0.5
-        percentLayer.lineWidth = DEFAULT_LINE_WIDTH*ratio
+        percentLayer.lineWidth = DEFAULT_LINE_WIDTH
         percentLayer.lineCap = kCALineCapButt
-        percentLayer.frame = CGRectMake(0, 0, 36*ratio,36*ratio)
+        percentLayer.frame = CGRectMake(0, 0, 36,36)
         self.layer .addSublayer(percentLayer)
     }
     
     func addPercentLabel(){
-        percentLabel = UILabel(frame: CGRectMake(21.5*ratio, 12*ratio, 36*ratio, 36*ratio))
-        percentLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10*ratio)
+        percentLabel = UILabel(frame: CGRectMake(21.5, 12, 36, 36))
+        percentLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10)
         percentLabel.text = "%"
         percentLabel.textAlignment = NSTextAlignment.Center
         percentLabel.textColor = UIColor.todaitLightGray()
@@ -148,7 +148,7 @@ class TimerTaskTableViewCell: BasicTableViewCell {
     }
     
     func addColorBoxView(){
-        colorBoxView = UIView(frame: CGRectMake(0, 0, 4*ratio, 58*ratio))
+        colorBoxView = UIView(frame: CGRectMake(0, 0, 4, 58))
         colorBoxView.backgroundColor = UIColor.clearColor()
         self.addSubview(colorBoxView)
     }

@@ -226,6 +226,12 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         self.view.addSubview(imageView)
         */
         
+        
+        let progress:ProgressView = UIView.fromNib(nibNameOrNil: "ProgressView")
+        progress.center = CGPointMake(160,160)
+        progress.startAnimation()
+        view.addSubview(progress)
+        
     }
     
     func createTestData(){
@@ -562,6 +568,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     
     func loadTaskData(){
+        
         let entityDescription = NSEntityDescription.entityForName("Task",inManagedObjectContext:managedObjectContext!)
         
         let sortIndex = defaults.integerForKey("sortIndex")
