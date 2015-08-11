@@ -9,8 +9,9 @@
 import UIKit
 import CoreData
 import MobileCoreServices
+import GMImagePicker
 
-class DiaryViewController: BasicViewController,TodaitNavigationDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate{
+class DiaryViewController: BasicViewController,TodaitNavigationDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate,GMImagePickerControllerDelegate{
    
     
     var doneButton:UIButton!
@@ -97,6 +98,7 @@ class DiaryViewController: BasicViewController,TodaitNavigationDelegate,UIImageP
     
     func showAlbum() {
         
+        /*
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         imagePicker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
@@ -105,9 +107,51 @@ class DiaryViewController: BasicViewController,TodaitNavigationDelegate,UIImageP
         
         self.presentViewController(imagePicker, animated: true, completion: nil)
         newMedia = false
+        */
+        
+        let picker = GMImagePickerController()
+        picker.delegate = self
+        picker.title = "Select"
+        picker.customNavigationBarPrompt = "Todait"
+        picker.colsInPortrait = 5
+        picker.colsInLandscape = 5
+        picker.minimumInteritemSpacing = 2.0
+        picker.modalPresentationStyle = UIModalPresentationStyle.Popover
+        
+        //let popPC = picker.popoverPresentationController
+        //popPC?.permittedArrowDirections = UIPopoverArrowDirectionAny
+        
+        self.showViewController(picker, sender: nil)
+        
         
     }
     
+    
+    func assetsPickerController(picker: GMImagePickerController!, didFinishPickingAssets assets: [AnyObject]!) {
+        
+        picker.presentingViewController?.dismissViewControllerAnimated(true, completion: nil)
+        
+        
+    }
+    
+    func assetsPickerControllerDidCancel(picker: GMImagePickerController!) {
+        
+    }
+    
+    /*
+    - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray
+    {
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    
+    NSLog(@"GMImagePicker: User ended picking assets. Number of selected items is: %lu", (unsigned long)assetArray.count);
+    }
+    
+    //Optional implementation:
+    -(void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker
+    {
+    NSLog(@"GMImagePicker: User pressed cancel button");
+    }
+    */
     func showCamera() {
         
         let imagePicker = UIImagePickerController()
