@@ -90,6 +90,7 @@ class DetailMemoView: UIView {
         headerLabel.textAlignment = NSTextAlignment.Center
         headerLabel.text = "공부메모"
         headerLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10*ratio)
+        headerLabel.setKern(1)
         addSubview(headerLabel)
         
     }
@@ -229,7 +230,7 @@ class DetailMemoView: UIView {
     
     func addAmountTextView(){
         
-        amountTextView = AmountTextView(frame: CGRectMake(175*ratio,0*ratio+72*ratio, 130*ratio, 25*ratio))
+        amountTextView = AmountTextView(frame: CGRectMake(175*ratio,0*ratio+75*ratio, 130*ratio, 25*ratio))
         
         var paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = NSTextAlignment.Center

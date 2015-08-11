@@ -61,7 +61,7 @@ class DetailView: UIView {
         
         var defaults = NSUserDefaults.standardUserDefaults()
         
-        let localIdentifier = defaults.objectForKey("mainPhoto")
+        let localIdentifier: AnyObject? = defaults.objectForKey("mainPhoto")
         
         if let check = localIdentifier {
             

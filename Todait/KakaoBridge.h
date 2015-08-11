@@ -25,10 +25,11 @@
 
 #import <AWSCore/AWSCore.h>
 #import <AWSS3/AWSS3.h>
-#import "GMGridViewCell.h"
-#import "GMAlbumsViewCell.h"
-#import "GMAlbumsViewController.h"
-#import "GMGridViewController.h"
-#import "GMImagePickerController.h"
+#import <GMImagePicker/GMGridViewCell.h>
+#import <GMImagePicker/GMAlbumsViewCell.h>
+#import <GMImagePicker/GMAlbumsViewController.h>
+#import <GMImagePicker/GMGridViewController.h>
+#import <GMImagePicker/GMImagePickerController.h>
+
 
 #endif

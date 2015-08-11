@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+import AWSS3
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

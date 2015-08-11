@@ -21,24 +21,6 @@
             </objects>
             <point key="canvasLocation" x="-575" y="-1773"/>
         </scene>
-        <!--Category Rear View Controller-->
-        <scene sceneID="4Vu-2O-40S">
-            <objects>
-                <viewController id="Voy-36-XvD" customClass="CategoryRearViewController" customModule="Todait" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="jDd-t6-HpC"/>
-                        <viewControllerLayoutGuide type="bottom" id="VRg-PH-Ipz"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Djd-B6-qKG">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="9JW-pi-no2" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-234" y="121"/>
-        </scene>
         <!--Login View Controller-->
         <scene sceneID="jAi-Hs-Gdq">
             <objects>
@@ -91,135 +73,15 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="bhA-O0-NaW"/>
-                    <connections>
-                        <segue destination="k0e-3v-Xcp" kind="push" identifier="ShowDetailView" id="Opy-KL-cVV"/>
-                        <segue destination="f3a-4r-EHn" kind="push" identifier="ShowNewTaskView" id="Ir7-i8-Tb2"/>
-                        <segue destination="NKN-R6-fnb" kind="push" identifier="ShowTimerView" id="Fak-dM-lxb"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QmX-B9-3Ns" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="214" y="-1073"/>
         </scene>
-        <!--Main View Controller-->
-        <scene sceneID="ufC-wZ-h7g">
-            <objects>
-                <viewController storyboardIdentifier="mainVC" id="vXZ-lx-hvc" customClass="MainViewController" customModule="Todait" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="nsn-pu-iTx"/>
-                        <viewControllerLayoutGuide type="bottom" id="j4T-E8-eMc"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="M8s-3E-i2e"/>
-                    <connections>
-                        <segue destination="f3a-4r-EHn" kind="push" identifier="ShowNewTaskView" id="hF8-E9-VIJ"/>
-                        <segue destination="NKN-R6-fnb" kind="push" identifier="ShowTimerView" id="9wR-hP-Vgj"/>
-                        <segue destination="k0e-3v-Xcp" kind="push" identifier="ShowDetailView" id="MJ6-d1-7Rc"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="194" y="-157"/>
-        </scene>
-        <!--Timer View Controller-->
-        <scene sceneID="cW1-8m-gnd">
-            <objects>
-                <viewController id="NKN-R6-fnb" customClass="TimerViewController" customModule="Todait" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="SJK-Ie-S3m"/>
-                        <viewControllerLayoutGuide type="bottom" id="76p-3g-7RG"/>
-                    </layoutGuides>
-                    <view key="view" clipsSubviews="YES" contentMode="scaleToFill" id="NC5-Wd-Pyr">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="timerBack@3x.jpg" translatesAutoresizingMaskIntoConstraints="NO" id="cjb-WG-u4s">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                            </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.40000000000000002" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xmX-Uu-smI">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            </imageView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="76p-3g-7RG" firstAttribute="top" secondItem="xmX-Uu-smI" secondAttribute="bottom" id="2tx-Wn-5o0"/>
-                            <constraint firstItem="cjb-WG-u4s" firstAttribute="leading" secondItem="NC5-Wd-Pyr" secondAttribute="leading" id="Bh8-Kd-O9f"/>
-                            <constraint firstItem="xmX-Uu-smI" firstAttribute="top" secondItem="NC5-Wd-Pyr" secondAttribute="top" id="O26-oT-pmx"/>
-                            <constraint firstAttribute="trailing" secondItem="cjb-WG-u4s" secondAttribute="trailing" id="Xbf-T7-o7b"/>
-                            <constraint firstItem="xmX-Uu-smI" firstAttribute="leading" secondItem="NC5-Wd-Pyr" secondAttribute="leading" id="aqQ-n0-3x5"/>
-                            <constraint firstAttribute="trailing" secondItem="xmX-Uu-smI" secondAttribute="trailing" id="ul9-mo-ZRN"/>
-                            <constraint firstItem="cjb-WG-u4s" firstAttribute="top" secondItem="NC5-Wd-Pyr" secondAttribute="top" id="z4f-2W-WXu"/>
-                            <constraint firstItem="76p-3g-7RG" firstAttribute="top" secondItem="cjb-WG-u4s" secondAttribute="bottom" id="zaA-TT-JaX"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="cVe-Qp-Ll3"/>
-                    <connections>
-                        <outlet property="backgroundImageView" destination="cjb-WG-u4s" id="Lp8-ke-E5U"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="CcM-EV-7AA" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="465" y="715"/>
-        </scene>
-        <!--Detail View Controller-->
-        <scene sceneID="4Am-8g-cYA">
-            <objects>
-                <viewController id="k0e-3v-Xcp" customClass="DetailViewController" customModule="Todait" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="rAV-DU-Tvx"/>
-                        <viewControllerLayoutGuide type="bottom" id="A4e-dV-PDA"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="aLD-kO-nsA">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="Akr-Bb-2mr"/>
-                    <connections>
-                        <segue destination="NKN-R6-fnb" kind="push" identifier="ShowTimerView" id="YdE-GF-mfb"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="W4U-cC-pk6" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="904" y="-391"/>
-        </scene>
-        <!--New Task View Controller-->
-        <scene sceneID="jSI-VR-3kM">
-            <objects>
-                <viewController id="f3a-4r-EHn" customClass="NewTaskViewController" customModule="Todait" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="D2E-Md-5qS"/>
-                        <viewControllerLayoutGuide type="bottom" id="6ce-0e-RmW"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Bv0-dY-AsJ">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="eeo-QC-Sf1"/>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="xdf-SA-F0x" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="904" y="617"/>
-        </scene>
     </scenes>
-    <resources>
-        <image name="timerBack@3x.jpg" width="1500" height="1000"/>
-    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
-    <inferredMetricsTieBreakers>
-        <segue reference="Fak-dM-lxb"/>
-        <segue reference="Opy-KL-cVV"/>
-        <segue reference="Ir7-i8-Tb2"/>
-    </inferredMetricsTieBreakers>
 </document>

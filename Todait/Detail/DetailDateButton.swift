@@ -92,10 +92,10 @@ class DetailDateButton: UIButton {
         
         switch status {
             
-        case .Progressing: circleImageView.image = UIImage(named:"bg_circle_lightred@3x.png")
+        case .Progressing: circleImageView.image = UIImage(named:"bg_circle_red@3x.png")
         case .Completed: circleImageView.image = UIImage(named:"bg_circle_lightgreen@3x.png")
         case .Complete: circleImageView.image = UIImage(named:"bg_circle_green@3x.png")
-        case .UnCompleted: circleImageView.image = UIImage(named:"bg_circle_red@3x.png")
+        case .UnCompleted: circleImageView.image = UIImage(named:"bg_circle_lightred@3x.png")
         case .UnStart: circleImageView.image = UIImage(named:"bg_circle_gray@3x.png")
         default: circleImageView.image = nil
             

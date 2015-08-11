@@ -16,7 +16,7 @@
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                 </imageView>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash_company@3x.png" translatesAutoresizingMaskIntoConstraints="NO" id="f8P-lG-daC">
-                    <rect key="frame" x="123" y="483" width="75" height="35"/>
+                    <rect key="frame" x="123" y="503" width="75" height="35"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="f8P-lG-daC" secondAttribute="height" multiplier="15:7" id="Zni-uo-bbe"/>
                     </constraints>
@@ -36,7 +36,7 @@
                 <constraint firstAttribute="centerX" secondItem="f8P-lG-daC" secondAttribute="centerX" id="erF-tQ-BX5"/>
                 <constraint firstAttribute="bottom" secondItem="1XE-rY-Hqa" secondAttribute="bottom" id="fqf-0G-9L5"/>
                 <constraint firstItem="5fh-uq-NzE" firstAttribute="width" secondItem="1XE-rY-Hqa" secondAttribute="width" multiplier="15:16" id="heP-vy-IJo"/>
-                <constraint firstAttribute="bottom" secondItem="f8P-lG-daC" secondAttribute="bottom" constant="50" id="qjD-OA-70o"/>
+                <constraint firstAttribute="bottom" secondItem="f8P-lG-daC" secondAttribute="bottom" constant="30" id="qjD-OA-70o"/>
                 <constraint firstAttribute="centerY" secondItem="5fh-uq-NzE" secondAttribute="centerY" constant="53.5" id="qvv-m5-Qnl"/>
                 <constraint firstItem="f8P-lG-daC" firstAttribute="width" secondItem="1XE-rY-Hqa" secondAttribute="width" multiplier="15:64" id="rgj-xx-oUa"/>
                 <constraint firstAttribute="centerX" secondItem="5fh-uq-NzE" secondAttribute="centerX" id="vDu-fp-mCu"/>
