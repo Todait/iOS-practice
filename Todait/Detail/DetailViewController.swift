@@ -58,7 +58,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     let monthCalendarHeight:CGFloat = 295
     
     let headerMinHeight:CGFloat = 100
-    let hederMaxHeight:CGFloat = 215
+    let headerMaxHeight:CGFloat = 215
     var showCalendarHeight:CGFloat = 49
     var isCalendarScroll:Bool = true
     
@@ -349,7 +349,7 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
     
     func gestureEnded(gesture:UIPanGestureRecognizer){
         
-        let baseOriginY = detailViewHeight*ratio + 41.5*ratio
+        let baseOriginY = detailViewHeight*ratio + 43*ratio
         
         /*
         var velocity = gesture.velocityInView(self.view)
@@ -359,14 +359,15 @@ class DetailViewController: BasicViewController,TodaitNavigationDelegate,UITable
         */
         
         
-        var scrollLine = headerMinHeight*ratio + 0.5 * monthCalendarHeight * ratio
+        var scrollLine = baseOriginY + 0.5 * monthCalendarHeight * ratio
         
         if isCalendarDown == true {
-            scrollLine = headerMinHeight*ratio + 0.95 * monthCalendarHeight*ratio
+            scrollLine = baseOriginY + weekCalendarHeight*ratio + monthCalendarHeight*ratio * 2 / 3
         }else {
-            scrollLine = headerMinHeight*ratio + 0.2 * monthCalendarHeight*ratio
+            scrollLine = baseOriginY + weekCalendarHeight*ratio + monthCalendarHeight*ratio / 6
         }
         
+        NSLog("scroll %f table %f",scrollLine,diaryTableView.frame.origin.y)
         
         
         if diaryTableView.frame.origin.y >= scrollLine {
