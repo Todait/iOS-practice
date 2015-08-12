@@ -1,6 +1,0 @@
-framework module AWSCore {
-  umbrella header "Pods-AWSCore-umbrella.h"
-
-  export *
-  module * { export * }
-}
