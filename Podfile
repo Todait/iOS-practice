@@ -20,3 +20,5 @@ pod 'AWSSimpleDB'
 pod 'AWSSNS'
 pod 'AWSSQS'
 pod 'AWSCognito'
+pod 'RealmSwift'
+

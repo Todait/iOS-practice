@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1EBFF9FD019D90891F788A6A"
+               BlueprintIdentifier = "0DF3762D4B0E252A6A2D5C5A"
                BuildableName = "AWSEC2.framework"
                BlueprintName = "Pods-AWSEC2"
                ReferencedContainer = "container:Pods.xcodeproj">

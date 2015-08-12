@@ -66,6 +66,8 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework 'AWSSimpleDB.framework'
   install_framework 'FLAnimatedImage.framework'
   install_framework 'GMImagePicker.framework'
+  install_framework 'Realm.framework'
+  install_framework 'RealmSwift.framework'
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework 'AWSAutoScaling.framework'
@@ -86,4 +88,6 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework 'AWSSimpleDB.framework'
   install_framework 'FLAnimatedImage.framework'
   install_framework 'GMImagePicker.framework'
+  install_framework 'Realm.framework'
+  install_framework 'RealmSwift.framework'
 fi
