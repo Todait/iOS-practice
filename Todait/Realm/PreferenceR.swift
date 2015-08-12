@@ -1,5 +1,5 @@
 //
-//  TaskR.swift
+//  PreferenceR.swift
 //  Todait
 //
 //  Created by CruzDiary on 2015. 8. 12..
@@ -8,28 +8,20 @@
 
 import RealmSwift
 
-class TaskR: Object {
+class PreferenceR: Object {
     
     dynamic var id = ""
-    dynamic var serverId = -1
-    dynamic var name = ""
-    dynamic var unit = ""
-    dynamic var startPoint = 0
-    dynamic var amount = 0
+    dynamic var serverId = 0
+    dynamic var stopwatchScreenDim = false
+    dynamic var comboCount = 0
+    dynamic var maxComboCount = 0
     dynamic var notificationMode = false
     dynamic var notificationTime = ""
-    dynamic var archived = false
-    dynamic var priority = 0
-    dynamic var repeatCount = 1
-    dynamic var reviewType = ""
-    dynamic var reviewCount = 0
-    dynamic var completed = false
-    dynamic var taskType = ""
+    dynamic var finishTime = ""
+    dynamic var customStopwatchBackground = false
+    dynamic var stopwatchBackgroundImageName = ""
     dynamic var dirtyFlag = false
-    
-    let taskDates = List<TaskDateR>()
-    
-    dynamic var categoryId:CategoryR?
+    dynamic var userId:UserR?
     
     override static func primaryKey()->String? {
         return "id"
