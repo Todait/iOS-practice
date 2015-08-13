@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 class CalendarViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate,TodaitNavigationDelegate,CalendarDayDelegate{
     
@@ -19,7 +20,7 @@ class CalendarViewController: BasicViewController,UITableViewDataSource,UITableV
     var currentIndexPath:NSIndexPath!
     
     var taskTableVC:TaskTableViewController!
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -85,19 +86,20 @@ class CalendarViewController: BasicViewController,UITableViewDataSource,UITableV
         addChildViewController(taskTableVC)
         
         taskTableVC.view.frame = CGRectMake(0,453*ratio,width,height-458*ratio)
-        taskTableVC.taskData = getTaskData(getTodayDateNumber())
+        taskTableVC.taskResults = getTaskData(getTodayDateNumber())
         
         view.addSubview(taskTableVC.view)
         
         
     }
     
-    func getTaskData(dateNumber:NSNumber)->[Task]{
+    func getTaskData(dateNumber:NSNumber)->Results<Task>{
         
         //클릭된 날의 Task
         
         var taskData:[Task] = []
         
+        /*
         let entityDescription = NSEntityDescription.entityForName("Task",inManagedObjectContext:managedObjectContext!)
         
         let predicate:NSPredicate = NSPredicate(format: "start_date <= %@ && %@ <= end_date", dateNumber,dateNumber)
@@ -109,14 +111,18 @@ class CalendarViewController: BasicViewController,UITableViewDataSource,UITableV
         var error: NSError?
         taskData = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Task]
         
+        */
         
+        let predicate:NSPredicate = NSPredicate(format: "startDate <= %@ && %@ <= endDate", dateNumber,dateNumber)
         
-        return taskData
+        var taskResults = realm.objects(Task).filter(predicate)
+        
+        return taskResults
     }
     
     func daySelected(dateNumber:NSNumber){
         
-        taskTableVC.taskData = getTaskData(dateNumber)
+        taskTableVC.taskResults = getTaskData(dateNumber)
         taskTableVC.tableView.reloadData()
         
     }

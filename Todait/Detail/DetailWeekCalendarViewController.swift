@@ -182,7 +182,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
             if let currentDay = task.getDay(currentDateNumber) {
                 
 
-                if currentDay.expectAmount.integerValue <= currentDay.doneAmount.integerValue {
+                if currentDay.expectAmount <= currentDay.doneAmount {
                     
                     button.setDateStatus(DateStatus.Completed)
                     button.expectLabel.text = "\(currentDay.doneAmount)"
@@ -202,7 +202,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
                 }
                 
                 
-                if currentDateNumber.integerValue > getTodayDateNumber().integerValue {
+                if currentDateNumber > getTodayDateNumber() {
                     
                     button.expectLabel.textColor = UIColor.todaitDarkGray()
                     button.setDateStatus(DateStatus.UnStart)

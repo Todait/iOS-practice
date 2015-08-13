@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 protocol CalendarDayDelegate:NSObjectProtocol {
     
@@ -27,7 +28,9 @@ class CalendarTableViewCell: UITableViewCell,CalendarDayViewDelegate{
     var calendar: NSCalendar!
     var delegate:CalendarDayDelegate!
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var realm = Realm()
+    
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -202,7 +205,7 @@ class CalendarTableViewCell: UITableViewCell,CalendarDayViewDelegate{
         var mainColor:[String:UIColor] = [:]
         
         let dateNumber = getDateNumberFromDate(date)
-        
+        /*
         let entityDescription = NSEntityDescription.entityForName("Day", inManagedObjectContext: managedObjectContext!)
         let predicate:NSPredicate = NSPredicate(format: "date == %@",dateNumber)
         
@@ -212,9 +215,14 @@ class CalendarTableViewCell: UITableViewCell,CalendarDayViewDelegate{
         
         var error: NSError?
         let data:[Day] = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Day]
+        */
         
-        if data.count != 0 {
-            let day:Day = data[0]
+        let predicate = NSPredicate(format: "date == %@",dateNumber)
+        var dayResults = realm.objects(Day).filter(predicate)
+        
+        
+        if dayResults.count != 0 {
+            let day:Day = dayResults[0]
             
             mainColor["text"] = UIColor.whiteColor()
             mainColor["background"] = day.getColor()

@@ -72,7 +72,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
 
     
     
-    func getNumberOfWeekViewScrollCount(from:NSDate,to:NSDate)->NSNumber{
+    func getNumberOfWeekViewScrollCount(from:NSDate,to:NSDate)->Int{
         var fromDateNumber = getDateNumberFromDate(from)
         var toDateNumber = getDateNumberFromDate(to)
         
@@ -81,10 +81,10 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         
         if  dateForm.stringFromDate(from) != dateForm.stringFromDate(to) {
             
-            if toDateNumber.integerValue > fromDateNumber.integerValue {
+            if toDateNumber > fromDateNumber {
                 NSLog("return 1", 0)
                 return 1
-            }else if toDateNumber.integerValue < fromDateNumber.integerValue {
+            }else if toDateNumber < fromDateNumber{
                 NSLog("return -1", 0)
                 return -1
             }
@@ -200,7 +200,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
             if let currentDay = task.getDay(currentDateNumber) {
                 
                 
-                if currentDay.expectAmount.integerValue <= currentDay.doneAmount.integerValue {
+                if currentDay.expectAmount <= currentDay.doneAmount{
                     button.expectLabel.text = "\(currentDay.doneAmount)"
                     
                     
@@ -223,7 +223,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
                 
                 
                 
-                if currentDateNumber.integerValue > getTodayDateNumber().integerValue {
+                if currentDateNumber > getTodayDateNumber(){
                     
                     button.expectLabel.textColor = UIColor.todaitDarkGray()
                     button.setDateStatus(DateStatus.UnStart)
