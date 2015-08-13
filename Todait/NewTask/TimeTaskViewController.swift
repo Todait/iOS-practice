@@ -38,7 +38,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
     var periodDayLabel:UILabel!
     var periodDayString:String = "30일"
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var aimString:String! = ""
     var unitString:String! = ""

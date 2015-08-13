@@ -52,7 +52,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     var startDate: NSDate!
     var endDate: NSDate!
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+
+    
     var day:Day!
     var task:Task!
     
@@ -122,7 +124,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         view.addSubview(amountTextView)
         
         if let day = day {
-            amountTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
+            amountTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
         }
     }
     
@@ -163,6 +165,8 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     func saveTimeLog(){
         
+        
+        /*
         let entityDescription = NSEntityDescription.entityForName("TimeLog", inManagedObjectContext:managedObjectContext!)
         let timeLog = TimeLog(entity: entityDescription!, insertIntoManagedObjectContext:managedObjectContext)
         
@@ -179,11 +183,27 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         
         var error: NSError?
         managedObjectContext?.save(&error)
+        */
+        
+        let timeLog = TimeLog()
+        timeLog.id = NSUUID().UUIDString
+        timeLog.day = day
+        timeLog.timestamp = Int(NSDate().timeIntervalSince1970)
+        timeLog.beforeSecond = day.doneSecond
+        timeLog.afterSecond = Int(day.doneSecond) + Int(currentTime)
+        
+        realm.write{
+            self.realm.add(timeLog)
+            self.day.timeLogs.append(timeLog)
+            self.day.doneSecond = Int(self.day.doneSecond) + Int(self.currentTime)
+            self.realm.add(self.day, update: true)
+        }
         
         
         
+        currentTime = 0
         updateTimeLabel()
-        amountTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
+        amountTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
     }
     
     func resetTimeLog() {
@@ -298,6 +318,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     func saveAmountLog(amount:Int){
         
+        /*
         let entityDescription = NSEntityDescription.entityForName("AmountLog", inManagedObjectContext:managedObjectContext!)
         
         let amountLog = AmountLog(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
@@ -323,8 +344,27 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         }else{
             NSLog("AmountLog 저장 및 업데이트성공",1)
         }
+        */
         
-        amountTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
+        let amountLog = AmountLog()
+        amountLog.id = NSUUID().UUIDString
+        amountLog.day = day
+        amountLog.beforeAmount = day.doneAmount
+        amountLog.dirtyFlag = false
+
+        amountLog.afterAmount = day.doneAmount
+        amountLog.timestamp = Int(NSDate().timeIntervalSince1970)
+        amountLog.serverId = 0
+        amountLog.archived = false
+        
+        realm.write{
+            self.realm.add(amountLog)
+            self.day.amountLogs.append(amountLog)
+            self.day.doneAmount = Int(self.day.doneAmount) + Int(amount)
+            self.realm.add(self.day,update:true)
+        }
+        
+        amountTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
     }
     
     
@@ -466,17 +506,32 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         saveTimeLog()
         saveTimeHistory()
         
-        day.doneSecond = NSNumber(integer:Int(totalTime))
-        var error:NSError?
-        managedObjectContext?.save(&error)
+        day.doneSecond = Int(totalTime)
         
-        NSLog("시간이 저장되었습니다",0)
+        //var error:NSError?
+        //managedObjectContext?.save(&error)
         
     }
     
     
     func saveTimeHistory(){
         
+        let timeHistory = TimeHistory()
+        timeHistory.id = NSUUID().UUIDString
+        timeHistory.day = day
+        timeHistory.startedAt = Int(startDate.timeIntervalSince1970)
+        timeHistory.endedAt = Int(endDate.timeIntervalSince1970)
+        timeHistory.doneMillis = Int(endDate.timeIntervalSinceDate(startDate))
+        
+        day.timeHistorys.append(timeHistory)
+        
+        realm.write{
+            self.realm.add(timeHistory)
+            self.realm.add(self.day,update:true)
+        }
+        
+        
+        /*
         let entityDescription = NSEntityDescription.entityForName("TimeHistory", inManagedObjectContext:managedObjectContext!)
         let timeHistory = TimeHistory(entity: entityDescription!, insertIntoManagedObjectContext:managedObjectContext)
         timeHistory.dayId = day
@@ -486,6 +541,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         
         var error: NSError?
         managedObjectContext?.save(&error)
+        */
     }
     
     func setupTimer(){
@@ -582,7 +638,7 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
         
-        self.titleLabel.text = task.categoryId.name + " - " + task.name
+        self.titleLabel.text = task.category!.name + " - " + task.name
         
         todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(),frame:todaitNavBar.frame), forBarMetrics: UIBarMetrics.Default)
         todaitNavBar.shadowImage = UIImage()

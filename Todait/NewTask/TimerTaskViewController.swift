@@ -22,13 +22,11 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     var startDate: NSDate!
     
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var aimString:String! = ""
     var unitString:String! = ""
     
-
-    var option:OptionStatus = OptionStatus.None
 
     var isTotal:Bool! = true
     
@@ -72,6 +70,12 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     
     func loadDefaultCategory(){
         
+        var categoryResults = realm.objects(Category).filter("archived == false")
+        if let category = categoryResults.first{
+            self.category = category
+        }
+        /*
+        
         let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
         let request = NSFetchRequest()
         
@@ -84,7 +88,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         if let categoryData = categoryData {
             category = categoryData.first
         }
-        
+        */
     }
     
     
@@ -227,6 +231,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     
     func saveNewTask(){
         
+        /*
         let entityDescription = NSEntityDescription.entityForName("Task", inManagedObjectContext:managedObjectContext!)
         let task = Task(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         
@@ -263,32 +268,45 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
             
             NSLog("Task 저장성공",1)
             
-            self.navigationController?.popViewControllerAnimated(true)
+            self.dismissViewControllerAnimated(true, completion: { () -> Void in
+                
+            })
         }
+        */
+        
+       
+        
+        
+        let task = Task()
+        task.name = goalTextField.text
+        task.id = NSUUID().UUIDString
+        task.taskType = "Timer"
+        task.category = category
+        category.tasks.append(task)
+        
+        if isAlarmOn == true {
+            
+            let notificationId = NSUUID().UUIDString
+            //task.notificationId = notificationId
+            registerAlarm(notificationId)
+            
+        }
+        
+        realm.write{
+            self.realm.add(task)
+            self.realm.add(self.category,update:true)
+        }
+        
+        
+        
+        
+        self.dismissViewControllerAnimated(true, completion: { () -> Void in
+            
+        })
+        
     }
     
     
-    func saveNewWeek(task:Task){
-        
-        let entityDescription = NSEntityDescription.entityForName("Week", inManagedObjectContext:managedObjectContext!)
-        let week = Week(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
-        week.taskId = task
-        
-        
-        week.sun = 3600//investData[0];
-        week.mon = 3600//investData[1];
-        week.tue = 3600//investData[2];
-        week.wed = 3600//investData[3];
-        week.thu = 3600//investData[4];
-        week.fri = 3600//investData[5];
-        week.sat = 3600//investData[6];
-        
-        
-        var error: NSError?
-        managedObjectContext?.save(&error)
-        
-        
-    }
     
     func registerAlarm(notificationId:String){
         
