@@ -7,11 +7,13 @@
 //
 
 import RealmSwift
+import SwiftyJSON
 
-class WeekR: Object {
+class Week: Object {
+    
     
     dynamic var id = ""
-    dynamic var serverId = ""
+    dynamic var serverId = -1
     dynamic var archived = false
     dynamic var sun = 0
     dynamic var mon = 0
@@ -21,8 +23,46 @@ class WeekR: Object {
     dynamic var fri = 0
     dynamic var sat = 0
     dynamic var dirtyFlag = false
+    dynamic var userId = -1
+    dynamic var taskDate:TaskDate?
     
-    dynamic var taskDateId:TaskDateR?
+    
+    func setupJSON(json:JSON){
+        
+        
+        sun = json["sun"].intValue
+        mon = json["mon"].intValue
+        tue = json["tue"].intValue
+        wed = json["wed"].intValue
+        thu = json["thu"].intValue
+        fri = json["fri"].intValue
+        sat = json["sat"].intValue
+        archived = json["archived"].boolValue
+        userId = json["user_id"].intValue
+        serverId = json["id"].intValue
+        
+        
+    }
+    
+    override static func primaryKey()->String? {
+        return "id"
+    }
+    
+    
+    func getExpectedAmount()->[Int]{
+        
+        var expectedAmount:[Int] = [sun,mon,tue,wed,thu,fri,sat]
+        
+        return expectedAmount
+    }
+    
+    
+    func getExpectedTime()->[Int]{
+        
+        var expectedTime:[Int] = [sun,mon,tue,wed,thu,fri,sat]
+        
+        return expectedTime
+    }
     
 // Specify properties to ignore (Realm won't persist these)
     
