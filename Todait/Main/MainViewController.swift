@@ -10,9 +10,9 @@ import UIKit
 import CoreData
 import Photos
 import Alamofire
+import RealmSwift
 
-
-class MainViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate,TaskTableViewCellDelegate,UpdateDelegate,touchDelegate,CategoryUpdateDelegate{
+class MainViewController: BasicViewController,UITableViewDataSource,UITableViewDelegate,TaskTableViewCellDelegate,UpdateDelegate,touchDelegate{
     
     var parallelView: ParallelHeaderView!
     var mainTableView: UITableView!
@@ -33,7 +33,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     let headerHeight: CGFloat = 212
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var timeChart:TimeChart!
     var timeValue:[CGFloat] = []
@@ -41,7 +41,12 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     var isShowAllCategory:Bool = true
     var category:Category!
     var dayData:[Day] = []
+    var dayResults:Results<Day>?
+    
+    var taskResults:Results<Task>?
     var taskData:[Task] = []
+    var taskUncompletedResultsData:[Task] = []
+    
     var uncompletedTaskData:[Task] = []
     var taskTestCount:NSTimeInterval = 0
     
@@ -54,6 +59,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     var mainCategoryCollectionVC:MainCategoryCollectionViewController!
 
     var isDeleteAnimation:Bool = false
+    
+    var realmManager = RealmManager.sharedInstance
     
     func needToUpdate(){
         
@@ -92,6 +99,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         }
     }
     
+    
+    
+    
+    
     func updateText(){
         
         let dateForm = NSDateFormatter()
@@ -103,56 +114,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         parallelView.completionRateLabel.text = getTotalPercentStringOfToday()
     }
     
-    func updateAllCategory(){
-        
-        if let check = self.title {
-            self.titleLabel.text = "Todait"
-
-        }
-        
-        if let check = timeChart {
-            timeChart.chartColor = UIColor.todaitGreen()
-            timeChart.updateChart(timeValue)
-            parallelView.backgroundColor = UIColor.todaitGreen()
-        }
-        
-        
-        isShowAllCategory = true
-       
-        loadTaskData()
-        loadUncompletedTaskData()
-        loadDayData()
-        
-        if let check = mainTableView {
-            mainTableView.reloadData()
-        }
-        
-        if let check = parallelView {
-            updateText()
-        }
-       
-        
-    }
     
-    func updateCategory(category:Category,from:String){
-        
-        loadTaskData()
-        loadUncompletedTaskData()
-        loadDayData()
-        
-        if let check = mainTableView {
-            mainTableView.reloadData()
-        }
-        
-        if let check = parallelView {
-            updateText()
-        }
-        
-        if from == "NewTaskVC" {
-            
-            showCompleteAddPopup()
-        }
-    }
+    
+    
     
     func showCompleteAddPopup(){
         
@@ -199,12 +163,12 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        createTestData()
+        requestDayToServer()
         
+        //createTestData()
+        //createTestDataRealm()
         addParallelView()
         addMainTableView()
-        
-        
         
         calculateRemainingTime()
         setupCoreDataInit()
@@ -214,87 +178,120 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         loadDayData()
         mainTableView.reloadData()
         
-        
         addListView()
     
-        
-        /*
-        let image = FLAnimatedImage(animatedGIFData:NSData(contentsOfFile:NSBundle.mainBundle().pathForResource("ttt.gif", ofType: nil)!))
-        let imageView = FLAnimatedImageView()
-        imageView.animatedImage = image
-        imageView.frame = CGRectMake(50, 50, 200, 200)
-        self.view.addSubview(imageView)
-        */
-        
-        
-        let progress:ProgressView = UIView.fromNib(nibNameOrNil: "ProgressView")
-        progress.center = CGPointMake(160,160)
-        progress.startAnimation()
-        view.addSubview(progress)
-        
     }
     
-    func createTestData(){
+    func requestDayToServer(){
         
-        let categoryED = NSEntityDescription.entityForName("Category", inManagedObjectContext:managedObjectContext!)
+        var params:[String:AnyObject] = [:]
+        params["sync_at"] = 0
+        
+        var manager = Alamofire.Manager.sharedInstance
+        manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json","X-User-Email":defaults.objectForKey("email")!,"X-User-Token":defaults.objectForKey("token")!]
         
         
-        
-        for index in 0...9 {
+        Alamofire.request(.GET, SERVER_URL + SYNCHRONIZE , parameters: params).responseJSON(options: nil) {
+            (request, response , object , error) -> Void in
+            
+            print(JSON(object!))
             
             
-            let name:String = String.categoryTestNameAtIndex(index)
-            let color:String = String.categoryColorStringAtIndex(index)
+            self.realmManager.synchronize(JSON(object!))
             
-            let category = Category(entity:categoryED!,insertIntoManagedObjectContext:managedObjectContext!)
-            
-            category.name = name
-            category.color = color
-            category.createdAt = NSDate()
-            
-            
-            createTestTask(category)
-        
         }
         
-        var error: NSError?
-        managedObjectContext?.save(&error)
     }
     
-    func createTestTask(category:Category){
+    
+    
+    func createTestDataRealm(){
         
-        let taskED = NSEntityDescription.entityForName("Task", inManagedObjectContext:managedObjectContext!)
+        for index in 0...9{
+            
+            let category = Category()
+            category.name = String.categoryTestNameAtIndex(index)
+            category.color = String.categoryColorStringAtIndex(index)
+            category.id = NSUUID().UUIDString
+            category.priority = index
+            category.categoryType = "study"
+            
+            realm.write {
+                
+                self.createTask(category)
+                self.realm.add(category)
+            }
+            
+            //createTask(category)
+        }
+    }
+    
+    func createTask(category:Category){
         
-        for index in 0...15 {
+        
+        for index in 0...19{
+            let task = Task()
             
-            let name:String = String.categoryTestNameAtIndex(Int(rand()%20))
-            let color:String = String.categoryColorStringAtIndex(Int(rand()%20))
-            
-            
-            let task = Task(entity:taskED!,insertIntoManagedObjectContext:managedObjectContext!)
-            task.name = name
-            task.createdAt = NSDate()
-            task.priority = NSDate().timeIntervalSince1970 + taskTestCount
+            task.name = String.categoryTestNameAtIndex(Int(rand()%20))
+            task.priority = Int(NSDate().timeIntervalSince1970) + index
             task.unit = "회"
+            task.id = NSUUID().UUIDString
             task.taskType = String.taskTestTaskType(Int(rand()%4))
-            task.startDate = 20140804
-            task.endDate = 2015 * 10000 + Int(rand()%9 + 1) * 100 + Int(rand()%20 + 1)
-            task.categoryId = category
+            task.category = category
             task.amount = Int(rand()%250)
-            createTestWeek(task)
             
-            taskTestCount = taskTestCount + 1
+            
+            category.tasks.append(task)
+            
+            createTaskDate(task)
+            
+            self.realm.add(task)
         }
         
     }
     
-    func createTestWeek(task:Task){
+    func createTaskDate(task:Task){
         
-        let weekED = NSEntityDescription.entityForName("Week", inManagedObjectContext:managedObjectContext!)
         
-        let week = Week(entity:weekED!,insertIntoManagedObjectContext:managedObjectContext!)
+        for index in 0...8 {
+            
+            let taskDate = TaskDate()
+            taskDate.id = NSUUID().UUIDString
+            taskDate.startDate = 20150801
+            taskDate.endDate = 2015 * 10000 + Int(8) * 100 + Int(rand()%13 + 1)
+            taskDate.task = task
+            task.taskDates.append(taskDate)
+            
+            
+            createWeek(taskDate)
+            
+            
+            
+            for var date = taskDate.startDate ; date < taskDate.endDate + 1 ; date++ {
+                
+                let day = Day()
+            
+                day.id = NSUUID().UUIDString
+                day.doneAmount = 0
+                day.doneSecond = 0
+                day.date = date
+                day.expectAmount = Int(rand()%10) + 1
+                day.taskDate = taskDate
+                taskDate.days.append(day)
+                realm.add(day)
+                
+            }
+            
+            
+            self.realm.add(taskDate)
+            
+        }
+    }
+    
+    func createWeek(taskDate:TaskDate){
         
-        week.taskId = task
+        let week = Week()
+        week.id = NSUUID().UUIDString
         week.mon = Int(rand()%10000)
         week.sun = Int(rand()%20000)
         week.wed = Int(rand()%20000)
@@ -302,8 +299,13 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         week.tue = Int(rand()%20000)
         week.sat = Int(rand()%20000)
         week.fri = Int(rand()%10000)
+        week.taskDate = taskDate
+        taskDate.week = week
+        self.realm.add(week)
+        
         
     }
+    
     
     
     func addParallelView(){
@@ -487,6 +489,17 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func setupCoreDataInit(){
         
+        
+        var categoryResults = realm.objects(Category)
+        
+        if categoryResults.count == 0 {
+            
+            //makeDefaultCategory()
+            setupInitValue()
+            
+        }
+        
+        /*
         let entityDescription = NSEntityDescription.entityForName("Category", inManagedObjectContext: managedObjectContext!)
         let request = NSFetchRequest()
         request.entity = entityDescription
@@ -498,30 +511,23 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             makeDefaultCategory()
             setupInitValue()
         }
-        
+        */
         
     }
     
     func makeDefaultCategory(){
         
-        let entityDescription = NSEntityDescription.entityForName("Category", inManagedObjectContext:managedObjectContext!)
-        
-        let category = Category(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
+        let category = Category()
         category.name = "기본"
-        category.createdAt = NSDate()
-        category.color = "#FFFB887E"
-        category.updatedAt = NSDate()
+        category.color = String.categoryColorStringAtIndex(0)
+        category.id = NSUUID().UUIDString
         
-        var error: NSError?
-        managedObjectContext?.save(&error)
-        
-        if let err = error {
-            //에러처리
-        }else{
-            NSLog("Category Default 저장성공",1)
+        realm.write {
+            self.realm.add(category)
         }
         
     }
+    
     
     func setupInitValue(){
         
@@ -530,12 +536,15 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
     }
     
-    func loadDayData(){
+    func loadDayResults(){
         
         
-        dayData.removeAll(keepCapacity: true)
         
         let todayDateNumber = getTodayDateNumber()
+        
+        
+        
+        
         for task in taskData {
             
             let day:Day? = task.getDay(todayDateNumber)
@@ -545,6 +554,44 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             }
         }
         
+    }
+    
+    func loadDayData(){
+        
+        let sortIndex = defaults.integerForKey("sortIndex")
+        
+        var property:String?
+        
+        if sortIndex == 1{
+            
+        }else if sortIndex == 2 {
+            property = "name"
+        }else if sortIndex == 4 {
+            property = "category"
+        }else if sortIndex == 8 {
+            property = "priority"
+        }
+        
+        
+        
+        dayData.removeAll(keepCapacity: true)
+        
+        let todayDateNumber = getTodayDateNumber()
+        let predicate = NSPredicate(format:"archived == false && date == %lu ",todayDateNumber)
+        
+        dayResults = realm.objects(Day).filter(predicate)//.sorted("taskDate.task.name", ascending: true)
+        
+        
+        /*
+        for task in taskData {
+            
+            let day:Day? = task.getDay(todayDateNumber)
+            
+            if let validDay = day {
+                dayData.append(day!)
+            }
+        }
+        */
     }
     
     
@@ -568,45 +615,90 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     
     func loadTaskData(){
+    
+        return
         
-        let entityDescription = NSEntityDescription.entityForName("Task",inManagedObjectContext:managedObjectContext!)
+        taskData.removeAll(keepCapacity: true)
         
         let sortIndex = defaults.integerForKey("sortIndex")
         
-        let request = NSFetchRequest()
-        request.entity = entityDescription
+        var property:String?
         
         if sortIndex == 1{
             
         }else if sortIndex == 2 {
-            request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+            property = "name"
         }else if sortIndex == 4 {
-            request.sortDescriptors = [NSSortDescriptor(key: "categoryId", ascending: true)]
+            property = "category"
         }else if sortIndex == 8 {
-            request.sortDescriptors = [NSSortDescriptor(key: "priority", ascending: true)]
+            property = "priority"
         }
         
-        let predicate = NSPredicate(format: "categoryId.hidden == %@",false)
-        request.predicate = predicate
         
-        var error: NSError?
-        var sortedTasks = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Task]
+        let predicate = NSPredicate(format: "category.hidden == %@",false)
         
-        var todayDateNumber = getTodayDateNumber()
-        taskData = sortedTasks.filter({ (task:Task?) -> Bool in
+        taskResults = realm.objects(Task).filter(predicate)
+        
+        if let property = property {
+            taskResults = taskResults!.sorted(property, ascending: true)
+        }
+        
+        
+        for task in taskResults!{
             
-            if let task = task {
-                if task.endDate >= todayDateNumber {
-                    return true
-                }
+            
+            if let day = task.getTodayDay() {
+                taskData.append(task)
             }
             
-            
-            return false
-        })
+        }
+        
         
     }
     
+    
+    func loadUncompletedTaskData(){
+        
+        return
+        
+        let sortIndex = defaults.integerForKey("sortIndex")
+        
+        var property:String?
+        
+        if sortIndex == 1{
+            
+        }else if sortIndex == 2 {
+            property = "name"
+        }else if sortIndex == 4 {
+            property = "category"
+        }else if sortIndex == 8 {
+            property = "priority"
+        }
+        
+        
+        let predicate = NSPredicate(format: "category.hidden == %@",false)
+        
+        var taskUncompletedResults = realm.objects(Task).filter(predicate)
+        
+        if let property = property {
+            taskUncompletedResults = taskUncompletedResults.sorted(property, ascending: true)
+        }
+        
+        
+        for task in taskUncompletedResults{
+            
+            
+            if let day = task.getTodayDay() {
+                taskUncompletedResultsData.append(task)
+            }
+            
+        }
+
+        
+        
+    }
+    
+    /*
     func loadUncompletedTaskData(){
         let entityDescription = NSEntityDescription.entityForName("Task",inManagedObjectContext:managedObjectContext!)
         
@@ -634,7 +726,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         })
         
     }
-    
+    */
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -650,12 +742,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         self.screenName = "Main Activity"
     
-        if isShowAllCategory == true {
-            updateAllCategory()
-        }else{
-            updateCategory(category,from:"MainVC")
-            self.titleLabel.text = category.name
-        }
+        
         
         addListButton()
         addSettingButton()
@@ -703,6 +790,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     }
     
     func addSettingButton(){
+        
+        if let settingButton = settingButton {
+            return
+        }
+        
         settingButton = UIButton(frame: CGRectMake(258*ratio, 30, 24, 24))
         settingButton.setImage(UIImage(named: "setting@2x.png"), forState: UIControlState.Normal)
         settingButton.addTarget(self, action: Selector("showSetting"), forControlEvents: UIControlEvents.TouchUpInside)
@@ -770,25 +862,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     }
     
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        //let destination = segue.destinationViewController as! NewTaskViewController
-        
-        
-        
-        
-        if segue.identifier == "ShowTimerView" {
-            let timerVC = segue.destinationViewController as! TimerViewController
-            let indexPath:NSIndexPath! = sender as! NSIndexPath
-            
-            let task:Task = taskData[indexPath.row]
-            let day:Day! = task.getDay(getTodayDateNumber())
-            timerVC.task = task
-            timerVC.day = day
-            
-        }
-        
-    }
     
+    /*
     func getDefaultCategory()->Category{
         
         let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
@@ -805,6 +880,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         return category
     }
+    */
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         
@@ -827,13 +903,14 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         }
         
         
-        
-        if taskData.isEmpty && !isDeleteAnimation {
+        if dayResults!.count == 0 && !isDeleteAnimation {
             return 1
         }
         
         
-        return taskData.count
+        
+        return dayResults!.count
+        
     }
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -876,7 +953,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         
         
-        if taskData.isEmpty && !isDeleteAnimation {
+        if dayResults!.count == 0 && !isDeleteAnimation {
             
             let cell = tableView.dequeueReusableCellWithIdentifier("emptyCell", forIndexPath: indexPath) as! UITableViewCell
             
@@ -902,9 +979,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         
         
-        let task:Task! = taskData[indexPath.row]
-        let day:Day? = task.getDay(getTodayDateNumber())
-        
+        //let task:Task = taskData[indexPath.row]
+        let day:Day! = dayResults![indexPath.row]
+        let task:Task! = day!.taskDate?.task!
         
         
         if task.taskType == "Timer" {
@@ -915,6 +992,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             for temp in cell.contentView.subviews{
                 temp.removeFromSuperview()
             }
+            
             cell.delegate = self
             cell.indexPath = indexPath
             cell.percentLayer.strokeEnd = 0
@@ -927,10 +1005,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             if let day = day {
                 
                 cell.titleLabel.text = task.name
-                cell.contentsTextView.setupText(NSTimeInterval(day.doneSecond.integerValue))
-                cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
+                cell.contentsTextView.setupText(NSTimeInterval(day.doneSecond))
+                cell.percentLabel.text = String(format: "%lu%@", Int(Float(day.doneAmount)/Float(day.expectAmount)*100),"%")
                 cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
-                cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
+                cell.percentLayer.strokeEnd = CGFloat(Float(day.doneAmount)/Float(day.expectAmount))
                 cell.percentLabel.textColor = UIColor.todaitRed()
                 
             }
@@ -964,11 +1042,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             if let day = day {
                 
                 //cell.contentsLabel.text = day.getProgressString()
-                cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.doneSecond.integerValue))
-                cell.contentsTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
-                cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
+                cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.doneSecond))
+                cell.contentsTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
+                cell.percentLabel.text = String(format: "%lu%@", Int(Float(day.doneAmount)/Float(day.expectAmount)*100),"%")
                 cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
-                cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
+                cell.percentLayer.strokeEnd = CGFloat(Float(day.doneAmount)/Float(day.expectAmount))
                 cell.percentLabel.textColor = UIColor.todaitRed()
                 //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
                 
@@ -976,7 +1054,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
                 
                 cell.titleLabel.text = task.name + " | "
             }
-
+            
+            
+            
             var line = UIView(frame: CGRectMake(0, 57.5, 320*ratio, 0.5))
             line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
             cell.contentView.addSubview(line)
@@ -992,8 +1072,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func timerButtonClk(indexPath:NSIndexPath) {
         
         let timerVC = TimerViewController()
-        let task = taskData[indexPath.row]
-        let day:Day! = task.getDay(getTodayDateNumber())
+        
+        let day = dayResults![indexPath.row]
+        let task = day.taskDate!.task
+        
+        //let day:Day! = task.getDay(getTodayDateNumber())
         timerVC.task = task
         timerVC.day = day
         self.navigationController?.pushViewController(timerVC, animated: true)
@@ -1015,7 +1098,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         
         
-        if taskData.isEmpty && !isDeleteAnimation && indexPath.section == 1 {
+        if dayResults!.count == 0 && !isDeleteAnimation && indexPath.section == 1 {
             
             return 272*ratio
             
@@ -1053,12 +1136,19 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             
         }else{
             
-            if taskData.isEmpty && !isDeleteAnimation {
+            if dayResults!.count == 0 && !isDeleteAnimation {
                 
             }else{
                 
+                let day = dayResults![indexPath.row]
+                
                 let detailVC = DetailViewController()
-                detailVC.task = taskData[indexPath.row]
+                //detailVC.task = taskData[indexPath.row]
+                detailVC.day = day
+                detailVC.taskDate = day.taskDate
+                detailVC.task = day.taskDate!.task
+                
+                
                 self.navigationController?.pushViewController(detailVC, animated: true)
                 
                 
@@ -1109,7 +1199,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         if indexPath.row == 0 && indexPath.section == 0{
             return false
-        }else if taskData.count == 0 {
+        }else if dayResults!.count == 0 {
             return false
         }
         
@@ -1121,39 +1211,37 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
         
-        let category = taskData[indexPath.row]
-        managedObjectContext?.deleteObject(category)
         
-        var error:NSError?
-        managedObjectContext?.save(&error)
+        let day = dayResults![indexPath.row]
         
-        if error == nil {
-            NSLog("Task 삭제완료",0)
+        
+        realm.write {
             
-            
-            taskData.removeAtIndex(indexPath.row)
-            
-            isDeleteAnimation = true
-            
-            tableView.beginUpdates()
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:UITableViewRowAnimation.Automatic)
-            tableView.endUpdates()
-            
-            isDeleteAnimation = false
-            
-            if taskData.isEmpty {
-                tableView.reloadData()
-            }
-            
-            
-            loadTaskData()
-            loadDayData()
-            updateText()
-            
-        }else {
-            //삭제에러처리
-            
+            day.archived = true
+            self.realm.add(day,update:true)
         }
+        
+        dayResults = dayResults?.filter("archived == false")
+        
+        //taskData.removeAtIndex(indexPath.row)
+        
+        isDeleteAnimation = true
+        
+        tableView.beginUpdates()
+        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:UITableViewRowAnimation.Automatic)
+        tableView.endUpdates()
+        
+        isDeleteAnimation = false
+        
+        if dayResults!.count == 0  {
+            tableView.reloadData()
+        }
+        
+        
+        loadTaskData()
+        loadDayData()
+        updateText()
+        
     }
     
     func max<T : Comparable>(x: T, y:T) ->T{
@@ -1180,19 +1268,25 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func getTotalPercentStringOfToday()->String{
         
-        var completeCount = 0
+        var completeCount:Float = 0.0
         
-        
+        var count:Float = Float(dayResults!.count)
+        /*
         for dayItem in dayData{
             let day:Day! = dayItem
-            completeCount = completeCount + Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100)
+            completeCount = completeCount + Int(day.doneAmount/day.expectAmount)
+        }
+        */
+        
+        for day in dayResults!{
+            completeCount = completeCount + Float(day.doneAmount)/Float(day.expectAmount)
         }
         
-        if dayData.count == 0 {
+        if dayResults!.count == 0 {
             return "0%"
         }
         
-        return "\(completeCount/dayData.count)%"
+        return String(format:"%.0f",(completeCount/count)*100) + "%"
     }
     
     override func didReceiveMemoryWarning() {
