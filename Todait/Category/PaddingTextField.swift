@@ -10,18 +10,19 @@ import UIKit
 
 class PaddingTextField: UITextField {
     
+    var padding:CGFloat! = 0
     
     override func textRectForBounds(bounds: CGRect) -> CGRect {
         
         var paddingFrame = bounds
-        paddingFrame.origin.x = paddingFrame.origin.x + 30
+        paddingFrame.origin.x = paddingFrame.origin.x + self.padding
         
         return paddingFrame
     }
     
     override func editingRectForBounds(bounds: CGRect) -> CGRect {
         var paddingFrame = bounds
-        paddingFrame.origin.x = paddingFrame.origin.x + 30
+        paddingFrame.origin.x = paddingFrame.origin.x + self.padding
         
         return paddingFrame
     }

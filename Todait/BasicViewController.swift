@@ -23,8 +23,7 @@ class BasicViewController: GAITrackedViewController,UIGestureRecognizerDelegate 
         super.viewDidLoad()
         
         setupScreen()
-        
-        
+    
     }
     
     func setupScreen(){

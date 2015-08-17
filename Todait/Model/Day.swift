@@ -2,48 +2,50 @@
 //  Day.swift
 //  Todait
 //
-//  Created by CruzDiary on 2015. 6. 9..
+//  Created by CruzDiary on 2015. 7. 23..
 //  Copyright (c) 2015년 GpleLab. All rights reserved.
 //
 
 import Foundation
 import CoreData
-import UIKit
 
 class Day: NSManagedObject {
 
-    @NSManaged var archived_at: NSDate
-    @NSManaged var created_at: NSDate
     @NSManaged var date: NSNumber
-    @NSManaged var day_of_week: NSNumber
-    @NSManaged var dirty_flag: NSNumber
-    @NSManaged var done_amount: NSNumber
-    @NSManaged var done_second: NSNumber
-    @NSManaged var expect_amount: NSNumber
-    @NSManaged var server_id: NSNumber
-    @NSManaged var server_task_id: NSNumber
-    @NSManaged var updated_at: NSDate
-    @NSManaged var task_id: Task
+    @NSManaged var dayOfWeek: NSNumber
+    @NSManaged var doneAmount: NSNumber
+    @NSManaged var doneSecond: NSNumber
+    @NSManaged var expectAmount: NSNumber
+    @NSManaged var score: NSNumber
+    @NSManaged var localId: NSNumber
+    @NSManaged var off: NSNumber
+    @NSManaged var done: NSNumber
+    @NSManaged var createdAt: NSDate
+    @NSManaged var amountLogList: NSOrderedSet
     @NSManaged var diaryList: NSOrderedSet
+    @NSManaged var taskId: Task
     @NSManaged var timeHistoryList: NSOrderedSet
     @NSManaged var timeLogList: NSOrderedSet
-    @NSManaged var amountLogList: NSOrderedSet
+    @NSManaged var checkLogList: NSSet
+    @NSManaged var amountRangeList: NSSet
+    @NSManaged var reviewDayList: ReviewDay
+
     
     let defaults:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
     
     func getColor()->UIColor{
-        return task_id.getColor()
+        return taskId.getColor()
     }
     
     
     func getProgressPercent()->NSNumber{
-        return done_amount.floatValue/expect_amount.floatValue
+        return doneAmount.floatValue/expectAmount.floatValue
     }
     
     func getProgressString()->String{
-        return "\(done_amount) / \(expect_amount) \(task_id.unit)"
+        return "\(doneAmount) / \(expectAmount) \(taskId.unit)"
     }
-        
+    
     func getAmountLogValuePerTime()->[NSNumber]{
         
         var amounts:[NSNumber] = []
@@ -54,7 +56,7 @@ class Day: NSManagedObject {
         
         
         
-        let startComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitDay, fromDate: created_at)
+        let startComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitDay, fromDate: createdAt)
         startComp.hour = self.defaults.integerForKey("finishHourOfDay")
         startComp.minute = self.defaults.integerForKey("finishMinuteOfDay") + 5
         
@@ -64,7 +66,7 @@ class Day: NSManagedObject {
             
             
             let amountLog:AmountLog = log as! AmountLog
-            let date:NSDate! = log.created_at
+            let date:NSDate! = log.createdAt
             let diff = date.timeIntervalSinceDate(dayStartDate)
             var index = Int(diff / (30*60))
             

@@ -24,6 +24,7 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
     private var newTaskButton:MainTabbarButton!
     private var statisticsButton:MainTabbarButton!
     private var profileButton:MainTabbarButton!
+  
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
@@ -61,6 +62,7 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
         setupStatisticsViewController()
         setupProfileViewController()
         
+        setupLoginViewController()
         
         
         let vc = viewControllers[0]
@@ -72,22 +74,37 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
     func setupMainViewController(){
         
         var mainVC = self.storyboard?.instantiateViewControllerWithIdentifier("mainVC") as! MainViewController
-        
         addChildViewController(mainVC)
-        
         viewControllers.append(mainVC)
     }
     
     func setupTimeTableViewController(){
-        viewControllers.append(TimeTableViewController())
+        let timeTableVC = TimeTableViewController()
+        addChildViewController(timeTableVC)
+        viewControllers.append(timeTableVC)
+        
     }
     
     func setupStatisticsViewController(){
-        viewControllers.append(StatisticsViewController())
+        
+        let statisticsVC = StatisticsViewController()
+        addChildViewController(statisticsVC)
+        viewControllers.append(statisticsVC)
+        
     }
     
     func setupProfileViewController(){
-        viewControllers.append(ProfileViewController())
+        
+        let profileVC = ProfileViewController()
+        addChildViewController(profileVC)
+        //viewControllers.append(profileVC)
+    }
+    
+    func setupLoginViewController(){
+        
+        let loginVC = LoginViewController()
+        addChildViewController(loginVC)
+        viewControllers.append(loginVC)
     }
     
     func addTabbarView(){
@@ -114,7 +131,7 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
         mainButton.normalImage = UIImage.maskColor("01_main_basic_gray@3x_03.png", color: UIColor.todaitDarkGray())
         mainButton.highlightImage = UIImage.maskColor("01_main_basic_gray@3x_03.png", color: UIColor.whiteColor())
         
-        mainButton.buttonLabel.text = "메인"
+        mainButton.buttonLabel.text = getMainString()
         mainButton.setupSelected(true)
         
         mainButton.addTarget(self, action: Selector("tabbarClk:"), forControlEvents: UIControlEvents.TouchDown)
@@ -130,7 +147,8 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
         timeTableButton.normalImage = UIImage.maskColor("01_main_basic_gray@3x_05.png", color: UIColor.todaitDarkGray())
         timeTableButton.highlightImage = UIImage.maskColor("01_main_basic_gray@3x_05.png", color: UIColor.whiteColor())
         timeTableButton.setupSelected(false)
-        timeTableButton.buttonLabel.text = "시간표"
+        timeTableButton.buttonLabel.text = getTimeTableString()
+        timeTableButton.buttonLabel.adjustsFontSizeToFitWidth = true
         timeTableButton.addTarget(self, action: Selector("tabbarClk:"), forControlEvents: UIControlEvents.TouchDown)
         
         tabbarView.addSubview(timeTableButton)
@@ -140,7 +158,7 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
     func addNewTaskButton(){
         newTaskButton = MainTabbarButton(frame: CGRectMake(tabbarWidth*2, 0, tabbarWidth, 49*ratio))
         
-        newTaskButton.iconImageView.frame = CGRectMake((tabbarWidth-29*ratio)/2, 10*ratio, 29*ratio, 29*ratio)
+        newTaskButton.iconImageView.frame = CGRectMake((tabbarWidth-35*ratio)/2, 7*ratio, 35*ratio, 35*ratio)
         newTaskButton.iconImageView.image = UIImage(named: "01_main_basic_gray@3x_12.png")
         newTaskButton.addTarget(self, action: Selector("showNewTaskVC"), forControlEvents: UIControlEvents.TouchUpInside)
         
@@ -201,7 +219,7 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
         statisticsButton.normalImage = UIImage.maskColor("01_main_basic_gray@3x_07.png", color: UIColor.todaitDarkGray())
         statisticsButton.highlightImage = UIImage.maskColor("01_main_basic_gray@3x_07.png", color: UIColor.whiteColor())
         statisticsButton.setupSelected(false)
-        statisticsButton.buttonLabel.text = "통계"
+        statisticsButton.buttonLabel.text = getStatisticsString()
         statisticsButton.addTarget(self, action: Selector("tabbarClk:"), forControlEvents: UIControlEvents.TouchDown)
         
         tabbarView.addSubview(statisticsButton)
@@ -215,7 +233,7 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
         profileButton.highlightImage = UIImage.maskColor("01_main_basic_gray@3x_09.png", color: UIColor.whiteColor())
         profileButton.setupSelected(false)
         
-        profileButton.buttonLabel.text = "마이페이지"
+        profileButton.buttonLabel.text = getProfileString()
         profileButton.addTarget(self, action: Selector("tabbarClk:"), forControlEvents: UIControlEvents.TouchDown)
         
         tabbarView.addSubview(profileButton)
@@ -260,6 +278,10 @@ class MainTabbarViewController: BasicViewController,UITabBarDelegate{
         super.viewWillAppear(animated)
         todaitNavBar.hidden = true
         titleLabel.hidden = true
+        
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
         
     }
     

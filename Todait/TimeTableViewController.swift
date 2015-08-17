@@ -9,19 +9,19 @@
 import UIKit
 import CoreData
 
-class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,CalendarDelegate,UIScrollViewDelegate,UIGestureRecognizerDelegate{
+class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,CalendarDelegate,UIScrollViewDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource{
 
     
     var headerView:UIView!
     var dateLabel:UILabel!
     
     var weekCalendarVC:WeekCalendarViewController!
-    var monthCalendarVC:MonthCalendarViewController2!
-    
+    var monthCalendarVC:MonthCalendarViewController!
     
     
     var timeTableView: UIScrollView!
     
+    var categoryView: UITableView!
     
     let TimeTableHeight:CGFloat = 40
     
@@ -31,7 +31,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var timeHistoryList:[TimeHistory] = []
-    
+    var hourTexts:[String] = []
     
     var selectedDateNumber:NSNumber!
     var selectedWeekOfMonth:CGFloat! = 2
@@ -39,12 +39,18 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     var panStart:CGPoint!
     var panEnd:CGPoint!
     
-
+    var isLongPressed:Bool! = false
+    
+    
+    var shadowView:UIView!
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         selectedDateNumber = getDateNumberFromDate(NSDate())
+        
+        setupHourTexts()
         
         addMonthView()
         addWeekView()
@@ -57,15 +63,34 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         loadTimeHistory()
         
         
-        addExampleHistoryView(CGRectMake(HistoryViewOriginX*ratio,150,200,60), color: UIColor.todaitRed())
-        addExampleHistoryView(CGRectMake(HistoryViewOriginX*ratio,250,200,120), color: UIColor.todaitGreen())
+        addExampleHistoryView(CGRectMake(HistoryViewOriginX*ratio,150,220*ratio,60*ratio), color: UIColor.todaitRed())
+        addExampleHistoryView(CGRectMake(HistoryViewOriginX*ratio,250,220*ratio,120*ratio), color: UIColor.todaitGreen())
+        addExampleHistoryView(CGRectMake(HistoryViewOriginX*ratio,400,220*ratio,70*ratio), color: UIColor.todaitOrange())
+        addExampleHistoryView(CGRectMake(HistoryViewOriginX*ratio,500,220*ratio,70*ratio), color: UIColor.todaitBlue())
+        
+        addCategoryView()
+        addShadowView()
+    }
+    
+    func setupHourTexts(){
+        
+        for var index = 0 ; index < 24 ; index++ {
+            
+            let hour = (index+11)%12 + 1
+            
+            if index < 12 {
+                hourTexts.append("\(hour)"+" "+"AM")
+            }else{
+                hourTexts.append("\(hour)"+" "+"PM")
+            }
+        }
         
     }
     
     func addHeaderView(){
         
-        headerView = UIView(frame: CGRectMake(0, 64, width, 43*ratio))
-        headerView.backgroundColor = UIColor.colorWithHexString("FEFEFE")
+        headerView = UIView(frame: CGRectMake(0, 64, width, 23*ratio))
+        headerView.backgroundColor = UIColor.todaitBackgroundGray()
         view.addSubview(headerView)
         
         dateLabel = UILabel(frame: CGRectMake(15*ratio, 0, 290*ratio, 23*ratio))
@@ -83,6 +108,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         
         for index in 0...6 {
             let weekDayLabel = UILabel(frame: CGRectMake(CGFloat(index)*weekWidth, 23*ratio, weekWidth, 20*ratio))
+            weekDayLabel.backgroundColor = UIColor.whiteColor()
             weekDayLabel.textAlignment = NSTextAlignment.Center
             weekDayLabel.text = weekTitle[index]
             weekDayLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 7.5*ratio)
@@ -91,6 +117,8 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
             
             if index == 0 {
                 weekDayLabel.textColor = UIColor.todaitRed()
+            }else if index == 6 {
+                weekDayLabel.textColor = UIColor.todaitBlue()
             }
             
         }
@@ -126,7 +154,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         
         
         
-        monthCalendarVC = MonthCalendarViewController2()
+        monthCalendarVC = MonthCalendarViewController()
         
         monthCalendarVC.delegate = self
         monthCalendarVC.view.backgroundColor = UIColor.whiteColor()
@@ -184,25 +212,17 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     
     func panGesture(gesture:UIPanGestureRecognizer){
         
-        /*
-        if gesture.view == timeTableView {
-         
-            NSLog("time gesture")
-            var velocity = gesture.velocityInView(self.view)
-            
-            if timeTableView.contentOffset.y < 0 && velocity.y > 0 {
-                scrollCalendar(gesture)
-            }
-            
-            return
-        }
-        */
-        
         scrollCalendar(gesture)
         
     }
     
     func scrollCalendar(gesture:UIPanGestureRecognizer){
+        
+        NSLog("pan %f",gesture.velocityInView(self.view).y)
+        
+        var velocity:CGPoint = gesture.velocityInView(self.view)
+        
+        
         switch gesture.state {
         case UIGestureRecognizerState.Began:
             weekCalendarVC.view.hidden = true
@@ -212,15 +232,18 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
             gestureMoved()
             panStart = gesture.locationInView(self.view)
         case UIGestureRecognizerState.Ended:
-            gestureEnded()
+            gestureEnded(gesture)
         case UIGestureRecognizerState.Cancelled:
-            gestureEnded()
+            gestureEnded(gesture)
         default: break
             
         }
     }
     
     func gestureMoved(){
+        
+        
+        
         
         var diff = panStart.y - panEnd.y
         
@@ -247,6 +270,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         if monthY - calendarDiff < minOriginY {
             //NSLog("최대 올라감C %f", monthY - calendarDiff)
             monthCalendarVC.view.frame = CGRectMake(monthX,baseOriginY,monthW,monthH)
+            
         }else if(monthY - calendarDiff >= minOriginY && monthY - calendarDiff <= baseOriginY) {
             //NSLog("중간C %f",monthY - calendarDiff)
              monthCalendarVC.view.frame = CGRectMake(monthX,monthY - calendarDiff, monthW, monthH)
@@ -260,31 +284,49 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         
         if timeTableView.frame.origin.y - timeTableDiff < baseOriginY + 48*ratio {
             //NSLog("최대 올라감 %f", timeTableView.frame.origin.y - timeTableDiff)
+            
+            shadowView.frame = CGRectMake(0, baseOriginY + 48*ratio - 2.5*ratio, width,5*ratio)
             timeTableView.frame = CGRectMake(0, baseOriginY + 48*ratio, 245*ratio, timeTableView.frame.size.height)
+            categoryView.frame = CGRectMake(245*ratio, baseOriginY + 48*ratio, 75*ratio, timeTableView.frame.size.height)
             monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-48*self.ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, 48*6*self.ratio)
         }else if(timeTableView.frame.origin.y - timeTableDiff >= baseOriginY + 48*ratio && timeTableView.frame.origin.y - timeTableDiff <= baseOriginY + 48*6*ratio) {
             
+            shadowView.frame = CGRectMake(0, timeTableView.frame.origin.y - timeTableDiff - 2.5*ratio, width,5*ratio)
             //NSLog("중간 %f",timeTableView.frame.origin.y - timeTableDiff)
             timeTableView.frame = CGRectMake(0, timeTableView.frame.origin.y - timeTableDiff, 245*ratio, timeTableView.frame.size.height)
-            
+             categoryView.frame = CGRectMake(245*ratio, timeTableView.frame.origin.y - timeTableDiff, 75*ratio, timeTableView.frame.size.height)
         }else {
             
             //NSLog("최대내려감 %f",timeTableView.frame.origin.y - timeTableDiff)
+            
+            shadowView.frame = CGRectMake(0, baseOriginY + 48*6*ratio - 2.5*ratio, width,5*ratio)
             timeTableView.frame = CGRectMake(0, baseOriginY + 48*6*ratio, 245*ratio, timeTableView.frame.size.height)
+            
+            categoryView.frame = CGRectMake(245*ratio, baseOriginY + 48*6*ratio, 75*ratio, timeTableView.frame.size.height)
         }
         
         
     }
     
-    func gestureEnded(){
+    func gestureEnded(gesture:UIPanGestureRecognizer){
         
         let baseOriginY = 64 + 43*ratio
+        
+        /*
+        var velocity = gesture.velocityInView(self.view)
+        var slideFactor = velocity.y/1500
+        var timeY = self.timeTableView.frame.origin.y + velocity.y*slideFactor
+        timeY = min(max(timeY,baseOriginY + 48*ratio),baseOriginY + 48*6*ratio)
+        */
         
         if timeTableView.frame.origin.y >= 250*ratio {
             
             UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
+                self.categoryView.frame = CGRectMake(245*self.ratio, baseOriginY + 48*6*self.ratio, 75*self.ratio, self.timeTableView.frame.size.height)
                 self.timeTableView.frame = CGRectMake(0, baseOriginY + 48*6*self.ratio, 245*self.ratio, self.timeTableView.frame.size.height)
                 self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY, 320*self.ratio, 48*6*self.ratio)
+                
+                self.shadowView.frame = CGRectMake(0, baseOriginY + 48*6*self.ratio - 2.5*self.ratio, self.width,5*self.ratio)
                 
             }, completion: { (Bool) -> Void in
                 self.timeTableView.scrollEnabled = true
@@ -294,6 +336,11 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
             UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
                 self.timeTableView.frame = CGRectMake(0, baseOriginY + 48*self.ratio, 245*self.ratio, self.timeTableView.frame.size.height)
                 self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-48*self.ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, 48*6*self.ratio)
+                
+                self.categoryView.frame = CGRectMake(245*self.ratio, baseOriginY + 48*self.ratio, 75*self.ratio, self.timeTableView.frame.size.height)
+                
+                self.shadowView.frame = CGRectMake(0, baseOriginY + 48*self.ratio - 2.5*self.ratio, self.width,5*self.ratio)
+                
                 }, completion: { (Bool) -> Void in
                     self.timeTableView.scrollEnabled = true
                     self.weekCalendarVC.view.hidden = false
@@ -365,28 +412,133 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         panGesture.addTarget(self, action: Selector("panGesture:"))
         panGesture.delegate = self
         timeTableView.addGestureRecognizer(panGesture)
+        
+
     }
+    
+    func addCategoryView(){
+        
+        var originY:CGFloat = 64 + 43*ratio + 48*ratio
+        
+        categoryView = UITableView(frame: CGRectMake(245*ratio, originY, 75*ratio, height-originY), style: UITableViewStyle.Plain)
+        categoryView.contentSize = CGSizeMake(245*ratio,27*TimeTableHeight*ratio)
+        categoryView.backgroundColor = UIColor.todaitBackgroundGray()
+        categoryView.delegate = self
+        categoryView.dataSource = self
+        categoryView.registerClass(TimeTableCategoryCell.self, forCellReuseIdentifier: "categoryCell")
+        categoryView.separatorStyle = UITableViewCellSeparatorStyle.None
+        categoryView.layer.shadowOffset = CGSizeMake(0, 0.5*ratio)
+        categoryView.layer.shadowColor = UIColor.blackColor().CGColor
+        categoryView.layer.shadowRadius = 2
+        categoryView.layer.shadowOpacity = 1
+        view.addSubview(categoryView)
+        
+        
+        var panGesture = UIPanGestureRecognizer()
+        panGesture.addTarget(self, action: Selector("panGesture:"))
+        panGesture.delegate = self
+        categoryView.addGestureRecognizer(panGesture)
+        
+        
+    }
+    
+    func addShadowView(){
+        
+        var shadowLayer:CAGradientLayer!
+        
+        shadowLayer = CAGradientLayer()
+        shadowLayer.frame = CGRectMake(0, 2.5*ratio, width, 2.5*ratio)
+        shadowLayer.startPoint = CGPointMake(0.5, 1.0)
+        shadowLayer.endPoint = CGPointMake(0.5, 0)
+        shadowLayer.colors = [UIColor.clearColor().CGColor,UIColor.blackColor().colorWithAlphaComponent(0.25).CGColor]
+        shadowLayer.locations = [NSNumber(float: 0.5),NSNumber(float: 1.0)]
+        view.layer.addSublayer(shadowLayer)
+        
+        shadowView = UIView(frame: CGRectMake(0, timeTableView.frame.origin.y - 2.5*ratio, width, 5*ratio))
+        shadowView.layer.addSublayer(shadowLayer)
+        view.addSubview(shadowView)
+    }
+    
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCellWithIdentifier("categoryCell", forIndexPath: indexPath) as! TimeTableCategoryCell
+        
+        cell.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.5)
+        
+        for temp in cell.contentView.subviews {
+            
+            temp.removeFromSuperview()
+            
+        }
+        
+        
+        let line = UIView(frame: CGRectMake(0, 49.5, 75*ratio, 0.5*ratio))
+        line.backgroundColor = UIColor.todaitLightGray()
+        cell.contentView.addSubview(line)
+        
+        return cell
+        
+    }
+    /*
+    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+        
+        return false
+    }
+    */
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as! TimeTableCategoryCell
+        
+        cell.highlighted = false
+        cell.selected = false
+        
+    }
+    
+    
+    func tableView(tableView: UITableView, didDeselectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        let cell = tableView.cellForRowAtIndexPath(indexPath) as! TimeTableCategoryCell
+        
+        cell.highlighted = false
+        cell.selected = false
+        
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 50
+    }
+    
+    func tableView(tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0
+    }
+    
     
     func addTimeTableSubViews(){
         
-        let dateForm = NSDateFormatter()
-        dateForm.dateFormat = "a H"
-        
-        let timeComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour, fromDate:NSDate())
-        
-        for i in 1...25 {
+        for i in 0...23 {
             
-            timeComp.hour = i-1
-            
-            let timeLabel = UILabel(frame: CGRectMake(9*ratio,-20*ratio+TimeTableHeight * CGFloat(i)*ratio,50*ratio,12*ratio))
-            timeLabel.text = dateForm.stringFromDate(NSCalendar.currentCalendar().dateFromComponents(timeComp)!)
+            let timeLabel = UILabel(frame: CGRectMake(9*ratio,+20*ratio+TimeTableHeight * CGFloat(i)*ratio,50*ratio,12*ratio))
+            timeLabel.text = hourTexts[i]
             timeLabel.textAlignment = NSTextAlignment.Left
             timeLabel.textColor = UIColor.todaitDarkGray()
             timeLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 7.5*ratio)
+            
             timeTableView.addSubview(timeLabel)
             
             
-            let timeLineView = UIView(frame: CGRectMake(50*ratio,-15*ratio+TimeTableHeight * CGFloat(i)*ratio, 160*ratio, 1*ratio))
+            let timeLineView = UIView(frame: CGRectMake(50*ratio,25*ratio+TimeTableHeight * CGFloat(i)*ratio, 160*ratio, 1*ratio))
             timeLineView.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
             timeTableView.addSubview(timeLineView)
         }
@@ -395,18 +547,37 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     
     
     
-    
-    
-    
-    
     func addGesture(){
         
-        let longGesture = UILongPressGestureRecognizer(target:self,action:"longPress")
+        let longGesture = UILongPressGestureRecognizer(target:self,action:"longPress:")
         timeTableView.addGestureRecognizer(longGesture)
     }
     
-    func longPress(){
-        NSLog("longPress",0)
+    func longPress(gesture:UILongPressGestureRecognizer){
+        
+        
+        if gesture.state == UIGestureRecognizerState.Began {
+        
+            isLongPressed = true
+            var pressedPoint:CGPoint = gesture.locationInView(timeTableView)
+            let pressedHour = getHourAtPoint(pressedPoint.y)
+            
+            addExampleHistoryView(CGRectMake(HistoryViewOriginX*ratio,pressedPoint.y,220*ratio,60*ratio), color: UIColor.todaitPurple())
+        
+        }else if gesture.state == UIGestureRecognizerState.Ended || gesture.state ==
+            
+            UIGestureRecognizerState.Failed {
+                
+            isLongPressed = false
+                
+        }
+        
+    }
+    
+    func getHourAtPoint(point:CGFloat)->NSTimeInterval {
+        
+        return NSTimeInterval((point - 20*ratio) * 1.5 * 60)
+        
     }
     
     
@@ -426,21 +597,24 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     func addExampleHistoryView(frame:CGRect,color:UIColor){
         
         
-        
+        /*
         let historyView = UIView(frame:frame)
         historyView.backgroundColor = color.colorWithAlphaComponent(0.05)
-        //historyView.alpha = 0.5
-        historyView.layer.cornerRadius = 4*ratio
-        historyView.clipsToBounds = true
         
         
         
         
-        let colorBox = UIView(frame:CGRectMake(0,0,6*ratio,height))
+        let colorBox = UIView(frame:CGRectMake(0,0,6*ratio,frame.size.height))
         colorBox.backgroundColor = color
         historyView.addSubview(colorBox)
         
         timeTableView.addSubview(historyView)
+        */
+        
+        var timeTile = TimeTileView(frame: frame)
+        timeTile.setupColor(color)
+        timeTableView.addSubview(timeTile)
+        
     }
 
     func addHistoryView(){
@@ -477,7 +651,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     
     func getHistoryOriginY(history:TimeHistory)->CGFloat{
         
-        let dateComps = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute|NSCalendarUnit.CalendarUnitSecond, fromDate:history.started_at)
+        let dateComps = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute|NSCalendarUnit.CalendarUnitSecond, fromDate:history.startedAt)
         
         
         return getHeightFromComps(dateComps)
@@ -556,8 +730,6 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         
         self.screenName = "TimeTable Activity"
     }
-    
-    
     
     
     override func viewWillDisappear(animated: Bool) {

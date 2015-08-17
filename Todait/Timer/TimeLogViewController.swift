@@ -15,8 +15,7 @@ protocol TimeLogDelegate : NSObjectProtocol {
 class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPickerViewDelegate{
     
     var filterView:UIImageView!
-    var resetView:UIView!
-    var resetButton:UIButton!
+    var backgroundView:UIView!
     var confirmButton:UIButton!
     var delegate:TimeLogDelegate!
     
@@ -29,7 +28,7 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
         super.viewDidLoad()
         
         addFilterView()
-        addResetView()
+        addbackgroundView()
         addInfoView()
         addconfirmButton()
         
@@ -46,11 +45,11 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
         
     }
     
-    func addResetView(){
+    func addbackgroundView(){
         
-        resetView = UIView(frame: CGRectMake(13.5*ratio, height, 294*ratio,275*ratio))
-        resetView.backgroundColor = UIColor.clearColor()
-        view.addSubview(resetView)
+        backgroundView = UIView(frame: CGRectMake(13.5*ratio, height, 294*ratio,275*ratio))
+        backgroundView.backgroundColor = UIColor.clearColor()
+        view.addSubview(backgroundView)
         
         
     }
@@ -59,19 +58,19 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
         
         let grayView = UIView(frame: CGRectMake(0, 0, 294*ratio,33*ratio))
         grayView.backgroundColor = UIColor.colorWithHexString("#949494")
-        resetView.addSubview(grayView)
+        backgroundView.addSubview(grayView)
         
         let infoLabel = UILabel(frame: CGRectMake(13*ratio, 0, 200*ratio, 33*ratio))
         infoLabel.textAlignment = NSTextAlignment.Left
         infoLabel.textColor = UIColor.whiteColor()
         infoLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 12.5*ratio)
         infoLabel.text = "공부한 시간을 입력해주세요"
-        resetView.addSubview(infoLabel)
+        backgroundView.addSubview(infoLabel)
         
         
         let whiteView = UIView(frame: CGRectMake(0, 33*ratio, 294*ratio, 191*ratio))
         whiteView.backgroundColor = UIColor.whiteColor()
-        resetView.addSubview(whiteView)
+        backgroundView.addSubview(whiteView)
         
     }
     
@@ -79,7 +78,7 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
     func closeButtonClk(){
         
         UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-            self.resetView.transform = CGAffineTransformMakeTranslation(0, 0)
+            self.backgroundView.transform = CGAffineTransformMakeTranslation(0, 0)
             }, completion: { (Bool) -> Void in
                 
                 self.dismissViewControllerAnimated(false, completion: { () -> Void in
@@ -89,9 +88,6 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
     }
     
     
-    func resetButtonClk(){
-        
-    }
     
     func getTimeLog()->NSTimeInterval{
         
@@ -110,7 +106,7 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
         confirmButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(), frame: CGRectMake(0, 0, 294*ratio, 43*ratio)), forState: UIControlState.Normal)
         confirmButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo", size: 15*ratio)
         confirmButton.addTarget(self, action: Selector("confirmButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        resetView.addSubview(confirmButton)
+        backgroundView.addSubview(confirmButton)
     }
     
     func confirmButtonClk(){
@@ -129,37 +125,37 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
         
         hourPicker = UIPickerView(frame: CGRectMake(22.5*ratio, 33*ratio, 62*ratio, 160*ratio))
         hourPicker.delegate = self
-        resetView.addSubview(hourPicker)
+        backgroundView.addSubview(hourPicker)
         
         let hourLabel = UILabel(frame: CGRectMake(22.5*ratio, 195*ratio, 62*ratio, 12*ratio))
         hourLabel.text = "시간"
         hourLabel.textColor = UIColor.todaitGray()
         hourLabel.textAlignment = NSTextAlignment.Center
         hourLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
-        resetView.addSubview(hourLabel)
+        backgroundView.addSubview(hourLabel)
         
         minutePicker = UIPickerView(frame:CGRectMake(115*ratio, 33*ratio, 62*ratio, 160*ratio))
         minutePicker.delegate = self
-        resetView.addSubview(minutePicker)
+        backgroundView.addSubview(minutePicker)
         
         let minuteLabel = UILabel(frame: CGRectMake(115*ratio, 195*ratio, 62*ratio, 12*ratio))
         minuteLabel.text = "분"
         minuteLabel.textAlignment = NSTextAlignment.Center
         minuteLabel.textColor = UIColor.todaitGray()
         minuteLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
-        resetView.addSubview(minuteLabel)
+        backgroundView.addSubview(minuteLabel)
         
         
         secondPicker = UIPickerView(frame:CGRectMake(207*ratio, 33*ratio, 62*ratio, 160*ratio))
         secondPicker.delegate = self
-        resetView.addSubview(secondPicker)
+        backgroundView.addSubview(secondPicker)
         
         let secondLabel = UILabel(frame: CGRectMake(207*ratio, 195*ratio, 62*ratio, 12*ratio))
         secondLabel.text = "초"
         secondLabel.textAlignment = NSTextAlignment.Center
         secondLabel.textColor = UIColor.todaitGray()
         secondLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 10*ratio)
-        resetView.addSubview(secondLabel)
+        backgroundView.addSubview(secondLabel)
         
         
         
@@ -217,7 +213,7 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
         todaitNavBar.hidden = true
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut , animations: { () -> Void in
-            self.resetView.transform = CGAffineTransformMakeTranslation(0, -275*self.ratio)
+            self.backgroundView.transform = CGAffineTransformMakeTranslation(0, -275*self.ratio)
             
             }) { (Bool) -> Void in
                 

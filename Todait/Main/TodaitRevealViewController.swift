@@ -16,7 +16,7 @@ class TodaitRevealViewController: SWRevealViewController {
         super.viewDidLoad()
         setupRatio()
         
-        rearViewRevealWidth = 77*ratio
+        rearViewRevealWidth = 100*ratio
         rearViewRevealOverdraw = 30*ratio
         bounceBackOnOverdraw = false
         bounceBackOnLeftOverdraw = true

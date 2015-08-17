@@ -2,44 +2,49 @@
 //  Task.swift
 //  Todait
 //
-//  Created by CruzDiary on 2015. 6. 9..
+//  Created by CruzDiary on 2015. 7. 23..
 //  Copyright (c) 2015년 GpleLab. All rights reserved.
 //
 
 import Foundation
 import CoreData
-import UIKit
 
 class Task: NSManagedObject {
 
     @NSManaged var amount: NSNumber
-    @NSManaged var amount_type: NSNumber
-    @NSManaged var archived_at: NSDate
-    @NSManaged var created_at: NSDate
-    @NSManaged var dirty_flag: NSNumber
-    @NSManaged var end_date: NSNumber
-    @NSManaged var image_names: String
-    @NSManaged var last_update_date: NSNumber
+    @NSManaged var taskType: String
+    @NSManaged var dirtyFlag: NSNumber
+    @NSManaged var endDate: NSNumber
+    @NSManaged var imageNames: String
+    @NSManaged var lastUpdateDate: NSNumber
     @NSManaged var name: String
-    @NSManaged var notification_mode: String
-    @NSManaged var notification_time: String
-    @NSManaged var server_category_id: NSNumber
-    @NSManaged var server_id: NSNumber
-    @NSManaged var start_date: NSNumber
-    @NSManaged var start_point: NSNumber
+    @NSManaged var notificationMode: NSNumber
+    @NSManaged var notificationTime: String
+    @NSManaged var serverCategoryId: NSNumber
+    @NSManaged var serverId: NSNumber
+    @NSManaged var startDate: NSNumber
+    @NSManaged var startPoint: NSNumber
     @NSManaged var unit: String
-    @NSManaged var updated_at: NSDate
-    @NSManaged var category_id: Category
-    @NSManaged var dayList: NSOrderedSet
+    @NSManaged var localId: String
+    @NSManaged var reviewType: String
+    @NSManaged var createdAt: NSDate
+    @NSManaged var reviewCount: NSNumber
+    @NSManaged var completed: NSNumber
+    @NSManaged var repeatCount: NSNumber
+    @NSManaged var priority: NSNumber
+    @NSManaged var categoryId: Category
+    //@NSManaged var taskDateList: NSOrderedSet
+    @NSManaged var imageDataList: NSSet
+    
     @NSManaged var week:Week
-
+    @NSManaged var dayList: NSOrderedSet
     
     let context = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     let defaults:NSUserDefaults! = NSUserDefaults.standardUserDefaults()
     
     
     func getTrendData()->[[String:AnyObject]]{
-    
+        
         var datas:[[String:AnyObject]] = []
         
         var timeData:[String:AnyObject] = [:]
@@ -54,8 +59,8 @@ class Task: NSManagedObject {
         for dayItem in dayList {
             var day = dayItem as! Day
             
-            var expectAmount = CGFloat(day.expect_amount.floatValue)
-            var doneAmount = CGFloat(day.done_amount.floatValue)
+            var expectAmount = CGFloat(day.expectAmount.floatValue)
+            var doneAmount = CGFloat(day.doneAmount.floatValue)
             
             var amountPercent:CGFloat = 0
             if expectAmount != 0 {
@@ -66,8 +71,8 @@ class Task: NSManagedObject {
             
             
             
-            var expectTime = CGFloat(expectedTimes[Int(day.day_of_week)])
-            var doneTime = CGFloat(day.done_second.floatValue)
+            var expectTime = CGFloat(expectedTimes[Int(day.dayOfWeek)])
+            var doneTime = CGFloat(day.doneSecond.floatValue)
             var timePercent:CGFloat = 0
             
             if expectTime != 0{
@@ -107,6 +112,7 @@ class Task: NSManagedObject {
     
     
     
+    
     func getWeekTimeProgressData(date:NSDate)->[[String:NSNumber]]{
         
         var datas:[[String:NSNumber]] = []
@@ -124,11 +130,11 @@ class Task: NSManagedObject {
             
             if let check = day {
                 
-                var dayOfWeekIndex:Int = Int(day!.day_of_week)
+                var dayOfWeekIndex:Int = Int(day!.dayOfWeek)
                 
                 var data:[String:NSNumber] = [:]
                 data["expect"] = Int(expectedTimes[dayOfWeekIndex])
-                data["done"] = Int(day!.done_second)
+                data["done"] = Int(day!.doneSecond)
                 
                 datas.append(data)
             }else{
@@ -160,8 +166,8 @@ class Task: NSManagedObject {
             
             if let check = day {
                 var data:[String:NSNumber] = [:]
-                data["expect"] = CGFloat(day!.expect_amount.floatValue)
-                data["done"] = CGFloat(day!.done_amount.floatValue)
+                data["expect"] = CGFloat(day!.expectAmount.floatValue)
+                data["done"] = CGFloat(day!.doneAmount.floatValue)
                 
                 datas.append(data)
             }else{
@@ -211,13 +217,11 @@ class Task: NSManagedObject {
         return 0
     }
     
-    
-    
     func updateDay(){
         
-        var startDate = start_date
+        var startDate = self.startDate
         let todayDate = getTodayDateNumber()
-        var endDate = end_date
+        var endDate = self.endDate
         
         var dayArray = dayList
         
@@ -233,6 +237,74 @@ class Task: NSManagedObject {
         
     }
     
+    
+    func getDayDoneSecond(dateNumber:NSNumber)->NSNumber{
+        var day:Day!
+        
+        for dayItem in dayList {
+            
+            let item:Day! = dayItem as! Day
+            
+            if item.date.integerValue == dateNumber.integerValue {
+                day = item
+                break
+            }
+        }
+        
+        return day.doneSecond
+    }
+    
+    
+    func getDay(dateNumber:NSNumber)->Day?{
+        
+        var day:Day?
+        
+        for dayItem in dayList {
+            
+            let item:Day! = dayItem as! Day
+            if item.date.integerValue == dateNumber.integerValue {
+                day = item
+            }
+        }
+        
+        if let isValid = day{
+            return isValid
+        }
+        
+        
+        if((dateNumber.integerValue >= startDate.integerValue) && (endDate.integerValue >= dateNumber.integerValue)){
+            let day = makeDay(dateNumber)
+            return day
+            
+        }else if taskType == "timer"{
+            let day = makeDay(dateNumber)
+        }
+        
+        return day
+    }
+    
+    func makeDay(dateNumber:NSNumber)->Day!{
+        
+        
+        let entityDescription = NSEntityDescription.entityForName("Day", inManagedObjectContext:context!)
+        let day = Day(entity: entityDescription!, insertIntoManagedObjectContext: context)
+        
+        day.createdAt = NSDate()
+        day.taskId = self
+        day.doneAmount = 0
+        day.doneSecond = 0
+        day.date = dateNumber
+        day.dayOfWeek = getDayOfWeekFromDateNumber(dateNumber)
+        day.expectAmount = Int(calculateExpectedAmount(day))
+        
+        
+        var error: NSError?
+        context?.save(&error)
+        
+        
+        return day
+    }
+    
     func getDateNumberFromDate2(date:NSDate)->NSNumber{
         
         let dateForm = NSDateFormatter()
@@ -245,7 +317,7 @@ class Task: NSManagedObject {
     
     
     func getColor()->UIColor{
-        return UIColor.colorWithHexString(category_id.color)
+        return UIColor.colorWithHexString(categoryId.color)
     }
     
     func getWeekDayDoneTime(date:NSDate)->NSNumber{
@@ -345,7 +417,7 @@ class Task: NSManagedObject {
     }
     
     func getDayDoneAmount(dateNumber:NSNumber)->NSNumber{
-    
+        
         var day:Day?
         
         for dayItem in dayList {
@@ -358,78 +430,13 @@ class Task: NSManagedObject {
         }
         
         if let isValid = day{
-            return isValid.done_amount
+            return isValid.doneAmount
         }
         
         return 0
     }
     
     
-    func getDayDoneSecond(dateNumber:NSNumber)->NSNumber{
-        var day:Day!
-        
-        for dayItem in dayList {
-            
-            let item:Day! = dayItem as! Day
-            
-            if item.date.integerValue == dateNumber.integerValue {
-                day = item
-                break
-            }
-        }
-        
-        return day.done_second
-    }
-    
-    
-    func getDay(dateNumber:NSNumber)->Day?{
-        
-        var day:Day?
-        
-        for dayItem in dayList {
-            
-            let item:Day! = dayItem as! Day
-            if item.date.integerValue == dateNumber.integerValue {
-                day = item
-            }
-        }
-        
-        if let isValid = day{
-            return isValid
-        }
-        
-        
-        if((dateNumber.integerValue >= start_date.integerValue) && (end_date.integerValue >= dateNumber.integerValue)){
-            let day = makeDay(dateNumber)
-            return day
-        }
-        
-        return day
-    }
-    
-    func makeDay(dateNumber:NSNumber)->Day!{
-        
-        
-        let entityDescription = NSEntityDescription.entityForName("Day", inManagedObjectContext:context!)
-        let day = Day(entity: entityDescription!, insertIntoManagedObjectContext: context)
-        
-        day.updated_at = NSDate()
-        day.created_at = NSDate()
-        day.task_id = self
-        day.done_amount = 0
-        day.done_second = 0
-        day.date = dateNumber
-        day.day_of_week = getDayOfWeekFromDateNumber(dateNumber)
-        day.expect_amount = Int(calculateExpectedAmount(day))
-        
-        
-        var error: NSError?
-        context?.save(&error)
-        
-        
-        return day
-    }
-
     
     func calculateExpectedAmount(day:Day) -> NSNumber{
         
@@ -445,31 +452,34 @@ class Task: NSManagedObject {
     
     func getDayPercent(day:Day)->NSNumber{
         
-        
-        
-        let week = self.week
-        let expectedAmount = week.getExpectedAmount()
-        let todayAmount = expectedAmount[Int(day.day_of_week)]
-        
-        
-        var totalAmount:NSNumber = 0
-        
-        let todayDateNumber = getTodayDateNumber()
-        let progressDay:Int = getProgressDayFromDateNumber(todayDateNumber, endDateNumber:end_date).integerValue
-        
-        for index in 0...progressDay {
+        if let week = self.week as? Week {
             
-            let expectIndex = Int((Int(day.day_of_week) + Int(index))%7)
-            totalAmount = totalAmount.integerValue + Int(expectedAmount[expectIndex])
+            let expectedAmount = week.getExpectedAmount()
+            let todayAmount = expectedAmount[Int(day.dayOfWeek)]
             
+            
+            var totalAmount:NSNumber = 0
+            
+            let todayDateNumber = getTodayDateNumber()
+            let progressDay:Int = getProgressDayFromDateNumber(todayDateNumber, endDateNumber:endDate).integerValue
+            
+            for index in 0...progressDay {
+                
+                let expectIndex = Int((Int(day.dayOfWeek) + Int(index))%7)
+                totalAmount = totalAmount.integerValue + Int(expectedAmount[expectIndex])
+                
+            }
+            
+            if totalAmount == 0 {
+                return 0
+            }
+            
+            
+            return todayAmount.floatValue / totalAmount.floatValue
         }
         
-        if totalAmount == 0 {
-            return 0
-        }
         
-        
-        return todayAmount.floatValue / totalAmount.floatValue
+        return 0
     }
     
     
@@ -503,13 +513,13 @@ class Task: NSManagedObject {
         
         let todayDateNumber = getTodayDateNumber()
         
-        if todayDateNumber.integerValue > end_date.integerValue {
+        if todayDateNumber.integerValue > endDate.integerValue {
             return 100
             
-        }else if todayDateNumber.integerValue >= start_date.integerValue && todayDateNumber.integerValue <= end_date.integerValue {
+        }else if todayDateNumber.integerValue >= startDate.integerValue && todayDateNumber.integerValue <= endDate.integerValue {
             
-            let progressDay = getProgressDayFromDateNumber(start_date, endDateNumber: todayDateNumber)
-            let totalDay = getProgressDayFromDateNumber(start_date, endDateNumber: end_date)
+            let progressDay = getProgressDayFromDateNumber(startDate, endDateNumber: todayDateNumber)
+            let totalDay = getProgressDayFromDateNumber(startDate, endDateNumber: endDate)
             
             return progressDay.floatValue * 100 / totalDay.floatValue
         }
@@ -521,12 +531,12 @@ class Task: NSManagedObject {
         
         let todayDateNumber = getTodayDateNumber()
         
-        if todayDateNumber.integerValue > end_date.integerValue {
+        if todayDateNumber.integerValue > endDate.integerValue {
             return "마감 날짜가 지났습니다"
-        }else if todayDateNumber.integerValue >= start_date.integerValue && todayDateNumber.integerValue <= end_date.integerValue {
+        }else if todayDateNumber.integerValue >= startDate.integerValue && todayDateNumber.integerValue <= endDate.integerValue {
             
-            let progressDay = getProgressDayFromDateNumber(start_date, endDateNumber: todayDateNumber)
-            let totalDay = getProgressDayFromDateNumber(start_date, endDateNumber: end_date)
+            let progressDay = getProgressDayFromDateNumber(startDate, endDateNumber: todayDateNumber)
+            let totalDay = getProgressDayFromDateNumber(startDate, endDateNumber: endDate)
             
             return "\(progressDay)일째 | \(totalDay)일 남음"
         }
@@ -633,7 +643,7 @@ class Task: NSManagedObject {
         
         for dayItem in dayList{
             let day:Day! = dayItem as! Day
-            doneTime = doneTime + day.done_second.integerValue
+            doneTime = doneTime + day.doneSecond.integerValue
         }
         
         return doneTime
@@ -643,6 +653,10 @@ class Task: NSManagedObject {
         
         let doneAmount = getTotalDoneAmount()
         let totalAmount = amount
+        
+        if totalAmount == 0 {
+            return 0
+        }
         
         return doneAmount.floatValue * 100 / totalAmount.floatValue
     }
@@ -666,7 +680,7 @@ class Task: NSManagedObject {
         
         for dayItem in dayList{
             let day:Day! = dayItem as! Day
-            doneAmount = doneAmount + day.done_amount.integerValue
+            doneAmount = doneAmount + day.doneAmount.integerValue
         }
         
         return doneAmount
@@ -684,11 +698,12 @@ class Task: NSManagedObject {
     func isProgress()-> Bool {
         let nowDateNumber = getTodayDateNumber()
         
-        if nowDateNumber.integerValue <= end_date.integerValue {
+        if nowDateNumber.integerValue <= endDate.integerValue {
             return true
         }
         
         return false
     }
     
+
 }

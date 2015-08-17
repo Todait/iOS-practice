@@ -8,7 +8,6 @@
 
 import UIKit
 import CoreData
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
@@ -20,10 +19,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         
+        appearanceSetup()
+        
+        
+        let notiTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
+        let settings = UIUserNotificationSettings(forTypes: notiTypes, categories: nil)
+        
+        application.registerUserNotificationSettings(settings)
         
         
         return true
     }
+    
+    func appearanceSetup(){
+        
+        
+        UIWindow.appearance().tintColor = UIColor.todaitGreen()
+        UIActionSheet.appearance().tintColor = UIColor.todaitGreen()
+        UITextField.appearance().tintColor = UIColor.todaitGreen()
+    }
+    
+    
+    
+    func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
+        
+        NSLog("%@",notification)
+        
+        /*
+        notification.alertBody = "Todait Alarm"
+        notification.hasAction = true
+        notification.fireDate = NSDate().dateByAddingTimeInterval(5)
+        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        */
+    }
+    
+    
     
     func applicationWillResignActive(application: UIApplication) {
         

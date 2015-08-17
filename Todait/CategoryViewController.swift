@@ -287,22 +287,23 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         view.addSubview(popUp)
         
         
-        UIView.animateWithDuration(0.3, animations: { () -> Void in
-            
+        UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             popCircle.transform = CGAffineTransformMakeScale(1.2, 1.2)
             popUp.font = UIFont(name: "AvenirNext-Regular", size: 16*self.ratio)
-        
-            }) { (Bool) -> Void in
             
+            }) { (Bool) -> Void in
                 
-            UIView.animateWithDuration(1.1, animations: { () -> Void in
                 
-            }, completion: { (Bool) -> Void in
+                UIView.animateWithDuration(1.1, animations: { () -> Void in
+                    
+                    }, completion: { (Bool) -> Void in
+                        
+                        popCircle.removeFromSuperview()
+                        popUp.removeFromSuperview()
+                })
                 
-                popCircle.removeFromSuperview()
-                popUp.removeFromSuperview()
-            })
         }
+        
         
     }
     

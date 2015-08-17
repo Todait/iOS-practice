@@ -7,15 +7,15 @@
 //
 
 import UIKit
-
+/*
 protocol PeriodDelegate :NSObjectProtocol {
     func updatePeriodStartDate(date:NSDate)
     func updatePeriodEndDate(date:NSDate)
     func updatePeriodDay(day:String)
 }
+*/
 
-
-class PeriodViewController: BasicViewController {
+class PeriodViewControllerOld: BasicViewController {
 
     @IBOutlet weak var periodSegmentedControl: UISegmentedControl!
     @IBOutlet weak var periodDatePicker: UIDatePicker!

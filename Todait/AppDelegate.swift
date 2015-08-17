@@ -8,7 +8,6 @@
 
 import UIKit
 import CoreData
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -34,14 +33,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func appearanceSetup(){
+        
+        UIView.appearance().tintColor = UIColor.todaitGreen()
+        UIWindow.appearance().tintColor = UIColor.todaitGreen()
+        UIActionSheet.appearance().tintColor = UIColor.todaitGreen()
         UITextField.appearance().tintColor = UIColor.todaitGreen()
     }
     
     func googleAnalyticsSetup(){
+        
+        
         GAI.sharedInstance().trackUncaughtExceptions = true
         GAI.sharedInstance().dispatchInterval = 20
         GAI.sharedInstance().logger.logLevel = GAILogLevel.Verbose
         GAI.sharedInstance().trackerWithTrackingId("UA-57213357-3")
+    
     }
 
     

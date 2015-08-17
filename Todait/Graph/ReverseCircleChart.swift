@@ -17,8 +17,8 @@ class ReverseCircleChart: UIView {
     var percentBezierPath: UIBezierPath!
     var ratio : CGFloat!
     
-    let DEFAULT_START_ANGLE : CGFloat = -89.00001
-    let DEFAULT_END_ANGLE : CGFloat = -89.00000
+    let DEFAULT_START_ANGLE : CGFloat = -95.00001
+    let DEFAULT_END_ANGLE : CGFloat = -95.00000
     let DEFAULT_LINE_WIDTH : CGFloat = 2.5
     
     

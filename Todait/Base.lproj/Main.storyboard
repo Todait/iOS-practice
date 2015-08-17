@@ -16,12 +16,12 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="gPK-99-j9w" kind="relationship" relationship="rootViewController" id="kvb-fO-3J9"/>
+                        <segue destination="3xP-dv-bmG" kind="relationship" relationship="rootViewController" id="urO-Tt-Wo4"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LV1-ti-MJr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="33" y="-1073"/>
+            <point key="canvasLocation" x="-575" y="-1773"/>
         </scene>
         <!--Category Rear View Controller-->
         <scene sceneID="4Vu-2O-40S">
@@ -40,6 +40,44 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9JW-pi-no2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-234" y="121"/>
+        </scene>
+        <!--Login View Controller-->
+        <scene sceneID="jAi-Hs-Gdq">
+            <objects>
+                <viewController id="3xP-dv-bmG" customClass="LoginViewController" customModule="Todait" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="NMq-4L-48S"/>
+                        <viewControllerLayoutGuide type="bottom" id="DCU-mw-3vv"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="gEQ-QJ-ZB0">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="HKZ-TA-OYJ"/>
+                    <connections>
+                        <segue destination="Qgp-iz-vlx" kind="modal" identifier="showMainTabbarVC" animates="NO" id="wGv-aT-YL3"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vkh-vW-NSe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-151" y="-1773"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="tnL-As-CbX">
+            <objects>
+                <navigationController id="Qgp-iz-vlx" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="NGR-5O-3Td">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="gPK-99-j9w" kind="relationship" relationship="rootViewController" id="qql-Ny-1wH"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Mdr-Uy-O2Q" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-151" y="-1073"/>
         </scene>
         <!--Main Tabbar View Controller-->
         <scene sceneID="KBx-ja-y2s">
@@ -63,7 +101,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="QmX-B9-3Ns" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="478" y="-1073"/>
+            <point key="canvasLocation" x="214" y="-1073"/>
         </scene>
         <!--Main View Controller-->
         <scene sceneID="ufC-wZ-h7g">
@@ -101,10 +139,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="test" translatesAutoresizingMaskIntoConstraints="NO" id="cjb-WG-u4s">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="whiteBack.png" translatesAutoresizingMaskIntoConstraints="NO" id="cjb-WG-u4s">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xmX-Uu-smI">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.29999999999999999" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xmX-Uu-smI">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                             </imageView>
@@ -260,6 +298,15 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3kY-eT-g9z" userLabel="InputView">
                                 <rect key="frame" x="0.0" y="142" width="320" height="284"/>
                                 <subviews>
+                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="11i-l9-oDB">
+                                        <rect key="frame" x="0.0" y="68" width="320" height="162"/>
+                                        <date key="date" timeIntervalSinceReferenceDate="455428955.491584">
+                                            <!--2015-06-08 04:02:35 +0000-->
+                                        </date>
+                                        <connections>
+                                            <action selector="datePickerChanged:" destination="tio-mE-ZcJ" eventType="valueChanged" id="EyA-6q-ZbG"/>
+                                        </connections>
+                                    </datePicker>
                                     <segmentedControl opaque="NO" contentMode="scaleToFill" selected="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bordered" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="nYa-sp-a8Q">
                                         <rect key="frame" x="30" y="20" width="260" height="29"/>
                                         <constraints>
@@ -274,15 +321,6 @@
                                             <action selector="segmentSelected:" destination="tio-mE-ZcJ" eventType="valueChanged" id="93z-C2-huc"/>
                                         </connections>
                                     </segmentedControl>
-                                    <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="date" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="11i-l9-oDB">
-                                        <rect key="frame" x="0.0" y="68" width="320" height="162"/>
-                                        <date key="date" timeIntervalSinceReferenceDate="455428955.491584">
-                                            <!--2015-06-08 04:02:35 +0000-->
-                                        </date>
-                                        <connections>
-                                            <action selector="datePickerChanged:" destination="tio-mE-ZcJ" eventType="valueChanged" id="EyA-6q-ZbG"/>
-                                        </connections>
-                                    </datePicker>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -323,7 +361,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="test" width="942" height="568"/>
+        <image name="whiteBack.png" width="720" height="720"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
@@ -331,9 +369,9 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="hF8-E9-VIJ"/>
-        <segue reference="MJ6-d1-7Rc"/>
-        <segue reference="9wR-hP-Vgj"/>
+        <segue reference="Ir7-i8-Tb2"/>
+        <segue reference="Opy-KL-cVV"/>
+        <segue reference="Fak-dM-lxb"/>
         <segue reference="Bxf-SX-fhr"/>
     </inferredMetricsTieBreakers>
 </document>

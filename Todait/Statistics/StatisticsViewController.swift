@@ -40,7 +40,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = UIColor.todaitLightGray()
+        view.backgroundColor = UIColor.todaitWhiteGray()
         addScrollView()
         
         addDoneDashView()
@@ -190,7 +190,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         for day in dayDataOfDateNumber {
             
             percent = percent + CGFloat(day.getProgressPercent())
-            time = time + CGFloat(day.done_second)
+            time = time + CGFloat(day.doneSecond)
         }
         
         return ["percent":100*percent/CGFloat(dayDataOfDateNumber.count),"time":time/CGFloat(dayDataOfDateNumber.count)]
@@ -529,9 +529,10 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         pieDashView.clipsToBounds = true
         scrollView.addSubview(pieDashView)
 
-        addPieView()
+        //addPieView()
     }
     
+    /*
     func addPieView(){
         
         
@@ -600,12 +601,12 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         return pnItems
     }
     
-    
+    */
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         todaitNavBar.todaitDelegate = self
-        todaitNavBar.backButton.hidden = false
+        todaitNavBar.backButton.hidden = true
         todaitNavBar.shadowImage = UIImage()
         self.titleLabel.text = "Statistics"
         self.screenName = "Statistics Activity"
@@ -647,11 +648,19 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         
         var totalCount = allDayList.count
         
+        
+        if allDayList.count == 0 {
+            totalPercentLabel.text = "\(Int(0))%"
+            totalTimeLabel.text = NSNumber(integer: 0).toTimeString()
+            return
+        }
+        
         for dayItem in allDayList {
             
             totalPercent = totalPercent + CGFloat(dayItem.getProgressPercent())
-            totalDoneTime = totalDoneTime + Int(dayItem.done_second)
+            totalDoneTime = totalDoneTime + Int(dayItem.doneSecond)
         }
+        
         
         
         totalPercent = totalPercent / CGFloat(totalCount)
@@ -687,7 +696,7 @@ class StatisticsViewController: BasicViewController,TodaitNavigationDelegate {
         for dayItem in allDayList {
             
             totalPercent = totalPercent + CGFloat(dayItem.getProgressPercent())
-            totalDoneTime = totalDoneTime + Int(dayItem.done_second)
+            totalDoneTime = totalDoneTime + Int(dayItem.doneSecond)
         }
         
         

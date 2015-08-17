@@ -81,7 +81,8 @@ class NewTaskViewControllerOld: BasicViewController,UITextFieldDelegate,TodaitNa
         setupTaskViewController()
         addTaskTableView()
         addUnitView()
-        registerForKeyboardNotification()
+        
+        
         //setupCategory()
         
         if delegate == nil {
@@ -859,6 +860,8 @@ class NewTaskViewControllerOld: BasicViewController,UITextFieldDelegate,TodaitNa
         
         setNavigationBarColor(mainColor)
         taskTableView.reloadData()
+        
+        registerForKeyboardNotification()
     }
     
     
@@ -880,33 +883,33 @@ class NewTaskViewControllerOld: BasicViewController,UITextFieldDelegate,TodaitNa
         let task = Task(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         
         task.name = taskTextField.text
-        task.created_at = NSDate()
+        task.createdAt = NSDate()
         
         
         let dateForm = NSDateFormatter()
         dateForm.dateFormat = "yyyyMMdd"
         
-        task.start_date = getDateNumberFromDate(periodStartDate)
-        task.end_date = getDateNumberFromDate(periodEndDate)
+        task.startDate = getDateNumberFromDate(periodStartDate)
+        task.endDate = getDateNumberFromDate(periodEndDate)
         task.unit = unitTextField.text
-        task.category_id = category
+        task.categoryId = category
         
         
         setupTextField()
         
-        task.amount_type = rangeSegment.selectedSegmentIndex
+        task.taskType = "timer"//rangeSegment.selectedSegmentIndex
         
         switch rangeSegment.selectedSegmentIndex {
         case 0:
             
             task.amount = totalTextField.text.toInt()!
-            task.start_point = 0
+            task.startPoint = 0
         case 1:
             task.amount = endRangeTextField.text.toInt()! - startRangeTextField.text.toInt()! + 1
-            task.start_point = startRangeTextField.text.toInt()! + 1
+            task.startPoint = startRangeTextField.text.toInt()! + 1
         case 2:
             task.amount = dayTextField.text.toInt()!
-            task.start_point = 0
+            task.startPoint = 0
         default:
             task.amount = 0
         }
@@ -933,20 +936,18 @@ class NewTaskViewControllerOld: BasicViewController,UITextFieldDelegate,TodaitNa
         
         let entityDescription = NSEntityDescription.entityForName("Week", inManagedObjectContext:managedObjectContext!)
         let week = Week(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
-        week.task_id = task
+        week.taskId = task
         
         
-        week.sun_minute = investData[0];
-        week.mon_minute = investData[1];
-        week.tue_minute = investData[2];
-        week.wed_minute = investData[3];
-        week.thu_minute = investData[4];
-        week.fri_minute = investData[5];
-        week.sat_minute = investData[6];
+        week.sun = investData[0];
+        week.mon = investData[1];
+        week.tue = investData[2];
+        week.wed = investData[3];
+        week.thu = investData[4];
+        week.fri = investData[5];
+        week.sat = investData[6];
         
         
-        week.updated_at = NSDate()
-        week.created_at = NSDate()
     
         
         var error: NSError?
@@ -970,6 +971,16 @@ class NewTaskViewControllerOld: BasicViewController,UITextFieldDelegate,TodaitNa
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        
+        resignForKeyboardNotification()
+        
+    }
+    
+    func resignForKeyboardNotification(){
+        
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillHideNotification, object: nil)
+        
     }
     
     func backButtonClk() {

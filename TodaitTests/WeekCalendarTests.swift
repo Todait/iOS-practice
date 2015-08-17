@@ -44,78 +44,78 @@ class WeekCalendarTests: XCTestCase {
         
         var fromDate = getDate(2015, 6, 28, 10, 0, 0)
         var toDate = getDate(2015, 5, 1, 10, 0, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-9,"Month를 왼쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-9,"Week 왼쪽 스와이프")
 
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 4, 26, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-9,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-9,"Week 오른쪽 스와이프")
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 4, 30, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-9,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-9,"Week 오른쪽 스와이프")
         
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 5, 7, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-8,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-8,"Week 오른쪽 스와이프")
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 5, 15, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-7,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-7,"Week 오른쪽 스와이프")
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 5, 23, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-6,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-6,"Week 오른쪽 스와이프")
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 5, 29, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-5,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-5,"Week 오른쪽 스와이프")
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 5, 31, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-4,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-4,"Week 오른쪽 스와이프")
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 6, 4, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-4,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-4,"Week 오른쪽 스와이프")
         
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 6, 11, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-3,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-3,"Week 오른쪽 스와이프")
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 6, 18, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-2,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-2,"Week 오른쪽 스와이프")
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 6, 25, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-1,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),-1,"Week 오른쪽 스와이프")
         
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 6, 28, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),0,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),0,"Week 오른쪽 스와이프")
         
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 7, 7, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),1,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),1,"Week 오른쪽 스와이프")
 
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 7, 14, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),2,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),2,"Week 오른쪽 스와이프")
 
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 7, 21, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),3,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),3,"Week 오른쪽 스와이프")
 
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 7, 26, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),4,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),4,"Week 오른쪽 스와이프")
 
         fromDate = getDate(2015, 6, 30, 10, 0, 0)
         toDate = getDate(2015, 8, 2, 10, 10, 0)
-        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),5,"Month를 오른쪽 스와이프")
+        XCTAssertEqual(getNumberOfWeekViewScrollCount(fromDate, to: toDate),5,"Week 오른쪽 스와이프")
         
         
     }

@@ -101,6 +101,11 @@ class TaskTableViewCell: UITableViewCell {
         timerButton.layer.borderWidth = 1.0
         timerButton.layer.borderColor = UIColor.todaitLightGray().CGColor
         timerButton.addTarget(self, action: Selector("timerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        timerButton.setImage(UIImage.maskColor("detail_basic_23@3x.png", color: UIColor.todaitLightGray()), forState: UIControlState.Normal)
+        
+        timerButton.setImage(UIImage.maskColor("detail_basic_23@3x.png", color: UIColor.todaitGray()), forState: UIControlState.Highlighted)
+        timerButton.imageView?.contentMode = UIViewContentMode.ScaleAspectFit
+        
         self.addSubview(timerButton)
         
         setPercentBezierPath()
@@ -146,9 +151,21 @@ class TaskTableViewCell: UITableViewCell {
     }
     
     func addColorBoxView(){
-        colorBoxView = UIView(frame: CGRectMake(0, 0, 2 * DEFAULT_LINE_WIDTH, 49*ratio))
+        colorBoxView = UIView(frame: CGRectMake(0, 0, 2 * DEFAULT_LINE_WIDTH, 58*ratio))
         colorBoxView.backgroundColor = UIColor.clearColor()
         self.addSubview(colorBoxView)
+    }
+    
+    
+    
+    override func setHighlighted(highlighted: Bool, animated: Bool) {
+        
+        if highlighted == true {
+            backgroundColor = UIColor.todaitBackgroundGray()
+        }else{
+            backgroundColor = UIColor.whiteColor()
+        }
+
     }
     
     

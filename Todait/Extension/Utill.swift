@@ -50,20 +50,62 @@ public func getDateFromDateNumber(dateNumber:NSNumber)->NSDate{
     
     return NSCalendar.currentCalendar().dateFromComponents(adjustComp)!
     
+    
+}
+
+public func getFirstDateOfMonth(date:NSDate)->NSDate{
+    
+    let firstDayOfMonthComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitWeekday|NSCalendarUnit.CalendarUnitHour, fromDate:date)
+    firstDayOfMonthComp.day = 1
+    firstDayOfMonthComp.hour = 11
+    firstDayOfMonthComp.minute = 59
+    
+    var firstDate:NSDate = NSCalendar.currentCalendar().dateFromComponents(firstDayOfMonthComp)!
+    
+    let weekDayComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitWeekday, fromDate: firstDate)
+    let firstOfWeek = weekDayComp.weekday
+    
+    if (firstOfWeek > 4) {
+        firstDate = firstDate.addDay(8-firstOfWeek)
+    }else{
+        firstDate = firstDate.addDay(1-firstOfWeek)
+    }
+    
+    return firstDate
 }
 
 
-public func getDateNumberFromDate(date:NSDate)->NSNumber{
+public func getTimeStringFromSeconds(seconds : NSTimeInterval ) -> String {
     
-    let dateForm = NSDateFormatter()
-    dateForm.dateFormat = "yyyyMMdd"
-    let dateNumber = dateForm.stringFromDate(date).toInt()
     
-    let diff = checkDayLastTime(date)
+    let remainder : Int = Int(seconds % 3600 )
+    let hour : Int = Int(seconds / 3600)
+    let minute : Int = Int(remainder / 60)
+    let second : Int = Int(remainder % 60)
     
-    return dateForm.stringFromDate(date.addDay(diff)).toInt()!
     
+    return String(format:  "%02lu:%02lu:%02lu", arguments: [hour,minute,second])
 }
+
+
+public func getTimeStringOfTwoArgumentsFromSeconds(seconds : NSTimeInterval ) -> String {
+    
+    
+    let remainder : Int = Int(seconds % 3600 )
+    let hour : Int = Int(seconds / 3600)
+    let minute : Int = Int(remainder / 60)
+    let second : Int = Int(remainder % 60)
+    
+    
+    
+    if hour > 0 {
+        return String(format:  "%02lu:%02lu", arguments: [hour,minute])
+    }
+    
+    
+    return String(format:  "%02lu:%02lu", arguments: [minute,second])
+}
+
 
 
 
@@ -81,6 +123,18 @@ public func getDate(year:Int,month:Int,day:Int,hour:Int,minute:Int,second:Int)->
     
     
     return NSCalendar.currentCalendar().dateFromComponents(dateComp)!
+    
+}
+
+public func getDateNumberFromDate(date:NSDate)->NSNumber{
+    
+    let dateForm = NSDateFormatter()
+    dateForm.dateFormat = "yyyyMMdd"
+    let dateNumber = dateForm.stringFromDate(date).toInt()
+    
+    let diff = checkDayLastTime(date)
+    
+    return dateForm.stringFromDate(date.addDay(diff)).toInt()!
     
 }
 
@@ -121,6 +175,20 @@ public func checkDayLastTime(date:NSDate)->Int{
         }
     }
     
-    
     return 0
 }
+
+public func getLanguage()->String{
+    return NSLocale.preferredLanguages()[0] as! String
+}
+
+public func getCancelString()->String{
+    if getLanguage() == "ko" {
+        return "취소"
+    }else{
+        return "Cancel"
+    }
+}
+
+
+

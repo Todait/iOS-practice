@@ -41,7 +41,7 @@ class TodaitNavigationBar: UINavigationBar {
         backButton.setImage(UIImage(named: "back@3x.png"), forState:UIControlState.Normal)
         backButton.addTarget(self, action: Selector("backButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         backButton.hidden = true
-        backButton.contentEdgeInsets = UIEdgeInsetsMake(20*ratio, -50*ratio,0, 0)
+        backButton.contentEdgeInsets = UIEdgeInsetsMake(20*ratio, -47*ratio,0, 0)
         self.addSubview(backButton)
     }
     

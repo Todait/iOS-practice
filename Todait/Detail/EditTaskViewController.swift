@@ -90,13 +90,13 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         aimAmount = Int(editedTask.amount)
         
         
-        startDate = getDateFromDateNumber(editedTask.start_date)
+        startDate = getDateFromDateNumber(editedTask.startDate)
         
-        periodStartDate = getDateFromDateNumber(editedTask.start_date)
-        periodEndDate = getDateFromDateNumber(editedTask.end_date)
+        periodStartDate = getDateFromDateNumber(editedTask.startDate)
+        periodEndDate = getDateFromDateNumber(editedTask.endDate)
         
         periodDayString = "\(Int(periodEndDate.timeIntervalSinceDate(periodStartDate) / (24*60*60) + 1))일"
-        startTimeString = "\(editedTask.start_date)"
+        startTimeString = "\(editedTask.startDate)"
         
         dateForm = NSDateFormatter()
         dateForm.dateFormat = "a h시 m분"
@@ -728,14 +728,12 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
     func editTask(){
         
         editedTask.name = taskTextField.text
-        editedTask.updated_at = NSDate()
-        editedTask.start_date = getDateNumberFromDate(periodStartDate)
-        editedTask.end_date = getDateNumberFromDate(periodEndDate)
+        editedTask.startDate = getDateNumberFromDate(periodStartDate)
+        editedTask.endDate = getDateNumberFromDate(periodEndDate)
         editedTask.unit = unitTextField.text
-        editedTask.category_id = category
+        editedTask.categoryId = category
         
-        
-        
+        /*
         switch rangeSegment.selectedSegmentIndex {
             
         case 0:
@@ -750,6 +748,8 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         default:
             editedTask.amount = 0
         }
+        */
+        editedTask.taskType = ""
         
         editWeek(editedTask)
         
@@ -781,14 +781,13 @@ class EditTaskViewController: BasicViewController,UITextFieldDelegate,TodaitNavi
         
         let week = task.week
         
-        week.sun_minute = investData[0];
-        week.mon_minute = investData[1];
-        week.tue_minute = investData[2];
-        week.wed_minute = investData[3];
-        week.thu_minute = investData[4];
-        week.fri_minute = investData[5];
-        week.sat_minute = investData[6];
-        week.updated_at = NSDate()
+        week.sun = investData[0];
+        week.mon = investData[1];
+        week.tue = investData[2];
+        week.wed = investData[3];
+        week.thu = investData[4];
+        week.fri = investData[5];
+        week.sat = investData[6];
         
         
         var error: NSError?

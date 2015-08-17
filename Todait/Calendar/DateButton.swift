@@ -38,14 +38,39 @@ class DateButton: UIButton {
     
     func addChartView(){
         
-        backgroundChart = UIView(frame: CGRectMake(2*ratio, 35*ratio,width - 4*ratio, 2*ratio))
-        backgroundChart.backgroundColor = UIColor.todaitLightGray()
+        backgroundChart = UIView(frame: CGRectMake(2*ratio, 33*ratio,width - 4*ratio, 3*ratio))
+        backgroundChart.backgroundColor = UIColor.todaitBackgroundGray()
         addSubview(backgroundChart)
         
         
-        frontChart = UIView(frame: CGRectMake(0, 0, 15*ratio, 2*ratio))
+        frontChart = UIView(frame: CGRectMake(0, 0, 15*ratio, 3*ratio))
         frontChart.backgroundColor = UIColor.todaitRed()
         backgroundChart.addSubview(frontChart)
+        
+        backgroundChart.hidden = true
+    }
+    
+    func updateChart(value:CGFloat){
+        if value == 0 {
+            backgroundChart.hidden = true
+        }else{
+            backgroundChart.hidden = false
+            frontChart.frame = CGRectMake(0, 0, backgroundChart.frame.size.width * value, 3*ratio)
+            
+            if value < 0.25 {
+                frontChart.backgroundColor = UIColor.todaitRed()
+            }else if value < 0.5 {
+                frontChart.backgroundColor = UIColor.colorWithHexString("#ffc57c")
+            }else if value < 0.75 {
+                frontChart.backgroundColor = UIColor.colorWithHexString("#fef085")
+            }else{
+                frontChart.backgroundColor = UIColor.todaitGreen()
+            }
+            
+            //else if value < 0.8 {
+            //frontChart.backgroundColor = UIColor.colorWithHexString("#aaf59b")
+            //}
+        }
     }
     
     func setupEvent(){
@@ -58,8 +83,7 @@ class DateButton: UIButton {
     func dateUpdate(){
         
         
-        self.backgroundColor = UIColor.grayColor()
-        
+        self.backgroundColor = UIColor.todaitWhiteGray()
         if self.delegate.respondsToSelector("updateDate:from:"){
             self.delegate.updateDate(getDateFromDateNumber(dateNumber),from:"button")
         }

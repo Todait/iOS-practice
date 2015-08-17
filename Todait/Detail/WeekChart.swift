@@ -9,11 +9,6 @@
 import UIKit
 
 
-enum weekChartDirection:Int{
-    case upDirection
-    case downDirection
-}
-
 
 class WeekChart: UIView {
 
@@ -74,6 +69,8 @@ class WeekChart: UIView {
             let originX = (2*CGFloat(index)+1)*frame.size.width/14 - CGFloat(chartWidth/2)
             let chartBox = chartBoxs[index]
             chartBox.backgroundColor = chartColor
+            chartBox.layer.cornerRadius = chartWidth/2
+            chartBox.clipsToBounds = true
             
             var chartHeight:CGFloat! = 0
             

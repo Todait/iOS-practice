@@ -164,7 +164,7 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         }
         
         
-        var categoryBand = UIView(frame:CGRectMake(0,0*ratio,0*ratio,55*ratio))
+        var categoryBand = UIView(frame:CGRectMake(0,5*ratio,0*ratio,45*ratio))
         
         cell.contentView.addSubview(categoryBand)
         
@@ -194,11 +194,11 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         if indexPath == selectedIndexPath {
             
             UIView.animateWithDuration(0.5, animations: { () -> Void in
-                categoryBand.frame = CGRectMake(0,0,200*self.ratio,55*self.ratio)
+                categoryBand.frame = CGRectMake(0,5*self.ratio,200*self.ratio,45*self.ratio)
             })
             
         }else{
-            categoryBand.frame = CGRectMake(0,0,6*ratio,55*ratio)
+            categoryBand.frame = CGRectMake(0,5*ratio,6*ratio,45*ratio)
         }
 
         

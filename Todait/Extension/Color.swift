@@ -12,15 +12,28 @@ public extension UIColor {
     
     
     class func todaitBlue()->UIColor! {
-        return colorWithHexString("#77c4f0")
+        return colorWithHexString("#4fa0fe")
     }
     
     class func todaitOrange()->UIColor! {
         return colorWithHexString("#FF9381")
     }
     
+    class func todaitYellow()->UIColor! {
+        return colorWithHexString("#FFD094")
+    }
+    
+    
+    class func todaitLightRed()->UIColor! {
+        return colorWithHexString("#FF9999")
+    }
+    
     class func todaitRed()->UIColor! {
-        return colorWithHexString("#FD8878")
+        return colorWithHexString("#FF7E7E")
+    }
+    
+    class func todaitDarkRed()->UIColor! {
+        return colorWithHexString("#F26666")
     }
     
     class func todaitPurple()->UIColor! {
@@ -31,16 +44,28 @@ public extension UIColor {
         return colorWithHexString("#00D2B1")
     }
     
-    class func todaitGray()->UIColor! {
-        return colorWithHexString("#C9C9C9")
+    class func todaitDarkGreen()->UIColor! {
+        return colorWithHexString("#00AB8E")
     }
     
-    class func todaitNewGray()->UIColor! {
-        return colorWithHexString("#929292")
+    class func todaitDarkGray()->UIColor! {
+        return colorWithHexString("#666666")
+    }
+    
+    class func todaitGray()->UIColor! {
+        return colorWithHexString("#949494")
     }
     
     class func todaitLightGray()->UIColor! {
-        return colorWithHexString("#F6F6F6")
+        return colorWithHexString("#CCCCCC")
+    }
+    
+    class func todaitBackgroundGray()->UIColor! {
+        return colorWithHexString("#EEEEEE")
+    }
+    
+    class func todaitWhiteGray()->UIColor! {
+        return colorWithHexString("#F2F2F2")
     }
     
     class func colorWithHexString(hexString:NSString)->UIColor! {

@@ -2,30 +2,30 @@
 //  AmountLog.swift
 //  Todait
 //
-//  Created by CruzDiary on 2015. 6. 9..
+//  Created by CruzDiary on 2015. 7. 23..
 //  Copyright (c) 2015년 GpleLab. All rights reserved.
 //
 
 import Foundation
 import CoreData
 
-
-
 class AmountLog: NSManagedObject {
 
-    @NSManaged var after_done_amount: NSNumber
+    @NSManaged var afterDoneAmount: NSNumber
     @NSManaged var archived: NSNumber
-    @NSManaged var before_done_amount: NSNumber
-    @NSManaged var created_at: NSDate
-    @NSManaged var dirty_flag: NSNumber
-    @NSManaged var server_day_id: NSNumber
-    @NSManaged var server_id: NSNumber
+    @NSManaged var beforeDoneAmount: NSNumber
+    @NSManaged var createdAt: NSDate
+    @NSManaged var dirtyFlag: NSNumber
+    @NSManaged var serverDayId: NSNumber
+    @NSManaged var serverId: NSNumber
     @NSManaged var timestamp: NSNumber
-    @NSManaged var updated_at: NSDate
-    @NSManaged var day_id: Day
+    @NSManaged var updatedAt: NSDate
+    @NSManaged var dayId: Day
 
     
     func getDoneAmount()->NSNumber{
-        return after_done_amount.integerValue - before_done_amount.integerValue
+        return afterDoneAmount.integerValue - beforeDoneAmount.integerValue
     }
+    
+    
 }

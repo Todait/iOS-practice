@@ -27,7 +27,7 @@ class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
     var donePicker:UIPickerView!
     
     
-    var amount_type:NSNumber! = 0
+    var taskType:String! = ""
     var unit:String! = ""
     
     override func viewDidLoad() {
@@ -164,7 +164,7 @@ class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
     
     func addPickerViews(){
         
-        if amount_type.integerValue == 1 {
+        if taskType == "timer" {
             addRangePickerViews()
         }else{
             addDonePickerViews()
@@ -246,7 +246,7 @@ class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         
         
-        if amount_type.integerValue == 1 {
+        if taskType == "timer" {
             if pickerView == startPicker {
                 return 24
             }else if pickerView == endPicker {
