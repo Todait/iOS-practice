@@ -58,7 +58,7 @@ class AmountTextView: UITextView {
     
     func setupFont(){
         amountFont = UIFont(name: "AppleSDGothicNeo-Light", size: 20*ratio)
-        unitFont = UIFont(name: "AppleSDGothicNeo-Regular", size: 13*ratio)
+        unitFont = UIFont(name: "AppleSDGothicNeo-Light", size: 13*ratio)
     }
     
     func setupTextColor(){

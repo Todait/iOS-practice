@@ -153,13 +153,25 @@ class ResetViewController: BasicViewController {
     }
     
     func saveButtonClk(){
-        if self.delegate.respondsToSelector("saveTimeLog"){
-            self.delegate.saveTimeLog()
-        }
+        
+        dismissViewControllerAnimated(false, completion: { () -> Void in
+            if self.delegate.respondsToSelector("saveTimeLog"){
+                self.delegate.saveTimeLog()
+            }
+        })
+        
+        
     }
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
-        closeButtonClk()
+        
+        let touch: AnyObject? = (touches as NSSet).anyObject()
+        let touchPoint:CGPoint! = touch?.locationInView(view)
+        
+        if touchPoint.y < height - 160*ratio {
+            closeButtonClk()
+        }
+        
     }
     
     override func viewWillAppear(animated: Bool) {

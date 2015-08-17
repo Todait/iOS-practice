@@ -10,9 +10,11 @@ import UIKit
 import Alamofire
 
 
-class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDelegate{
+class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDelegate,KeyboardHelpDelegate{
    
     var scrollView:UIScrollView!
+    
+    var backgroundImage:UIImageView!
     
     var logoImageView:UIImageView!
     
@@ -26,25 +28,48 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     var findButton:UIButton!
     var registerButton:UIButton!
     
+    
+    
+    
+    private enum Status{
+        case Email
+        case Password
+        case None
+    }
+    
+    private var status:Status! = Status.None
+    
+    
+    var keyboardHelpView:KeyboardHelpView!
+    
     override func viewDidLoad(){
         super.viewDidLoad()
         view.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.8)
         
+        addBackgroundImage()
         addScrollView()
-        
         
         
         addLogoImageView()
         
-        addSkipButton()
         addEmailField()
         addPasswordField()
         addFindButton()
         addLoginButton()
         addRegisterButton()
         
+        addKeyboardHelpView()
+        
+        //showMainTabbarVC()
     }
     
+    func addBackgroundImage(){
+        
+        backgroundImage = UIImageView(frame: view.frame)
+        backgroundImage.image = UIImage(named: "bg@3x.png")
+        view.addSubview(backgroundImage)
+        
+    }
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
@@ -98,7 +123,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-            //self.unitView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-40*self.ratio)
+            self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-38*self.ratio)
             }, completion: nil)
         
     }
@@ -112,7 +137,9 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-            //self.unitView.transform = CGAffineTransformMakeTranslation(0, 40*self.ratio)
+            
+            self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, 0*self.ratio)
+            
             }) { (Bool) -> Void in
                 //self.unitView.hidden = true
         }
@@ -120,11 +147,14 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     }
     
     
+    
+    
     func addScrollView(){
         
         scrollView = UIScrollView(frame: CGRectMake(0, 0, width, height))
         scrollView.contentSize = CGSizeMake(width, height)
         scrollView.backgroundColor = UIColor.clearColor()
+        scrollView.bounces = false
         view.addSubview(scrollView)
 
         
@@ -135,7 +165,10 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
     func resignAllKeyBoard(){
         
-        currentTextField.resignFirstResponder()
+        if let textField = currentTextField {
+            currentTextField.resignFirstResponder()
+        }
+    
     }
     
     func addLogoImageView(){
@@ -146,16 +179,6 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     }
     
     
-    func addSkipButton(){
-        
-        skipButton = UIButton(frame: CGRectMake(15*ratio, 182*ratio, 295*ratio, 35*ratio))
-        skipButton.setTitle("건너뛰고 시작하기", forState: UIControlState.Normal)
-        skipButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        skipButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Light", size: 11*ratio)
-        skipButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right
-        scrollView.addSubview(skipButton)
-        
-    }
     
     func addEmailField(){
         
@@ -184,6 +207,8 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         passwordField.textColor = UIColor.whiteColor()
         passwordField.returnKeyType = UIReturnKeyType.Join
         passwordField.tintColor = UIColor.whiteColor()
+        passwordField.secureTextEntry = true
+        
         scrollView.addSubview(passwordField)
     }
     
@@ -217,12 +242,12 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
     func loginButtonClk(){
         
-        isEmailValid(emailTextField.text)
         
         let validator = Validator()
         
-        validator.registerField(emailTextField, rules:[EmailRule(message:"Invalid email")])
-        validator.registerField(passwordField, rules:[PasswordRule]())
+        
+        validator.registerField(emailTextField, rules:[MinLengthRule(length: 1, message: "이메일을 입력해주세요."),EmailRule(message:"올바른 이메일을 입력해주세요."),])
+        validator.registerField(passwordField, rules:[MinLengthRule(length: 1, message: "비밀번호를 입력해주세요."),MinLengthRule(length: 8, message: "비밀번호는 8자 이상입니다."),PasswordRule(message:"올바른 비밀번호를 입력해주세요")])
         validator.validate(self)
         
     }
@@ -238,25 +263,40 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         let password = passwordField.text as String
         params["user"] = ["email":email,"password":password]
         
-        var manager = Manager.sharedInstance
+        var manager = Alamofire.Manager.sharedInstance
         manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
         
-        Alamofire.request(.POST, "http://192.168.0.10:3000/sessions", parameters: params).responseJSON(options: nil) { (NSURLRequest, NSHTTPResponse, AnyObject, NSError) -> Void in
-            print("login")
+        Alamofire.request(.POST, "https://todait.com/sessions", parameters: params).responseJSON(options: nil) { (request, response, object, error) -> Void in
             
+            let json = JSON(object!)
+            print(json)
+            
+            
+            
+            let errorMessage = json["error"]
+            
+            if errorMessage == "Invalid email or password."{
+                print("ERROR")
+                
+                
+            }else{
+                print("login ")
+                self.showMainTabbarVC()
+            }
         }
-        
-        
-        showMainTabbarVC()
-        
     }
     
     func validationFailed(errors: [UITextField:ValidationError]){
-        NSLog("error")
-    }
-    
-    func isEmailValid(email:String){
         
+        
+        for ( textField , error) in errors {
+            
+            let alert = UIAlertView(title: "Invalid", message: error.errorMessage, delegate: nil, cancelButtonTitle: "Cancel")
+            
+            alert.show()
+            
+            return
+        }
     }
     
     func showMainTabbarVC(){
@@ -267,12 +307,13 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
     func addFindButton(){
         
+        
         findButton = UIButton(frame: CGRectMake(10*ratio, 354*ratio, 300*ratio, 35*ratio))
         findButton.setTitle("이메일이나 비밀번호가 생각나지 않는다면?", forState: UIControlState.Normal)
         findButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         findButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right
         findButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Light", size: 11*ratio)
-        scrollView.addSubview(findButton)
+        //scrollView.addSubview(findButton)
         
     }
     
@@ -301,15 +342,67 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
     func registerButtonClk(){
         
-        self.navigationController?.pushViewController(RegisterViewController(), animated: true)
+        self.navigationController?.pushViewController(RegisterViewController(), animated: false)
         
     }
     
     func textFieldDidBeginEditing(textField: UITextField) {
     
         currentTextField = textField
+        
+        switch currentTextField {
+        case emailTextField: keyboardHelpView.setStatus(KeyboardHelpStatus.Start) ; status = .Email
+        case passwordField: keyboardHelpView.setStatus(KeyboardHelpStatus.End) ; status = .Password
+        default : return
+        }
     
     }
     
     
+    
+    
+    func addKeyboardHelpView(){
+        
+        keyboardHelpView = KeyboardHelpView(frame: CGRectMake(0, height , width, 38*ratio + 185*ratio))
+        keyboardHelpView.backgroundColor = UIColor.whiteColor()
+        keyboardHelpView.leftImageName = "bt_keybord_left@3x.png"
+        keyboardHelpView.rightImageName = "bt_keybord_right@3x.png"
+        keyboardHelpView.delegate = self
+        keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        
+        view.addSubview(keyboardHelpView)
+        
+        
+        let line = UIView(frame: CGRectMake(0, 38*ratio-1, width, 1))
+        line.backgroundColor = UIColor.colorWithHexString("#d1d5da")
+        keyboardHelpView.addSubview(line)
+        
+    }
+    
+    func leftButtonClk(){
+        
+        if let status = status {
+            
+            switch status as Status {
+            case .Password: self.status = .Email ; emailTextField.becomeFirstResponder() ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
+            default: self.status = .None ; confirmButtonClk()
+            }
+        }
+    }
+    
+    
+    
+    func rightButtonClk(){
+        
+        if let status = status {
+            switch status as Status {
+            case .Email: passwordField.becomeFirstResponder() ; self.status = .Password ; keyboardHelpView.setStatus(KeyboardHelpStatus.End)
+            default: self.status = .None ; confirmButtonClk()
+            }
+        }
+    }
+
+    func confirmButtonClk() {
+        currentTextField.resignFirstResponder()
+    }
 }

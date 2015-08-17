@@ -130,7 +130,7 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         
         var titleLabel = UILabel(frame:CGRectMake(50*ratio, 9.5*ratio, 250*ratio, 30*ratio))
         titleLabel.text = category.name
-        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         titleLabel.textAlignment = NSTextAlignment.Left
         titleLabel.textColor = UIColor.colorWithHexString("#969696")
         cell.contentView.addSubview(titleLabel)
@@ -281,7 +281,7 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         popUp.textColor = UIColor.whiteColor()
         popUp.textAlignment = NSTextAlignment.Center
         popUp.text = "추가되었다"
-        popUp.font = UIFont(name: "AvenirNext-Regular", size: 4*ratio)
+        popUp.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 4*ratio)
         popUp.center = view.center
         
         view.addSubview(popUp)
@@ -289,7 +289,7 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         
         UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
             popCircle.transform = CGAffineTransformMakeScale(1.2, 1.2)
-            popUp.font = UIFont(name: "AvenirNext-Regular", size: 16*self.ratio)
+            popUp.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 16*self.ratio)
             
             }) { (Bool) -> Void in
                 

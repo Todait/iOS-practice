@@ -15,19 +15,18 @@ protocol CategoryUpdateDelegate : NSObjectProtocol{
 }
 
 
-enum OptionStatus {
+enum OptionStatus:Int {
     
-    case none
-    case everyDay
-    case alarm
-    case review
-    case reRead
+    case None = 0
+    case Review = 1
+    case Reread = 2
+    case Alarm = 4
     
 }
 
 
 
-class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
+class NewTaskViewController: BasicViewController,TodaitNavigationDelegate,ValidationDelegate{
     
     
     var mainColor: UIColor!
@@ -89,7 +88,6 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
     
     var timerTaskVC:TimerTaskViewController!
     var timeTaskVC:TimeTaskViewController!
-    var amountTaskVC:AmountTaskViewController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -167,7 +165,6 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
         setButtonHighlight(amountTaskButton, highlight: true)
         
         clearTaskView()
-        taskView.addSubview(amountTaskVC.view)
         
     }
     
@@ -216,13 +213,6 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
         addChildViewController(timeTaskVC)
     }
     
-    func setupAmountTaskViewController(){
-        amountTaskVC = AmountTaskViewController()
-        amountTaskVC.view.frame = CGRectMake(0, 0, 320*ratio, height - navigationHeight - 40*ratio)
-        addChildViewController(amountTaskVC)
-        
-    }
-    
     func setupCategory(){
         
         let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
@@ -267,11 +257,45 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
     
     func addSaveButton(){
         
-        saveButton = UIButton(frame: CGRectMake(288*ratio,30,28,20))
+        if saveButton != nil {
+            return
+        }
+        
+        saveButton = UIButton(frame: CGRectMake(288*ratio,32,22,16))
         saveButton.setImage(UIImage.maskColor("icon_check_wt@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
-        saveButton.addTarget(self, action: Selector("saveNewTask"), forControlEvents: UIControlEvents.TouchUpInside)
+        saveButton.addTarget(self, action: Selector("saveButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(saveButton)
     }
+    
+    
+    func saveButtonClk(){
+        
+        
+        let validator = Validator()
+        
+        
+        validator.registerField(timerTaskVC.goalTextField, rules:[MinLengthRule(length: 1, message: "목표를 입력해주세요.")])
+        validator.validate(self)
+        
+    }
+    
+    func validationSuccessful(){
+        saveNewTask()
+    }
+    
+    func validationFailed(errors: [UITextField:ValidationError]){
+        
+        
+        for ( textField , error) in errors {
+            
+            let alert = UIAlertView(title: "Invalid", message: error.errorMessage, delegate: nil, cancelButtonTitle: "Cancel")
+            
+            alert.show()
+            
+            return
+        }
+    }
+
     
     
     
@@ -281,7 +305,7 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
         let entityDescription = NSEntityDescription.entityForName("Task", inManagedObjectContext:managedObjectContext!)
         let task = Task(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         
-        task.name = timerTaskVC.taskTextField.text
+        task.name = timerTaskVC.goalTextField.text
         task.unit = ""
         
         
@@ -293,7 +317,7 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
         //task.unit = "개" //unitTextField.text
         //task.categoryId = category
         task.categoryId = timerTaskVC.category
-        task.taskType = "timer"
+        task.taskType = "Timer"
         setupTextField()
         
         saveNewWeek(task)
@@ -307,10 +331,11 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
             
             NSLog("Task 저장성공",1)
             needToUpdate()
-            
+            registerAlarm()
             self.navigationController?.popViewControllerAnimated(true)
         }
     }
+    
     
     func saveNewWeek(task:Task){
         
@@ -333,6 +358,21 @@ class NewTaskViewController: BasicViewController,TodaitNavigationDelegate{
         
         
     }
+    
+    func registerAlarm(){
+        
+        
+        let notification = UILocalNotification()
+        notification.alertBody = timerTaskVC.goalTextField.text
+        notification.timeZone = NSTimeZone.defaultTimeZone()
+        notification.fireDate = NSDate().dateByAddingTimeInterval(5)
+        notification.soundName = UILocalNotificationDefaultSoundName
+        notification.hasAction = true
+        
+        UIApplication.sharedApplication().scheduleLocalNotification(notification)
+        
+    }
+    
     
     func needToUpdate() {
         

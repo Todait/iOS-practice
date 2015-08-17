@@ -81,7 +81,7 @@ class TimeChart: UIView {
         valueLabel = UILabel(frame: CGRectMake(0*ratio, 0*ratio, 25*ratio, 15*ratio))
         valueLabel.text = "0"
         valueLabel.textColor = UIColor.whiteColor()
-        valueLabel.font = UIFont(name: "AvenirNext-Regular", size: 10*ratio)
+        valueLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10*ratio)
         valueLabel.layer.cornerRadius = 10*ratio
         valueLabel.clipsToBounds = true
         valueLabel.backgroundColor = UIColor.clearColor()
@@ -105,7 +105,7 @@ class TimeChart: UIView {
             
             let yAxis = UILabel(frame:CGRectMake(0,originY-5*ratio,40*ratio,10*ratio))
             yAxis.textAlignment = NSTextAlignment.Left
-            yAxis.font = UIFont(name:"AvenirNext-Regular",size:7*ratio)
+            yAxis.font = UIFont(name:"AppleSDGothicNeo-Regular",size:7*ratio)
             yAxis.text = "1"
             yAxis.textColor = UIColor.grayColor()
             addSubview(yAxis)

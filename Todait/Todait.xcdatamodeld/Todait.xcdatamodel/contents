@@ -24,6 +24,7 @@
         <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dirtyFlag" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="hidden" optional="YES" attributeType="Boolean" defaultValueString="0" syncable="YES"/>
         <attribute name="localId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" minValueString="0" maxValueString="45" syncable="YES"/>
         <attribute name="serverId" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -81,7 +82,7 @@
     </entity>
     <entity name="Task" representedClassName="Todait.Task" syncable="YES">
         <attribute name="amount" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="completed" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="completed" optional="YES" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dirtyFlag" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="endDate" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
@@ -149,7 +150,7 @@
     <elements>
         <element name="AmountLog" positionX="396" positionY="477" width="128" height="195"/>
         <element name="AmountRange" positionX="-351" positionY="135" width="128" height="105"/>
-        <element name="Category" positionX="-387" positionY="117" width="128" height="210"/>
+        <element name="Category" positionX="-387" positionY="117" width="128" height="225"/>
         <element name="CheckLog" positionX="-360" positionY="126" width="128" height="120"/>
         <element name="Day" positionX="225" positionY="162" width="128" height="315"/>
         <element name="Diary" positionX="412" positionY="143" width="128" height="120"/>

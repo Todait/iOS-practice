@@ -40,7 +40,7 @@ class PeriodViewControllerOld: BasicViewController {
     }
     
     func setupDetailDesign(){
-        periodSegmentedControl.setTitleTextAttributes([NSFontAttributeName:UIFont(name: "AvenirNext-Regular", size: 16*ratio)!], forState: UIControlState.Normal)
+        periodSegmentedControl.setTitleTextAttributes([NSFontAttributeName:UIFont(name: "AppleSDGothicNeo-Regular", size: 16*ratio)!], forState: UIControlState.Normal)
         periodSegmentedControl.tintColor = mainColor
     }
     

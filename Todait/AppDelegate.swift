@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+import AWSS3
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -20,6 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         
         appearanceSetup()
+        notificationSetup(application)
+        
+        awsSetup()
         googleAnalyticsSetup()
         
         
@@ -27,6 +32,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let settings = UIUserNotificationSettings(forTypes: notiTypes, categories: nil)
         
         application.registerUserNotificationSettings(settings)
+        
+        
+        
+        downloadDefaultImagesFromS3()
         
         
         return true
@@ -40,6 +49,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UITextField.appearance().tintColor = UIColor.todaitGreen()
     }
     
+    
+    func notificationSetup(application: UIApplication){
+        
+        let notiTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
+        let settings = UIUserNotificationSettings(forTypes: notiTypes, categories: nil)
+        
+        application.registerUserNotificationSettings(settings)
+    }
+    
+    func awsSetup(){
+        
+        
+        let credentialProvider = AWSStaticCredentialsProvider(accessKey: CREDENTIAL_ACCESS_KEY, secretKey: CREDENTIAL_SECRET_KEY)
+        
+        let configuration = AWSServiceConfiguration(region: .APNortheast1, credentialsProvider: credentialProvider)
+        
+        
+        AWSServiceManager.defaultServiceManager().defaultServiceConfiguration = configuration
+
+    
+    }
+    
     func googleAnalyticsSetup(){
         
         
@@ -51,28 +82,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     
+    func downloadDefaultImagesFromS3(){
+        
+        let transferManager =  AWSS3TransferManager.defaultS3TransferManager()
+        
+        let downloadRequest = AWSS3TransferManagerDownloadRequest.new()
+        downloadRequest.bucket = AWSS3_BUCKET_NAME
+        //downloadRequest.key = "base/" + fileName
+        //downloadRequest.body = uploadURL
+        
+    }
+    
     
     func application(application: UIApplication, didReceiveLocalNotification notification: UILocalNotification) {
         
         NSLog("%@",notification)
         
-        /*
-        notification.alertBody = "Todait Alarm"
-        notification.hasAction = true
-        notification.fireDate = NSDate().dateByAddingTimeInterval(5)
-        UIApplication.sharedApplication().scheduleLocalNotification(notification)
-           */
     }
+    
     
     
     
     func applicationWillResignActive(application: UIApplication) {
         
-        
+        /*
         window?.rootViewController?.dismissViewControllerAnimated(true, completion: { () -> Void in
         
         })
-        
+        */
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
     }

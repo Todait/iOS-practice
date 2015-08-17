@@ -1,0 +1,28 @@
+PODS:
+  - AWSCore (2.2.3)
+  - AWSS3 (2.2.3):
+    - AWSCore (= 2.2.3)
+  - GMImagePicker (0.0.1)
+  - Realm (0.94.1):
+    - Realm/Headers (= 0.94.1)
+  - Realm/Headers (0.94.1)
+  - RealmSwift (0.94.1):
+    - Realm (= 0.94.1)
+  - SwiftyJSON (2.2.1)
+
+DEPENDENCIES:
+  - AWSCore
+  - AWSS3
+  - GMImagePicker
+  - RealmSwift
+  - SwiftyJSON (~> 2.2.1)
+
+SPEC CHECKSUMS:
+  AWSCore: 30510dc1bf3e4cc975868ed4cc9ae16ba402790b
+  AWSS3: 9c03206264668b69ca94e4f05caa8926a4b0660f
+  GMImagePicker: e9c726e514c275c914c1b3390d6bb7c3c3e87ead
+  Realm: d999a6cf0b41577a077349c9cc9d496cc62a7d17
+  RealmSwift: 06b60ff5b1338755654d39aab44ac38001600f76
+  SwiftyJSON: ae2d0a3d68025d136602a33c4ee215091ced3e33
+
+COCOAPODS: 0.38.2

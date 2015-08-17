@@ -28,6 +28,8 @@ class DetailMonthCalendarCell: UICollectionViewCell {
         setupRatio()
         setButtons()
         setupDayLabels()
+        
+        addShadowLine()
     }
     
     required init(coder aDecoder: NSCoder) {
@@ -38,8 +40,8 @@ class DetailMonthCalendarCell: UICollectionViewCell {
         let screenRect = UIScreen.mainScreen().bounds
         let screenWidth = screenRect.size.width
         ratio = screenWidth/320
-        width = 320*ratio/7
-        height = 60*ratio
+        width = 310*ratio/7
+        height = 49*ratio
     }
     
     func setButtons(){
@@ -48,12 +50,12 @@ class DetailMonthCalendarCell: UICollectionViewCell {
             
             let i = Int(index)
             
-            let originX = CGFloat(i%7)*width
+            let originX = CGFloat(i%7)*width + 5*ratio
             let originY = CGFloat(i/7)*height
             
             let button = DetailDateButton(frame: CGRectMake(originX, originY, width, height))
             button.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
-            button.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Light", size: 19*ratio)
+            button.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 19*ratio)
             buttons.append(button)
             addSubview(button)
         }
@@ -67,13 +69,13 @@ class DetailMonthCalendarCell: UICollectionViewCell {
             
             let i = Int(index)
             
-            let originX = CGFloat(i%7)*width
+            let originX = CGFloat(i%7)*width + 5*ratio
             let originY = CGFloat(i/7)*height
             
-            let label = UILabel(frame:CGRectMake(originX, 32*ratio + originY, width, 20*ratio))
+            let label = UILabel(frame:CGRectMake(originX, 23*ratio + originY, width, 20*ratio))
             label.backgroundColor = UIColor.clearColor()
             label.textColor = UIColor.todaitGray()
-            label.font = UIFont(name: "AppleSDGothicNeo-Light", size: 19*ratio)
+            label.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 19*ratio)
             label.textAlignment = NSTextAlignment.Center
             
             dayLabels.append(label)
@@ -82,5 +84,18 @@ class DetailMonthCalendarCell: UICollectionViewCell {
         
     }
     
+    func addShadowLine(){
+        
+        for index in 1...5 {
+            
+            let i = Int(index)
+            let originY = CGFloat(i)*height
+            let line = UIView(frame:CGRectMake(0,originY,320*ratio,1))
+            line.backgroundColor = UIColor.todaitWhiteGray()
+            
+            addSubview(line)
+        }
+        
+    }
     
 }

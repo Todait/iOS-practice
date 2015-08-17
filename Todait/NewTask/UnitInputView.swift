@@ -73,7 +73,7 @@ class UnitInputView: UIView,UICollectionViewDelegate,UICollectionViewDataSource{
         unitLabel.text = title[indexPath.row]
         unitLabel.textColor = UIColor.whiteColor()
         unitLabel.textAlignment = NSTextAlignment.Center
-        unitLabel.font = UIFont(name: "AvenirNext-Regular", size: 12*ratio)
+        unitLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
         cell.contentView.addSubview(unitLabel)
         
         return cell

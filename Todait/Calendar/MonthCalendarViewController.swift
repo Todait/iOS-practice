@@ -71,10 +71,10 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
         
         if  dateForm.stringFromDate(from) != dateForm.stringFromDate(to) {
             
-            if toDateNumber.integerValue > fromDateNumber.integerValue {
+            if toDateNumber > fromDateNumber {
                 NSLog("return 1", 0)
                 return 1
-            }else if toDateNumber.integerValue < fromDateNumber.integerValue {
+            }else if toDateNumber < fromDateNumber{
                 NSLog("return -1", 0)
                 return -1
             }

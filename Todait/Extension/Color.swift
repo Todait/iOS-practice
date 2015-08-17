@@ -12,60 +12,64 @@ public extension UIColor {
     
     
     class func todaitBlue()->UIColor! {
-        return colorWithHexString("#4fa0fe")
+        return colorWithHexString("#FF4FA0FE")
+    }
+    
+    class func todaitLightBlue()->UIColor! {
+        return colorWithHexString("#664FA0FE")
     }
     
     class func todaitOrange()->UIColor! {
-        return colorWithHexString("#FF9381")
+        return colorWithHexString("#FFFF9381")
     }
     
     class func todaitYellow()->UIColor! {
-        return colorWithHexString("#FFD094")
+        return colorWithHexString("#FFFFD094")
     }
     
     
     class func todaitLightRed()->UIColor! {
-        return colorWithHexString("#FF9999")
+        return colorWithHexString("#66FF9999")
     }
     
     class func todaitRed()->UIColor! {
-        return colorWithHexString("#FF7E7E")
+        return colorWithHexString("#FFFF7E7E")
     }
     
     class func todaitDarkRed()->UIColor! {
-        return colorWithHexString("#F26666")
+        return colorWithHexString("#FFF26666")
     }
     
     class func todaitPurple()->UIColor! {
-        return colorWithHexString("#AB99DE")
+        return colorWithHexString("#FFAB99DE")
     }
     
     class func todaitGreen()->UIColor! {
-        return colorWithHexString("#00D2B1")
+        return colorWithHexString("#FF00D2B1")
     }
     
     class func todaitDarkGreen()->UIColor! {
-        return colorWithHexString("#00AB8E")
+        return colorWithHexString("#FF00AB8E")
     }
     
     class func todaitDarkGray()->UIColor! {
-        return colorWithHexString("#666666")
+        return colorWithHexString("#FF666666")
     }
     
     class func todaitGray()->UIColor! {
-        return colorWithHexString("#949494")
+        return colorWithHexString("#FF949494")
     }
     
     class func todaitLightGray()->UIColor! {
-        return colorWithHexString("#CCCCCC")
+        return colorWithHexString("#FFCCCCCC")
     }
     
     class func todaitBackgroundGray()->UIColor! {
-        return colorWithHexString("#EEEEEE")
+        return colorWithHexString("#FFEEEEEE")
     }
     
     class func todaitWhiteGray()->UIColor! {
-        return colorWithHexString("#F2F2F2")
+        return colorWithHexString("#FFF2F2F2")
     }
     
     class func colorWithHexString(hexString:NSString)->UIColor! {

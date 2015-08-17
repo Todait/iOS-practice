@@ -7,9 +7,103 @@
 //
 
 import UIKit
+import Foundation
 
 
+public let CREDENTIAL_ACCESS_KEY:String = "AKIAJS3V26L2Z3N64B6A"
+public let CREDENTIAL_SECRET_KEY:String = "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"
+public let AWSS3_BUCKET_NAME:String = "todait-images"
 
+
+extension Array {
+    
+    func find(includedElement: T -> Bool) -> Int? {
+        for (idx, element) in enumerate(self) {
+            if includedElement(element) {
+                return idx
+            }
+        }
+        return nil
+    }
+    
+    func indexOfObject(object : AnyObject) -> NSInteger
+    {
+        return (self as! NSArray).indexOfObject(object)
+    }
+    
+}
+
+
+extension UIView {
+    class func fromNib<T : UIView>(nibNameOrNil: String? = nil) -> T {
+        let v: T? = fromNib(nibNameOrNil: nibNameOrNil)
+        return v!
+    }
+    
+    class func fromNib<T : UIView>(nibNameOrNil: String? = nil) -> T? {
+        var view: T?
+        let name: String
+        if let nibName = nibNameOrNil {
+            name = nibName
+        } else {
+            // Most nibs are demangled by practice, if not, just declare string explicitly
+            name = "\(T.self)".componentsSeparatedByString(".").last!
+        }
+        let nibViews = NSBundle.mainBundle().loadNibNamed(name, owner: nil, options: nil)
+        for v in nibViews {
+            if let tog = v as? T {
+                view = tog
+            }
+        }
+        return view
+    }
+}
+
+
+public func getIndexFromCategoryColorString(color:String)->Int{
+    
+    switch color{
+    case "#FFF2F2F2": return 0
+    case "#FFFFD094": return 1
+    case "#FFFDE039": return 2
+    case "#FFFFB95A": return 3
+    case "#FFE8716E": return 4
+    case "#FFFF9EC7": return 5
+    case "#FFFA5B85": return 6
+    case "#FFC552A6": return 7
+    case "#FFCC9DF2": return 8
+    case "#FF957AC6": return 9
+    case "#FFA3E5E4": return 10
+    case "#FF8CC5FF": return 11
+    case "#FF4FA0FE": return 12
+    case "#FF23C4CE": return 13
+    case "#FF286883": return 14
+    case "#FF75EC75": return 15
+    case "#FFB0DE8F": return 16
+    case "#FF70C79E": return 17
+    case "#FFD2D392": return 18
+    case "#FFCEA37A": return 19
+    default: return 0
+        
+    }
+    
+}
+
+public func getTimeString(time:Int)->String{
+    
+    let hour = time.toHour()
+    let minute = time.toMinute()
+    
+    if hour == 0 {
+        return "\(minute)분"
+    }else{
+        if minute == 0 {
+            return "\(hour)시간"
+        }else{
+            return "\(hour)시간 \(minute)분"
+        }
+    }
+}
 
 
 public func getTodayDateNumber()->NSNumber{
@@ -75,6 +169,20 @@ public func getFirstDateOfMonth(date:NSDate)->NSDate{
 }
 
 
+public func getNewUUIDString()->String {
+    
+    var uuid = NSUUID().UUIDString.lowercaseString
+    
+    return "\(Int(NSDate().timeIntervalSince1970))-" + uuid
+}
+
+public func getNewUUIDFileNameString()->String {
+    
+    var uuid = NSUUID().UUIDString.lowercaseString
+    
+    return "\(Int(NSDate().timeIntervalSince1970))-" + uuid + ".jpg"
+}
+
 public func getTimeStringFromSeconds(seconds : NSTimeInterval ) -> String {
     
     
@@ -107,6 +215,16 @@ public func getTimeStringOfTwoArgumentsFromSeconds(seconds : NSTimeInterval ) ->
 }
 
 
+public func getTimeStringOfHourMinuteFromSeconds(seconds : NSTimeInterval ) -> String {
+    
+    
+    let remainder : Int = Int(seconds % 3600 )
+    let hour : Int = Int(seconds / 3600)
+    let minute : Int = Int(remainder / 60)
+    let second : Int = Int(remainder % 60)
+    
+    return String(format:  "%02lu:%02lu", arguments: [hour,minute])
+}
 
 
 
@@ -136,6 +254,25 @@ public func getDateNumberFromDate(date:NSDate)->NSNumber{
     
     return dateForm.stringFromDate(date.addDay(diff)).toInt()!
     
+}
+
+
+public func getFirstSundayDateOfMonth(date:NSDate)->NSDate{
+    
+    let firstDayOfMonthComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitYear|NSCalendarUnit.CalendarUnitMonth|NSCalendarUnit.CalendarUnitDay|NSCalendarUnit.CalendarUnitWeekday|NSCalendarUnit.CalendarUnitHour, fromDate:date)
+    firstDayOfMonthComp.day = 1
+    firstDayOfMonthComp.hour = 11
+    firstDayOfMonthComp.minute = 59
+    
+    var firstDate:NSDate = NSCalendar.currentCalendar().dateFromComponents(firstDayOfMonthComp)!
+    
+    let weekDayComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitWeekday, fromDate: firstDate)
+    let firstOfWeek = weekDayComp.weekday
+    
+    
+    firstDate = firstDate.addDay(-firstOfWeek)
+    
+    return firstDate
 }
 
 

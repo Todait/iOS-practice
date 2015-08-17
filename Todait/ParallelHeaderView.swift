@@ -58,7 +58,7 @@ class ParallelHeaderView: UIView, UIScrollViewDelegate {
     }
     
     func setupBackgroundImage(){
-        backgroundImage = UIImage(named: "test.png")
+        backgroundImage = UIImage(named: "timerBack2@3x.png")
     }
     
     func addFilterImageView(){

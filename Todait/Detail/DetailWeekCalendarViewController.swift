@@ -47,7 +47,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
         var layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Horizontal
         
-        weekView = UICollectionView(frame: CGRectMake(0, 0, width, 60*ratio), collectionViewLayout:layout)
+        weekView = UICollectionView(frame: CGRectMake(0, 0, width, 49*ratio), collectionViewLayout:layout)
         
         weekView.registerClass(DetailWeekCalendarCell.self, forCellWithReuseIdentifier: "weekCell")
         weekView.backgroundColor = UIColor.clearColor()
@@ -55,7 +55,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
         weekView.dataSource = self
         weekView.pagingEnabled = true
         weekView.showsHorizontalScrollIndicator = false
-        weekView.contentOffset = CGPointMake(500*width, weekView.contentOffset.y)
+        weekView.contentOffset = CGPointMake(100*width, weekView.contentOffset.y)
         
         view.addSubview(weekView)
         
@@ -84,12 +84,11 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
         if let cell = weekView.cellForItemAtIndexPath(selectedIndex) as? DetailWeekCalendarCell {
             
             for index in 0...6 {
+                
                 var button = cell.buttons[index]
                 
-                if(button.dateNumber == todayDateNumber){
-                    button.backgroundColor = UIColor.todaitWhiteGray()
-                }else if button.dateNumber == dateNumber {
-                    button.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.05)
+                if button.dateNumber == dateNumber {
+                    button.backgroundColor = UIColor.todaitBlue().colorWithAlphaComponent(0.05)
                 }else{
                     button.backgroundColor = UIColor.whiteColor()
                 }
@@ -129,7 +128,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1000
+        return 200
     }
     
     func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
@@ -180,50 +179,50 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
             let todayDateNumber:NSNumber! = getTodayDateNumber()
             
             
-            if(button.dateNumber == todayDateNumber){
-                button.backgroundColor = UIColor.todaitWhiteGray()
-            }else if self.dateNumber == button.dateNumber {
-                button.backgroundColor = UIColor.whiteColor()
-            }else{
-                button.backgroundColor = UIColor.whiteColor()
-            }
-            
-
-            
             if let currentDay = task.getDay(currentDateNumber) {
                 
 
-                if currentDay.expectAmount.integerValue <= currentDay.doneAmount.integerValue {
-                    button.expectLabel.backgroundColor = UIColor.todaitGreen()
+                if currentDay.expectAmount <= currentDay.doneAmount {
+                    
+                    button.setDateStatus(DateStatus.Completed)
                     button.expectLabel.text = "\(currentDay.doneAmount)"
                     
                     if currentDateNumber == getTodayDateNumber() {
-                        button.expectLabel.backgroundColor = UIColor.todaitDarkGreen()
+                        button.setDateStatus(DateStatus.Complete)
                     }
                     
                 }else{
-                    button.expectLabel.backgroundColor = UIColor.todaitRed().colorWithAlphaComponent(0.8)
+                     button.setDateStatus(DateStatus.UnCompleted)
                     button.expectLabel.text = "\(currentDay.expectAmount)"
                     
                     if currentDateNumber == getTodayDateNumber() {
-                        button.expectLabel.backgroundColor = UIColor.todaitDarkRed()
+                        button.setDateStatus(DateStatus.Progressing)
                     }
                     
                 }
                 
                 
-                if currentDateNumber.integerValue > getTodayDateNumber().integerValue {
+                if currentDateNumber > getTodayDateNumber() {
                     
                     button.expectLabel.textColor = UIColor.todaitDarkGray()
-                    button.expectLabel.backgroundColor = UIColor.todaitWhiteGray()
+                    button.setDateStatus(DateStatus.UnStart)
                     
+                }else{
+                    button.expectLabel.textColor = UIColor.whiteColor()
                 }
                 
             }else{
                 
                 button.expectLabel.textColor = UIColor.whiteColor()
                 button.expectLabel.text = ""
-                button.expectLabel.backgroundColor = UIColor.clearColor()
+                button.setDateStatus(DateStatus.None)
+            }
+            
+            
+            if button.dateNumber == dateNumber {
+                button.backgroundColor = UIColor.todaitBlue().colorWithAlphaComponent(0.05)
+            }else{
+                button.backgroundColor = UIColor.whiteColor()
             }
         }
         
@@ -233,8 +232,8 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
     func getCurrentDate(indexPath:NSIndexPath)->NSDate{
         
         var adjustDate = getAdjustDate(NSDate())
-        //NSLog("Week %@",adjustDate.addWeek(Int(indexPath.row - 500)))
-        return adjustDate.addWeek(Int(indexPath.row - 500))
+        
+        return adjustDate.addWeek(Int(indexPath.row - 100))
     }
     
     func getAdjustDate(date:NSDate)->NSDate{
@@ -251,7 +250,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
-        return CGSizeMake(width, 60*ratio)
+        return CGSizeMake(width, 49*ratio)
         
     }
     

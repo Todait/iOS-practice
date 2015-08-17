@@ -35,7 +35,7 @@ class MonthCalendarCell: UICollectionViewCell {
         let screenRect = UIScreen.mainScreen().bounds
         let screenWidth = screenRect.size.width
         ratio = screenWidth/320
-        width = 320*ratio/7
+        width = 310*ratio/7
         height = 48*ratio
     }
     
@@ -45,7 +45,7 @@ class MonthCalendarCell: UICollectionViewCell {
             
             let i = Int(index)
             
-            let originX = CGFloat(i%7)*width
+            let originX = CGFloat(i%7)*width + 5*ratio
             let originY = CGFloat(i/7)*height
             
             let button = DateButton(frame: CGRectMake(originX, originY, width, height))

@@ -103,7 +103,7 @@ class TimerView: UIView {
         let centerX = frame.size.width/2
         let centerY = frame.size.height/2
         timerLabel = UILabel(frame: CGRectMake(0, 0, self.frame.size.width, self.frame.size.height))
-        timerLabel.font = UIFont(name: "AvenirNext-Regular", size: 70*ratio)
+        timerLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 70*ratio)
         timerLabel.text = "55%"
         timerLabel.textAlignment = NSTextAlignment.Center
         timerLabel.center = CGPointMake(centerX, centerY)

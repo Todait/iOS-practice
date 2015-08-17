@@ -11,10 +11,13 @@ import Foundation
 public extension String {
     
     
+    
+    
+    
     static func categoryColorStringAtIndex(index:Int)->String{
         
         switch index{
-        case 0: return "#FFFFBEBE"
+        case 0: return "#FFF2F2F2"
         case 1: return "#FFFFD094"
         case 2: return "#FFFDE039"
         case 3: return "#FFFFB95A"

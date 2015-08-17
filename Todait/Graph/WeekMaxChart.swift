@@ -89,7 +89,7 @@ class WeekMaxChart: UIView {
         let originX = padding
         
         let maxValue = getMaxElement(values)
-        let maxHeight = frame.size.height-20*ratio
+        let maxHeight = frame.size.height-14*ratio
         
         
         
@@ -115,7 +115,7 @@ class WeekMaxChart: UIView {
             backChart.backgroundColor = backColor
             valueLabel.textColor = frontColor
             valueLabel.font = chartFont
-            valueLabel.text = getTimeStringFromSeconds(NSTimeInterval(doneAmount))
+            valueLabel.text = getTimeStringOfTwoArgumentsFromSeconds(NSTimeInterval(doneAmount))
             
             var doneHeight:CGFloat! = 0
             var expectHeight:CGFloat! = 0
@@ -153,7 +153,7 @@ class WeekMaxChart: UIView {
                 
                 UIView.animateWithDuration(1.5, animations: { () -> Void in
                     
-                    valueLabel.frame = CGRectMake(originX-3*self.ratio, self.frame.size.height - 20*self.ratio-1*doneHeight, self.chartWidth+6*self.ratio, 10*self.ratio)
+                    valueLabel.frame = CGRectMake(originX-3*self.ratio, backChart.frame.origin.y - 15*self.ratio, self.chartWidth+6*self.ratio, 10*self.ratio)
                     frontChart.frame = CGRectMake(originX, self.frame.size.height, self.chartWidth,-1*doneHeight)
                     
                 })
@@ -178,7 +178,7 @@ class WeekMaxChart: UIView {
         let originX = padding
         
         let maxValue = getMaxElement(values)
-        let maxHeight = frame.size.height-20*ratio
+        let maxHeight = frame.size.height-14*ratio
         
         
         
@@ -235,14 +235,14 @@ class WeekMaxChart: UIView {
             if direction == weekChartDirection.upDirection {
                 
                 
-                valueLabel.frame = CGRectMake(originX-3*ratio, self.frame.size.height - 20*ratio, chartWidth+6*ratio, 10*ratio)
+                valueLabel.frame = CGRectMake(originX-3*ratio, self.frame.size.height, chartWidth+6*ratio, 10*ratio)
                 frontChart.frame = CGRectMake(originX, self.frame.size.height, chartWidth,0)
                 backChart.frame = CGRectMake(originX, frame.size.height, chartWidth ,-1*expectHeight)
                 
                 
                 UIView.animateWithDuration(1.5, animations: { () -> Void in
                     
-                    valueLabel.frame = CGRectMake(originX-3*self.ratio, self.frame.size.height - 20*self.ratio-1*doneHeight, self.chartWidth+6*self.ratio, 10*self.ratio)
+                    valueLabel.frame = CGRectMake(originX-3*self.ratio, backChart.frame.origin.y - 15*self.ratio, self.chartWidth+6*self.ratio, 10*self.ratio)
                     frontChart.frame = CGRectMake(originX, self.frame.size.height, self.chartWidth,-1*doneHeight)
                     
                 })

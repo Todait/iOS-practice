@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class UserSortViewController: BasicTableViewController {
+class UserSortViewController: BasicTableViewController,TodaitNavigationDelegate{
  
     
    
@@ -23,8 +23,20 @@ class UserSortViewController: BasicTableViewController {
         sectionTitles = ["Task"]
         loadTaskData()
         
-        tableView.registerClass(TaskTableViewCell.self, forCellReuseIdentifier: "taskCell")
+        tableView.contentInset = UIEdgeInsetsMake(-58, 0, 0, 0)
+        tableView.separatorStyle = UITableViewCellSeparatorStyle.None
+        tableView.registerClass(TaskTableViewCell.self, forCellReuseIdentifier: "mainCell")
+        tableView.registerClass(TimerTaskTableViewCell.self, forCellReuseIdentifier: "timerCell")
+        tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "emptyCell")
+        tableView.sectionFooterHeight = 0
+        tableView.sectionHeaderHeight = 0
         tableView.editing = true
+        
+    }
+    
+    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        return nil
         
     }
     
@@ -46,22 +58,99 @@ class UserSortViewController: BasicTableViewController {
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("taskCell", forIndexPath: indexPath) as! TaskTableViewCell
-        
-        let task = taskData[indexPath.row] as Task
-        
-        cell.titleLabel.text = task.name
-        cell.colorBoxView.backgroundColor = task.getColor()
-        cell.timerButton.hidden = true
-        cell.editing = true
+        let task:Task! = taskData[indexPath.row]
+        let day:Day? = task.getDay(getTodayDateNumber())
         
         
-        return cell
+        
+        if task.taskType == "Timer" {
+            
+            let cell = tableView.dequeueReusableCellWithIdentifier("timerCell", forIndexPath: indexPath) as! TimerTaskTableViewCell
+            
+            
+            for temp in cell.contentView.subviews{
+                temp.removeFromSuperview()
+            }
+            //cell.delegate = self
+            cell.indexPath = indexPath
+            cell.percentLayer.strokeEnd = 0
+            cell.percentLayer.strokeColor = UIColor.todaitLightGray().CGColor
+            cell.percentLayer.lineWidth = 2
+            cell.percentLabel.textColor = UIColor.todaitDarkGray()
+            cell.colorBoxView.backgroundColor = task.getColor()
+            cell.percentLabel.hidden = false
+            
+            cell.timerButton.hidden = true
+            
+            if let day = day {
+                
+                cell.titleLabel.text = task.name
+                cell.contentsTextView.setupText(NSTimeInterval(day.doneSecond.integerValue))
+                cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
+                cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
+                cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
+                cell.percentLabel.textColor = UIColor.todaitRed()
+                
+            }
+            
+            var line = UIView(frame: CGRectMake(0, 57.5, 320*ratio, 0.5))
+            line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
+            cell.contentView.addSubview(line)
+            
+            return cell
+            
+        }else{
+            
+            let cell = tableView.dequeueReusableCellWithIdentifier("mainCell", forIndexPath: indexPath) as! TaskTableViewCell
+            
+            
+            for temp in cell.contentView.subviews{
+                temp.removeFromSuperview()
+            }
+            
+            cell.indexPath = indexPath
+            cell.percentLayer.strokeEnd = 0
+            cell.percentLayer.strokeColor = UIColor.todaitLightGray().CGColor
+            cell.percentLayer.lineWidth = 2
+            cell.percentLabel.textColor = UIColor.todaitDarkGray()
+            cell.colorBoxView.backgroundColor = task.getColor()
+            cell.percentLabel.hidden = false
+            cell.timerButton.hidden = true
+            
+            
+            if let day = day {
+                
+                //cell.contentsLabel.text = day.getProgressString()
+                cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.doneSecond.integerValue))
+                cell.contentsTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
+                cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
+                cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
+                cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
+                cell.percentLabel.textColor = UIColor.todaitRed()
+                //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
+                
+            }else{
+                
+                cell.titleLabel.text = task.name + " | "
+            }
+            
+            var line = UIView(frame: CGRectMake(0, 57.5, 320*ratio, 0.5))
+            line.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
+            cell.contentView.addSubview(line)
+            
+            
+            return cell
+        }
         
     }
     
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 0
+    }
+    
+    
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 58*ratio
+        return 58
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
@@ -136,5 +225,22 @@ class UserSortViewController: BasicTableViewController {
         return false
     }
     
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        todaitNavBar.todaitDelegate = self
+        todaitNavBar.backButton.hidden = false
+        self.titleLabel.text = "사용자 정렬 설정"
+        
+        self.screenName = "Custom Sort Activity"
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+    }
+    
+    func backButtonClk() {
+        self.navigationController?.popViewControllerAnimated(true)
+    }
+
     
 }

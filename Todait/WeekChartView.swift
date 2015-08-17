@@ -60,7 +60,7 @@ class WeekChartView: UIView {
             label.text = weekName[index]
             label.textColor = UIColor.colorWithHexString("#C9C9C9")
             label.textAlignment = NSTextAlignment.Center
-            label.font = UIFont(name: "AvenirNext-Regular", size: 10)
+            label.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 10)
             addSubview(label)
             
             

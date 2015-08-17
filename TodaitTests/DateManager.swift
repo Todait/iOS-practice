@@ -22,8 +22,6 @@ public extension NSNumber {
         }
         
     }
-    
-    
 }
 
 public extension Int {

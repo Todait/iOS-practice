@@ -57,7 +57,7 @@ class FinishTimeViewController: BasicViewController,TodaitNavigationDelegate {
     func addInfoLabel(){
         infoLabel = UILabel(frame: CGRectMake(30*ratio,100*ratio, 260*ratio, 80*ratio))
         infoLabel.text = "마무리 시간"
-        infoLabel.font = UIFont(name: "AvenirNext-Regular", size: 30*ratio)
+        infoLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 30*ratio)
         infoLabel.textColor = UIColor.colorWithHexString("#00D2B1")
         infoLabel.textAlignment = NSTextAlignment.Center
         view.addSubview(infoLabel)
@@ -77,7 +77,7 @@ class FinishTimeViewController: BasicViewController,TodaitNavigationDelegate {
         doneButton.setTitle("완료", forState: UIControlState.Normal)
         doneButton.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("#00D2B1"), frame: CGRectMake(0, 0, width, 50*ratio)), forState:UIControlState.Normal)
         doneButton.addTarget(self, action: Selector("doneButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        doneButton.titleLabel?.font = UIFont(name: "AvenirNext-Regular", size: 20*ratio)
+        doneButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 20*ratio)
         
         view.addSubview(doneButton)
     }

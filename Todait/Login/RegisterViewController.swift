@@ -8,8 +8,10 @@
 
 import UIKit
 import MobileCoreServices
+import Alamofire
+import AWSS3
 
-class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate,ListInputDelegate{
+class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate,ListInputDelegate,ValidationDelegate,KeyboardHelpDelegate{
 
     
     var scrollView:UIScrollView!
@@ -28,7 +30,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     var confirmField:PaddingTextField!
     
     var jobField:PaddingTextField!
-    var objectField:PaddingTextField!
+    var goalField:PaddingTextField!
     
     var currentTextField:UITextField!
     
@@ -38,11 +40,31 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     
     var selectedIndexPath:NSIndexPath!
     var jobData:[String] = []
+    var fileName:String! = ""
+    
+    
+    var keyboardHelpView:KeyboardHelpView!
+    
+    private enum Status{
+        case Name
+        case Email
+        case Password
+        case Confirm
+        case Job
+        case Goal
+        case None
+    }
+    
+    private var status:Status! = Status.None 
+    
+    var backgroundImage:UIImageView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.8)
+        addBackgroundImage()
         addScrollView()
         addLoginButton()
         addProfileButton()
@@ -52,9 +74,18 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         addPasswordField()
         addConfirmField()
         addJobField()
-        addObjectField()
+        addGoalField()
         
         addRegisterButton()
+        
+        addKeyboardHelpView()
+    }
+    func addBackgroundImage(){
+        
+        backgroundImage = UIImageView(frame: view.frame)
+        backgroundImage.image = UIImage(named: "bg@3x.png")
+        view.addSubview(backgroundImage)
+        
     }
     
     func addScrollView(){
@@ -62,6 +93,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         scrollView = UIScrollView(frame: CGRectMake(0, 0, width, height))
         scrollView.contentSize = CGSizeMake(width, height)
         scrollView.backgroundColor = UIColor.clearColor()
+        scrollView.bounces = false
         view.addSubview(scrollView)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: Selector("resignAllKeyBoard"))
@@ -71,7 +103,9 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     
     func resignAllKeyBoard(){
         
-        currentTextField.resignFirstResponder()
+        if let textField = currentTextField {
+            currentTextField.resignFirstResponder()
+        }
     }
     
     func addLoginButton(){
@@ -165,7 +199,6 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     func showDiaryPhotoVC(){
         
         
-        
     }
     
     
@@ -180,13 +213,121 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
             
             let image = info[UIImagePickerControllerOriginalImage] as! UIImage
             
-            profileButton.setImage(image, forState: UIControlState.Normal)
+            //profileButton.setImage(image, forState: UIControlState.Normal)
+            
+            
+            
+            var error:NSError?
+            let fileManager = NSFileManager.defaultManager()
+            
+            
+            
+            let newUUIDFileName = getNewUUIDFileNameString()
+            
+            
+            
+            print(NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true))
+            
+            
+            var path = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! String
+            var paths = path + "/" + newUUIDFileName
+            
+            
+            let success = UIImageJPEGRepresentation(image, 1.0).writeToFile(paths, atomically: true) as Bool
+            
+            if success == true {
+                
+                print("저장성공")
+                
+            }else {
+                print("저장실패")
+                
+            }
+            
+    
+            
+            
+            
+            if fileManager.fileExistsAtPath(paths){
+                print("y")
+                
+                profileButton.setImage(UIImage(contentsOfFile: paths), forState: UIControlState.Normal)
+                
+                uploadImageFileToS3(path,fileName:newUUIDFileName)
+                
+                
+            }else{
+                print("n")
+            }
+            
+            
             
             if newMedia == true {
                 UIImageWriteToSavedPhotosAlbum(image, self, "image:didFinishSavingWithError:contextInfo:", nil)
             }
         }
     }
+    
+    func uploadImageFileToS3(path:String , fileName:String){
+        
+        
+        let uploadURL = NSURL(fileURLWithPath: path + "/" + fileName)
+        
+        
+       
+        
+        
+        let transferManager =  AWSS3TransferManager.defaultS3TransferManager()
+        
+        let uploadRequest = AWSS3TransferManagerUploadRequest.new()
+        uploadRequest.bucket = AWSS3_BUCKET_NAME
+        uploadRequest.key = "development/" + fileName
+        uploadRequest.body = uploadURL
+        
+        
+        
+        transferManager.upload(uploadRequest).continueWithBlock({ (task) -> AnyObject! in
+            
+            if let error = task.error {
+                if error.domain == AWSS3TransferManagerErrorDomain as String {
+                    if let errorCode = AWSS3TransferManagerErrorType(rawValue: error.code) {
+                        switch (errorCode) {
+                        case .Cancelled, .Paused:
+                            dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                                //self.collectionView.reloadData()
+                            })
+                            break;
+                            
+                        default:
+                            println("upload() failed: [\(error)]")
+                            break;
+                        }
+                    } else {
+                        println("upload() failed: [\(error)]")
+                    }
+                } else {
+                    println("upload() failed: [\(error)]")
+                }
+            }
+            
+            if let exception = task.exception {
+                println("upload() failed: [\(exception)]")
+            }
+            
+            if (task.result != nil) {
+                
+                let output = task.result
+                
+                self.fileName = fileName
+                
+                
+            }
+       
+            return nil
+       
+        })
+    }
+    
     
     func image(image:UIImage, didFinishSavingWithError error:NSErrorPointer, contextInfo:UnsafePointer<Void>){
         
@@ -243,8 +384,12 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         let listInputVC = ListInputViewController()
         
         listInputVC.dataSource = ["초등학생","중학생","고등학생","대학생","직장인"]
-        listInputVC.title = "직업"
+        listInputVC.tableTitle = "직업"
+        listInputVC.buttonTitle = "취소"
         listInputVC.delegate = self
+        
+        listInputVC.selectedIndex = listInputVC.dataSource.indexOfObject(jobField.text)
+
         listInputVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         
         self.navigationController?.presentViewController(listInputVC, animated: false, completion: { () -> Void in
@@ -256,7 +401,13 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     
     func selectedString(string:String){
         
+        jobField.text = string
+        scrollView.scrollRectToVisible(jobField.frame, animated: true)
+        goalField.becomeFirstResponder()
+        currentTextField = goalField
     }
+    
+    
     
     func addEmailField(){
         
@@ -274,9 +425,39 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
     }
     
-    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+    
+    func textFieldDidBeginEditing(textField: UITextField) {
         
         currentTextField = textField
+        
+        switch currentTextField {
+        
+        case nameField: keyboardHelpView.setStatus(KeyboardHelpStatus.Start) ; status = .Name
+        case emailField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Email
+        case passwordField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Password
+        case confirmField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Confirm
+        case jobField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Job
+        case goalField: keyboardHelpView.setStatus(KeyboardHelpStatus.End) ; status = .Goal
+        default : return
+        }
+        
+    }
+    
+    
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+        
+        if textField == jobField {
+            
+            resignAllKeyBoard()
+            showJobInputView()
+            
+            return false
+            
+        }else{
+            currentTextField = textField
+        }
+        
+        
         
         return true
         
@@ -295,6 +476,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         passwordField.returnKeyType = UIReturnKeyType.Next
         passwordField.tintColor = UIColor.whiteColor()
         passwordField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
+        passwordField.secureTextEntry = true
         scrollView.addSubview(passwordField)
     }
     
@@ -311,6 +493,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         confirmField.returnKeyType = UIReturnKeyType.Next
         confirmField.tintColor = UIColor.whiteColor()
         confirmField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
+        confirmField.secureTextEntry = true
         scrollView.addSubview(confirmField)
     }
 
@@ -332,21 +515,23 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         scrollView.addSubview(jobField)
     }
     
-    func addObjectField(){
+    func addGoalField(){
         
-        objectField = PaddingTextField(frame: CGRectMake(0, 448*ratio, width, 48*ratio))
-        objectField.padding = 30*ratio
-        objectField.attributedPlaceholder = NSAttributedString.getAttributedString("목표",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
+        goalField = PaddingTextField(frame: CGRectMake(0, 448*ratio, width, 48*ratio))
+        goalField.padding = 30*ratio
+        goalField.attributedPlaceholder = NSAttributedString.getAttributedString("목표",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
         
-        objectField.textAlignment = NSTextAlignment.Left
-        objectField.delegate = self
-        objectField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
-        objectField.textColor = UIColor.whiteColor()
-        objectField.returnKeyType = UIReturnKeyType.Next
-        objectField.tintColor = UIColor.whiteColor()
-        objectField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
-        scrollView.addSubview(objectField)
+        goalField.textAlignment = NSTextAlignment.Left
+        goalField.delegate = self
+        goalField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
+        goalField.textColor = UIColor.whiteColor()
+        goalField.returnKeyType = UIReturnKeyType.Join
+        goalField.tintColor = UIColor.whiteColor()
+        goalField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
+        scrollView.addSubview(goalField)
     }
+    
+    
     
     func addRegisterButton(){
         
@@ -356,14 +541,136 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         registerButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         registerButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Reguar", size: 14*ratio)
         registerButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Center
+        registerButton.addTarget(self, action: Selector("registerButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         
         scrollView.addSubview(registerButton)
+        
+        
+    }
+    
+    func registerButtonClk(){
+        
+        
+        let validator = Validator()
+        
+        
+        validator.registerField(nameField, rules:[MinLengthRule(length: 1, message: "이름을 입력해주세요.")])
+        
+        validator.registerField(emailField, rules:[MinLengthRule(length: 1, message: "이메일을 입력해주세요."),EmailRule(message:"올바른 이메일을 입력해주세요."),])
+        
+        validator.registerField(passwordField, rules:[MinLengthRule(length: 1, message: "비밀번호를 입력해주세요."),MinLengthRule(length: 8, message: "비밀번호는 8자 이상입니다."),PasswordRule(message:"올바른 비밀번호를 입력해주세요")])
+        validator.registerField(confirmField, rules:[MinLengthRule(length: 1, message: "비밀번호를 입력해주세요."),MinLengthRule(length: 8, message: "비밀번호는 8자 이상입니다."),PasswordRule(message:"올바른 비밀번호를 입력해주세요")])
+        
+        validator.validate(self)
+        
+    }
+    
+    func validationSuccessful(){
+        requestRegister()
+    }
+    
+    func requestRegister(){
+        
+        var params:[String:AnyObject] = [:]
+        
+        
+        let name = nameField.text as String
+        let email = emailField.text as String
+        let password = passwordField.text as String
+        let confirm = confirmField.text as String
+        let job = jobField.text as String
+        let object = goalField.text as String
+        
+        
+        
+        params["user"] = ["email":email,"name":name,"password":password,"password_confirmation":confirm,"grade":job,"image_names":fileName]
+        
+        
+        var manager = Alamofire.Manager.sharedInstance
+        manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
+        
+        
+        Alamofire.request(.POST, "https://todait.com/registrations", parameters: params).responseJSON(options: nil) { (request, response, object, error) -> Void in
+            
+            let json = JSON(object!)
+            print(json)
+            
+            
+        }
+    }
+    
+    
+    func validationFailed(errors: [UITextField:ValidationError]){
+        
+        
+        for ( textField , error) in errors {
+            
+            let alert = UIAlertView(title: "Invalid", message: error.errorMessage, delegate: nil, cancelButtonTitle: "Cancel")
+            
+            alert.show()
+            
+            return
+        }
+    }
+    
+    
+    
+    func addKeyboardHelpView(){
+        
+        keyboardHelpView = KeyboardHelpView(frame: CGRectMake(0, height , width, 38*ratio + 185*ratio))
+        keyboardHelpView.backgroundColor = UIColor.whiteColor()
+        keyboardHelpView.leftImageName = "bt_keybord_left@3x.png"
+        keyboardHelpView.rightImageName = "bt_keybord_right@3x.png"
+        keyboardHelpView.delegate = self
+        keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        
+        view.addSubview(keyboardHelpView)
+        
+        
+        let line = UIView(frame: CGRectMake(0, 38*ratio-1, width, 1))
+        line.backgroundColor = UIColor.colorWithHexString("#d1d5da")
+        keyboardHelpView.addSubview(line)
+        
+    }
+    
+    func leftButtonClk(){
+        
+        
+        switch status as Status {
+        case .Email: status = .Name ; goalField.becomeFirstResponder() ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
+        case .Password: emailField.becomeFirstResponder() ; status = .Email  ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Confirm: passwordField.becomeFirstResponder() ; status = .Password  ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Job: confirmField.becomeFirstResponder() ; status = .Confirm  ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Goal: jobField.becomeFirstResponder() ; status = .Job ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        default: status = .None ; confirmButtonClk()
+        }
         
     }
     
     
     
+    func rightButtonClk(){
         
+        switch status as Status {
+        case .Name: emailField.becomeFirstResponder() ; status = .Email ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Email: passwordField.becomeFirstResponder() ; status = .Password ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Password: confirmField.becomeFirstResponder() ; status = .Confirm ;  keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Confirm: jobField.becomeFirstResponder() ; status = .Job ;  keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+        case .Job: goalField.becomeFirstResponder() ; status = .Goal  ; keyboardHelpView.setStatus(KeyboardHelpStatus.End)
+            
+        default: status = .None ; confirmButtonClk()
+        }
+        
+    }
+    
+    func confirmButtonClk() {
+    
+        if let currentField = currentTextField {
+            currentField.resignFirstResponder()
+        }
+        
+    }
+    
     
     
     override func viewWillAppear(animated: Bool) {
@@ -413,12 +720,11 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         if (!CGRectContainsPoint(aRect, registerButton.frame.origin)) {
             
             scrollView.scrollRectToVisible(registerButton.frame, animated: true)
-            
         }
         
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-            //self.unitView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-40*self.ratio)
+            self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, -kbSize.height-38*self.ratio)
             }, completion: nil)
         
     }
@@ -432,9 +738,9 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
-            //self.unitView.transform = CGAffineTransformMakeTranslation(0, 40*self.ratio)
+            
+            self.keyboardHelpView.transform = CGAffineTransformMakeTranslation(0, 0*self.ratio)
             }) { (Bool) -> Void in
-                //self.unitView.hidden = true
         }
         
     }

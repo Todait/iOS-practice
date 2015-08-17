@@ -27,6 +27,9 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     
     let HistoryViewOriginX:CGFloat = 50
     let HistoryViewWidth:CGFloat = 220
+    let weekCalendarHeight:CGFloat = 48
+    let monthCalendarHeight:CGFloat = 288
+    
     
     let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
@@ -40,10 +43,11 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     var panEnd:CGPoint!
     
     var isLongPressed:Bool! = false
-    
+    var isCalendarDown:Bool! = false
     
     var shadowView:UIView!
    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -103,12 +107,16 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         
         
         let weekTitle = ["SUN","MON","TUE","WED","THU","FRI","SAT"]
-        let weekWidth = 320*ratio / 7
+        let weekWidth = 310*ratio / 7
         
+        
+        let whiteBox = UIView(frame:CGRectMake(0,23*ratio,width,20*ratio))
+        whiteBox.backgroundColor = UIColor.whiteColor()
+        headerView.addSubview(whiteBox)
         
         for index in 0...6 {
-            let weekDayLabel = UILabel(frame: CGRectMake(CGFloat(index)*weekWidth, 23*ratio, weekWidth, 20*ratio))
-            weekDayLabel.backgroundColor = UIColor.whiteColor()
+            let weekDayLabel = UILabel(frame: CGRectMake(CGFloat(index)*weekWidth + 5*ratio, 23*ratio, weekWidth, 20*ratio))
+            weekDayLabel.backgroundColor = UIColor.clearColor()
             weekDayLabel.textAlignment = NSTextAlignment.Center
             weekDayLabel.text = weekTitle[index]
             weekDayLabel.font = UIFont(name: "AppleSDGothicNeo-SemiBold", size: 7.5*ratio)
@@ -142,7 +150,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     
     func getWeekNumber(date:NSDate)->CGFloat{
         
-        var time = Int(date.timeIntervalSinceDate(getFirstDateOfMonth(date)) / (7*24*60*60))
+        var time = Int(date.timeIntervalSinceDate(getFirstSundayDateOfMonth(date)) / (7*24*60*60))
         
         return CGFloat(time + 1)
         
@@ -319,7 +327,23 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         timeY = min(max(timeY,baseOriginY + 48*ratio),baseOriginY + 48*6*ratio)
         */
         
-        if timeTableView.frame.origin.y >= 250*ratio {
+        
+        var scrollLine = baseOriginY
+        
+        if isCalendarDown == true {
+            
+            scrollLine = baseOriginY + 0.8*monthCalendarHeight*ratio
+            
+        }else{
+            
+            scrollLine = baseOriginY + 0.2*monthCalendarHeight*ratio
+            
+        }
+        
+        
+        if timeTableView.frame.origin.y >= scrollLine {
+            
+            isCalendarDown = true
             
             UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
                 self.categoryView.frame = CGRectMake(245*self.ratio, baseOriginY + 48*6*self.ratio, 75*self.ratio, self.timeTableView.frame.size.height)
@@ -333,6 +357,9 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
                 self.weekCalendarVC.view.hidden = true
             })
         }else{
+            
+            isCalendarDown = false
+            
             UIView.animateWithDuration(0.4, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
                 self.timeTableView.frame = CGRectMake(0, baseOriginY + 48*self.ratio, 245*self.ratio, self.timeTableView.frame.size.height)
                 self.monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-48*self.ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, 48*6*self.ratio)
@@ -359,15 +386,16 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         weekCalendarVC.setSelectedDateNumber(selectedDateNumber)
         
         
-        /*
-        switch from {
-        case "Month": weekCalendarVC.setSelectedDateNumber(selectedDateNumber)
-        case "Week": monthCalendarVC.setSelectedDateNumber(selectedDateNumber)
-        default: monthCalendarVC.setSelectedDateNumber(selectedDateNumber)
-                 weekCalendarVC.setSelectedDateNumber(selectedDateNumber)
-
+        
+        if from == "Week" {
+            
+            let baseOriginY = 64 + 43*ratio
+            
+            monthCalendarVC.view.frame = CGRectMake(0, baseOriginY-weekCalendarHeight*ratio*(self.selectedWeekOfMonth-1), 320*self.ratio, monthCalendarHeight*ratio)
+            
         }
-        */
+        
+        
     }
     
     func addWeekView(){
@@ -538,7 +566,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
             timeTableView.addSubview(timeLabel)
             
             
-            let timeLineView = UIView(frame: CGRectMake(50*ratio,25*ratio+TimeTableHeight * CGFloat(i)*ratio, 160*ratio, 1*ratio))
+            let timeLineView = UIView(frame: CGRectMake(50*ratio,25*ratio+TimeTableHeight * CGFloat(i)*ratio, 160*ratio, 1))
             timeLineView.backgroundColor = UIColor.todaitDarkGray().colorWithAlphaComponent(0.3)
             timeTableView.addSubview(timeLineView)
         }

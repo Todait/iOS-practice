@@ -19,6 +19,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
     var task:Task!
     
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -41,7 +42,6 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         
         
         
-        
         if let cell = monthView.cellForItemAtIndexPath(selectedIndex) as? DetailMonthCalendarCell {
             
             for index in 0...41 {
@@ -58,8 +58,21 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         }
     }
     
+    func getCurrentDate(indexPath:NSIndexPath)->NSDate{
+        
+        var adjustDate = getAdjustDate(NSDate())
+        
+        return adjustDate.addMonth(Int(indexPath.row - 100))
+    }
     
-    func getNumberOfWeekViewScrollCount(from:NSDate,to:NSDate)->NSNumber{
+    func getAdjustDate(date:NSDate)->NSDate{
+        
+        return getDateFromDateNumber(getDateNumberFromDate(date))
+    }
+
+    
+    
+    func getNumberOfWeekViewScrollCount(from:NSDate,to:NSDate)->Int{
         var fromDateNumber = getDateNumberFromDate(from)
         var toDateNumber = getDateNumberFromDate(to)
         
@@ -68,10 +81,10 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         
         if  dateForm.stringFromDate(from) != dateForm.stringFromDate(to) {
             
-            if toDateNumber.integerValue > fromDateNumber.integerValue {
+            if toDateNumber > fromDateNumber {
                 NSLog("return 1", 0)
                 return 1
-            }else if toDateNumber.integerValue < fromDateNumber.integerValue {
+            }else if toDateNumber < fromDateNumber{
                 NSLog("return -1", 0)
                 return -1
             }
@@ -86,6 +99,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         let screenRect = UIScreen.mainScreen().bounds
         let screenWidth = screenRect.size.width
         ratio = screenWidth/320
+        width = 320*ratio
     }
     
     
@@ -94,7 +108,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         var layout = UICollectionViewFlowLayout()
         layout.scrollDirection = UICollectionViewScrollDirection.Horizontal
         
-        monthView = UICollectionView(frame: CGRectMake(0, 0, width, 60*6*ratio), collectionViewLayout:layout)
+        monthView = UICollectionView(frame: CGRectMake(0, 0, width, 49*6*ratio), collectionViewLayout:layout)
         
         monthView.registerClass(DetailMonthCalendarCell.self, forCellWithReuseIdentifier: "monthCell")
         monthView.backgroundColor = UIColor.clearColor()
@@ -103,7 +117,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         monthView.pagingEnabled = true
         monthView.showsHorizontalScrollIndicator = false
         monthView.contentInset = UIEdgeInsetsMake(-15*ratio, 0, 0, 0)
-        monthView.contentOffset = CGPointMake(width * 500, 0)
+        monthView.contentOffset = CGPointMake(width * 100, 0)
         
         view.addSubview(monthView)
         
@@ -115,7 +129,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1000
+        return 200
     }
     
     
@@ -145,6 +159,8 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         var dateForm = NSDateFormatter()
         var currentDate = date
         
+        
+        
         selectedIndex = indexPath
         
         dateForm.dateFormat = "d"
@@ -171,78 +187,65 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
             
             let todayDateNumber:NSNumber! = getTodayDateNumber()
             
+            var month = monthForm.stringFromDate(monthDate)
             
-            if(button.dateNumber == todayDateNumber){
-                button.backgroundColor = UIColor.todaitWhiteGray()
-            }else if self.dateNumber == button.dateNumber {
-                button.backgroundColor = UIColor.whiteColor()
+            if monthForm.stringFromDate(currentDate) == month {
+                label.textColor = UIColor.todaitGray()
             }else{
-                button.backgroundColor = UIColor.whiteColor()
+                label.textColor = UIColor.todaitLightGray()
             }
-            
             
             
             
             if let currentDay = task.getDay(currentDateNumber) {
                 
                 
-                if currentDay.expectAmount.integerValue <= currentDay.doneAmount.integerValue {
-                    button.expectLabel.backgroundColor = UIColor.todaitGreen()
+                if currentDay.expectAmount <= currentDay.doneAmount{
                     button.expectLabel.text = "\(currentDay.doneAmount)"
                     
+                    
                     if currentDateNumber == getTodayDateNumber() {
-                        button.expectLabel.backgroundColor = UIColor.todaitDarkGreen()
+                        button.setDateStatus(DateStatus.Complete)
+                    }else{
+                        button.setDateStatus(DateStatus.Completed)
                     }
                     
                 }else{
-                    button.expectLabel.backgroundColor = UIColor.todaitRed().colorWithAlphaComponent(0.8)
                     button.expectLabel.text = "\(currentDay.expectAmount)"
                     
-                    
                     if currentDateNumber == getTodayDateNumber() {
-                        button.expectLabel.backgroundColor = UIColor.todaitDarkRed()
+                        button.setDateStatus(DateStatus.Progressing)
+                    }else{
+                        button.setDateStatus(DateStatus.UnCompleted)
                     }
+                    
                 }
                 
                 
                 
-                if currentDateNumber.integerValue > getTodayDateNumber().integerValue {
+                if currentDateNumber > getTodayDateNumber(){
                     
                     button.expectLabel.textColor = UIColor.todaitDarkGray()
-                    button.expectLabel.backgroundColor = UIColor.todaitWhiteGray()
+                    button.setDateStatus(DateStatus.UnStart)
                     
+                }else{
+                    button.expectLabel.textColor = UIColor.whiteColor()
                 }
                 
             }else{
                 
                 button.expectLabel.textColor = UIColor.whiteColor()
                 button.expectLabel.text = ""
-                button.expectLabel.backgroundColor = UIColor.clearColor()
+                button.setDateStatus(DateStatus.None)
             }
             
             
-            
-            
-            /*
-            let button = cell.buttons[index]
-            button.delegate = self.delegate
-            button.setTitle(dateForm.stringFromDate(currentDate), forState: UIControlState.Normal)
-            button.dateNumber = getDateNumberFromDate(currentDate)
-            
-            
-            if monthForm.stringFromDate(currentDate) == month {
-                button.setTitleColor(UIColor.todaitGray(), forState: UIControlState.Normal)
-            }else{
-                button.setTitleColor(UIColor.todaitLightGray(), forState: UIControlState.Normal)
-            }
-            */
-            /*
-            if dateNumber == button.dateNumber {
-                button.backgroundColor = UIColor.todaitWhiteGray()
+            if button.dateNumber == dateNumber {
+                button.backgroundColor = UIColor.todaitBlue().colorWithAlphaComponent(0.05)
             }else{
                 button.backgroundColor = UIColor.whiteColor()
             }
-            */
+            
         }
         
         return cell
@@ -269,18 +272,6 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
         
         return dateForm.stringFromDate(currentDate)
         
-    }
-    
-    func getCurrentDate(indexPath:NSIndexPath)->NSDate{
-        
-        var adjustDate = getAdjustDate(NSDate())
-        
-        return adjustDate.addMonth(Int(indexPath.row - 500))
-    }
-    
-    func getAdjustDate(date:NSDate)->NSDate{
-        
-        return getDateFromDateNumber(getDateNumberFromDate(date))
     }
     
     
@@ -327,7 +318,7 @@ class DetailMonthCalendarViewController: BasicViewController,UICollectionViewDel
     
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
-        return CGSizeMake(width,60*6*ratio)
+        return CGSizeMake(width,49*6*ratio)
         
     }
     

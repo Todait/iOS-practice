@@ -45,7 +45,7 @@ class CalendarDayView: UIView {
         dayLabel = UILabel(frame:rect)
         dayLabel.center = center
         dayLabel.text = ""
-        dayLabel.font = UIFont(name: "AvenirNext-Regular", size: 14*ratio)
+        dayLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)
         dayLabel.textColor = UIColor.colorWithHexString("#969696")
         dayLabel.textAlignment = NSTextAlignment.Center
         dayLabel.layer.cornerRadius = 15*ratio

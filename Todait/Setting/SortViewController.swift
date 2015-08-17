@@ -13,7 +13,7 @@ import UIKit
 class SortViewController: BasicTableViewController,TodaitNavigationDelegate,UITableViewDataSource,UITableViewDelegate{
 
     
-    let sortTitle:[[String]] = [["기본 정렬","이름 정렬","카테고리 정렬","사용자 정렬"],["오늘 목표","오늘 쉬는 목표","완료 목표","미완료 목표","시작전 목표"]]
+    var sortTitle:[[String]] = [["시간 순 정렬","이름 순 정렬","카테고리 순 정렬","사용자 정렬"],["오늘 목표","오늘 쉬는 목표","완료 목표","미완료 목표","시작전 목표"]]
     //var sortTableView:UITableView!
     
     var sortIndex = 1
@@ -48,7 +48,7 @@ class SortViewController: BasicTableViewController,TodaitNavigationDelegate,UITa
         let titleLabel = UILabel(frame: CGRectMake(15*ratio, 0*ratio, 270*ratio, 35*ratio))
         titleLabel.textAlignment = NSTextAlignment.Left
         titleLabel.textColor = UIColor.colorWithHexString("#606060")
-        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 11*ratio)
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 11*ratio)
         titleLabel.text = sortTitle[indexPath.section][indexPath.row]
         cell.contentView.addSubview(titleLabel)
         

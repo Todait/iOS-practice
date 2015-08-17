@@ -90,7 +90,7 @@ class TaskBarDashViewController: UITableViewController {
         titleLabel.text = category.name
         titleLabel.textColor = UIColor.whiteColor()
         titleLabel.textAlignment = NSTextAlignment.Left
-        titleLabel.font = UIFont(name: "AvenirNext-Regular", size: 8*ratio)
+        titleLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 8*ratio)
         cell.contentView.addSubview(titleLabel)
         
         
@@ -98,7 +98,7 @@ class TaskBarDashViewController: UITableViewController {
         percentLabel.adjustsFontSizeToFitWidth = true
         percentLabel.text = String(format: "%.0f%",value)
         percentLabel.textColor = color
-        percentLabel.font = UIFont(name: "AvenirNext-Regular", size: 8*ratio)
+        percentLabel.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 8*ratio)
         cell.contentView.addSubview(percentLabel)
         
         return cell

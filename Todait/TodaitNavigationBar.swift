@@ -12,7 +12,19 @@ protocol TodaitNavigationDelegate : NSObjectProtocol {
     func backButtonClk()
 }
 
-class TodaitNavigationBar: UINavigationBar {
+
+
+@IBDesignable class TodaitNavigationBar: UINavigationBar {
+    
+    
+    
+    @IBInspectable var color: UIColor = UIColor.todaitGreen() {
+        
+        didSet {
+            self.setBackgroundImage(UIImage.colorImage(color,frame:CGRectMake(0, 0, 320*ratio, 64)), forBarMetrics: UIBarMetrics.Default)
+        }
+        
+    }
     
     var ratio : CGFloat!
     var backButton : UIButton!
@@ -23,7 +35,7 @@ class TodaitNavigationBar: UINavigationBar {
         
         self.tintColor = UIColor.whiteColor()
         setupRatio()
-        self.setBackgroundImage(UIImage.colorImage(UIColor.colorWithHexString("#00D2B1"),frame:frame), forBarMetrics: UIBarMetrics.Default)
+        self.setBackgroundImage(UIImage.colorImage(UIColor.todaitGreen(),frame:frame), forBarMetrics: UIBarMetrics.Default)
         addBackButton()
         
     }
