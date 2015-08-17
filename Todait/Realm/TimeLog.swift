@@ -8,19 +8,32 @@
 
 import RealmSwift
 
-class TimeLogR: Object {
+class TimeLog: RealmObject {
     
-    dynamic var id = ""
-    dynamic var serverId = 0
     dynamic var timestamp = 0
     dynamic var archived = false
-    dynamic var beforeAmount = 0
-    dynamic var afterAmount = 0
-    dynamic var dirtyFlag = false
-    dynamic var dayId:DayR?
+    dynamic var beforeSecond = 0
+    dynamic var afterSecond = 0
+    dynamic var day:Day?
     
-    override static func primaryKey()->String? {
-        return "id"
+    override func getParentsModel()->RealmObject.Type{
+        return Day.self
+    }
+    
+    
+    func setupJSON(json:JSON){
+        
+        if let serverId = json["id"].int{
+            self.serverId = serverId
+        }else{
+            serverId = -1
+        }
+        
+        timestamp = json["timestamp"].intValue
+        archived = json["archived"].boolValue
+        beforeSecond = json["before_second"].intValue
+        afterSecond = json["after_second"].intValue
+        
     }
     
 // Specify properties to ignore (Realm won't persist these)

@@ -9,10 +9,8 @@
 import RealmSwift
 import SwiftyJSON
 
-class Task: Object {
+class Task: RealmObject{
     
-    dynamic var id = ""
-    dynamic var serverId = -1
     dynamic var name = ""
     dynamic var unit = ""
     dynamic var startPoint:Int = 0
@@ -27,13 +25,27 @@ class Task: Object {
     dynamic var reviewCount:Int = 0
     dynamic var completed = false
     dynamic var taskType = ""
-    dynamic var dirtyFlag = false
     dynamic var hidden = false
     
     let taskDates = List<TaskDate>()
     
     dynamic var category:Category?
     
+    override func addRelation(child:RealmObject){
+        
+        if child.className == "TaskDate" {
+            (child as! TaskDate).task = self
+            taskDates.append(child as! TaskDate)
+        }
+    }
+    
+    override func getParentsModel()->RealmObject.Type{
+        return Category.self
+    }
+    
+    override func getParentsServerIdKey()->String{
+        return "category_id"
+    }
     
     func setupJSON(json:JSON){
         
@@ -443,10 +455,6 @@ class Task: Object {
         }
         
         return doneAmount
-    }
-    
-    override static func primaryKey()->String? {
-        return "id"
     }
     
 // Specify properties to ignore (Realm won't persist these)

@@ -8,22 +8,35 @@
 
 import RealmSwift
 
-class UserR: Object {
+class User: RealmObject {
     
-    dynamic var id = ""
     dynamic var email = ""
     dynamic var name = ""
     dynamic var authenticationToken = ""
     dynamic var imageNames = ""
     
-    let tasks = List<TaskR>()
-    let categorys = List<CategoryR>()
-    let dailyTotalResults = List<DailyTotalResultR>()
-    let preferences = List<PreferenceR>()
+    let tasks = List<Task>()
+    let categorys = List<Category>()
+    let dailyTotalResults = List<DailyTotalResult>()
+    let preferences = List<Preference>()
     
-    override static func primaryKey()->String? {
-        return "id"
+    
+    func setupJSON(json:JSON){
+        
+        if let serverId = json["id"].int{
+            self.serverId = serverId
+        }else{
+            serverId = -1
+        }
+        
+        email = json["email"].stringValue
+        name = json["name"].stringValue
+        authenticationToken = json["authentication_token"].stringValue
+        
+    
     }
+
+   
     
 // Specify properties to ignore (Realm won't persist these)
     

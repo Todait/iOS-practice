@@ -8,18 +8,38 @@
 
 import RealmSwift
 
-class DiaryR: Object {
+class Diary: RealmObject {
     
-    dynamic var id = ""
-    dynamic var serverId = 0
     dynamic var body = ""
     dynamic var timestamp = 0
     dynamic var archived = false
-    dynamic var dirtyFlag = false
-    dynamic var dayId:DayR?
+    dynamic var day:Day?
     
-    override static func primaryKey()->String? {
-        return "id"
+    let images = List<Image>()
+    
+    func setupJSON(json:JSON){
+        
+        if let serverId = json["id"].int{
+            self.serverId = serverId
+        }else{
+            serverId = -1
+        }
+        
+        
+        
+        body = json["body"].stringValue
+        timestamp = json["timestamp"].intValue
+        archived = json["archived"].boolValue
+
+        
+    }
+    
+    override func getParentsServerIdKey()->String{
+        return "day_id"
+    }
+    
+    override func getParentsModel()->RealmObject.Type{
+        return Day.self
     }
     
 // Specify properties to ignore (Realm won't persist these)

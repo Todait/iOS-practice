@@ -8,18 +8,34 @@
 
 import RealmSwift
 
-class ReviewDayR: Object {
+class ReviewDay: RealmObject {
     
-    dynamic var id = ""
-    dynamic var serverId = 0
+   
+
     dynamic var date = 0
     dynamic var done = false
     dynamic var archived = false
-    dynamic var dirtyFlag = false
-    dynamic var dayId:DayR?
+    dynamic var day:Day?
     
-    override static func primaryKey()->String? {
-        return "id"
+    
+    func setupJSON(json:JSON){
+        
+        if let serverId = json["id"].int{
+            self.serverId = serverId
+        }else{
+            serverId = -1
+        }
+        
+        
+        done = json["done"].boolValue
+        date = json["date"].intValue
+        archived = json["archived"].boolValue
+        
+    }
+    
+    
+    override func getParentsModel()->RealmObject.Type{
+        return Day.self
     }
     
 // Specify properties to ignore (Realm won't persist these)

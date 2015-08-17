@@ -8,20 +8,32 @@
 
 import RealmSwift
 
-class AmountLogR: Object {
+class AmountLog: RealmObject {
     
-    dynamic var id = ""
-    dynamic var serverId = 0
-    dynamic var timestemp = 0
+    dynamic var timestamp = 0
     dynamic var archived = false
     dynamic var beforeAmount = 0
     dynamic var afterAmount = 0
-    dynamic var dirtyFlag = false
-    dynamic var dayId:DayR?
+    dynamic var day:Day?
+    
+    override func getParentsModel()->RealmObject.Type{
+        return Day.self
+    }
     
     
-    override static func primaryKey()->String? {
-        return "id"
+    func setupJSON(json:JSON){
+        
+        if let serverId = json["id"].int{
+            self.serverId = serverId
+        }else{
+            serverId = -1
+        }
+        
+        timestamp = json["timestamp"].intValue
+        archived = json["archived"].boolValue
+        beforeAmount = json["before_amount"].intValue
+        afterAmount = json["after_amount"].intValue
+        
     }
     
 // Specify properties to ignore (Realm won't persist these)

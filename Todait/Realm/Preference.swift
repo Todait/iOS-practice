@@ -8,10 +8,8 @@
 
 import RealmSwift
 
-class PreferenceR: Object {
+class Preference: RealmObject {
     
-    dynamic var id = ""
-    dynamic var serverId = 0
     dynamic var stopwatchScreenDim = false
     dynamic var comboCount = 0
     dynamic var maxComboCount = 0
@@ -20,11 +18,21 @@ class PreferenceR: Object {
     dynamic var finishTime = ""
     dynamic var customStopwatchBackground = false
     dynamic var stopwatchBackgroundImageName = ""
-    dynamic var dirtyFlag = false
-    dynamic var userId:UserR?
+    dynamic var userId:User?
     
-    override static func primaryKey()->String? {
-        return "id"
+    
+    func setupJSON(json:JSON){
+        
+        stopwatchScreenDim = json["stopwatch_screen_dim"].boolValue
+        comboCount = json["combo_count"].intValue
+        maxComboCount = json["max_combo_count"].intValue
+        notificationMode = json["notificaiton_mode"].boolValue
+        notificationTime = json["notification_time"].stringValue
+        finishTime = json["finish_time"].stringValue
+        customStopwatchBackground = json["custom_stopwatch_background"].boolValue
+        stopwatchBackgroundImageName = json["stopwatch_background_imagename"].stringValue
+        serverId = json["id"].intValue
+        
     }
     
 // Specify properties to ignore (Realm won't persist these)

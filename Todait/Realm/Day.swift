@@ -9,11 +9,8 @@
 import RealmSwift
 import SwiftyJSON
 
-class Day: Object {
+class Day: RealmObject {
     
-    
-    dynamic var id = ""
-    dynamic var serverId = 0
     dynamic var expectAmount = 0
     dynamic var doneAmount = 0
     dynamic var date = 0
@@ -22,7 +19,6 @@ class Day: Object {
     dynamic var off = false
     dynamic var done = false
     dynamic var score = 0.0
-    dynamic var dirtyFlag = false
     dynamic var userId = 0
     
     dynamic var taskDate:TaskDate?
@@ -37,10 +33,41 @@ class Day: Object {
     
     
     
+    override func addRelation(child:RealmObject){
+        
+        
+        switch child.className {
+            
+        case "Diary":
+            (child as! Diary).day = self
+            diarys.append(child as! Diary)
+        case "AmountRange":
+            (child as! AmountRange).day = self
+            amountRanges.append(child as! AmountRange)
+        case "TimeHistory":
+            (child as! TimeHistory).day = self
+            timeHistorys.append(child as! TimeHistory)
+        case "AmountLog":
+            (child as! AmountLog).day = self
+            amountLogs.append(child as! AmountLog)
+        case "TimeLog":
+            (child as! TimeLog).day = self
+            timeLogs.append(child as! TimeLog)
+        case "CheckLog":
+            (child as! CheckLog).day = self
+            checkLogs.append(child as! CheckLog)
+        case "ReviewDay":
+            (child as! ReviewDay).day = self
+            reviewDays.append(child as! ReviewDay)
+        default: return
+        }
+        
+        
+    }
+
+    
+    
     func setupJSON(json:JSON){
-        
-        
-        
         
         if let serverId = json["id"].int{
             self.serverId = serverId
@@ -60,13 +87,14 @@ class Day: Object {
         userId = json["user_id"].intValue
         score = json["score"].doubleValue
         
-        
     }
     
     
-    override static func primaryKey()->String? {
-        return "id"
+    
+    override func getParentsModel()->RealmObject.Type{
+        return TaskDate.self
     }
+    
     
     func dayOfWeek()->Int {
         

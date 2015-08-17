@@ -9,15 +9,12 @@
 import RealmSwift
 import SwiftyJSON
 
-class TaskDate: Object {
+class TaskDate: RealmObject {
     
-    dynamic var id = ""
-    dynamic var serverId = 0
     dynamic var startDate = 0
     dynamic var endDate = 0
     dynamic var state = 0
     dynamic var archived = false
-    dynamic var dirtyFlag = false
     dynamic var task:Task?
     dynamic var week:Week?
     dynamic var userId = 0
@@ -39,11 +36,29 @@ class TaskDate: Object {
     
     }
     
-    
-    
-    override static func primaryKey()->String? {
-        return "id"
+    override func getParentsModel()->RealmObject.Type{
+        return Task.self
     }
+   
+    override func getParentsServerIdKey()->String{
+        return "task_id"
+    }
+    
+    
+    override func addRelation(child:RealmObject){
+        
+        if child.className == "Day" {
+            
+            (child as! Day).taskDate = self
+            days.append(child as! Day)
+            
+        }else if(child.className == "Week") {
+            
+            (child as! Week).taskDate = self
+            week = (child as! Week)
+        }
+    }
+    
     
     func getColor()->UIColor?{
         

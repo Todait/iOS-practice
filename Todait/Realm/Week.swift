@@ -9,11 +9,8 @@
 import RealmSwift
 import SwiftyJSON
 
-class Week: Object {
+class Week: RealmObject {
     
-    
-    dynamic var id = ""
-    dynamic var serverId = -1
     dynamic var archived = false
     dynamic var sun = 0
     dynamic var mon = 0
@@ -22,7 +19,6 @@ class Week: Object {
     dynamic var thu = 0
     dynamic var fri = 0
     dynamic var sat = 0
-    dynamic var dirtyFlag = false
     dynamic var userId = -1
     dynamic var taskDate:TaskDate?
     
@@ -44,10 +40,14 @@ class Week: Object {
         
     }
     
-    override static func primaryKey()->String? {
-        return "id"
+    override func getParentsServerIdKey()->String{
+        return "task_date_id"
     }
     
+    
+    override func getParentsModel()->RealmObject.Type{
+        return TaskDate.self
+    }
     
     func getExpectedAmount()->[Int]{
         

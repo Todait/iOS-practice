@@ -8,19 +8,22 @@
 
 import RealmSwift
 
-class DailyTotalResultR: Object {
+class DailyTotalResult: RealmObject {
     
-    dynamic var id = ""
-    dynamic var serverId = 0
     dynamic var achievementRate = 0
     dynamic var doneSecond = 0
     dynamic var date = 0
     dynamic var archived = false
-    dynamic var dirtyFlag = false
-    dynamic var userId:UserR?
+    dynamic var userId:User?
     
-    override static func primaryKey()->String? {
-        return "id"
+    func setupJSON(json:JSON){
+        
+        serverId = json["id"].intValue
+        doneSecond = json["done_second"].intValue
+        date = json["date"].intValue
+        archived = json["archived"].boolValue
+        achievementRate = json["achievment_rate"].intValue
+        
     }
     
 // Specify properties to ignore (Realm won't persist these)

@@ -8,20 +8,33 @@
 
 import RealmSwift
 
-class AmountRangeR: Object {
+class AmountRange: RealmObject {
     
-    dynamic var id = ""
-    dynamic var serverId = 0
     dynamic var startPoint = 0
     dynamic var endPoint = 0
     dynamic var doneAmount = 0
     dynamic var archived = false
-    dynamic var dirtyFlag = false
-    dynamic var dayId:DayR?
+    dynamic var day:Day?
+    
+    func setupJSON(json:JSON){
+        
+        if let serverId = json["id"].int{
+            self.serverId = serverId
+        }else{
+            serverId = -1
+        }
+        
+        
+        doneAmount = json["done_amount"].intValue
+        startPoint = json["start_point"].intValue
+        endPoint = json["end_point"].intValue
+        archived = json["archived"].boolValue
+        
+    }
     
     
-    override static func primaryKey()->String? {
-        return "id"
+    override func getParentsModel()->RealmObject.Type{
+        return Day.self
     }
     
 // Specify properties to ignore (Realm won't persist these)

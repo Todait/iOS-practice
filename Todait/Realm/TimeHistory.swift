@@ -8,19 +8,47 @@
 
 import RealmSwift
 
-class TimeHistoryR: Object {
+class TimeHistory: RealmObject {
     
-    dynamic var id = ""
-    dynamic var serverId = 0
     dynamic var startedAt = 0
     dynamic var endedAt = 0
     dynamic var doneMillis = 0
     dynamic var archived = false
-    dynamic var dirtyFlag = false
-    dynamic var dayId:DayR?
+    dynamic var day:Day?
     
-    override static func primaryKey()->String? {
-        return "id"
+    
+    func getColor()->UIColor?{
+        
+        if let day = day {
+            return day.getColor()
+        }
+        
+        return UIColor.clearColor()
+    }
+    
+    
+    func setupJSON(json:JSON){
+        
+        if let serverId = json["id"].int{
+            self.serverId = serverId
+        }else{
+            serverId = -1
+        }
+        
+        startedAt = json["started_at"].intValue
+        archived = json["archived"].boolValue
+        endedAt = json["ended_at"].intValue
+        doneMillis = json["done_millis"].intValue
+        
+    }
+    
+    
+    func getHistoryTime()->NSTimeInterval{
+        return NSTimeInterval(endedAt - startedAt)
+    }
+    
+    override func getParentsModel()->RealmObject.Type{
+        return Day.self
     }
     
 // Specify properties to ignore (Realm won't persist these)

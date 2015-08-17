@@ -8,24 +8,41 @@
 
 import RealmSwift
 
-class CheckLogR: Object {
+class CheckLog: RealmObject {
     
-    dynamic var id = ""
-    dynamic var serverId = 0
+    
+    
     dynamic var beforeChecked = 0
     dynamic var afterChecked = 0
     dynamic var timestamp = 0
-    dynamic var dirtyFlag = false
-    dynamic var dayId:DayR?
+    dynamic var day:Day?
+    dynamic var archived = false
     
-    override static func primaryKey()->String? {
-        return "id"
+    
+    func setupJSON(json:JSON){
+        
+        if let serverId = json["id"].int{
+            self.serverId = serverId
+        }else{
+            serverId = -1
+        }
+        
+        
+        beforeChecked = json["befre_checked"].intValue
+        afterChecked = json["after_checked"].intValue
+        timestamp = json["timestamp"].intValue
+        archived = json["archived"].boolValue
+        
     }
     
     
-// Specify properties to ignore (Realm won't persist these)
+    override func getParentsModel()->RealmObject.Type{
+        return Day.self
+    }
     
-//  override static func ignoredProperties() -> [String] {
-//    return []
-//  }
+    // Specify properties to ignore (Realm won't persist these)
+    
+    //  override static func ignoredProperties() -> [String] {
+    //    return []
+    //  }
 }
