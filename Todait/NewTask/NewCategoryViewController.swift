@@ -28,7 +28,7 @@ class NewCategoryViewController: BasicViewController,TodaitNavigationDelegate,UI
     
     var colorData:[String] = ["#FFFB887E","#FFF1CB67","#FFAA9DDE","#FF5694CF","#FF5A5A5A","#FFBEFCEF","#FFC6B6A7","#FF25D59B","#FFDA5A68","#FFF5A26F"]
     var selectedIndex = 0
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var delegate:UpdateDelegate!
     
@@ -177,6 +177,19 @@ class NewCategoryViewController: BasicViewController,TodaitNavigationDelegate,UI
     func saveCategory(){
         
         
+        let category = Category()
+        category.id = NSUUID().UUIDString
+        category.name = categoryNameTextField.text
+        category.color = colorData[selectedIndex]
+        category.dirtyFlag = false
+        
+        realm.write{
+            self.realm.add(category)
+        }
+        needToUpdate()
+        
+        /*
+        
         let entityDescription = NSEntityDescription.entityForName("Category", inManagedObjectContext:managedObjectContext!)
         
         let category = Category(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
@@ -195,6 +208,7 @@ class NewCategoryViewController: BasicViewController,TodaitNavigationDelegate,UI
             NSLog("Category 저장성공",1)
             needToUpdate()
         }
+        */
     }
     
     func needToUpdate(){

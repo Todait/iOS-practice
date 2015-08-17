@@ -29,7 +29,7 @@ class CategoryEditViewController: BasicViewController,UICollectionViewDelegate,U
     
     var categoryData: [Category] = []
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var selectedIndex:Int! = 0
     var isAddCategoryView:Bool! = false
@@ -139,9 +139,19 @@ class CategoryEditViewController: BasicViewController,UICollectionViewDelegate,U
     func saveCategory(){
         
         
+        
+        
         editedCategory.name = categoryTextField.text
         editedCategory.color = String.categoryColorStringAtIndex(selectedIndex)
-        editedCategory.updatedAt = NSDate()
+        
+        realm.write {
+            self.realm.add(self.editedCategory, update: true)
+        }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName("categoryDataChanged", object: nil)
+        categoryEdited(editedCategory)
+        
+        /*
         
         var error: NSError?
         managedObjectContext?.save(&error)
@@ -157,6 +167,7 @@ class CategoryEditViewController: BasicViewController,UICollectionViewDelegate,U
             categoryEdited(editedCategory)
             
         }
+        */
     }
     
     func categoryEdited(category:Category){

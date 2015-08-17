@@ -8,11 +8,13 @@
 
 import UIKit
 import CoreData
+import RealmSwift
+import Alamofire
 
 class CategorySettingViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource,UITextFieldDelegate{
     
     
-    var selectedCategory:Category!
+    var selectedCategory:Category?
     
     
     var filterView:UIImageView!
@@ -28,9 +30,10 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     var colorCollectionView:UICollectionView!
     var colorCollectionViewLayout:UICollectionViewFlowLayout!
     
-    var categoryData: [Category] = []
-   
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //var categoryData: [Category] = []
+    var categorys:Results<Category>?
+    
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var selectedIndex:Int! = 0
     var isAddCategoryView:Bool! = false
@@ -54,6 +57,16 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     
     func loadCategoryData(){
         
+        
+        categorys = realm.objects(Category).filter("archived == false")
+        
+        if let category = selectedCategory {
+            
+        }else{
+            selectedCategory = categorys!.first
+        }
+        
+        /*
         let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
         let request = NSFetchRequest()
         
@@ -68,9 +81,9 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         }else{
             selectedCategory = categoryData.first
         }
+        */
         
-        
-        NSLog("Category results %@",categoryData)
+    
     }
     
     func addFilterView(){
@@ -218,31 +231,35 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categoryData.count
+        
+        
+        if let categorys = categorys {
+            
+            return categorys.count
+            
+        }
+        
+        return 0
     }
     
-    func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        selectedCategory = categoryData[indexPath.row]
+        selectedCategory = categorys![indexPath.row]
         
         tableView.reloadData()
         
         confirmButtonClk()
         
-        return false
-        
     }
-    
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! CategorySettingTableViewCell
         
-        let category = categoryData[indexPath.row] as Category
+        let category = categorys![indexPath.row]
+        
         cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(category.color)
         cell.titleLabel.text = category.name
-        
-        
         
         if category == selectedCategory {
             
@@ -288,7 +305,12 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         }else{
             
             //확인
-            categoryEdited(selectedCategory)
+            
+            if let selectedCategory = selectedCategory {
+                categoryEdited(selectedCategory)
+            }
+            
+            closeButtonClk()
         }
         
         /*
@@ -302,39 +324,61 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         }
         */
         
-        closeButtonClk()
+        
         
     }
     
     
     func saveCategory(){
         
+        ProgressManager.show()
         
-        let entityDescription = NSEntityDescription.entityForName("Category", inManagedObjectContext:managedObjectContext!)
+        var params:[String:AnyObject] = makeCategoryBatchParams(categoryTextField.text,String.categoryColorStringAtIndex(selectedIndex))
         
-        let category = Category(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
-        category.name = categoryTextField.text
-        category.createdAt = NSDate()
-        category.color = String.categoryColorStringAtIndex(selectedIndex)
-        category.updatedAt = NSDate()
-        category.dirtyFlag = 0
-        category.hidden = false
+        setUserHeader()
         
-        var error: NSError?
-        managedObjectContext?.save(&error)
-        
-        if let err = error {
-            //에러처리
-        }else{
-            NSLog("Category 저장성공",1)
+        Alamofire.request(.POST, SERVER_URL + BATCH , parameters: params).responseJSON(options: nil) {
+            (request, response , object , error) -> Void in
+            
+            let jsons = JSON(object!)
             
             
-            NSNotificationCenter.defaultCenter().postNotificationName("categoryDataChanged", object: nil)
+            let jsonData:NSMutableData! = NSMutableData()
             
-            categoryEdited(category)
+            
+            jsonData.appendData(jsons["results"][0]["body"].stringValue.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
+            let ddd = JSON(data:jsonData)
+            
+            
+            let syncData = JSON(self.sss(jsons["results"][0]["body"].stringValue))
+            self.realmManager.synchronize(syncData)
+            
+            
+            let categoryData = JSON(jsons["results"][1]["body"].stringValue)
+            let json:JSON? = jsons["category"]
+            
+            if let json = json {
+                
+                self.defaults.setObject(json.stringValue, forKey: "sync_at")
+                self.realmManager.synchronizeCategory(json)
+            }
+            
+            ProgressManager.hide()
+            
+            
+            self.closeButtonClk()
             
         }
     }
+    
+    
+    func sss(string:String)->String{
+        
+        var s = string
+        
+        return s
+    }
+    
     
     func categoryEdited(category:Category){
         
@@ -418,12 +462,13 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     
     func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
         
-        selectedIndex = indexPath.row
+        
         /*
         themeTextField.tintColor = UIColor.colorWithHexString(String.colorString(indexPath.row))
         themeTextField.textColor = UIColor.colorWithHexString(String.colorString(indexPath.row))
         themeTextField.attributedPlaceholder = getColorPlaceHolder("Untitled Theme", color: UIColor.colorWithHexString(String.colorString(indexPath.row)))
 */
+        selectedIndex = indexPath.row
         collectionView.reloadData()
         
         

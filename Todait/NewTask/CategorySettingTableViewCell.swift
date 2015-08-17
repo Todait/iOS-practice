@@ -55,6 +55,11 @@ class CategorySettingTableViewCell: UITableViewCell {
         
     }
     
+    override func setHighlighted(highlighted: Bool, animated: Bool) {
+        if highlighted == true {
+            self.backgroundColor = UIColor.todaitLightGray()
+        }
+    }
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
