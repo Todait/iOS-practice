@@ -120,11 +120,14 @@ class ThumbChartBox: BasicView {
                 
             }
             
+            currentValue = CGFloat(maxValue) * CGFloat(1 - (newCenter.y/frame.size.height))
             thumbTouchBegan()
             
         }else if gesture.state == UIGestureRecognizerState.Changed{
             
+            currentValue = CGFloat(maxValue) * CGFloat(1 - (newCenter.y/frame.size.height))
             thumbTouchMoved()
+            
             
         }else if gesture.state == UIGestureRecognizerState.Ended || gesture.state == UIGestureRecognizerState.Cancelled {
             
@@ -154,8 +157,8 @@ class ThumbChartBox: BasicView {
             thumbImageView.setZeroImage()
         }
         
-        currentValue = CGFloat(maxValue) * CGFloat(1 - (newCenter.y/frame.size.height))
-
+        
+        print("\(Int(currentValue/3600))시간 \(Int((currentValue%3600)/60))분")
     }
     
     func thumbTouchBegan(){
