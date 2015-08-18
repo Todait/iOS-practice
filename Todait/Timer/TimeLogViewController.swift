@@ -17,7 +17,7 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
     var filterView:UIImageView!
     var backgroundView:UIView!
     var confirmButton:UIButton!
-    var delegate:TimeLogDelegate!
+    var delegate:TimeLogDelegate?
     
     var hourPicker:UIPickerView!
     var minutePicker:UIPickerView!
@@ -110,13 +110,16 @@ class TimeLogViewController: BasicViewController,UIPickerViewDataSource,UIPicker
     }
     
     func confirmButtonClk(){
-        if self.delegate.respondsToSelector("recordTimeLog:"){
+        
+        if let delegate = delegate {
             
-            
-            let time = getTimeLog()
-            self.delegate.recordTimeLog(time)
-            
-            closeButtonClk()
+            if delegate.respondsToSelector("recordTimeLog:"){
+                
+                let time = getTimeLog()
+                delegate.recordTimeLog(time)
+                
+                closeButtonClk()
+            }
         }
     }
     

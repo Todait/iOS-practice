@@ -9,9 +9,14 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 protocol CategoryDelegate : NSObjectProtocol {
     func categoryEdited(editedCategory:Category)
+}
+
+protocol CategoryUpdateDelegate : NSObjectProtocol{
+    func updateCategory(category:Category,from:String)
 }
 
 
@@ -21,14 +26,14 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
     var category:Category!
     var categoryTableView: UITableView!
     var addCategoryButton: UIButton!
-    var delegate: CategoryDelegate!
+    var delegate: CategoryDelegate?
     var selectedIndex: Int! = 0
     let headerHeight: CGFloat = 220
     
     var categoryData: [Category] = []
+    var categoryResults:Results<Category>?
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
-    
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,7 +45,14 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
     }
     
     
+    func loadCategoryData(){
+        
+        categoryResults = realm.objects(Category).filter("archived == false")
+        
+        
+    }
     
+    /*
     func loadCategoryData(){
         
         let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
@@ -54,7 +66,8 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         
         NSLog("Category results %@",categoryData)
     }
-    
+    */
+
     func setSelectedIndex(){
         selectedIndex = find(categoryData,category)
     }
@@ -87,25 +100,21 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
     }
     
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let destination = segue.destinationViewController as! NewTaskViewController
-        
-        
-    }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categoryData.count
-    }
-    /*
-    func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-        return parallelView
+        if let categoryResults = categoryResults {
+            return categoryResults.count
+        }
+        
+        return 0
     }
-    */
+    
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! UITableViewCell
@@ -116,7 +125,7 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
         }
         
         
-        let category:Category = categoryData[indexPath.row]
+        let category:Category = categoryResults![indexPath.row]
         let categoryColor = UIColor.colorWithHexString(category.color)
         
         
@@ -175,6 +184,25 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
         
+        
+        let category = categoryResults![indexPath.row]
+        category.archived = true
+        
+        realm.write{
+            self.realm.add(category, update: true)
+        }
+        
+        categoryResults = categoryResults?.filter("archived == false")
+        
+        categoryData.removeAtIndex(indexPath.row)
+        selectedIndex = 0
+        
+        tableView.beginUpdates()
+        tableView.reloadRowsAtIndexPaths([NSIndexPath(forRow: selectedIndex, inSection: 0)], withRowAnimation: UITableViewRowAnimation.Automatic)
+        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:UITableViewRowAnimation.Automatic)
+        tableView.endUpdates()
+        
+        /*
         let category = categoryData[indexPath.row]
         managedObjectContext?.deleteObject(category)
         
@@ -197,22 +225,25 @@ class CategoryViewController: BasicViewController,TodaitNavigationDelegate,UITab
             //삭제에러처리
             
         }
-        
+        */
         
         
     }
     
     func categoryEdited(){
         
-        if self.delegate.respondsToSelector("categoryEdited:") {
-            
-            let category = categoryData[selectedIndex]
-            
-            self.delegate.categoryEdited(category)
-            
-            setNavigationBarColor(UIColor.colorWithHexString(category.color))
-        }
         
+        if let delegate = delegate {
+            
+            if delegate.respondsToSelector("categoryEdited:") {
+                
+                let category = categoryData[selectedIndex]
+                
+                delegate.categoryEdited(category)
+                
+                setNavigationBarColor(UIColor.colorWithHexString(category.color))
+            }
+        }
     }
     
     func max<T : Comparable>(x: T, y:T) ->T{

@@ -23,7 +23,7 @@ class SelectTaskViewController: BasicViewController {
     var taskButton:UIButton!
     var closeButton:UIButton!
     
-    var delegate:SelectTaskDelegate!
+    var delegate:SelectTaskDelegate?
     
     override func viewDidLoad(){
         super.viewDidLoad()
@@ -54,13 +54,14 @@ class SelectTaskViewController: BasicViewController {
     
     func timerButtonClk(){
         
-        if self.delegate.respondsToSelector("showTimerVC"){
-            
-            self.dismissViewControllerAnimated(false, completion: { () -> Void in
-                self.delegate.showTimerVC()
-            })
+        if let delegate = delegate {
+            if delegate.respondsToSelector("showTimerVC"){
+                
+                self.dismissViewControllerAnimated(false, completion: { () -> Void in
+                    delegate.showTimerVC()
+                })
+            }
         }
-        
     }
     
     func addTaskButton(){
@@ -72,13 +73,13 @@ class SelectTaskViewController: BasicViewController {
     
     func taskButtonClk(){
         
-        if self.delegate.respondsToSelector("showTaskVC"){
-            self.dismissViewControllerAnimated(false, completion: { () -> Void in
-                self.delegate.showTaskVC()
-            })
+        if let delegate = delegate {
+            if delegate.respondsToSelector("showTaskVC"){
+                self.dismissViewControllerAnimated(false, completion: { () -> Void in
+                    delegate.showTaskVC()
+                })
+            }
         }
-        
-        
     }
     
     func addCloseButton(){

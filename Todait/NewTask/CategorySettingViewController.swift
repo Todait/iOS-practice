@@ -37,7 +37,7 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     
     var selectedIndex:Int! = 0
     var isAddCategoryView:Bool! = false
-    var delegate:CategoryDelegate!
+    var delegate:CategoryDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -382,10 +382,10 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     
     func categoryEdited(category:Category){
         
-        if self.delegate.respondsToSelector("categoryEdited:"){
-            
-            self.delegate.categoryEdited(category)
-            
+        if let delegate = delegate {
+            if delegate.respondsToSelector("categoryEdited:"){
+                delegate.categoryEdited(category)
+            }
         }
     }
     
@@ -398,8 +398,9 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         categoryTextField.returnKeyType = UIReturnKeyType.Done
         categoryTextField.delegate = self
         categoryView.addSubview(categoryTextField)
-        
     }
+    
+    
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
@@ -467,7 +468,7 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         themeTextField.tintColor = UIColor.colorWithHexString(String.colorString(indexPath.row))
         themeTextField.textColor = UIColor.colorWithHexString(String.colorString(indexPath.row))
         themeTextField.attributedPlaceholder = getColorPlaceHolder("Untitled Theme", color: UIColor.colorWithHexString(String.colorString(indexPath.row)))
-*/
+         */
         selectedIndex = indexPath.row
         collectionView.reloadData()
         

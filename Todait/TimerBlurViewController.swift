@@ -18,7 +18,7 @@ class TimerBlurViewController: BasicViewController,TodaitNavigationDelegate {
     var datePicker: UIDatePicker!
     var doneButton: UIButton!
     var blurEffectView: UIVisualEffectView!
-    var delegate:settingTimeDelegate!
+    var delegate:settingTimeDelegate?
     
     var timerDate: NSDate!
     
@@ -82,8 +82,11 @@ class TimerBlurViewController: BasicViewController,TodaitNavigationDelegate {
     }
     
     func settingTime(){
-        if self.delegate.respondsToSelector("settingTime:"){
-            self.delegate.settingTime(timerDate)
+        
+        if let delegate = delegate {
+            if delegate.respondsToSelector("settingTime:"){
+                delegate.settingTime(timerDate)
+            }
         }
     }
     

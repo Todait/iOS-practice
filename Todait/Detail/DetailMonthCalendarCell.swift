@@ -20,7 +20,7 @@ class DetailMonthCalendarCell: UICollectionViewCell {
     var width:CGFloat! = 0
     var height:CGFloat! = 0
     var dateNumber:NSNumber!
-    var delegate:CalendarDelegate!
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)

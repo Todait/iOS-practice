@@ -21,7 +21,7 @@ class ReviewViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
     
     var confirmButton:UIButton!
     
-    var delegate:CountDelegate!
+    var delegate:CountDelegate?
     
     var countPicker:UIPickerView!
     
@@ -127,12 +127,12 @@ class ReviewViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
     
     func confirmButtonClk(){
         
-        if self.delegate.respondsToSelector("count:"){
+        if let delegate = delegate {
             
-            
-            self.delegate.count(getCount())
-            
-            closeButtonClk()
+            if delegate.respondsToSelector("count:"){
+                delegate.count(getCount())
+                closeButtonClk()
+            }
         }
     }
     

@@ -28,7 +28,7 @@ protocol TodaitNavigationDelegate : NSObjectProtocol {
     
     var ratio : CGFloat!
     var backButton : UIButton!
-    var todaitDelegate: TodaitNavigationDelegate!
+    var todaitDelegate: TodaitNavigationDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -58,8 +58,11 @@ protocol TodaitNavigationDelegate : NSObjectProtocol {
     }
     
     func backButtonClk(){
-        if(todaitDelegate.respondsToSelector(Selector("backButtonClk"))){
-            todaitDelegate.backButtonClk()
+        
+        if let delegate = delegate {
+            if(delegate.respondsToSelector(Selector("backButtonClk"))){
+                delegate.backButtonClk()
+            }
         }
     }
     

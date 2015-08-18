@@ -32,7 +32,7 @@ class TimeChart: UIView {
     var lineView:UIView!
     var line:UIView!
     var valueLabel:UILabel!
-    var delegate:touchDelegate!
+    var delegate:touchDelegate?
     
     var yAxiss:[UILabel]! = []
     
@@ -186,7 +186,12 @@ class TimeChart: UIView {
     
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         
-        self.delegate.touchBegin()
+        if let delegate = delegate{
+            if delegate.respondsToSelector("touchBegin"){
+                 delegate.touchBegin()
+            }
+        }
+        
         touchPoint(touches, event:event)
         super.touchesBegan(touches, withEvent: event)
         
@@ -200,7 +205,12 @@ class TimeChart: UIView {
     
     override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
         
-        self.delegate.touchEnd()
+        if let delegate = delegate{
+            if delegate.respondsToSelector("touchEnd"){
+                delegate.touchEnd()
+            }
+        }
+        
         lineView.hidden = true
         super.touchesEnded(touches, withEvent: event)
         

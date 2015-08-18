@@ -19,7 +19,7 @@ class CalendarDayView: UIView {
     
     var dayLabel: UILabel!
     var ratio: CGFloat!
-    var delegate: CalendarDayViewDelegate!
+    var delegate: CalendarDayViewDelegate?
     var date: NSDate!
     var selected: NSInteger! = 0
     
@@ -73,8 +73,10 @@ class CalendarDayView: UIView {
         }
         
         
-        if self.delegate.respondsToSelector("dayViewClk:"){
-            self.delegate.dayViewClk(date)
+        if let delegate = delegate{
+            if delegate.respondsToSelector("dayViewClk:"){
+                delegate.dayViewClk(date)
+            }
         }
     }
     

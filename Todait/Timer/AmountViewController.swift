@@ -20,7 +20,7 @@ class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
     
     var cancelButton:UIButton!
     var confirmButton:UIButton!
-    var delegate:AmountLogDelegate!
+    var delegate:AmountLogDelegate?
     
     var startPicker:UIPickerView!
     var endPicker:UIPickerView!
@@ -141,13 +141,13 @@ class AmountViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
     
     func confirmButtonClk(){
         
-        if self.delegate.respondsToSelector("saveAmountLog:"){
-            
-            
-            let time = getAmountLog()
-            self.delegate.saveAmountLog(time)
-            
-            closeButtonClk()
+        if let delegate = delegate {
+            if delegate.respondsToSelector("saveAmountLog:"){
+                
+                let time = getAmountLog()
+                delegate.saveAmountLog(time)
+                closeButtonClk()
+            }
         }
     }
     

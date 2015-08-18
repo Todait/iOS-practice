@@ -18,7 +18,7 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
     
     var monthView:UICollectionView!
     var selectedIndex:NSIndexPath! = NSIndexPath(forRow: 0, inSection: 0)
-    var delegate:CalendarDelegate!
+    var delegate:CalendarDelegate?
     var dateNumber:NSNumber!
     var task:Task!
     
@@ -126,12 +126,15 @@ class MonthCalendarViewController: BasicViewController,UICollectionViewDelegate,
         
         
         if indexPath.row != selectedIndex.row {
-            if self.delegate.respondsToSelector("updateDate:from:"){
-                NSLog("Month Delegate", 1)
-                
-                var newDate = getOneDayOfMonth(getCurrentDate(selectedIndex))
-                dateNumber = getDateNumberFromDate(newDate)
-                self.delegate.updateDate(newDate,from:"Month")
+            
+            if let delegate = delegate {
+                if delegate.respondsToSelector("updateDate:from:"){
+                    NSLog("Month Delegate", 1)
+                    
+                    var newDate = getOneDayOfMonth(getCurrentDate(selectedIndex))
+                    dateNumber = getDateNumberFromDate(newDate)
+                    delegate.updateDate(newDate,from:"Month")
+                }
             }
         }
         

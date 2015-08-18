@@ -34,7 +34,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     var startRangeAmount:Int! = 0
     var endRangeAmount:Int! = 0
     var dayAmount:Int! = 0
-    var category:Category!
+    var category:Category?
     
     
     var goalView:UIView!
@@ -282,7 +282,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         task.id = NSUUID().UUIDString
         task.taskType = "Timer"
         task.category = category
-        category.tasks.append(task)
+        
         
         if isAlarmOn == true {
             
@@ -293,14 +293,18 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         }
         
         realm.write{
+            
+            if let category = self.category {
+                category.addRelation(task)
+            }
+            
             self.realm.add(task)
-            self.realm.add(self.category,update:true)
         }
         
         
+        goalTextField.resignFirstResponder()
         
-        
-        self.dismissViewControllerAnimated(true, completion: { () -> Void in
+        self.navigationController?.dismissViewControllerAnimated(true, completion: { () -> Void in
             
         })
         
@@ -380,7 +384,9 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         categoryButton.addTarget(self, action: Selector("showCategorySettingVC"), forControlEvents: UIControlEvents.TouchUpInside)
         goalView.addSubview(categoryButton)
         
-        categoryEdited(category)
+        if let category = category {
+            categoryEdited(category)
+        }
         
     }
     
@@ -388,7 +394,11 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         
         var categoryVC = CategorySettingViewController()
         //categoryVC.delegate = self
-        categoryVC.selectedCategory = category
+        
+        if let category = category {
+            categoryVC.selectedCategory = category
+        }
+        
         categoryVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         categoryVC.delegate = self
         
@@ -401,10 +411,18 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     func categoryEdited(editedCategory:Category) {
         
         
+        var color:UIColor!
+        
+        if let categoryColor = UIColor.colorWithHexString(editedCategory.color) {
+            color = categoryColor
+        }else{
+            color = UIColor.todaitLightGray()
+        }
+        
         categoryButton.layer.borderColor = UIColor.clearColor().CGColor
         categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
         
-        categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.colorWithHexString(editedCategory.color)), forState: UIControlState.Normal)
+        categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: color), forState: UIControlState.Normal)
         categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.todaitLightGray()), forState: UIControlState.Highlighted)
         
         self.category = editedCategory
@@ -560,7 +578,9 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         categoryButton.addTarget(self, action: Selector("showCategorySettingVC"), forControlEvents: UIControlEvents.TouchUpInside)
         cell.contentView.addSubview(categoryButton)
         
-        categoryEdited(category)
+        if let category = category {
+            categoryEdited(category)
+        }
     }
     
     

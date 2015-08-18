@@ -24,7 +24,7 @@ class ListInputViewController: BasicViewController,UITableViewDelegate,UITableVi
     
     var dataSource:[String] = []
     
-    var delegate:ListInputDelegate!
+    var delegate:ListInputDelegate?
     
     var selectedIndex:Int! = 0
     
@@ -134,9 +134,11 @@ class ListInputViewController: BasicViewController,UITableViewDelegate,UITableVi
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
     
         
-        if self.delegate.respondsToSelector("selectedString:"){
+        if let delegate = delegate {
             
-            self.delegate.selectedString(dataSource[indexPath.row])
+            if delegate.respondsToSelector("selectedString:"){
+                delegate.selectedString(dataSource[indexPath.row])
+            }
             
         }
         

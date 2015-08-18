@@ -24,7 +24,7 @@ class InvestView: UIView {
     var width:CGFloat! = 0
     var height:CGFloat! = 0
     
-    var delegate:InvestUpdateDelegate!
+    var delegate:InvestUpdateDelegate?
     
     override init(frame: CGRect) {
         super.init(frame:frame)

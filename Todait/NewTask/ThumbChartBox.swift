@@ -37,7 +37,7 @@ class ThumbChartBox: BasicView {
     var isAnimating:Bool = false
     var chartOn:Bool! = false
     
-    var delegate:ThumbChartDelegate!
+    var delegate:ThumbChartDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -159,19 +159,24 @@ class ThumbChartBox: BasicView {
     }
     
     func thumbTouchBegan(){
-        self.delegate.thumbTouchBegan()
+        
+        if let delegate = delegate {
+            delegate.thumbTouchBegan()
+        }
     }
     
     func thumbTouchMoved(){
         
-        self.delegate.thumbTouchMoved()
-        
+        if let delegate = delegate {
+            delegate.thumbTouchMoved()
+        }
     }
     
     func thumbTouchEnd(){
         
-        self.delegate.thumbTouchEnd()
-        
+        if let delegate = delegate {
+            delegate.thumbTouchEnd()
+        }
     }
     
 

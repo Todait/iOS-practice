@@ -31,7 +31,7 @@ class ExitViewController: BasicViewController {
     var resetButton:UIButton!
     var saveButton:UIButton!
     var closeButton:UIButton!
-    var delegate:ExitDelegate!
+    var delegate:ExitDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -148,10 +148,11 @@ class ExitViewController: BasicViewController {
         
         dismissViewControllerAnimated(false, completion: { () -> Void in
             
-            if self.delegate.respondsToSelector("resetAndExitTimeLog"){
-                self.delegate.resetAndExitTimeLog()
+            if let delegate = self.delegate {
+                if delegate.respondsToSelector("resetAndExitTimeLog"){
+                    delegate.resetAndExitTimeLog()
+                }
             }
-            
         })
     }
     
@@ -171,8 +172,10 @@ class ExitViewController: BasicViewController {
         
         dismissViewControllerAnimated(false, completion: { () -> Void in
             
-            if self.delegate.respondsToSelector("saveAndExitTimeLog"){
-                self.delegate.saveAndExitTimeLog()
+            if let delegate = self.delegate{
+                if delegate.respondsToSelector("saveAndExitTimeLog"){
+                    delegate.saveAndExitTimeLog()
+                }
             }
         })
     }

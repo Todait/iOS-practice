@@ -8,6 +8,16 @@
 
 import UIKit
 
+enum OptionStatus:Int {
+    
+    case None = 0
+    case Review = 1
+    case Reread = 2
+    case Alarm = 4
+    
+}
+
+
 class OptionButton: BasicButton {
 
     

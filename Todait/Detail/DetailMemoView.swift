@@ -42,7 +42,7 @@ class DetailMemoView: UIView {
     var width:CGFloat! = 0
     var height:CGFloat! = 0
     
-    var delegate:DetailMemoViewDelegate!
+    var delegate:DetailMemoViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -98,12 +98,12 @@ class DetailMemoView: UIView {
     
     func addDiaryButton(){
         
-        let diaryImage = UIImageView(frame: CGRectMake(18*ratio,153*ratio,16*ratio,16*ratio))
+        let diaryImage = UIImageView(frame: CGRectMake(18*ratio,154*ratio,16*ratio,16*ratio))
         diaryImage.image = UIImage(named: "detail_basic_27@3x.png")
         addSubview(diaryImage)
         
         
-        diaryButton = UIButton(frame:CGRectMake(5*ratio,108*ratio+39*ratio,150*ratio,32*ratio))
+        diaryButton = UIButton(frame:CGRectMake(5*ratio,108*ratio+40*ratio,150*ratio,32*ratio))
         diaryButton.addTarget(self, action: Selector("diaryButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         diaryButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame: CGRectMake(0, 0, 150*ratio, 32*ratio)), forState: UIControlState.Normal)
         diaryButton.setBackgroundImage(UIImage.colorImage(UIColor.todaitBackgroundGray(), frame: CGRectMake(0, 0, 150*ratio, 32*ratio)), forState: UIControlState.Highlighted)
@@ -122,7 +122,7 @@ class DetailMemoView: UIView {
     
     func addInfoLabel(){
         
-        infoLabel = UILabel(frame: CGRectMake(52*ratio, 138*ratio, 180*ratio, 46*ratio))
+        infoLabel = UILabel(frame: CGRectMake(52*ratio, 140*ratio, 180*ratio, 46*ratio))
         infoLabel.textColor = UIColor.todaitLightGray()
         infoLabel.textAlignment = NSTextAlignment.Left
         infoLabel.text = "메모를 추가하세요."
@@ -308,37 +308,47 @@ class DetailMemoView: UIView {
     
     func diaryButtonClk(){
         
-        if self.delegate.respondsToSelector("diaryButtonClk"){
-            self.delegate.diaryButtonClk()
+        if let delegate = delegate {
+            if delegate.respondsToSelector("diaryButtonClk"){
+                delegate.diaryButtonClk()
+            }
+            
         }
-        
     }
     
     func focusButtonClk(){
         
-        if self.delegate.respondsToSelector("focusButtonClk"){
-            self.delegate.focusButtonClk()
+        if let delegate = delegate {
+            if delegate.respondsToSelector("focusButtonClk"){
+                delegate.focusButtonClk()
+            }
         }
-        
     }
     
     func amountButtonClk(){
         
-        if self.delegate.respondsToSelector("amountButtonClk"){
-            self.delegate.amountButtonClk()
+        if let delegate = delegate {
+            if delegate.respondsToSelector("amountButtonClk"){
+                delegate.amountButtonClk()
+            }
         }
-        
     }
     
     func timerButtonClk(){
-        if self.delegate.respondsToSelector("timerButtonClk"){
-            self.delegate.timerButtonClk()
+        
+        if let delegate = delegate {
+            if delegate.respondsToSelector("timerButtonClk"){
+                delegate.timerButtonClk()
+            }
         }
     }
     
     func timeLogButtonClk(){
-        if self.delegate.respondsToSelector("timeLogButtonClk"){
-            self.delegate.timeLogButtonClk()
+        
+        if let delegate = delegate {
+            if delegate.respondsToSelector("timeLogButtonClk"){
+                delegate.timeLogButtonClk()
+            }
         }
     }
 }

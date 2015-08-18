@@ -30,7 +30,7 @@ class DiaryPhotoInputViewController: BasicViewController {
     var task_type:String! = ""
     var unit:String! = ""
     
-    var delegate:DiaryImageDelegate!
+    var delegate:DiaryImageDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,8 +80,11 @@ class DiaryPhotoInputViewController: BasicViewController {
             }, completion: { (Bool) -> Void in
                 
                 self.dismissViewControllerAnimated(false, completion: { () -> Void in
-                    if self.delegate.respondsToSelector("showCamera"){
-                        self.delegate.showCamera()
+                    
+                    if let delegate = self.delegate {
+                        if delegate.respondsToSelector("showCamera"){
+                            delegate.showCamera()
+                        }
                     }
                 })
         })
@@ -106,8 +109,11 @@ class DiaryPhotoInputViewController: BasicViewController {
             }, completion: { (Bool) -> Void in
                 
                 self.dismissViewControllerAnimated(false, completion: { () -> Void in
-                    if self.delegate.respondsToSelector("showAlbum"){
-                        self.delegate.showAlbum()
+                    
+                    if let delegate = self.delegate {
+                        if delegate.respondsToSelector("showAlbum"){
+                            delegate.showAlbum()
+                        }
                     }
                 })
         })

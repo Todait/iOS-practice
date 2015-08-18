@@ -17,7 +17,7 @@ class DateButton: UIButton {
     var ratio:CGFloat! = 0
     var width:CGFloat! = 0
     var height:CGFloat! = 0
-    var delegate:CalendarDelegate!
+    var delegate:CalendarDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -84,8 +84,14 @@ class DateButton: UIButton {
         
         
         self.backgroundColor = UIColor.todaitWhiteGray()
-        if self.delegate.respondsToSelector("updateDate:from:"){
-            self.delegate.updateDate(getDateFromDateNumber(dateNumber),from:"button")
+        
+        
+        if let delegate = delegate {
+            
+            if delegate.respondsToSelector("updateDate:from:"){
+                delegate.updateDate(getDateFromDateNumber(dateNumber),from:"button")
+            }
+            
         }
     }
 

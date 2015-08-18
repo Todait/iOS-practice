@@ -8,14 +8,14 @@
 
 import UIKit
 
-class RereadViewController: BasicViewController,UIPickerViewDataSource,UIPickerViewDelegate{
+class RepeatViewController: BasicViewController,UIPickerViewDataSource,UIPickerViewDelegate{
     
     var filterView:UIImageView!
     var popupView:UIView!
     
     var confirmButton:UIButton!
     
-    var delegate:CountDelegate!
+    var delegate:CountDelegate?
     
     var countPicker:UIPickerView!
     
@@ -121,12 +121,12 @@ class RereadViewController: BasicViewController,UIPickerViewDataSource,UIPickerV
     
     func confirmButtonClk(){
         
-        if self.delegate.respondsToSelector("count:"){
-            
-            
-            self.delegate.count(getCount())
-            
-            closeButtonClk()
+        
+        if let delegate = delegate {
+            if delegate.respondsToSelector("count:"){
+                delegate.count(getCount())
+                closeButtonClk()
+            }
         }
     }
     

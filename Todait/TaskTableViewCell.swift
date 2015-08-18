@@ -29,7 +29,7 @@ class TaskTableViewCell: BasicTableViewCell {
     var percentBezierPath : UIBezierPath!
     var indexPath : NSIndexPath!
     
-    var delegate : TaskTableViewCellDelegate!
+    var delegate : TaskTableViewCellDelegate?
     
     let DEFAULT_START_ANGLE : CGFloat = -89.0
     let DEFAULT_END_ANGLE : CGFloat = -89.00001

@@ -16,7 +16,7 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
     
     var weekView:UICollectionView!
     var selectedIndex:NSIndexPath! = NSIndexPath(forRow: 0, inSection: 0)
-    var delegate:CalendarDelegate!
+    var delegate:CalendarDelegate?
     var dateNumber:NSNumber!
     
     var task:Task!
@@ -134,11 +134,14 @@ class DetailWeekCalendarViewController: BasicViewController,UICollectionViewDele
     func collectionView(collectionView: UICollectionView, didEndDisplayingCell cell: UICollectionViewCell, forItemAtIndexPath indexPath: NSIndexPath) {
         
         if indexPath.row != selectedIndex.row {
-            if self.delegate.respondsToSelector("updateDate:from:"){
-                
-                var newDate = getCurrentDate(selectedIndex)
-                dateNumber = getDateNumberFromDate(newDate)
-                self.delegate.updateDate(newDate,from:"Week")
+            
+            if let delegate = delegate {
+                if delegate.respondsToSelector("updateDate:from:"){
+                    
+                    var newDate = getCurrentDate(selectedIndex)
+                    dateNumber = getDateNumberFromDate(newDate)
+                    delegate.updateDate(newDate,from:"Week")
+                }
             }
         }
         

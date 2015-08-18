@@ -31,7 +31,7 @@ class DetailDateButton: UIButton {
     var ratio:CGFloat! = 0
     var width:CGFloat! = 0
     var height:CGFloat! = 0
-    var delegate:CalendarDelegate!
+    var delegate:CalendarDelegate?
     var expectLabel:UILabel!
     
     var circleImageView:UIImageView!
@@ -67,9 +67,10 @@ class DetailDateButton: UIButton {
     
     func dateUpdate(){
         
-        
-        if self.delegate.respondsToSelector("updateDate:from:"){
-            self.delegate.updateDate(getDateFromDateNumber(dateNumber),from:"button")
+        if let delegate = delegate {
+            if delegate.respondsToSelector("updateDate:from:"){
+                delegate.updateDate(getDateFromDateNumber(dateNumber),from:"button")
+            }
         }
     }
     

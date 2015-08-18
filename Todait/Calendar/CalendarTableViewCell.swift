@@ -26,7 +26,7 @@ class CalendarTableViewCell: UITableViewCell,CalendarDayViewDelegate{
     var monthDateLabel:UILabel!
     var calendarDate: NSDate!
     var calendar: NSCalendar!
-    var delegate:CalendarDayDelegate!
+    var delegate:CalendarDayDelegate?
     
     var realm = Realm()
     
@@ -63,9 +63,10 @@ class CalendarTableViewCell: UITableViewCell,CalendarDayViewDelegate{
     
     func dayViewClk(date:NSDate){
         
-        
-        if self.delegate.respondsToSelector(Selector("daySelected:")){
-            self.delegate.daySelected(getDateNumberFromDate(date))
+        if let delegate = delegate {
+            if delegate.respondsToSelector(Selector("daySelected:")){
+                delegate.daySelected(getDateNumberFromDate(date))
+            }
         }
     }
     
