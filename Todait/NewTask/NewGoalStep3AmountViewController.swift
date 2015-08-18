@@ -56,16 +56,13 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     let weekValue = [1,2,4,8,16,32,64]
     var selectedWeekDays:Int = 0
     
-    var maxValue:CGFloat! = 0
+    var maxValue:CGFloat! = 10
+    var maxChangeTimeCount:Int = 0
     
-    var startDate:NSDate!
-    var dayAmount:CGFloat! = 0
-    var totalAmount:CGFloat! = 0
-    var titleString:String! = ""
-    var unitString:String! = ""
-    
-    var maxChangeTimer:NSTimer! 
+    var maxChangeTimer:NSTimer?
     var isThumbed:Bool! = false
+    
+    var amountTask = AmountTask.sharedInstance
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,6 +85,12 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     }
     
     func setupAmount(){
+        
+        if let totalAmount = amountTask.totalAmount {
+            maxValue = CGFloat(totalAmount)
+        }
+        
+        
         
         
     }
@@ -113,7 +116,11 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         
         
         startLabel = UILabel(frame: CGRectMake(59*ratio, 0, 109*ratio, 55*ratio))
-        startLabel.text = dateForm.stringFromDate(startDate)
+        
+        if let startDate = amountTask.startDate {
+            startLabel.text = dateForm.stringFromDate(startDate)
+        }
+        
         startLabel.textColor = UIColor.todaitGray()
         startLabel.textAlignment = NSTextAlignment.Right
         startLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 14*ratio)
@@ -127,7 +134,7 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
         dashLabel.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 10*ratio)
         baseView.addSubview(dashLabel)
         
-        endLabel = UILabel(frame: CGRectMake(180*ratio, 0, 109*ratio, 55*ratio))
+        endLabel = UILabel(frame: CGRectMake(180*ratio, 0, 122*ratio, 55*ratio))
         endLabel.text = "2015.08.12 (화)"
         endLabel.textColor = UIColor.todaitDarkGray()
         endLabel.textAlignment = NSTextAlignment.Left
@@ -196,7 +203,15 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
             amountLabel.textOnColor = UIColor.todaitGray()
             amountLabel.textOffColor = UIColor.todaitBackgroundGray()
             amountLabel.font = UIFont(name: "AppleSDGothicNeo-Light", size: 8*ratio)
-            amountLabel.text = "\(dayAmount)개"
+            
+            
+            if let dayAmount = amountTask.dayAmount {
+                amountLabel.text = "\(dayAmount)개"
+            }
+            
+            
+            
+            
             baseView.addSubview(amountLabel)
             
             amountLabels.append(amountLabel)
@@ -213,8 +228,12 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
             thumbChartBox.frontOffColor = UIColor.todaitLightGray()
             thumbChartBox.maxColor = UIColor.colorWithHexString("#95CCC4")
             
-            thumbChartBox.maxValue = CGFloat(totalAmount)
-            thumbChartBox.currentValue = CGFloat(dayAmount)
+            thumbChartBox.maxValue = maxValue
+            
+            if let dayAmount = amountTask.dayAmount {
+                thumbChartBox.currentValue = CGFloat(dayAmount)
+            }
+            
             thumbChartBox.setStroke()
             thumbChartBox.delegate = self
             
@@ -359,6 +378,8 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     
     func thumbTouchBegan(){
         
+        isThumbed = true
+        
     }
     
     func thumbTouchMoved(){
@@ -370,10 +391,11 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     func thumbTouchEnd(){
         
         if let timer = maxChangeTimer {
-            if maxChangeTimer.valid == true {
-                maxChangeTimer.invalidate()
+            if timer.valid == true {
+                timer.invalidate()
             }
         }
+        
     }
     
     
@@ -388,142 +410,228 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
             data.append(chart.currentValue)
         }
         
-        var chartStatus:[ChartStatus] = dateCalulate(data, mask: mask)
         
-        var sumData:CGFloat = 0
-        var maxData:CGFloat = 0
-        
-        for var index = 0 ; index < 7 ; index++ {
+        if let chartStatus = dateCalulate(data, mask: mask){
             
-            let status = chartStatus[index]
-            let chart = weekCharts[index]
-            let button = weekButtons[index]
-            let label = amountLabels[index]
-            let data = data[index]
-            label.text = String(format: "%.0f개", arguments: [data])
+            var sumData:CGFloat = 0
+            var maxData:CGFloat = 0
             
-            
-            sumData = sumData + data
-        
-            if maxData < data {
-                maxData = data
-            }
-            
-            
-            switch status {
-            case .On: chart.setChartOn(true)
-            case .Off: chart.setChartOn(false)
-            case .Max: chart.setChartMax()
-            default: return
-            }
-            
-        }
-        
-        maxValue = 2*sumData/7
-        
-        for var index = 0 ; index < 7 ; index++ {
-            let chart = weekCharts[index]
-            chart.setMaxValue(maxValue)
-       
-        }
-        
-        
-        
-        var isAllOff:Bool = false
-        var currentZero:Bool = true
-        
-        for var index = 0 ; index < 7 ; index++ {
-            if mask[index] == true {
-                isAllOff = true
-            }
-            
-            if data[index] > 0 {
-                currentZero = false
-            }
-        }
-        
-        
-        if isAllOff == false || currentZero == true {
-            endLabel.text = "-"
-            return
-        }
-        
-        
-        
-        var startOfWeek = getDayOfWeek(getDateFromDateNumber(getTodayDateNumber()))
-        var tempSum:CGFloat! = totalAmount
-        var day = 0
-        
-        for ; tempSum > 0 ; day++ {
-            
-            let arrayIndex = (day + startOfWeek - 1)%7
-            
-            if mask[arrayIndex] == true {
-                tempSum = tempSum - data[arrayIndex]
-            }else{
+            for var index = 0 ; index < 7 ; index++ {
                 
-            }
-        }
-        
-        
-        let dateForm = NSDateFormatter()
-        dateForm.dateFormat = "yyyy.MM.dd (E)"
-        
-        endLabel.text = dateForm.stringFromDate(startDate.addDay(day))
-        
-        
-        /*
-        if isThumbed == true {
-            
-            if let timer = maxChangeTimer {
+                let status = chartStatus[index]
+                let chart = weekCharts[index]
+                let button = weekButtons[index]
+                let label = amountLabels[index]
+                let data = data[index]
+                label.text = String(format: "%.0f개", arguments: [data])
                 
-                if timer.valid == false {
-                    maxChangeTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("changeMaxTime"), userInfo: nil, repeats: true)
+                
+                sumData = sumData + data
+                
+                if maxData < data {
+                    maxData = data
                 }
                 
                 
-            }else {
-                maxChangeTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("changeMaxTime"), userInfo: nil, repeats: true)
+                switch status {
+                case .On: chart.setChartOn(true)
+                case .Off: chart.setChartOn(false)
+                case .Max: chart.setChartMax()
+                default: return
+                }
                 
             }
-        }
-        */
-        
-    }
-    
-    func dateCalulate(data:[CGFloat],mask:[Bool])->[ChartStatus]{
-        
-        var startOfWeek = getDayOfWeek(getDateFromDateNumber(getTodayDateNumber()))
-        var tempSum:CGFloat! = totalAmount
-        
-        var calculateData:[ChartStatus] = [ChartStatus](count:7, repeatedValue:ChartStatus.Off)
-        
-        for var index = 0 ; index < 7 ; index++ {
             
-            let arrayIndex = (index + startOfWeek - 1)%7
+            maxValue = maxData
             
-            if mask[arrayIndex] == true {
+            for var index = 0 ; index < 7 ; index++ {
+                let chart = weekCharts[index]
+                chart.setMaxValue(maxValue)
                 
-                if tempSum - data[arrayIndex] >= 0{
-                    calculateData[arrayIndex] = ChartStatus.On
-                }else{
+            }
+            
+            
+            
+            var isAllOff:Bool = false
+            var currentZero:Bool = true
+            
+            for var index = 0 ; index < 7 ; index++ {
+                if mask[index] == true {
+                    isAllOff = true
+                }
+                
+                if data[index] > 0 {
+                    currentZero = false
+                }
+            }
+            
+            
+            if isAllOff == false || currentZero == true {
+                endLabel.text = "-"
+                return
+            }
+            
+            
+            
+            var startOfWeek = getDayOfWeek(getDateFromDateNumber(getTodayDateNumber()))
+            
+            
+            if let totalAmount = amountTask.totalAmount{
+                
+                var tempSum:CGFloat! = CGFloat(totalAmount)
+                var day = 0
+                
+                for ; tempSum > 0 ; day++ {
                     
-                    if tempSum > 0 {
-                        calculateData[arrayIndex] = ChartStatus.On
+                    let arrayIndex = (day + startOfWeek - 1)%7
+                    
+                    if mask[arrayIndex] == true {
+                        tempSum = tempSum - data[arrayIndex]
                     }else{
-                        calculateData[arrayIndex] = ChartStatus.Max
+                        
                     }
                 }
                 
-                tempSum = tempSum - data[arrayIndex]
                 
-            }else{
+                let dateForm = NSDateFormatter()
+                dateForm.dateFormat = "yyyy.MM.dd (E)"
                 
-                calculateData[arrayIndex] = ChartStatus.Off
+                
+                if let startDate = amountTask.startDate {
+                    endLabel.text = dateForm.stringFromDate(startDate.addDay(day))
+                }
             }
+            
+            
+            if isThumbed == true {
+                
+                if let timer = maxChangeTimer {
+                    
+                    if timer.valid == false {
+                        maxChangeTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("changeMax"), userInfo: nil, repeats: true)
+                    }
+                    
+                    
+                }else {
+                    
+                    maxChangeTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("changeMax"), userInfo: nil, repeats: true)
+                    
+                }
+            }
+            
+            
         }
         
-        return calculateData
+    }
+    
+    func changeMax(){
+        
+        var needChange:Bool = false
+        
+        for var index = 0 ; index < 7 ; index++ {
+            let chart = weekCharts[index]
+            
+            if chart.currentValue >= maxValue && chart.isThumbed == true {
+                needChange = true
+            }
+            
+        }
+        
+        
+        
+        if needChange == true {
+            
+            //maxValue = maxValue + 1
+            var addUnit:CGFloat = 1
+            
+            if maxChangeTimeCount > 20 {
+                addUnit = 5
+            }else if (maxChangeTimeCount > 40){
+                addUnit = 10
+            }else if (maxChangeTimeCount > 60){
+                addUnit = 20
+            }
+            
+            /*
+            if (maxValue + Int(addUnit)) > amountTask.totalAmount! {
+                addUnit = 24 * 60 * 60 - amountTask.totalAmount!
+            }
+            */
+            
+            
+            for var index = 0 ; index < 7 ; index++ {
+                
+                let chart = weekCharts[index]
+                //let label = timeLabels[index]
+                //let data = Int(chart.currentValue/600)*600
+                
+                if chart.isThumbed == true && chart.currentValue == maxValue{
+                    chart.currentValue = maxValue + addUnit
+                }
+                
+                //label.text = getTimeStringOfHourMinuteFromSeconds(NSTimeInterval(data))
+                
+                chart.setMaxValue(maxValue + addUnit)
+            }
+            
+            maxValue = maxValue + addUnit
+            
+        }else{
+            endTimer()
+        }
+        
+    }
+    
+    func endTimer(){
+        
+        
+        if let timer = maxChangeTimer {
+            timer.invalidate()
+        }
+        
+        maxChangeTimeCount = 0
+    }
+    
+    
+    func dateCalulate(data:[CGFloat],mask:[Bool])->[ChartStatus]?{
+        
+        var startOfWeek = getDayOfWeek(getDateFromDateNumber(getTodayDateNumber()))
+        
+        if let totalAmount = amountTask.totalAmount {
+            
+            var tempSum:CGFloat! = CGFloat(totalAmount)
+            
+            var calculateData:[ChartStatus] = [ChartStatus](count:7, repeatedValue:ChartStatus.Off)
+            
+            for var index = 0 ; index < 7 ; index++ {
+                
+                let arrayIndex = (index + startOfWeek - 1)%7
+                
+                if mask[arrayIndex] == true {
+                    
+                    if tempSum - data[arrayIndex] >= 0{
+                        calculateData[arrayIndex] = ChartStatus.On
+                    }else{
+                        
+                        if tempSum > 0 {
+                            calculateData[arrayIndex] = ChartStatus.On
+                        }else{
+                            calculateData[arrayIndex] = ChartStatus.Max
+                        }
+                    }
+                    
+                    tempSum = tempSum - data[arrayIndex]
+                    
+                }else{
+                    
+                    calculateData[arrayIndex] = ChartStatus.Off
+                }
+            }
+            return calculateData
+        }
+        
+        
+        return nil
     }
     
     func changeMaxTime(){
@@ -548,7 +656,10 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        titleLabel.text = titleString
+        
+        if let goal = amountTask.goal {
+            titleLabel.text = goal
+        }
         
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
@@ -573,11 +684,36 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
     
     func nextButtonClk(){
         
-        let step4VC = NewGoalStep4ViewController()
-        step4VC.titleString = titleString
         
-        self.navigationController?.pushViewController(step4VC, animated: true)
+        if isValidWeekAmounts() == true {
+            
+            for var index = 0 ; index < 7 ; index++ {
+                
+                let chart = weekCharts[index]
+                amountTask.weekAmounts[index] = Int(chart.currentValue)
+            }
+            
+            
+            let step4VC = NewGoalStep4AmountViewController()
+            self.navigationController?.pushViewController(step4VC, animated: true)
+        }
         
+    }
+    
+    
+    func isValidWeekAmounts()->Bool{
+        
+        for var index = 0 ; index < 7 ; index++ {
+            
+            let chart = weekCharts[index]
+            let button = weekButtons[index]
+            
+            if button.buttonOn == true && chart.currentValue > 0 {
+                return true
+            }
+        }
+        
+        return false
     }
     
     func backButtonClk(){

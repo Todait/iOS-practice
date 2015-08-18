@@ -87,7 +87,7 @@ class ListInputViewController: BasicViewController,UITableViewDelegate,UITableVi
         
         let title:String = dataSource[indexPath.row]
         
-        let titleLabel = UILabel(frame:CGRectMake(15,5,250*ratio,39))
+        let titleLabel = UILabel(frame:CGRectMake(15,5,250*ratio,49))
         titleLabel.text = title
         titleLabel.font = UIFont(name:"AppleSDGothicNeo-Light",size:14*ratio)
         titleLabel.textColor = UIColor.todaitGray()
@@ -95,7 +95,7 @@ class ListInputViewController: BasicViewController,UITableViewDelegate,UITableVi
         cell.contentView.addSubview(titleLabel)
         
         
-        let line = UIView(frame:CGRectMake(0,48*ratio,294*ratio,1*ratio))
+        let line = UIView(frame:CGRectMake(0,48,294*ratio,1))
         line.backgroundColor = UIColor.todaitBackgroundGray()
         cell.contentView.addSubview(line)
         

@@ -9,12 +9,12 @@
 import UIKit
 import CoreData
 
-class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputViewDelegate,CategoryDelegate,TodaitNavigationDelegate,ValidationDelegate,KeyboardHelpDelegate,CountDelegate,AlarmDelegate{
+class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,UnitInputViewDelegate,CategoryDelegate,TodaitNavigationDelegate,ValidationDelegate,KeyboardHelpDelegate,CountDelegate,AlarmDelegate{
     
     
     var editedTask:Task!
     var category:Category!
-    var delegate: CategoryUpdateDelegate!
+    
     
     private enum Status{
         case Goal
@@ -38,7 +38,6 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     var totalAmountField: UITextField!
     var startAmountField: UITextField!
     var endAmountField: UITextField!
-    var dayTextField: UITextField!
     
     var saveButton: UIButton!
     var currentTextField: UITextField!
@@ -55,7 +54,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     var periodDayLabel:UILabel!
     var periodDayString:String = "30일"
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var aimString:String! = ""
     var unitString:String! = ""
@@ -70,7 +69,6 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     var middleBox:UIView!
     
     
-    var option:OptionStatus = OptionStatus.None
     var isTotal:Bool! = true
     var rangeList:[[String:String]] = []
     
@@ -79,21 +77,20 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     
     var optionView:UIView!
     var alarmOption:OptionButton!
-    var reReadOption:OptionButton!
+    var repeatOption:OptionButton!
     var reviewOption:OptionButton!
     
     var options:[Int] = [1,2,4]
     var eventOption = 0
-    var rereadCount:Int! = 0
+    var repeatCount:Int! = 0
     var reviewCount:Int! = 0
     
     
     
     
-    var totalAmount:Int!
-    var startRangeAmount:Int!
-    var endRangeAmount:Int!
-    var dayAmount:Int!
+    var totalAmount:Int! = 0
+    var startAmount:Int! = 0
+    var endAmount:Int! = 0
     
     
     var doneButton:UIButton!
@@ -107,6 +104,8 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+       
         
         view.backgroundColor = UIColor.todaitBackgroundGray()
         
@@ -130,6 +129,12 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     
     func loadDefaultCategory(){
         
+        var categoryResults = realm.objects(Category).filter("archived == false")
+        if let category = categoryResults.first{
+            self.category = category
+        }
+        
+        /*
         let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
         let request = NSFetchRequest()
         
@@ -142,7 +147,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         if let categoryData = categoryData {
             category = categoryData.first
         }
-        
+        */
     }
     
     func addGoalView(){
@@ -158,7 +163,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     }
     
     func addGoalTextField(){
-        goalTextField = UITextField(frame: CGRectMake(20*ratio, 19*ratio, 255*ratio, 12*ratio))
+        goalTextField = UITextField(frame: CGRectMake(20*ratio, 15.5*ratio, 255*ratio, 12*ratio))
         goalTextField.placeholder = "이곳에 목표를 입력해주세요"
         goalTextField.textAlignment = NSTextAlignment.Left
         goalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
@@ -167,6 +172,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         goalTextField.backgroundColor = UIColor.whiteColor()
         goalTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         goalTextField.text = aimString
+        goalTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         goalTextField.delegate = self
         goalView.addSubview(goalTextField)
         
@@ -258,6 +264,11 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     
     func addButtonView(){
         
+        
+        
+        
+        
+        
 
         
         totalButton = UIButton(frame: CGRectMake(19*ratio, 73*ratio, 89*ratio, 32*ratio))
@@ -294,6 +305,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         unitTextField.text = unitString
         unitTextField.addTarget(self, action: Selector("updateUnitAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         unitTextField.delegate = self
+        unitTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         
         unitTextField.layer.borderColor = UIColor.colorWithHexString("#B2B2B2").CGColor
         unitTextField.layer.borderWidth = 0.5*ratio
@@ -314,6 +326,8 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         totalAmountField.backgroundColor = UIColor.whiteColor()
         totalAmountField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         totalAmountField.delegate = self
+        totalAmountField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
+        totalAmountField.text = "\(totalAmount)"
         dataView.addSubview(totalAmountField)
         
         
@@ -328,6 +342,8 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         startAmountField.keyboardType = UIKeyboardType.NumberPad
         startAmountField.addTarget(self, action: Selector("updateStartAmount:"), forControlEvents: UIControlEvents.AllEvents)
         startAmountField.delegate = self
+        startAmountField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
+        startAmountField.text = "\(startAmount)"
         dataView.addSubview(startAmountField)
         
         
@@ -339,6 +355,8 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         endAmountField.addTarget(self, action: Selector("updateEndAmount:"), forControlEvents: UIControlEvents.AllEvents)
         endAmountField.keyboardType = UIKeyboardType.NumberPad
         endAmountField.delegate = self
+        endAmountField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
+        endAmountField.text = "\(endAmount)"
         dataView.addSubview(endAmountField)
         
         
@@ -384,7 +402,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         detailView.addSubview(detailLabel)
         
         let detailImage = UIImageView(frame: CGRectMake(316*ratio - 23*ratio, 15*ratio, 8*ratio, 16*ratio))
-        detailImage.image = UIImage(named: "bt_arrange_arrow@3x.png")
+        detailImage.image = UIImage.maskColor("bt_arrange_arrow@3x.png", color: UIColor.todaitGray())
         detailView.addSubview(detailImage)
         
         
@@ -401,7 +419,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         
         addAlarmOptionView()
         addReviewOptionView()
-        addReReadOptionView()
+        addRepeatOptionView()
         
         
     }
@@ -487,8 +505,9 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         reviewOption.offImage = UIImage(named: "icon_review@3x.png")
         reviewOption.onColor = UIColor.todaitGreen()
         reviewOption.offColor = UIColor.todaitGray()
-        reviewOption.setText("복습 0회")
-        reviewOption.setButtonOn(false)
+        reviewOption.setText("복습 \(editedTask.reviewCount)회")
+        eventOption = 1
+        count(editedTask.reviewCount)
         optionView.addSubview(reviewOption)
         
     }
@@ -510,34 +529,35 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         
     }
     
-    func addReReadOptionView(){
+    func addRepeatOptionView(){
         
-        reReadOption = OptionButton(frame:CGRectMake(162*ratio,12*ratio,157*ratio,47*ratio))
-        reReadOption.backgroundColor = UIColor.clearColor()
-        reReadOption.addTarget(self, action: Selector("reReadOptionClk"), forControlEvents: UIControlEvents.TouchDown)
-        reReadOption.onImage = UIImage(named: "icon_reread_wt@3x.png")
-        reReadOption.offImage = UIImage(named: "icon_reread@3x.png")
-        reReadOption.onColor = UIColor.todaitGreen()
-        reReadOption.offColor = UIColor.todaitGray()
-        reReadOption.setText("회독 0회")
-        reReadOption.setButtonOn(false)
-        optionView.addSubview(reReadOption)
+        repeatOption = OptionButton(frame:CGRectMake(162*ratio,12*ratio,157*ratio,47*ratio))
+        repeatOption.backgroundColor = UIColor.clearColor()
+        repeatOption.addTarget(self, action: Selector("repeatOptionClk"), forControlEvents: UIControlEvents.TouchDown)
+        repeatOption.onImage = UIImage(named: "icon_reread_wt@3x.png")
+        repeatOption.offImage = UIImage(named: "icon_reread@3x.png")
+        repeatOption.onColor = UIColor.todaitGreen()
+        repeatOption.offColor = UIColor.todaitGray()
+        repeatOption.setText("회독 \(editedTask.repeatCount)회")
+        eventOption = 2
+        count(editedTask.repeatCount)
+        optionView.addSubview(repeatOption)
         
         
     }
     
-    func reReadOptionClk(){
+    func repeatOptionClk(){
         
         
         eventOption = 2
         //option = OptionStatus.Reread
         
-        var readOptionVC = RereadViewController()
-        readOptionVC.delegate = self
-        readOptionVC.count = rereadCount
-        readOptionVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+        var repeatOptionVC = RepeatViewController()
+        repeatOptionVC.delegate = self
+        repeatOptionVC.count = repeatCount
+        repeatOptionVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         
-        self.navigationController?.presentViewController(readOptionVC, animated: false, completion: { () -> Void in
+        self.navigationController?.presentViewController(repeatOptionVC, animated: false, completion: { () -> Void in
             
         })
         
@@ -550,7 +570,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         
         switch eventOption {
         case 1: reviewOption.setText("복습 \(count)회") ; reviewOption.setButtonOn(count != 0) ; reviewCount = count
-        case 2: reReadOption.setText("회독 \(count)회") ; reReadOption.setButtonOn(count != 0) ; rereadCount = count
+        case 2: repeatOption.setText("회독 \(count)회") ; repeatOption.setButtonOn(count != 0) ; repeatCount = count
         default: eventOption = 0
         }
         
@@ -678,23 +698,18 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         if isAlarmOn == true {
             
             let notificationId = NSUUID().UUIDString
-            editedTask.notificationId = notificationId
+            //editedTask.notificationId = notificationId
             registerAlarm(notificationId)
             
         }
         
-        
-        var error: NSError?
-        managedObjectContext?.save(&error)
-        
-        if let err = error {
-            //에러처리
-        }else{
-            
-            NSLog("Task 저장성공",1)
-            
-            self.navigationController?.popViewControllerAnimated(true)
+        realm.write{
+            self.realm.add(self.editedTask,update:true)
         }
+        
+        self.navigationController?.popViewControllerAnimated(true)
+        
+        
     }
     
     func registerAlarm(notificationId:String){
@@ -727,9 +742,22 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     
     
     func setupTimeTaskViewController(){
+        
+        
+        isTotal = editedTask.startPoint == 0
+        
+        if isTotal == true {
+            totalAmount = editedTask.amount
+        }else{
+            startAmount = editedTask.startPoint
+            endAmount = startAmount + editedTask.amount
+        }
+        
+        
         startDate = NSDate()
         periodStartDate = NSDate()
         periodEndDate = NSDate(timeIntervalSinceNow: 24*60*60 * 29)
+        
         
         aimString = editedTask.name
         unitString = editedTask.unit
@@ -738,10 +766,14 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         dateForm.dateFormat = "a h시 m분"
         
         
+        
+        
+        /*
         if let notificationId = editedTask.notificationId {
             
             
             isAlarmOn = true
+            
             
             var notifications = UIApplication().scheduledLocalNotifications
             
@@ -757,7 +789,9 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
                     alarmTime = notification.fireDate
                 }
             }
+
         }
+        */
         
     }
     
@@ -870,7 +904,6 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         totalAmountField.resignFirstResponder()
         startAmountField.resignFirstResponder()
         endAmountField.resignFirstResponder()
-        dayTextField.resignFirstResponder()
         
     }
     
@@ -970,6 +1003,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         
     }
     
+    
     func categoryEdited(editedCategory:Category){
         
         categoryButton.layer.borderColor = UIColor.clearColor().CGColor
@@ -1015,11 +1049,11 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         cell.contentView.addSubview(endAmountField)
         
         
-        if let value = startRangeAmount {
+        if let value = startAmount {
             startAmountField.text = "\(value)"
         }
         
-        if let value = endRangeAmount {
+        if let value = endAmount {
             endAmountField.text = "\(value)"
         }
         
@@ -1034,12 +1068,12 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     
     
     func updateStartAmount(textField:UITextField){
-        startRangeAmount = textField.text.toInt()
+        startAmount = textField.text.toInt()
     }
     
     
     func updateEndAmount(textField:UITextField){
-        endRangeAmount = textField.text.toInt()
+        endAmount = textField.text.toInt()
     }
     
     
@@ -1149,7 +1183,16 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
     
     func deleteButtonClk(){
         
+        editedTask.archived = true
         
+        realm.write{
+            self.realm.add(self.editedTask,update:true)
+        }
+        
+        self.navigationController?.popToRootViewControllerAnimated(true)
+
+        
+        /*
         managedObjectContext?.deleteObject(editedTask)
         
         var error: NSError?
@@ -1162,7 +1205,7 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
             self.navigationController?.popToRootViewControllerAnimated(true)
             
         }
-        
+        */
     }
 
     
@@ -1229,9 +1272,8 @@ class EditGoalViewController: BasicViewController,UITextFieldDelegate,UnitInputV
         
         switch textField {
         case totalAmountField : totalAmount = textField.text.toInt()
-        case startAmountField : startRangeAmount = textField.text.toInt()
-        case endAmountField : endRangeAmount = textField.text.toInt()
-        case dayTextField : dayAmount = textField.text.toInt()
+        case startAmountField : startAmount = textField.text.toInt()
+        case endAmountField : endAmount = textField.text.toInt()
         default: textField.text = ""
         }
         

@@ -361,6 +361,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         nameField.returnKeyType = UIReturnKeyType.Next
         nameField.tintColor = UIColor.whiteColor()
         nameField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
+        nameField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         scrollView.addSubview(nameField)
         
     }
@@ -404,7 +405,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     func selectedString(string:String){
         
         jobField.text = string
-        scrollView.scrollRectToVisible(jobField.frame, animated: true)
+        //scrollView.scrollRectToVisible(jobField.frame, animated: true)
         goalField.becomeFirstResponder()
         currentTextField = goalField
     }
@@ -423,6 +424,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         emailField.returnKeyType = UIReturnKeyType.Next
         emailField.tintColor = UIColor.whiteColor()
         emailField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
+        emailField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         scrollView.addSubview(emailField)
         
     }
@@ -431,6 +433,19 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     func textFieldDidBeginEditing(textField: UITextField) {
         
         currentTextField = textField
+        
+        
+        
+        
+        var aRect = self.view.frame
+        aRect.size.height = aRect.size.height - textField.frame.origin.y + 38*ratio
+        
+        if (!CGRectContainsPoint(aRect, registerButton.frame.origin)) {
+            
+            scrollView.scrollRectToVisible(registerButton.frame, animated: true)
+        }
+        
+        
         
         if let currentTextField = currentTextField {
           
@@ -482,6 +497,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         passwordField.tintColor = UIColor.whiteColor()
         passwordField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
         passwordField.secureTextEntry = true
+        passwordField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         scrollView.addSubview(passwordField)
     }
     
@@ -499,6 +515,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         confirmField.tintColor = UIColor.whiteColor()
         confirmField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
         confirmField.secureTextEntry = true
+        confirmField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         scrollView.addSubview(confirmField)
     }
 
@@ -517,6 +534,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         jobField.returnKeyType = UIReturnKeyType.Next
         jobField.tintColor = UIColor.whiteColor()
         jobField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
+        jobField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         scrollView.addSubview(jobField)
     }
     
@@ -533,6 +551,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         goalField.returnKeyType = UIReturnKeyType.Join
         goalField.tintColor = UIColor.whiteColor()
         goalField.font = UIFont(name:"AppleSDGothicNeo-Regular", size: 14*ratio)
+        goalField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         scrollView.addSubview(goalField)
     }
     
@@ -637,8 +656,10 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
             
             alert.show()
             
+            ProgressManager.hide()
             return
         }
+        
         ProgressManager.hide()
     }
     
@@ -739,12 +760,12 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         var info:[NSObject:AnyObject] = aNotification.userInfo!
         var kbSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)!.CGRectValue().size as CGSize
         
-        var contentInsets = UIEdgeInsetsMake(0, 0, kbSize.height, 0)
+        var contentInsets = UIEdgeInsetsMake(0, 0, kbSize.height + 38*ratio, 0)
         scrollView.contentInset = contentInsets
         scrollView.scrollIndicatorInsets = contentInsets
         
         var aRect = self.view.frame
-        aRect.size.height = aRect.size.height - kbSize.height
+        aRect.size.height = aRect.size.height - kbSize.height - 38*ratio
         
         if (!CGRectContainsPoint(aRect, registerButton.frame.origin)) {
             

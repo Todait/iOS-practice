@@ -107,12 +107,12 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         var info:[NSObject:AnyObject] = aNotification.userInfo!
         var kbSize = (info[UIKeyboardFrameBeginUserInfoKey] as? NSValue)!.CGRectValue().size as CGSize
         
-        var contentInsets = UIEdgeInsetsMake(0, 0, kbSize.height, 0)
+        var contentInsets = UIEdgeInsetsMake(0, 0, kbSize.height + 38*ratio, 0)
         scrollView.contentInset = contentInsets
         scrollView.scrollIndicatorInsets = contentInsets
         
         var aRect = self.view.frame
-        aRect.size.height = aRect.size.height - kbSize.height
+        aRect.size.height = aRect.size.height - kbSize.height - 38*ratio
         
         if (!CGRectContainsPoint(aRect, findButton.frame.origin)) {
             
@@ -190,6 +190,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         emailField.textColor = UIColor.whiteColor()
         emailField.returnKeyType = UIReturnKeyType.Next
         emailField.tintColor = UIColor.whiteColor()
+        emailField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         scrollView.addSubview(emailField)
         
     }
@@ -207,6 +208,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         passwordField.returnKeyType = UIReturnKeyType.Join
         passwordField.tintColor = UIColor.whiteColor()
         passwordField.secureTextEntry = true
+        passwordField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         
         scrollView.addSubview(passwordField)
     }
@@ -283,6 +285,8 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
                 
                 if errorMessage == "Invalid email or password."{
                     print("ERROR")
+                    
+                    
                 }else if (success == "true"){
                     print("login ")
                     
@@ -292,13 +296,10 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
                     self.login()
                     
                     
-                }else{
-                    ProgressManager.hide()
                 }
-
-            }else{
-                ProgressManager.hide()
+                
             }
+            ProgressManager.hide()
         }
     }
     

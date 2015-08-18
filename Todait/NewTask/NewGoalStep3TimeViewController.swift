@@ -10,11 +10,8 @@ import UIKit
 
 class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,TodaitNavigationDelegate{
    
-    var startDate:NSDate!
-    var endDate:NSDate!
-    var titleString:String!
-    var unitString:String!
-    var totalAmount:CGFloat!
+    
+    
     
     var maxTime:CGFloat! = 3600
     
@@ -30,6 +27,9 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
     var weekdayButton:ColorButton!
     var weekendButton:ColorButton!
     
+    
+    var timeTask = TimeTask.sharedInstance
+    
     let weekTitle = ["SUN","MON","TUE","WED","THU","FRI","SAT"]
     let weekValue = [1,2,4,8,16,32,64]
     var selectedWeekDays:Int = 0
@@ -43,7 +43,7 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
     
     
     var isThumbed:Bool! = false
-    var maxChangeTimer:NSTimer!
+    var maxChangeTimer:NSTimer?
     var maxChangeTimeCount:Int = 0
     
     override func viewDidLoad() {
@@ -378,10 +378,14 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
         
         isThumbed = false
         
-        if maxChangeTimer.valid == true {
-            endTimer()
-        }
         
+        if let timer = maxChangeTimer {
+            
+            if timer.valid == true {
+                endTimer()
+            }
+            
+        }
         
         adjustChart()
         
@@ -403,8 +407,13 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
             
             let data = CGFloat(Int(minute)*600)
             chart.currentValue = data
+            
             label.text = getTimeStringOfHourMinuteFromSeconds(NSTimeInterval(data))
 
+            
+            print("\(Int(chart.currentValue/3600))시간 \(Int((chart.currentValue%3600)/60))분 \n")
+
+            
             UIView.animateWithDuration(0.7, animations: { () -> Void in
                 chart.setStroke()
             })
@@ -434,9 +443,9 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
             let button = weekButtons[index]
             let label = timeLabels[index]
             
-            
             var minute = Int(chart.currentValue/600)
             var second = Int(chart.currentValue%600)
+            
             if second > 300 {
                 minute = minute + 1
             }
@@ -444,7 +453,7 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
             let data = CGFloat(Int(minute)*600)
             
             
-            chart.currentValue = data
+            //chart.currentValue = data
             label.text = getTimeStringOfHourMinuteFromSeconds(NSTimeInterval(data))
             
             sumData = sumData + CGFloat(data)
@@ -474,6 +483,7 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
                 
                 
             }else {
+                
                 maxChangeTimer = NSTimer.scheduledTimerWithTimeInterval(0.1, target: self, selector: Selector("changeMaxTime"), userInfo: nil, repeats: true)
                 
             }
@@ -502,7 +512,7 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
     func dateCalulate(data:[CGFloat],mask:[Bool])->[ChartStatus]{
         
         var startOfWeek = getDayOfWeek(getDateFromDateNumber(getTodayDateNumber()))
-        var tempSum:CGFloat! = totalAmount
+        var tempSum:CGFloat! = CGFloat(timeTask.getAmount())
         
         var calculateData:[ChartStatus] = [ChartStatus](count:7, repeatedValue:ChartStatus.Off)
         
@@ -547,11 +557,11 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
     
     func calculateAmountLabels(){
         
-        var startOfWeek = getDayOfWeek(startDate)
-        var tempSum:CGFloat! = totalAmount
+        var startOfWeek = getDayOfWeek(timeTask.startDate!)
+        var tempSum:CGFloat! = CGFloat(timeTask.getAmount())
         var day = 0
         
-        var diff = Int(endDate.timeIntervalSinceDate(startDate) / (24*60*60))
+        var diff = Int(timeTask.endDate!.timeIntervalSinceDate(timeTask.startDate!) / (24*60*60))
         
         var times:[CGFloat] = [CGFloat](count: 7, repeatedValue: 0)
         
@@ -575,7 +585,7 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
         }
         
         var totalMinute = sum / 60
-        var amountPerMinute = totalAmount / totalMinute
+        var amountPerMinute = CGFloat(timeTask.getAmount()) / totalMinute
         
         
         for var index = 0 ; index < 7 ; index++ {
@@ -596,7 +606,11 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
     
     func endTimer(){
         
-        maxChangeTimer.invalidate()
+        
+        if let timer = maxChangeTimer {
+            timer.invalidate()
+        }
+        
         maxChangeTimeCount = 0
     }
     
@@ -655,7 +669,11 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        titleLabel.text = titleString
+        
+        if let goal = timeTask.goal {
+            titleLabel.text = goal
+        }
+        
         
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
@@ -680,12 +698,36 @@ class NewGoalStep3TimeViewController: BasicViewController,ThumbChartDelegate ,To
     
     func nextButtonClk(){
         
-        let step4VC = NewGoalStep4ViewController()
-        step4VC.titleString = titleString
-        self.navigationController?.pushViewController(step4VC, animated: true)
+        if isValidWeekTimes() == true {
+            
+            for var index = 0 ; index < 7 ; index++ {
+                
+                let chart = weekCharts[index]
+                timeTask.weekTimes[index] = Int(chart.currentValue)
+            }
+            
+            
+            
+            let step4VC = NewGoalStep4TimeViewController()
+            self.navigationController?.pushViewController(step4VC, animated: true)
         
+        }
     }
     
+    func isValidWeekTimes()->Bool{
+        
+        for var index = 0 ; index < 7 ; index++ {
+            
+            let chart = weekCharts[index]
+            let button = weekButtons[index]
+            
+            if button.buttonOn == true && chart.currentValue > 0 {
+                return true
+            }
+        }
+        
+        return false
+    }
     
     func backButtonClk(){
         self.navigationController?.popViewControllerAnimated(true)

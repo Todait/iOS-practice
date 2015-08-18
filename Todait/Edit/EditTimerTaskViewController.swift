@@ -7,12 +7,12 @@
 //
 
 import UIKit
+import RealmSwift
 
 class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryDelegate,TodaitNavigationDelegate,AlarmDelegate{
    
     var editedTask:Task!
     var category:Category!
-    var delegate: CategoryUpdateDelegate!
     var mainColor: UIColor!
    
     
@@ -38,8 +38,7 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
     
     
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
-    
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var options:[Int] = [1,2,4,8]
     var option:Int! = 0
@@ -64,17 +63,9 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
     
     func loadDefaultCategory(){
         
-        let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
-        let request = NSFetchRequest()
-        
-        request.entity = entityDescription
-        
-        var error: NSError?
-        
-        var categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as? [Category]
-        
-        if let categoryData = categoryData {
-            category = categoryData.first
+        var categoryResults = realm.objects(Category).filter("archived == false")
+        if let category = categoryResults.first{
+            self.category = category
         }
         
     }
@@ -103,6 +94,7 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         goalTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         goalTextField.text = aimString
         goalTextField.delegate = self
+        goalTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         goalView.addSubview(goalTextField)
         
         
@@ -152,7 +144,7 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
     
     func addOptionView(){
         
-        
+        /*
         if let notificationId = editedTask.notificationId {
             
             isAlarmOn = true
@@ -169,9 +161,9 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
                     alarmTime = notification.fireDate
                 }
             }
+
         }
-        
-        
+        */
         
         
         optionView = UIView(frame: CGRectMake(2*ratio, 64 + 47*ratio, 316*ratio, 55*ratio))
@@ -179,6 +171,9 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         view.addSubview(optionView)
         
         addAlarmOptionView()
+        
+        
+        
         
     }
     
@@ -289,8 +284,18 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         
         
         editedTask.name = goalTextField.text
-        editedTask.categoryId = category
+        editedTask.category = category
+        category.tasks.append(editedTask)
         
+        realm.write{
+            self.realm.add(self.category,update:true)
+            self.realm.add(self.editedTask,update:true)
+        }
+        
+        backButtonClk()
+        
+        
+        /*
         var error: NSError?
         managedObjectContext?.save(&error)
         
@@ -301,7 +306,7 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
             
             backButtonClk()
         }
-        
+        */
     }
     
     
@@ -330,6 +335,7 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         
     }
     
+    /*
     func deleteButtonClk(){
         
         managedObjectContext?.deleteObject(editedTask)
@@ -346,7 +352,18 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         }
         
     }
+    */
     
+    
+    func deleteButtonClk(){
+        
+        editedTask.archived = true
+        
+        realm.write {
+            self.realm.add(self.editedTask,update:true)
+        }
+        
+    }
     
     
     
