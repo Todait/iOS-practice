@@ -10,7 +10,7 @@ import UIKit
 import Alamofire
 
 
-class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDelegate,KeyboardHelpDelegate{
+class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDelegate,KeyboardHelpDelegate,LoginDelegate{
    
     var scrollView:UIScrollView!
     
@@ -18,10 +18,9 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
     var logoImageView:UIImageView!
     
-    var emailTextField:PaddingTextField!
+    var emailField:PaddingTextField!
     var passwordField:PaddingTextField!
-    
-    var currentTextField:UITextField!
+    var currentTextField:UITextField?
     
     var skipButton:UIButton!
     var loginButton:UIButton!
@@ -37,7 +36,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         case None
     }
     
-    private var status:Status! = Status.None
+    private var status:Status? = Status.None
     
     
     var keyboardHelpView:KeyboardHelpView!
@@ -60,7 +59,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         
         addKeyboardHelpView()
         
-        //showMainTabbarVC()
+        //login()
     }
     
     func addBackgroundImage(){
@@ -166,7 +165,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     func resignAllKeyBoard(){
         
         if let textField = currentTextField {
-            currentTextField.resignFirstResponder()
+            textField.resignFirstResponder()
         }
     
     }
@@ -182,16 +181,16 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
     func addEmailField(){
         
-        emailTextField = PaddingTextField(frame: CGRectMake(0, 222*ratio, width, 48*ratio))
-        emailTextField.attributedPlaceholder = NSAttributedString.getAttributedString("E-mail",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
-        emailTextField.padding = 30*ratio
-        emailTextField.textAlignment = NSTextAlignment.Left
-        emailTextField.delegate = self
-        emailTextField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
-        emailTextField.textColor = UIColor.whiteColor()
-        emailTextField.returnKeyType = UIReturnKeyType.Next
-        emailTextField.tintColor = UIColor.whiteColor()
-        scrollView.addSubview(emailTextField)
+        emailField = PaddingTextField(frame: CGRectMake(0, 222*ratio, width, 48*ratio))
+        emailField.attributedPlaceholder = NSAttributedString.getAttributedString("E-mail",font:UIFont(name: "AppleSDGothicNeo-Regular", size: 14*ratio)!,color:UIColor.whiteColor())
+        emailField.padding = 30*ratio
+        emailField.textAlignment = NSTextAlignment.Left
+        emailField.delegate = self
+        emailField.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.4)
+        emailField.textColor = UIColor.whiteColor()
+        emailField.returnKeyType = UIReturnKeyType.Next
+        emailField.tintColor = UIColor.whiteColor()
+        scrollView.addSubview(emailField)
         
     }
     
@@ -214,7 +213,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
-        if textField == emailTextField {
+        if textField == emailField {
             passwordField.becomeFirstResponder()
         }else if textField == passwordField {
             loginButtonClk()
@@ -243,11 +242,13 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     func loginButtonClk(){
         
         
+        
+        ProgressManager.show()
+        
         let validator = Validator()
         
-        
-        validator.registerField(emailTextField, rules:[MinLengthRule(length: 1, message: "이메일을 입력해주세요."),EmailRule(message:"올바른 이메일을 입력해주세요."),])
-        validator.registerField(passwordField, rules:[MinLengthRule(length: 1, message: "비밀번호를 입력해주세요."),MinLengthRule(length: 8, message: "비밀번호는 8자 이상입니다."),PasswordRule(message:"올바른 비밀번호를 입력해주세요")])
+        validator.registerField(emailField, rules:[MinLengthRule(length: 1, message: "이메일을 입력해주세요.")])//,EmailRule(message:"올바른 이메일을 입력해주세요."),])
+        //validator.registerField(passwordField, rules:[MinLengthRule(length: 1, message: "비밀번호를 입력해주세요."),MinLengthRule(length: 8, message: "비밀번호는 8자 이상입니다."),PasswordRule(message:"올바른 비밀번호를 입력해주세요")])
         validator.validate(self)
         
     }
@@ -259,29 +260,44 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     func requestLogin(){
         
         var params:[String:AnyObject] = [:]
-        let email = emailTextField.text as String
+        let email = emailField.text as String
         let password = passwordField.text as String
         params["user"] = ["email":email,"password":password]
         
         var manager = Alamofire.Manager.sharedInstance
         manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
         
-        Alamofire.request(.POST, "https://todait.com/sessions", parameters: params).responseJSON(options: nil) { (request, response, object, error) -> Void in
-            
-            let json = JSON(object!)
-            print(json)
+        
+        Alamofire.request(.POST, SERVER_URL + LOGIN, parameters: params , encoding: .JSON).responseJSON(options: nil) { (request, response, object, error) -> Void in
             
             
-            
-            let errorMessage = json["error"]
-            
-            if errorMessage == "Invalid email or password."{
-                print("ERROR")
+            if let object: AnyObject = object {
+                let json = JSON(object)
+                print(json)
                 
                 
+                
+                let errorMessage = json["error"]
+                let success = json["success"].stringValue
+                
+                
+                if errorMessage == "Invalid email or password."{
+                    print("ERROR")
+                }else if (success == "true"){
+                    print("login ")
+                    
+                    self.defaults.setObject(email, forKey: "email")
+                    self.defaults.setObject(json["data"]["authentication_token"].stringValue, forKey: "token")
+                    
+                    self.login()
+                    
+                    
+                }else{
+                    ProgressManager.hide()
+                }
+
             }else{
-                print("login ")
-                self.showMainTabbarVC()
+                ProgressManager.hide()
             }
         }
     }
@@ -297,9 +313,11 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
             
             return
         }
+        
+        ProgressManager.hide()
     }
     
-    func showMainTabbarVC(){
+    func login(){
         performSegueWithIdentifier("showMainTabbarVC", sender: self)
     }
     
@@ -342,7 +360,10 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
     func registerButtonClk(){
         
-        self.navigationController?.pushViewController(RegisterViewController(), animated: false)
+        let registerVC = RegisterViewController()
+        registerVC.delegate = self
+        
+        self.navigationController?.pushViewController(registerVC, animated: false)
         
     }
     
@@ -350,12 +371,18 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     
         currentTextField = textField
         
-        switch currentTextField {
-        case emailTextField: keyboardHelpView.setStatus(KeyboardHelpStatus.Start) ; status = .Email
-        case passwordField: keyboardHelpView.setStatus(KeyboardHelpStatus.End) ; status = .Password
-        default : return
+        if let currentTextField = currentTextField {
+            
+            switch currentTextField {
+                
+            case emailField: keyboardHelpView.setStatus(KeyboardHelpStatus.Start) ; status = .Email
+            case passwordField: keyboardHelpView.setStatus(KeyboardHelpStatus.End) ; status = .Password
+                
+            default : return
+                
+            }
         }
-    
+        
     }
     
     
@@ -384,7 +411,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         if let status = status {
             
             switch status as Status {
-            case .Password: self.status = .Email ; emailTextField.becomeFirstResponder() ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
+            case .Password: self.status = .Email ; emailField.becomeFirstResponder() ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
             default: self.status = .None ; confirmButtonClk()
             }
         }
@@ -403,6 +430,9 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     }
 
     func confirmButtonClk() {
-        currentTextField.resignFirstResponder()
+        
+        if let currentTextField = currentTextField {
+            currentTextField.resignFirstResponder()
+        }
     }
 }

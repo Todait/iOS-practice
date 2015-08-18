@@ -11,16 +11,22 @@ import MobileCoreServices
 import Alamofire
 import AWSS3
 
+
+protocol LoginDelegate : NSObjectProtocol {
+    func login()
+}
+
+
 class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,DiaryImageDelegate,ListInputDelegate,ValidationDelegate,KeyboardHelpDelegate{
 
     
+    var backgroundImage:UIImageView!
     var scrollView:UIScrollView!
     
     var loginButton:UIButton!
-    
     var profileButton:UIButton!
     var cameraButton:UIButton!
-    
+    var registerButton:UIButton!
     
     
     
@@ -28,22 +34,21 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     var emailField:PaddingTextField!
     var passwordField:PaddingTextField!
     var confirmField:PaddingTextField!
-    
     var jobField:PaddingTextField!
     var goalField:PaddingTextField!
     
-    var currentTextField:UITextField!
+    var currentTextField:UITextField?
+    var keyboardHelpView:KeyboardHelpView!
     
-    var registerButton:UIButton!
     
-    var newMedia:Bool! = false
     
     var selectedIndexPath:NSIndexPath!
+    
     var jobData:[String] = []
     var fileName:String! = ""
+    var newMedia:Bool! = false
     
-    
-    var keyboardHelpView:KeyboardHelpView!
+    var delegate:LoginDelegate?
     
     private enum Status{
         case Name
@@ -57,13 +62,9 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     
     private var status:Status! = Status.None 
     
-    var backgroundImage:UIImageView!
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.8)
         addBackgroundImage()
         addScrollView()
         addLoginButton()
@@ -75,12 +76,13 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         addConfirmField()
         addJobField()
         addGoalField()
-        
         addRegisterButton()
-        
         addKeyboardHelpView()
     }
+    
     func addBackgroundImage(){
+        
+        view.backgroundColor = UIColor.todaitGreen().colorWithAlphaComponent(0.8)
         
         backgroundImage = UIImageView(frame: view.frame)
         backgroundImage.image = UIImage(named: "bg@3x.png")
@@ -104,7 +106,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     func resignAllKeyBoard(){
         
         if let textField = currentTextField {
-            currentTextField.resignFirstResponder()
+            textField.resignFirstResponder()
         }
     }
     
@@ -115,7 +117,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         loginButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
         loginButton.setTitle("로그인", forState: UIControlState.Normal)
         loginButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
-        scrollView.addSubview(loginButton)
+        //scrollView.addSubview(loginButton)
         
     }
     
@@ -316,7 +318,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
             
             if (task.result != nil) {
                 
-                let output = task.result
+                let output: AnyObject! = task.result
                 
                 self.fileName = fileName
                 
@@ -430,17 +432,20 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
         currentTextField = textField
         
-        switch currentTextField {
-        
-        case nameField: keyboardHelpView.setStatus(KeyboardHelpStatus.Start) ; status = .Name
-        case emailField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Email
-        case passwordField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Password
-        case confirmField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Confirm
-        case jobField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Job
-        case goalField: keyboardHelpView.setStatus(KeyboardHelpStatus.End) ; status = .Goal
-        default : return
+        if let currentTextField = currentTextField {
+          
+            switch currentTextField {
+                
+            case nameField: keyboardHelpView.setStatus(KeyboardHelpStatus.Start) ; status = .Name
+            case emailField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Email
+            case passwordField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Password
+            case confirmField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Confirm
+            case jobField: keyboardHelpView.setStatus(KeyboardHelpStatus.Center) ; status = .Job
+            case goalField: keyboardHelpView.setStatus(KeyboardHelpStatus.End) ; status = .Goal
+            default : return
+                
+            }
         }
-        
     }
     
     
@@ -551,6 +556,8 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     func registerButtonClk(){
         
         
+        ProgressManager.show()
+        
         let validator = Validator()
         
         
@@ -585,15 +592,36 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
         
         params["user"] = ["email":email,"name":name,"password":password,"password_confirmation":confirm,"grade":job,"image_names":fileName]
         
+        setBaseHeader()
         
-        var manager = Alamofire.Manager.sharedInstance
-        manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
-        
-        
-        Alamofire.request(.POST, "https://todait.com/registrations", parameters: params).responseJSON(options: nil) { (request, response, object, error) -> Void in
+        Alamofire.request(.POST, SERVER_URL + REGISTER, parameters: params).responseJSON(options: nil) { (request, response, object, error) -> Void in
+            
+            
+            
             
             let json = JSON(object!)
             print(json)
+            
+            if json["success"].boolValue == true{
+                let data = json["data"]
+                let user = data["user"]
+                self.defaults.setObject(user["authentication_token"].stringValue, forKey: "authentication_token")
+                
+                if let delegate = self.delegate {
+                    if delegate.respondsToSelector("login") {
+                        delegate.login()
+                    }
+                }
+                
+                
+            }else if json["success"].boolValue == false{
+                
+                
+                
+            }else{
+                 print(json)
+            }
+            
             
             
         }
@@ -611,6 +639,7 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
             
             return
         }
+        ProgressManager.hide()
     }
     
     
