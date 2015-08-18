@@ -40,14 +40,12 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     var isShowAllCategory:Bool = true
     var category:Category!
-    var dayData:[Day] = []
+    
+    
+    
     var dayResults:Results<Day>?
+    var uncompletedTaskDateResults:Results<TaskDate>?
     
-    var taskResults:Results<Task>?
-    var taskData:[Task] = []
-    var taskUncompletedResultsData:[Task] = []
-    
-    var uncompletedTaskData:[Task] = []
     var taskTestCount:NSTimeInterval = 0
     
     
@@ -60,13 +58,14 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
 
     var isDeleteAnimation:Bool = false
     
-    var realmManager = RealmManager.sharedInstance
+    
     
     func needToUpdate(){
         
-        loadTaskData()
-        loadUncompletedTaskData()
-        loadDayData()
+        
+        loadUncompletedTaskDate()
+        loadDay()
+        
         mainTableView.reloadData()
         
         updateMainPhoto()
@@ -163,7 +162,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        requestDayToServer()
+        //requestDayToServer()
         
         //createTestData()
         //createTestDataRealm()
@@ -173,9 +172,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         calculateRemainingTime()
         setupCoreDataInit()
         
-        loadTaskData()
-        loadUncompletedTaskData()
-        loadDayData()
+        
+        loadUncompletedTaskDate()
+        loadDay()
         mainTableView.reloadData()
         
         addListView()
@@ -184,8 +183,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func requestDayToServer(){
         
+        
+        
         var params:[String:AnyObject] = [:]
-        params["sync_at"] = 0
+        params["sync_at"] = defaults.objectForKey("sync_at")
         
         var manager = Alamofire.Manager.sharedInstance
         manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json","X-User-Email":defaults.objectForKey("email")!,"X-User-Token":defaults.objectForKey("token")!]
@@ -258,8 +259,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             let taskDate = TaskDate()
             taskDate.id = NSUUID().UUIDString
             taskDate.startDate = 20150801
-            taskDate.endDate = 2015 * 10000 + Int(8) * 100 + Int(rand()%13 + 1)
+            taskDate.endDate = 2015 * 10000 + Int(8) * 100 + Int(rand()%18 + 1)
             taskDate.task = task
+            taskDate.state = Int(rand()%2)
             task.taskDates.append(taskDate)
             
             
@@ -340,22 +342,6 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     
     
-    func getMainAmountLogData()->[CGFloat]{
-        
-        
-        
-        let dayCount = dayData.count
-        
-        for index in 0 ... dayCount {
-            
-            if dayCount-1 == index {
-                break
-            }
-            
-        }
-        
-        return [1]
-    }
     
     func touchBegin() {
         
@@ -536,6 +522,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
     }
     
+    /*
     func loadDayResults(){
         
         
@@ -555,8 +542,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         }
         
     }
+    */
     
-    func loadDayData(){
+    func loadDay(){
         
         let sortIndex = defaults.integerForKey("sortIndex")
         
@@ -574,24 +562,18 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         
         
-        dayData.removeAll(keepCapacity: true)
-        
         let todayDateNumber = getTodayDateNumber()
-        let predicate = NSPredicate(format:"archived == false && date == %lu ",todayDateNumber)
+        let predicate = NSPredicate(format:"archived == false && date == %lu && taskDate.state == 1 ",todayDateNumber)
         
         dayResults = realm.objects(Day).filter(predicate)//.sorted("taskDate.task.name", ascending: true)
         
+    }
+    
+    func loadUncompletedTaskDate(){
         
-        /*
-        for task in taskData {
-            
-            let day:Day? = task.getDay(todayDateNumber)
-            
-            if let validDay = day {
-                dayData.append(day!)
-            }
-        }
-        */
+        let uncomplete = NSPredicate(format:"archived == false && state == 0 ")
+        uncompletedTaskDateResults = realm.objects(TaskDate).filter(uncomplete)
+        
     }
     
     
@@ -613,7 +595,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
     }
     
-    
+    /*
     func loadTaskData(){
     
         return
@@ -655,9 +637,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         
     }
-    
-    
-    func loadUncompletedTaskData(){
+    */
+    /*
+    func loadUncompletedTaskDate(){
         
         return
         
@@ -697,9 +679,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         
     }
+    */
     
     /*
-    func loadUncompletedTaskData(){
+    func loadUncompletedTaskDate(){
         let entityDescription = NSEntityDescription.entityForName("Task",inManagedObjectContext:managedObjectContext!)
         
         let request = NSFetchRequest()
@@ -841,6 +824,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func showList(){
         
+        //requestDayToServer()
+        
         /*
         if mainCategoryVC.view.hidden == true {
             mainCategoryVC.view.hidden = false
@@ -895,7 +880,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         if section == 0 {
             
-            if uncompletedTaskData.count != 0 {
+            if uncompletedTaskDateResults!.count != 0 {
                 return 1
             }else{
                 return 0
@@ -934,15 +919,17 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
             let cell = tableView.dequeueReusableCellWithIdentifier("uncompletedCell", forIndexPath: indexPath) as! UncompletedTableViewCell
             
             
-            let task = uncompletedTaskData[indexPath.row]
+            //let task = uncompletedTaskData[indexPath.row]
             
-            if uncompletedTaskData.count == 1 {
-                cell.titleLabel.text = task.name + " 목표 미완료"
-            }else{
-                cell.titleLabel.text = task.name + " 외 \(uncompletedTaskData.count-1)개 목표 미완료"
+            if let taskDate = uncompletedTaskDateResults?[indexPath.row] {
+                if uncompletedTaskDateResults!.count == 1 {
+                    cell.titleLabel.text = taskDate.task!.name + " 목표 미완료"
+                }else{
+                    cell.titleLabel.text = taskDate.task!.name + " 외 \(uncompletedTaskDateResults!.count-1)개 목표 미완료"
+                }
+            }else {
+                cell.titleLabel.text = "목표 미완료"
             }
-            
-            
             
             cell.contentsLabel.text = "미완료 목표 보기"
             
@@ -984,7 +971,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         let task:Task! = day!.taskDate?.task!
         
         
-        if task.taskType == "Timer" {
+        if task.taskType == "timer" {
             
             let cell = tableView.dequeueReusableCellWithIdentifier("timerCell", forIndexPath: indexPath) as! TimerTaskTableViewCell
             
@@ -1238,8 +1225,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         }
         
         
-        loadTaskData()
-        loadDayData()
+        loadUncompletedTaskDate()
+        loadDay()
         updateText()
         
     }
@@ -1256,7 +1243,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         var totalSecond:Int = 0
         
-        for dayItem in dayData{
+        for dayItem in dayResults!{
             let day:Day! = dayItem
             totalSecond = totalSecond + Int(day.doneSecond)
             

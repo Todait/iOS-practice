@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import RealmSwift
 
 class UncompletedViewController: BasicViewController,TodaitNavigationDelegate,UITableViewDelegate,UITableViewDataSource{
    
     var tableView:UITableView!
-    var uncompletedTaskData:[Task] = []
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    var uncompletedTaskDateResults:Results<TaskDate>?
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     
     override func viewDidLoad() {
@@ -24,31 +25,12 @@ class UncompletedViewController: BasicViewController,TodaitNavigationDelegate,UI
     }
     
     func loadUncompletedTaskData(){
-        let entityDescription = NSEntityDescription.entityForName("Task",inManagedObjectContext:managedObjectContext!)
-        
-        let request = NSFetchRequest()
-        request.entity = entityDescription
         
         
         
-        let predicate = NSPredicate(format: "completed == %@" , false)
-        request.predicate = predicate
+        uncompletedTaskDateResults = realm.objects(TaskDate).filter("state == 0")
         
-        var error: NSError?
-        var allTasks = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Task]
-        
-        var todayDateNumber = getTodayDateNumber()
-        uncompletedTaskData = allTasks.filter({(task:Task?) -> (Bool) in
-            
-            if let task = task {
-                if task.amount.integerValue > task.getTotalDoneAmount().integerValue && task.endDate < todayDateNumber {
-                    return true
-                }
-            }
-            
-            return false
-        })
-        
+    
     }
 
     
@@ -85,14 +67,14 @@ class UncompletedViewController: BasicViewController,TodaitNavigationDelegate,UI
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return uncompletedTaskData.count
+        return uncompletedTaskDateResults!.count
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
      
         
         let detailVC = DetailViewController()
-        detailVC.task = uncompletedTaskData[indexPath.row]
+        detailVC.task = uncompletedTaskDateResults![indexPath.row].task
         self.navigationController?.pushViewController(detailVC, animated: true)
         
         let cell = tableView.cellForRowAtIndexPath(indexPath)
@@ -110,57 +92,42 @@ class UncompletedViewController: BasicViewController,TodaitNavigationDelegate,UI
             temp.removeFromSuperview()
         }
         
-        var task = uncompletedTaskData[indexPath.row]
-        let totalDoneAmount = task.getTotalDoneAmount()
-        let totalDoneTime = task.getTotalDoneTime()
-        let amount = task.amount
         
-        let backView = UIView()
-        backView.backgroundColor = UIColor.todaitWhiteGray()
-        cell.selectedBackgroundView = backView
-        
-        
-        
-        cell.indexPath = indexPath
-        cell.percentLayer.strokeEnd = 0
-        cell.percentLayer.strokeColor = UIColor.todaitLightGray().CGColor
-        cell.percentLayer.lineWidth = 2
-        cell.percentLabel.textColor = UIColor.todaitDarkGray()
-        cell.colorBoxView.backgroundColor = task.getColor()
-        cell.percentLabel.hidden = false
-        cell.timerButton.userInteractionEnabled = false
-        
-        
-        cell.titleLabel.text = task.name
-        cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(totalDoneTime.integerValue))
-        
-        cell.contentsTextView.setupText(totalDoneAmount.integerValue, total: amount.integerValue, unit: task.unit)
-        
-        
-        cell.percentLabel.text = String(format: "%lu%@", Int(totalDoneAmount.floatValue/amount.floatValue * 100),"%")
-        
-        cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
-        cell.percentLayer.strokeEnd = CGFloat(totalDoneAmount.floatValue/amount.floatValue)
-        cell.percentLabel.textColor = UIColor.todaitRed()
-        
-        
-        /*
-        if let day = day {
+        if let task = uncompletedTaskDateResults![indexPath.row].task{
             
-            //cell.contentsLabel.text = day.getProgressString()
-            cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.doneSecond.integerValue))
-            cell.contentsTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
-            cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
+            let totalDoneAmount = task.getTotalDoneAmount()
+            let totalDoneTime = task.getTotalDoneTime()
+            let amount = task.amount
+            
+            let backView = UIView()
+            backView.backgroundColor = UIColor.todaitWhiteGray()
+            cell.selectedBackgroundView = backView
+            
+            
+            
+            cell.indexPath = indexPath
+            cell.percentLayer.strokeEnd = 0
+            cell.percentLayer.strokeColor = UIColor.todaitLightGray().CGColor
+            cell.percentLayer.lineWidth = 2
+            cell.percentLabel.textColor = UIColor.todaitDarkGray()
+            cell.colorBoxView.backgroundColor = task.getColor()
+            cell.percentLabel.hidden = false
+            cell.timerButton.userInteractionEnabled = false
+            
+            
+            cell.titleLabel.text = task.name
+            cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(totalDoneTime))
+            
+            cell.contentsTextView.setupText(totalDoneAmount, total: amount, unit: task.unit)
+            
+            
+            cell.percentLabel.text = String(format: "%lu%@", Int(totalDoneAmount/amount * 100),"%")
+            
             cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
-            cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
+            cell.percentLayer.strokeEnd = CGFloat(totalDoneAmount/amount)
             cell.percentLabel.textColor = UIColor.todaitRed()
-            //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
             
-        }else{
-            
-            cell.titleLabel.text = task.name + " | "
         }
-        */
         
         
         var line = UIView(frame: CGRectMake(0, 57.5, 320*ratio, 0.5))
