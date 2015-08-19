@@ -189,7 +189,7 @@ class AmountTaskOptionViewController: TaskOptionViewController ,AlarmDelegate,Co
             
             let jsons = JSON(object!)
             
-            
+            print(jsons)
             /*
             let jsonData:NSMutableData! = NSMutableData()
             
