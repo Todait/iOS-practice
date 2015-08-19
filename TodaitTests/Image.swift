@@ -10,9 +10,18 @@ import RealmSwift
 
 class Image: Object {
     
-// Specify properties to ignore (Realm won't persist these)
+    dynamic var id = ""
+    dynamic var fileName = ""
+    dynamic var archived = false
+    dynamic var diary:Diary?
     
-//  override static func ignoredProperties() -> [String] {
-//    return []
-//  }
+    override static func primaryKey()->String? {
+        return "id"
+    }
+    
+    // Specify properties to ignore (Realm won't persist these)
+    
+    //  override static func ignoredProperties() -> [String] {
+    //    return []
+    //  }
 }

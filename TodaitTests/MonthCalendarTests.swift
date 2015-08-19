@@ -73,10 +73,10 @@ class MonthCalendarTests: XCTestCase {
         var toString = dateForm.stringFromDate(to)
         
         if fromString != toString {
-            if toDateNumber.integerValue > fromDateNumber.integerValue {
+            if toDateNumber > fromDateNumber  {
                 NSLog("return 1", 0)
                 return 1
-            } else if toDateNumber.integerValue < fromDateNumber.integerValue {
+            } else if toDateNumber  < fromDateNumber {
                 NSLog("return -1", 0)
                 return -1
             }

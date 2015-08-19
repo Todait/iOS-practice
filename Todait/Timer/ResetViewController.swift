@@ -21,6 +21,8 @@ class ResetViewController: BasicViewController {
     var saveButton:UIButton!
     var closeButton:UIButton!
     
+    var delegate:ResetDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -157,8 +159,11 @@ class ResetViewController: BasicViewController {
     func saveButtonClk(){
         
         dismissViewControllerAnimated(false, completion: { () -> Void in
-            if self.delegate.respondsToSelector("saveTimeLog"){
-                self.delegate.saveTimeLog()
+            
+            if let delegate = self.delegate {
+                if delegate.respondsToSelector("saveTimeLog"){
+                    delegate.saveTimeLog()
+                }
             }
         })
         

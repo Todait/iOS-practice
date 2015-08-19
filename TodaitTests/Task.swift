@@ -95,7 +95,7 @@ class Task:NSObject {
     
     //date와 오늘마감시간에 따라 에러발생가능성 있음
     
-    func getDateNumberFromDate(date:NSDate)->NSNumber{
+    func getDateNumberFromDate(date:NSDate)->Int{
         
         let dateForm = NSDateFormatter()
         dateForm.dateFormat = "yyyyMMdd"

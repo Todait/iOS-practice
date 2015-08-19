@@ -381,7 +381,7 @@ class DayTests: XCTestCase {
 
     }
     
-    func getDateNumberFromDate(date:NSDate)->NSNumber{
+    func getDateNumberFromDate(date:NSDate)->Int{
         
         let dateForm = NSDateFormatter()
         dateForm.dateFormat = "yyyyMMdd"

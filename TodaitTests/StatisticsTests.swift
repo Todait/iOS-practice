@@ -74,7 +74,7 @@ class StatisticsTests: XCTestCase {
         return date
     }
     
-    func getDateNumberFromDate(date:NSDate)->NSNumber{
+    func getDateNumberFromDate(date:NSDate)->Int{
         
         let dateForm = NSDateFormatter()
         dateForm.dateFormat = "yyyyMMdd"

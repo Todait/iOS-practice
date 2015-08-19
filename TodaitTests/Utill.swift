@@ -12,7 +12,7 @@ import UIKit
 
 
 
-public func getTodayDateNumber()->NSNumber{
+public func getTodayDateNumber()->Int{
     
     return getDateNumberFromDate(NSDate())
 }
