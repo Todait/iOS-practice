@@ -234,10 +234,10 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         var task:[String:AnyObject] = [:]
         task["name"] = goalTextField.text
         task["task_type"] = "time"
-        task["repeat_count"] = 0
+        task["repeat_count"] = 1
         task["notification_mode"] = isAlarmOn
         task["priority"] = 0
-        task["task_dates_attributes"] = ["start_date":"\(getTodayDateNumber())","state":0]
+        task["task_dates_attributes"] = [["start_date":"\(getTodayDateNumber())","state":0]]
         
         if isAlarmOn == true {
             task["notification_time"] = alarmOption.optionText
@@ -486,7 +486,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
             
             var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: alarmTime!)
             
-            alarmOption.setText("\(comp.hour):\(comp.minute)")
+            alarmOption.setText(String(format: "%0lu", arguments: [comp.hour]) + ":" + String(format: "%0lu", arguments: [comp.minute]))
             
             
         }else{

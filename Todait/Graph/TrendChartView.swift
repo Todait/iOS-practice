@@ -33,27 +33,32 @@ class TrendChartView: UIScrollView {
     
     func updateChart(data:[[String:AnyObject]]){
         
+        return
+        /*
         let dataCount = data.count
         
-        let axisCount = Int(data[0]["value"]!.count)
-        contentSize = CGSizeMake(CGFloat(axisCount)*width, frame.size.height)
-        
-        
-        var maxValue = CGFloat(data[0]["max"]! as! NSNumber)
-        
-        
-        for index in 0...dataCount {
+        if dataCount > 0 {
             
-            addChart(maxValue,data:data[index])
+            let axisCount = Int(data[0]["value"]!.count)
+            contentSize = CGSizeMake(CGFloat(axisCount)*width, frame.size.height)
             
-            if index == dataCount-1 {
-                break
+            
+            var maxValue = CGFloat(data[0]["max"]! as! NSNumber)
+            
+            
+            for index in 0...dataCount {
+                
+                addChart(maxValue,data:data[index])
+                
+                if index == dataCount-1 {
+                    break
+                }
+                
             }
             
-            
+            addXAxisLabel(data)
         }
-        
-        addXAxisLabel(data)
+        */
     }
     
     func getMaxValue(data:[[String:AnyObject]])->CGFloat{
@@ -125,7 +130,10 @@ class TrendChartView: UIScrollView {
     }
     
     func addXAxisLabel(data:[[String:AnyObject]]){
+
+        return
     
+        /*
         var dataCount = Int(data[0]["value"]!.count)
         
         for index in 0...dataCount{
@@ -144,6 +152,7 @@ class TrendChartView: UIScrollView {
                 break
             }
         }
+        */
     }
     
     

@@ -84,7 +84,7 @@ class WeekMaxChart: UIView {
         }
     }
     
-    func updateTimeChart(values:[[String:NSNumber]]){
+    func updateTimeChart(values:[[String:Int]]){
         
         let originX = padding
         
@@ -173,7 +173,7 @@ class WeekMaxChart: UIView {
     }
 
     
-    func updateChart(values:[[String:NSNumber]]){
+    func updateChart(values:[[String:Int]]){
         
         let originX = padding
         
@@ -262,7 +262,7 @@ class WeekMaxChart: UIView {
     }
     
     
-    func getMaxElement(data:[[String:NSNumber]])->CGFloat {
+    func getMaxElement(data:[[String:Int]])->CGFloat {
         
         var maxValue:CGFloat = 0
         
@@ -303,6 +303,8 @@ class WeekMaxChart: UIView {
     
     
     func touchPoint(touches:NSSet,event:UIEvent){
+        
+        /*
         let touch: AnyObject? = touches.anyObject()
         let touchPoint:CGPoint! = touch?.locationInView(self)
         var subview:UIView! = UIView()
@@ -324,7 +326,7 @@ class WeekMaxChart: UIView {
             })
         }
         
-        
+        */
     }
     
     
