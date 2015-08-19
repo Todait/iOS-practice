@@ -178,13 +178,17 @@ class TimeTaskOptionViewController: TaskOptionViewController ,AlarmDelegate ,Cou
     func requestTimeTask(){
         
         
-        if let params = timeTask.getParams() {
+        if let param = timeTask.createTimeTaskParams() {
+            
+            
             
             var manager = Alamofire.Manager.sharedInstance
             manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
             
+            var params = makeBatchParams(CREATE_TASK, param)
+            setUserHeader()
             
-            Alamofire.request(.POST, SERVER_URL, parameters: params).responseJSON(options: nil) { (request, response, object, error) -> Void in
+            Alamofire.request(.POST, SERVER_URL + BATCH, parameters: params).responseJSON(options: nil) { (request, response, object, error) -> Void in
                 
                 
                 
