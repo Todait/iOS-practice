@@ -11,6 +11,74 @@ import RealmSwift
 
 
 
+public func makeCategoryBatchParams(name:String,color:String)->[String:AnyObject]{
+    
+    let defaults = NSUserDefaults.standardUserDefaults()
+    
+    var params:[String:AnyObject] = [:]
+    
+    var sync:[String:AnyObject] = [:]
+    sync["method"] = "get"
+    sync["url"] = SYNCHRONIZE
+    sync["params"] = ["sync_at":defaults.objectForKey("sync_at") ?? 0,"today_date":getTodayDateNumber()]
+    sync["headers"] = getUserHeaderValue()
+    
+    
+    var category:[String:AnyObject] = [:]
+    category["method"] = "post"
+    category["url"] = CREATE_CATEGORY
+    category["params"] = ["category":["name":name,"color":color],"today_date":getTodayDateNumber()]
+    category["headers"] = getBaseHeaderValue()
+    
+    
+    
+    params["ops"] = [sync,category]
+    params["sequential"] = true
+    
+    
+    return params
+}
+
+public func makeBatchParams(url:String,param:[String:AnyObject])->[String:AnyObject]{
+    
+    
+    let defaults = NSUserDefaults.standardUserDefaults()
+    
+    
+    var params:[String:AnyObject] = [:]
+    
+    var sync:[String:AnyObject] = [:]
+    sync["method"] = "get"
+    sync["url"] = SYNCHRONIZE
+    sync["params"] = ["sync_at":defaults.objectForKey("sync_at") ?? 0,"today_date":getTodayDateNumber()]
+    sync["headers"] = getUserHeaderValue()
+    
+    
+    var request:[String:AnyObject] = [:]
+    request["method"] = "post"
+    request["url"] = url
+    request["params"] = param
+    request["headers"] = getBaseHeaderValue()
+    
+    
+    params["ops"] = [sync,request]
+    params["sequential"] = true
+    
+    
+    return params
+    
+}
+
+public func getBaseHeaderValue()->[String:AnyObject]{
+    return ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
+}
+
+public func getUserHeaderValue()->[String:AnyObject]{
+    
+    let defaults = NSUserDefaults.standardUserDefaults()
+    return ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json","X-User-Email":defaults.objectForKey("email")!,"X-User-Token":defaults.objectForKey("token")!]
+}
+
 
 class RealmManager: NSObject {
    
@@ -42,8 +110,10 @@ class RealmManager: NSObject {
     
     
     
+    
     func synchronize(jsons:JSON){
         
+        ProgressManager.show()
         
         for var index = 0 ; index < sequence.count ; index++ {
             
@@ -99,6 +169,8 @@ class RealmManager: NSObject {
                 //synchronizeModel(info[key]!, jsons: json)
             }
         }
+        
+        ProgressManager.hide()
     }
     /*
     func synchronizeModel <T:RealmObject>(T,jsons:JSON){
