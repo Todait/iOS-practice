@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,PeriodDelegate,UnitInputViewDelegate,CategoryDelegate{
+class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource,UITextFieldDelegate,UnitInputViewDelegate,CategoryDelegate{
     var mainColor: UIColor!
     
     var categoryButton: UIButton!
@@ -176,14 +176,15 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
     
     func tableView(tableView: UITableView, shouldHighlightRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         
+        /*
         if indexPath.row == 1 && indexPath.section == 0 {
             showPeriodVC()
         }
-        
+        */
         
         return false
     }
-    
+    /*
     func showPeriodVC(){
         
         //로딩전에 기간시간 추가
@@ -200,6 +201,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         })
         
     }
+    */
     
     func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
@@ -791,18 +793,7 @@ class TimeTaskViewController: BasicViewController,UITableViewDelegate,UITableVie
         */
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        if segue.identifier == "ShowPeriodView" {
-            //로딩전에 기간시간 추가
-            let periodVC = segue.destinationViewController as! PeriodViewController
-            periodVC.startDate = periodStartDate
-            periodVC.endDate = periodEndDate
-            periodVC.delegate = self
-            periodVC.mainColor = mainColor
-        }
-        
-    }
+    
     
     func updatePeriodEndDate(date: NSDate) {
         periodEndDate = date

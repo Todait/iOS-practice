@@ -33,7 +33,7 @@ enum ChartStatus: Int{
 
 
 
-class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDelegate,ThumbChartDelegate{
+class WeekAmountsViewController: BasicViewController,TodaitNavigationDelegate,ThumbChartDelegate{
 
     var baseView:UIView!
     var startLabel:UILabel!
@@ -673,7 +673,7 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
             return
         }
         
-        nextButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
+        nextButton = UIButton(frame: CGRectMake(260*ratio, 32, 50*ratio, 24))
         nextButton.setTitle("Next", forState: UIControlState.Normal)
         nextButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
         nextButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
@@ -694,8 +694,8 @@ class NewGoalStep3AmountViewController: BasicViewController,TodaitNavigationDele
             }
             
             
-            let step4VC = NewGoalStep4AmountViewController()
-            self.navigationController?.pushViewController(step4VC, animated: true)
+            let amountOptionVC = AmountTaskOptionViewController()
+            self.navigationController?.pushViewController(amountOptionVC, animated: true)
         }
         
     }

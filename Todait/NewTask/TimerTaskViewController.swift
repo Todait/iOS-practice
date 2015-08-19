@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import Alamofire
 
 class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryDelegate,ValidationDelegate,KeyboardHelpDelegate,AlarmDelegate{
     var mainColor: UIColor!
@@ -226,57 +227,42 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     }
     
     
-    
-    
-    
     func saveNewTask(){
         
-        /*
-        let entityDescription = NSEntityDescription.entityForName("Task", inManagedObjectContext:managedObjectContext!)
-        let task = Task(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
         
-        task.name = goalTextField.text
-        task.unit = ""
-        
-        
-        let dateForm = NSDateFormatter()
-        dateForm.dateFormat = "yyyyMMdd"
-        
-        task.categoryId = category
-        task.taskType = "Timer"
-        
+        var param:[String:AnyObject] = [:]
+        var task:[String:AnyObject] = [:]
+        task["name"] = goalTextField.text
+        task["task_type"] = "time"
+        task["repeat_count"] = 0
+        task["notification_mode"] = isAlarmOn
+        task["priority"] = 0
+        task["task_dates_attributes"] = ["start_date":"\(getTodayDateNumber())","state":0]
         
         if isAlarmOn == true {
-            
-            let notificationId = NSUUID().UUIDString
-            task.notificationId = notificationId
-            registerAlarm(notificationId)
-        
+            task["notification_time"] = alarmOption.optionText
         }
         
+        param["today_date"] = getTodayDateNumber()
+        param["task"] = task
         
+        var params = makeBatchParams(CREATE_TASK, param)
         
+        setUserHeader()
         
-        saveNewWeek(task)
-        
-        var error: NSError?
-        managedObjectContext?.save(&error)
-        
-        if let err = error {
-            //에러처리
-        }else{
+        Alamofire.request(.POST, SERVER_URL + BATCH , parameters: params).responseJSON(options: nil) {
+            (request, response , object , error) -> Void in
             
-            NSLog("Task 저장성공",1)
+            if object != nil {
+               let jsons = JSON(object!)
+                print(jsons)
+            }
             
-            self.dismissViewControllerAnimated(true, completion: { () -> Void in
-                
-            })
+        
+        
         }
-        */
-        
-       
-        
-        
+
+        /*
         let task = Task()
         task.name = goalTextField.text
         task.id = NSUUID().UUIDString
@@ -307,7 +293,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         self.navigationController?.dismissViewControllerAnimated(true, completion: { () -> Void in
             
         })
-        
+        */
     }
     
     
@@ -362,7 +348,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         goalTextField.returnKeyType = UIReturnKeyType.Next
         goalTextField.backgroundColor = UIColor.whiteColor()
         goalTextField.delegate = self
-        
+        goalTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         //goalTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         //goalTextField.text = aimString
         goalTextField.tintColor = UIColor.todaitGreen()
@@ -612,5 +598,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         goalTextField.resignFirstResponder()
     }
+    
+    
     
 }

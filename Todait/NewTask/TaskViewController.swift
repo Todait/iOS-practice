@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NewGoalStep1ViewController: BasicViewController {
+class TaskViewController: BasicViewController {
    
     var amountCalculatorView:UIButton!
     var dateCalculatorView:UIButton!
@@ -57,8 +57,8 @@ class NewGoalStep1ViewController: BasicViewController {
     
     func amountButtonTouchUpInside(){
         amountImage.image = UIImage(named: "newgoal_step1_amount@3x.png")
-        let step2AmountVC = NewGoalStep2AmountViewController()
-        self.navigationController?.pushViewController(step2AmountVC, animated: true)
+        let AmountVC = AmountTaskViewController()
+        self.navigationController?.pushViewController(AmountVC, animated: true)
         
         
     }

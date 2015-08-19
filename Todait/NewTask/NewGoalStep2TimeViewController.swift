@@ -22,6 +22,10 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     }
     
     
+    var timeTask = TimeTask.sharedInstance
+    
+    
+    
     var mainColor: UIColor!
     
     var categoryButton: UIButton!
@@ -46,12 +50,11 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     var dateForm: NSDateFormatter!
     var startDate: NSDate!
     
-    var periodStartDate:NSDate!
-    var periodEndDate:NSDate!
+    
     var periodDayLabel:UILabel!
     var periodDayString:String = "30일"
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var aimString:String! = ""
     var unitString:String! = ""
@@ -66,18 +69,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     var isTotal:Bool! = true
     var rangeList:[[String:String]] = []
     
-    
-    
-    
-    
-    var totalAmount:Int!
-    var startRangeAmount:Int!
-    var endRangeAmount:Int!
-    var dayAmount:Int!
-    
-    
     var nextButton:UIButton!
-    var category:Category!
     
     var keyboardHelpView:KeyboardHelpView!
     private var status:Status! = Status.None
@@ -102,17 +94,16 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     
     func loadDefaultCategory(){
         
-        let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
-        let request = NSFetchRequest()
+        if let category = timeTask.category {
+            return
+        }
         
-        request.entity = entityDescription
         
-        var error: NSError?
         
-        var categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as? [Category]
+        var categoryResults = realm.objects(Category).filter("archived == false")
         
-        if let categoryData = categoryData {
-            category = categoryData.first
+        if let category = categoryResults.first{
+            timeTask.category = category
         }
         
     }
@@ -198,7 +189,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
             return
         }
         
-        nextButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
+        nextButton = UIButton(frame: CGRectMake(260*ratio, 32, 50*ratio, 24))
         nextButton.setTitle("Next", forState: UIControlState.Normal)
         nextButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
         nextButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
@@ -228,30 +219,26 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     
     
     func showNextStep(){
-        let step3TimeVC = NewGoalStep3TimeViewController()
-        step3TimeVC.startDate = periodStartDate
-        step3TimeVC.endDate = periodEndDate
-        step3TimeVC.titleString = goalTextField.text
-        step3TimeVC.unitString = unitTextField.text
+        let weekTimesVC = WeekTimesViewController()
         
         
-        if let totalAmount = totalAmountField.text.toInt() {
-            
-            step3TimeVC.totalAmount = CGFloat(totalAmount)
-            
-        }else{
-            step3TimeVC.totalAmount = 0
-            
-            let alert = UIAlertView(title: "Invalid", message: "전체분량을 입력해주세요.", delegate: nil, cancelButtonTitle: "Cancel")
-            alert.show()
-            return
-        }
-
-        self.navigationController?.pushViewController(step3TimeVC, animated: true)
+        self.navigationController?.pushViewController( weekTimesVC, animated: true)
     
     }
     
     func validationSuccessful(){
+        
+        timeTask.goal = goalTextField.text
+        timeTask.unit = unitTextField.text
+        timeTask.isTotal = isTotal
+        
+        if isTotal == true {
+            timeTask.totalAmount = totalAmountField.text.toInt()!
+        }else {
+            timeTask.startAmount = startAmountField.text.toInt()!
+            timeTask.endAmount = endAmountField.text.toInt()!
+        }
+        
         showNextStep()
     }
     
@@ -269,10 +256,12 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     }
     
     
+    
     func setupTimeTaskViewController(){
         startDate = NSDate()
-        periodStartDate = NSDate()
-        periodEndDate = NSDate(timeIntervalSinceNow: 24*60*60 * 29)
+        
+        timeTask.startDate = NSDate()
+        timeTask.endDate = NSDate(timeIntervalSinceNow: 24*60*60 * 30)
         
         dateForm = NSDateFormatter()
         dateForm.dateFormat = "a h시 m분"
@@ -280,7 +269,8 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     }
     
     func initCellSubViews(){
-        goalTextField = UITextField(frame: CGRectMake(20*ratio, 19*ratio, 255*ratio, 12*ratio))
+        
+        goalTextField = UITextField(frame: CGRectMake(20*ratio, 10*ratio, 255*ratio, 23*ratio))
         goalTextField.placeholder = "이곳에 목표를 입력해주세요"
         goalTextField.textAlignment = NSTextAlignment.Left
         goalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
@@ -288,13 +278,14 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         goalTextField.returnKeyType = UIReturnKeyType.Next
         goalTextField.backgroundColor = UIColor.whiteColor()
         goalTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        goalTextField.text = aimString
+        goalTextField.text = timeTask.goal
         goalTextField.tintColor = mainColor
         goalTextField.delegate = self
+        goalTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         status = Status.Goal
         
         currentTextField = goalTextField
-        
+        goalTextField.becomeFirstResponder()
         
         
         
@@ -306,7 +297,9 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         categoryButton.clipsToBounds = true
         categoryButton.addTarget(self, action: Selector("showCategorySettingVC"), forControlEvents: UIControlEvents.TouchUpInside)
        
-        categoryEdited(category)
+        if let category = timeTask.category {
+            categoryEdited(category)
+        }
         
         
         
@@ -347,7 +340,12 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         unitTextField.returnKeyType = UIReturnKeyType.Next
         unitTextField.textAlignment = NSTextAlignment.Left
         unitTextField.backgroundColor = UIColor.whiteColor()
-        unitTextField.text = unitString
+        unitTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
+        
+        if let unit = timeTask.unit {
+            unitTextField.text = timeTask.unit
+        }
+        
         unitTextField.addTarget(self, action: Selector("updateUnitAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         unitTextField.delegate = self
         
@@ -368,7 +366,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         totalAmountField.backgroundColor = UIColor.whiteColor()
         totalAmountField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         totalAmountField.delegate = self
-        
+        totalAmountField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         
         
         
@@ -382,6 +380,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         startAmountField.keyboardType = UIKeyboardType.NumberPad
         startAmountField.addTarget(self, action: Selector("updateStartAmount:"), forControlEvents: UIControlEvents.AllEvents)
         startAmountField.delegate = self
+        startAmountField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         
         
         endAmountField = UITextField(frame:CGRectMake(165*ratio, 20*ratio, 140*ratio, 17*ratio))
@@ -392,6 +391,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         endAmountField.addTarget(self, action: Selector("updateEndAmount:"), forControlEvents: UIControlEvents.AllEvents)
         endAmountField.keyboardType = UIKeyboardType.NumberPad
         endAmountField.delegate = self
+        endAmountField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
     }
     
     func addUnitView(){
@@ -565,8 +565,8 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         //로딩전에 기간시간 추가
         let periodVC = PeriodViewController()
         
-        periodVC.startDate = periodStartDate
-        periodVC.endDate = periodEndDate
+        periodVC.startDate = timeTask.startDate
+        periodVC.endDate = timeTask.endDate
         periodVC.delegate = self
         periodVC.mainColor = mainColor
         periodVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
@@ -697,18 +697,10 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
-        /*
+        
         if textField == goalTextField {
-            
-            unitView.hidden = false
-            currentTextField = unitTextField
-            
-        }else if textField == unitTextField {
-            
-            unitView.hidden = true
-            
+            rightButtonClk()
         }
-        */
 
         currentTextField.becomeFirstResponder()
         
@@ -732,7 +724,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         var categoryVC = CategorySettingViewController()
         categoryVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         categoryVC.delegate = self
-        categoryVC.selectedCategory = category
+        categoryVC.selectedCategory = timeTask.category!
         
         self.navigationController?.presentViewController(categoryVC, animated: false, completion: { () -> Void in
             
@@ -747,7 +739,9 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
         categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.colorWithHexString(editedCategory.color)), forState: UIControlState.Normal)
         categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.todaitLightGray()), forState: UIControlState.Highlighted)
-        self.category = editedCategory
+        
+        timeTask.category = editedCategory
+        
         
     }
     
@@ -786,11 +780,11 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         cell.contentView.addSubview(endAmountField)
         
         
-        if let value = startRangeAmount {
+        if let value = timeTask.startAmount {
             startAmountField.text = "\(value)"
         }
         
-        if let value = endRangeAmount {
+        if let value = timeTask.endAmount {
             endAmountField.text = "\(value)"
         }
         
@@ -805,12 +799,12 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     
     
     func updateStartAmount(textField:UITextField){
-        startRangeAmount = textField.text.toInt()
+        timeTask.startAmount = textField.text.toInt()
     }
     
     
     func updateEndAmount(textField:UITextField){
-        endRangeAmount = textField.text.toInt()
+        timeTask.endAmount = textField.text.toInt()
     }
     
     
@@ -828,7 +822,11 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         
         let periodStartLabel = UILabel(frame:CGRectMake(15*ratio, 28*ratio, 137*ratio, 20*ratio))
-        periodStartLabel.text = getDateString(getDateNumberFromDate(periodStartDate))
+        
+        if let startDate = timeTask.startDate {
+            periodStartLabel.text = getDateString(getDateNumberFromDate(startDate))
+        }
+        
         periodStartLabel.textAlignment = NSTextAlignment.Right
         periodStartLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
         periodStartLabel.textColor = UIColor.todaitDarkGray()
@@ -842,7 +840,11 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         
         let periodEndLabel = UILabel(frame:CGRectMake(168*ratio, 28*ratio, 140*ratio, 20*ratio))
-        periodEndLabel.text = getDateString(getDateNumberFromDate(periodEndDate))
+        
+        if let endDate = timeTask.endDate {
+            periodEndLabel.text = getDateString(getDateNumberFromDate(endDate))
+        }
+        
         periodEndLabel.textAlignment = NSTextAlignment.Left
         periodEndLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
         periodEndLabel.textColor = UIColor.todaitDarkGray()
@@ -931,27 +933,12 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
     }
     
-    
-    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        
-        if segue.identifier == "ShowPeriodView" {
-            //로딩전에 기간시간 추가
-            let periodVC = segue.destinationViewController as! PeriodViewController
-            periodVC.startDate = periodStartDate
-            periodVC.endDate = periodEndDate
-            periodVC.delegate = self
-            periodVC.mainColor = mainColor
-        }
-        
-    }
-    
     func updatePeriodEndDate(date: NSDate) {
-        periodEndDate = date
+        timeTask.endDate = date
     }
     
     func updatePeriodStartDate(date: NSDate) {
-        periodStartDate = date
+        timeTask.startDate = date
     }
     
     func updatePeriodDay(day: String) {
@@ -1022,11 +1009,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         cell.contentView.addSubview(infoLabel)
         
         
-        
-        
-        
-        
-        if let totalAmount = totalAmount  {
+        if let totalAmount = timeTask.totalAmount  {
             totalAmountField.text = "\(totalAmount)"
         }
         
@@ -1040,10 +1023,10 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     func updateAmountAllEvents(textField:UITextField){
         
         switch textField {
-        case totalAmountField : totalAmount = textField.text.toInt()
-        case startAmountField : startRangeAmount = textField.text.toInt()
-        case endAmountField : endRangeAmount = textField.text.toInt()
-        case dayTextField : dayAmount = textField.text.toInt()
+        case totalAmountField : timeTask.totalAmount = textField.text.toInt()
+        case startAmountField : timeTask.startAmount = textField.text.toInt()
+        case endAmountField : timeTask.endAmount = textField.text.toInt()
+        case dayTextField : return //dayAmount = textField.text.toInt()
         default: textField.text = ""
         }
         
@@ -1064,8 +1047,10 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         startAmountField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         startAmountField.delegate = self
         
-        if startRangeAmount != 0 {
-            startAmountField.text = "\(startRangeAmount)"
+        if let startAmount = timeTask.startAmount {
+            if startAmount != 0 {
+                startAmountField.text = "\(startAmount)"
+            }
         }
         
         cell.contentView.addSubview(startAmountField)
@@ -1085,9 +1070,12 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         endAmountField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         endAmountField.delegate = self
         
-        if endRangeAmount != 0 {
-            endAmountField.text = "\(endRangeAmount)"
+        if let endAmount = timeTask.endAmount {
+            if endAmount != 0 {
+                endAmountField.text = "\(endAmount)"
+            }
         }
+        
         
         cell.contentView.addSubview(endAmountField)
     }
@@ -1105,9 +1093,11 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         dayTextField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         dayTextField.delegate = self
         
-        if let value = dayAmount{
+        /*
+        if let value = 1{
             dayTextField.text = "\(dayAmount)"
         }
+        */
         
         cell.contentView.addSubview(dayTextField)
     }

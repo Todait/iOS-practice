@@ -11,7 +11,7 @@ import CoreData
 
 
 
-class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDelegate,CategoryDelegate,UITextFieldDelegate,ValidationDelegate,KeyboardHelpDelegate{
+class AmountTaskViewController: BasicViewController,TodaitNavigationDelegate,CategoryDelegate,UITextFieldDelegate,ValidationDelegate,KeyboardHelpDelegate,UIAlertViewDelegate{
    
     
     private enum Status{
@@ -24,8 +24,6 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     }
     
     
-    
-    var category:Category!
     var nextButton:UIButton!
     
     var goalView:UIView!
@@ -40,7 +38,6 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     var categoryButton:UIButton!
     
     
-    var mainDate:NSDate! = NSDate()
     var datePickerView : UIView!
     var datePicker:UIDatePicker!
     
@@ -51,15 +48,15 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     var keyboardHelpView:KeyboardHelpView!
     
-    var currentTextField:UITextField!
+    var currentTextField:UITextField?
     
     private var status:Status!
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
-    
+    var amountTask = AmountTask.sharedInstance
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         
         view.backgroundColor = UIColor.todaitBackgroundGray()
         
@@ -78,17 +75,10 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     func loadDefaultCategory(){
         
-        let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
-        let request = NSFetchRequest()
         
-        request.entity = entityDescription
-        
-        var error: NSError?
-        
-        var categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as? [Category]
-        
-        if let categoryData = categoryData {
-            category = categoryData.first
+        var categoryResults = realm.objects(Category).filter("archived == false")
+        if let category = categoryResults.first{
+            amountTask.category = category
         }
         
     }
@@ -107,7 +97,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     func addGoalTextField(){
         
-        goalTextField = UITextField(frame: CGRectMake(20*ratio, 15.5*ratio, 255*ratio, 12*ratio))
+        goalTextField = UITextField(frame: CGRectMake(20*ratio, 10*ratio, 255*ratio, 23*ratio))
         goalTextField.placeholder = "이곳에 목표를 입력해주세요"
         goalTextField.textAlignment = NSTextAlignment.Left
         goalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
@@ -115,13 +105,19 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         goalTextField.returnKeyType = UIReturnKeyType.Next
         goalTextField.backgroundColor = UIColor.whiteColor()
         goalTextField.delegate = self
-        //goalTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        //goalTextField.text = aimString
         goalTextField.tintColor = UIColor.todaitGreen()
+        goalTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         //goalTextField.delegate = self
         
+        if let goal = amountTask.goal {
+            goalTextField.text = goal
+        }
+        
         currentTextField = goalTextField
-        currentTextField.becomeFirstResponder()
+        
+        goalTextField.becomeFirstResponder()
+        
+        
         status = Status.Goal
         goalView.addSubview(goalTextField)
     }
@@ -141,20 +137,29 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
             hideDatePicker()
         }
         
-        currentTextField.textColor = UIColor.todaitGray()
         currentTextField = textField
-        currentTextField.textColor = UIColor.todaitRed()
+        
+        
+        if let currentTextField = currentTextField {
+            
+            currentTextField.textColor = UIColor.todaitGray()
+            currentTextField.textColor = UIColor.todaitRed()
+            
+            
+            switch currentTextField {
+            case totalAmountField: status = Status.Total ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+            case unitTextField: status = Status.Unit ; keyboardHelpView.setStatus(KeyboardHelpStatus.End)
+            case goalTextField: status = Status.Goal ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
+            case dayAmountField: status = Status.Day ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+            default : status = Status.Goal ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
+            }
+
+        }
+        
         startDateLabel.textColor = UIColor.todaitGray()
         goalTextField.textColor = UIColor.todaitGray()
         unitTextField.textColor = UIColor.todaitGray()
-        
-        switch currentTextField {
-        case totalAmountField: status = Status.Total ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
-        case unitTextField: status = Status.Unit ; keyboardHelpView.setStatus(KeyboardHelpStatus.End)
-        case goalTextField: status = Status.Goal ; keyboardHelpView.setStatus(KeyboardHelpStatus.Start)
-        case dayAmountField: status = Status.Day ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
-        default : status = Status.Goal ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
-        }
+        totalAmountField.textColor = UIColor.todaitGray()
         
     }
     
@@ -169,7 +174,9 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         categoryButton.addTarget(self, action: Selector("showCategorySettingVC"), forControlEvents: UIControlEvents.TouchUpInside)
         goalView.addSubview(categoryButton)
         
-        categoryEdited(category)
+        if let category = amountTask.category {
+            categoryEdited(category)
+        }
         
     }
     
@@ -177,7 +184,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         var categoryVC = CategorySettingViewController()
         //categoryVC.delegate = self
-        categoryVC.selectedCategory = category
+        categoryVC.selectedCategory = amountTask.category
         categoryVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         categoryVC.delegate = self
         
@@ -196,7 +203,8 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.colorWithHexString(editedCategory.color)), forState: UIControlState.Normal)
         categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.todaitLightGray()), forState: UIControlState.Highlighted)
         
-        self.category = editedCategory
+        amountTask.category = editedCategory
+        
     }
     
     
@@ -236,7 +244,16 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         startDateLabel = UILabel(frame: CGRectMake(0, 20*ratio, 260*ratio, 30*ratio))
         startDateLabel.textAlignment = NSTextAlignment.Right
         startDateLabel.textColor = UIColor.todaitDarkGray()
-        startDateLabel.text = dateForm.stringFromDate(getDateFromDateNumber(getTodayDateNumber()))
+        
+        if let startDate = amountTask.startDate {
+            startDateLabel.text = dateForm.stringFromDate(startDate)
+            
+        }else{
+            let todayDate = getDateFromDateNumber(getTodayDateNumber())
+            amountTask.startDate = todayDate
+            startDateLabel.text = dateForm.stringFromDate(todayDate)
+        }
+        
         startDateLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
         startDateLabel.setKern(2)
         dataView.addSubview(startDateLabel)
@@ -280,6 +297,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         unitTextField.delegate = self
         unitTextField.layer.borderColor = UIColor.colorWithHexString("#B2B2B2").CGColor
         unitTextField.layer.borderWidth = 0.5*ratio
+        unitTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         
         unitView.addSubview(unitTextField)
         
@@ -340,8 +358,12 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         }
         
         status = Status.Date
-        currentTextField.textColor = UIColor.todaitGray()
-        currentTextField.resignFirstResponder()
+        
+        if let currentTextField = currentTextField {
+            currentTextField.textColor = UIColor.todaitGray()
+            currentTextField.resignFirstResponder()
+        }
+        
         startDateLabel.textColor = UIColor.todaitLightRed()
         
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveEaseInOut, animations: { () -> Void in
@@ -390,6 +412,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         totalAmountField.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 14*ratio)
         totalAmountField.textColor = UIColor.todaitDarkGray()
         totalAmountField.attributedPlaceholder = NSAttributedString.getAttributedString("0", font: UIFont(name: "AppleSDGothicNeo-Ultralight", size: 14*ratio)!, color: UIColor.todaitGray())
+        totalAmountField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         totalAmountField.delegate = self
         dataView.addSubview(totalAmountField)
         
@@ -417,6 +440,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         dayAmountField.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 14*ratio)
         dayAmountField.textColor = UIColor.todaitDarkGray()
         dayAmountField.attributedPlaceholder = NSAttributedString.getAttributedString("0", font: UIFont(name: "AppleSDGothicNeo-Ultralight", size: 14*ratio)!, color: UIColor.todaitGray())
+        dayAmountField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         dayAmountField.delegate = self
         dataView.addSubview(dayAmountField)
     }
@@ -432,7 +456,11 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         
         datePicker = UIDatePicker(frame: CGRectMake(0, 0, width, 185*ratio))
         datePicker.datePickerMode = UIDatePickerMode.Date
-        datePicker.date = mainDate
+        
+        if let startDate = amountTask.startDate {
+            datePicker.date = startDate
+        }
+        
         datePicker.backgroundColor = UIColor.whiteColor()
         datePicker.addTarget(self, action: Selector("datePickerChanged:"), forControlEvents: UIControlEvents.ValueChanged)
         datePickerView.addSubview(datePicker)
@@ -454,8 +482,12 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     func confirmButtonClk(){
         
-        currentTextField.textColor = UIColor.todaitGray()
-        currentTextField.resignFirstResponder()
+        
+        if let currentTextField = currentTextField {
+            currentTextField.textColor = UIColor.todaitGray()
+            currentTextField.resignFirstResponder()
+        }
+        
         hideDatePicker()
         status = Status.None
     }
@@ -466,6 +498,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         dateForm.dateFormat = "yyyy.MM.dd (E)"
         startDateLabel.text = dateForm.stringFromDate(picker.date)
         
+        amountTask.startDate = picker.date
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -546,7 +579,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
             return
         }
         
-        nextButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
+        nextButton = UIButton(frame: CGRectMake(260*ratio, 32, 50*ratio, 24))
         nextButton.setTitle("Next", forState: UIControlState.Normal)
         nextButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
         nextButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
@@ -560,6 +593,7 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         let validator = Validator()
         validator.registerField(goalTextField, rules:[MinLengthRule(length: 1, message: "목표를 입력해주세요.")])
         validator.registerField(totalAmountField, rules: [MinLengthRule(length: 1, message: "전체분량을 입력해주세요.")])
+        validator.registerField(dayAmountField, rules: [MinLengthRule(length: 1, message: "하루분량을 입력해주세요.")])
         validator.registerField(unitTextField, rules: [MinLengthRule(length: 1, message: "단위를 입력해주세요.")])
         validator.validate(self)
         
@@ -568,33 +602,34 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
     
     
     func showNextStep(){
-        let step3AmountVC = NewGoalStep3AmountViewController()
-        step3AmountVC.startDate = datePicker.date
-        step3AmountVC.titleString = goalTextField.text
-        step3AmountVC.unitString = unitTextField.text
         
-        if let totalAmount = totalAmountField.text.toInt() {
-            step3AmountVC.totalAmount = CGFloat(totalAmount)
-        }else{
-            step3AmountVC.totalAmount = 0
-            
-            let alert = UIAlertView(title: "Invalid", message: "전체분량을 입력해주세요.", delegate: nil, cancelButtonTitle: "Cancel")
-            alert.show()
-            return
-        }
         
-        if let dayAmount = dayAmountField.text.toInt() {
-            step3AmountVC.dayAmount = CGFloat(dayAmount)
-            step3AmountVC.maxValue = CGFloat(dayAmount) * 2
-        }else{
-            step3AmountVC.dayAmount = 0
-            step3AmountVC.maxValue = step3AmountVC.totalAmount
-        }
+        let step3AmountVC = WeekAmountsViewController()
+        
         
         self.navigationController?.pushViewController(step3AmountVC, animated: true)
     }
     
     func validationSuccessful(){
+        
+        
+        
+        
+        amountTask.totalAmount = totalAmountField.text.toInt()
+        amountTask.dayAmount = dayAmountField.text.toInt()
+        
+        if amountTask.totalAmount < amountTask.dayAmount {
+            
+            let alert = UIAlertView(title: "Invalid", message: "전체분량이 하루분량이상이어야 합니다.", delegate: nil, cancelButtonTitle: "Cancel")
+            alert.show()
+            return
+        }
+        
+        
+        amountTask.unit = unitTextField.text
+        amountTask.goal = goalTextField.text
+        
+        
         showNextStep()
     }
     
@@ -604,10 +639,18 @@ class NewGoalStep2AmountViewController: BasicViewController,TodaitNavigationDele
         for ( textField , error) in errors {
             
             let alert = UIAlertView(title: "Invalid", message: error.errorMessage, delegate: nil, cancelButtonTitle: "Cancel")
-            
+            alert.delegate = self
             alert.show()
+            currentTextField = textField
             
             return
+        }
+    }
+    
+    func alertView(alertView: UIAlertView, clickedButtonAtIndex buttonIndex: Int) {
+        
+        if let currentTextField = currentTextField {
+            currentTextField.becomeFirstResponder()
         }
     }
 
