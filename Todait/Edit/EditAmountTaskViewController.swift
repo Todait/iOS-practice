@@ -102,10 +102,14 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     var isAlarmOn:Bool! = false
     var alarmTime:NSDate?
     
+    
+    var amountTask = AmountTask.sharedInstance
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-       
+        amountTask.setTask(editedTask)
         
         view.backgroundColor = UIColor.todaitBackgroundGray()
         
@@ -387,6 +391,7 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         detailView = UIButton(frame: CGRectMake(2*ratio, 64 + 211*ratio, 316*ratio, 46*ratio))
         detailView.setBackgroundImage(UIImage.colorImage(UIColor.whiteColor(), frame: CGRectMake(0, 0, 316*ratio, 46*ratio)), forState: UIControlState.Normal)
         detailView.setBackgroundImage(UIImage.colorImage(UIColor.todaitBackgroundGray(), frame: CGRectMake(0, 0, 316*ratio, 46*ratio)), forState: UIControlState.Highlighted)
+        detailView.addTarget(self, action: Selector("detailViewClk"), forControlEvents:UIControlEvents.TouchUpInside)
         view.addSubview(detailView)
         
         
@@ -406,6 +411,13 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         detailView.addSubview(detailImage)
         
         
+        
+    }
+    
+    func detailViewClk(){
+        
+        let weekAmountsVC = EditWeekAmountsViewController()
+        self.navigationController?.pushViewController(weekAmountsVC, animated: true)
         
     }
     

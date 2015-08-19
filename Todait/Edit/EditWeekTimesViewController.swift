@@ -8,6 +8,15 @@
 
 import UIKit
 
-class EditWeekTimesViewController: BasicViewController {
+class EditWeekTimesViewController: WeekTimesViewController {
    
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        nextButton.hidden = true
+        
+        
+    }
+    
 }

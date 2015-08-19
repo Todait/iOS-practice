@@ -102,10 +102,13 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
     var isAlarmOn:Bool! = false
     var alarmTime:NSDate?
     
+    var timeTask = TimeTask.sharedInstance
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        timeTask.setTask(editedTask)
         
         view.backgroundColor = UIColor.todaitBackgroundGray()
         
@@ -387,6 +390,7 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
         detailView = UIButton(frame: CGRectMake(2*ratio, 64 + 211*ratio, 316*ratio, 46*ratio))
         detailView.setBackgroundImage(UIImage.colorImage(UIColor.whiteColor(), frame: CGRectMake(0, 0, 316*ratio, 46*ratio)), forState: UIControlState.Normal)
         detailView.setBackgroundImage(UIImage.colorImage(UIColor.todaitBackgroundGray(), frame: CGRectMake(0, 0, 316*ratio, 46*ratio)), forState: UIControlState.Highlighted)
+        detailView.addTarget(self, action: Selector("detailViewClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(detailView)
         
         
@@ -404,8 +408,13 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
         let detailImage = UIImageView(frame: CGRectMake(316*ratio - 23*ratio, 15*ratio, 8*ratio, 16*ratio))
         detailImage.image = UIImage.maskColor("bt_arrange_arrow@3x.png", color: UIColor.todaitGray())
         detailView.addSubview(detailImage)
+    
+    }
+    
+    func detailViewClk(){
         
-        
+        let weekTimesVC = EditWeekTimesViewController()
+        self.navigationController?.pushViewController(weekTimesVC, animated: true)
         
     }
     

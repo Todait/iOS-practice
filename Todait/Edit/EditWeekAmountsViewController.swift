@@ -8,6 +8,16 @@
 
 import UIKit
 
-class EditWeekAmountsViewController: BasicViewController {
+class EditWeekAmountsViewController: WeekAmountsViewController {
    
+    
+    
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        nextButton.hidden = true
+        
+        
+    }
 }
