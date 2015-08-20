@@ -353,24 +353,30 @@ class Task: RealmObject{
             dayOfWeekComp.day = dayOfWeekComp.day - 6 + dayOfWeek
             let dayOfWeekDate:NSDate! = NSCalendar.currentCalendar().dateFromComponents(dayOfWeekComp)
             
-            let day:Day? = getDay(getDateNumberFromDate(dayOfWeekDate))
             
-            
-            if let day = day {
+            if let day = getDay(getDateNumberFromDate(dayOfWeekDate)) {
                 
                 var dayOfWeekIndex:Int = Int(day.dayOfWeek())
-                var expectedTimes = day.taskDate!.week?.getExpectedTime()
                 
-                var data:[String:Int] = [:]
-                data["expect"] = expectedTimes![dayOfWeekIndex]
-                data["done"] = Int(day.doneSecond)
+                if let expectedTimes = day.taskDate!.week?.getExpectedTime() {
+                    
+                    var data:[String:Int] = [:]
+                    data["expect"] = expectedTimes[dayOfWeekIndex]
+                    data["done"] = Int(day.doneSecond)
+                    datas.append(data)
+                    
+                }else{
+                    
+                    var data:[String:Int] = [:]
+                    data["expect"] = 0
+                    data["done"] = 0
+                    datas.append(data)
+                }
                 
-                datas.append(data)
             }else{
                 var data:[String:Int] = [:]
                 data["expect"] = 0//expectedTimes[dayOfWeek]
                 data["done"] = 0
-                
                 datas.append(data)
             }
         }

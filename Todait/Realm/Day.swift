@@ -89,6 +89,15 @@ class Day: RealmObject {
         return TaskDate.self
     }
     
+    func getDonePercent()->Int{
+        
+        if expectAmount == 0 {
+            return 0
+        }
+        
+        return Int(Float(doneAmount)/Float(expectAmount)*100)
+    }
+    
     
     func dayOfWeek()->Int {
         
@@ -114,10 +123,16 @@ class Day: RealmObject {
         return nil
     }
     
-    
     func getProgressPercent()->CGFloat{
-        return CGFloat(doneAmount)/CGFloat(expectAmount)
+        
+        if expectAmount == 0 {
+            return 0
+        }
+        
+        return CGFloat(Float(doneAmount)/Float(expectAmount))
     }
+    
+   
     
     func getProgressString()->String{
         

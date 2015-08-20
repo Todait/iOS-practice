@@ -101,7 +101,7 @@ class RealmManager: NSObject {
     
     
     var realm = Realm()
-    let sequence:[String] = ["categories","tasks","task_dates","weeks","days","diarys","amount_ranges","time_histories","review_days","daily_total_results","preference","check_logs","amount_logs","time_logs","sync_at"]
+    let sequence:[String] = ["categories","tasks","task_dates","weeks","days","diarys","amount_ranges","time_histories","review_days","daily_total_results","preference","check_logs","amount_logs","time_logs","sync_at","future_days","deleted_days"]
     
     //let info:[String:RealmObject] = ["categorys":Category,"tasks":Task,"task_dates":TaskDate,"days":Day,"weeks":Week,"diarys":Diary,"amount_ranges":AmountRange,"time_histories":TimeHistory,"review_days":ReviewDay,"daily_total_results":DailyTotalResult,"preference":Preference,"check_logs":CheckLog,"amount_logs":AmountLog,"time_logs":TimeLog]
     
@@ -153,6 +153,8 @@ class RealmManager: NSObject {
                 case "check_logs": synchronizeCheckLog(json)
                 case "amount_logs": synchronizeAmountLog(json)
                 case "time_logs": synchronizeTimeLog(json)
+                case "future_days": synchronizeDays(json)
+                case "deleted_days": deleteDays(json)
                 default: return
                     
                 }
@@ -595,6 +597,25 @@ class RealmManager: NSObject {
             createDay(json)
         }
     }
+    
+    func deleteDays(jsons:JSON){
+        
+        for var index = 0 ; index < jsons.count ; index++ {
+            
+            let json = jsons[index]
+            
+            if let serverId = json["id"].int {
+                
+                var results = realm.objects(Day).filter("serverId == %lu", serverId)
+                
+                if results.count > 0 {
+                    realm.delete(results.first!)
+                }
+            }
+        }
+    }
+    
+    
     
     func updateDay(json:JSON, day:Day){
         realm.write{
