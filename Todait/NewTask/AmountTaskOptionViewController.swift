@@ -213,6 +213,9 @@ class AmountTaskOptionViewController: TaskOptionViewController ,AlarmDelegate,Co
             */
             ProgressManager.hide()
             
+            self.navigationController?.dismissViewControllerAnimated(true, completion: { () -> Void in
+                
+            })
             
             //self.closeButtonClk()
             

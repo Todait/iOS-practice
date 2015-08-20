@@ -737,6 +737,9 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         
         categoryButton.layer.borderColor = UIColor.clearColor().CGColor
         categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
+        
+        editedCategory.color ?? "FFFFFFFF"
+        
         categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.colorWithHexString(editedCategory.color)), forState: UIControlState.Normal)
         categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.todaitLightGray()), forState: UIControlState.Highlighted)
         

@@ -30,7 +30,7 @@ class NewCategoryViewController: BasicViewController,TodaitNavigationDelegate,UI
     var selectedIndex = 0
     //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
-    var delegate:UpdateDelegate!
+    var delegate:UpdateDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -212,8 +212,11 @@ class NewCategoryViewController: BasicViewController,TodaitNavigationDelegate,UI
     }
     
     func needToUpdate(){
-        if self.delegate.respondsToSelector("needToUpdate"){
-            self.delegate.needToUpdate()
+        
+        if let delegate = delegate {
+            if delegate.respondsToSelector("needToUpdate"){
+                delegate.needToUpdate()
+            }
         }
     }
     

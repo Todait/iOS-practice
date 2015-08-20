@@ -178,6 +178,8 @@ class TimeTaskOptionViewController: TaskOptionViewController ,AlarmDelegate ,Cou
     func requestTimeTask(){
         
         
+        ProgressManager.show()
+        
         if let param = timeTask.createTimeTaskParams() {
             
             
@@ -191,11 +193,36 @@ class TimeTaskOptionViewController: TaskOptionViewController ,AlarmDelegate ,Cou
             Alamofire.request(.POST, SERVER_URL + BATCH, parameters: params).responseJSON(options: nil) { (request, response, object, error) -> Void in
                 
                 
+                let jsons = JSON(object!)
+                
+                let syncData = encodeData(jsons["results"][0]["body"])
+                self.realmManager.synchronize(syncData)
                 
                 
-                let json = JSON(object!)
-                print(json)
                 
+                
+                let taskData = encodeData(jsons["results"][1]["body"])
+                
+                
+                let task:JSON? = taskData["task"]
+                if let task = task {
+                    
+                    self.defaults.setObject(task.stringValue, forKey: "sync_at")
+                    self.realmManager.synchronizeTask(task)
+                }
+                
+                
+                let day:JSON? = taskData["future_days"]
+                if let day = day {
+                    self.defaults.setObject(day.stringValue, forKey: "sync_at")
+                    self.realmManager.synchronizeDays(day)
+                }
+                
+                ProgressManager.hide()
+                
+                self.navigationController?.dismissViewControllerAnimated(true, completion: { () -> Void in
+                    
+                })
                 
             }
             

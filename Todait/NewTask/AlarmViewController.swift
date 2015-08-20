@@ -57,7 +57,7 @@ class AlarmViewController: BasicViewController,UIPickerViewDataSource,UIPickerVi
         
         
         
-        if let delegate =  self.delegate {
+        if let delegate = delegate {
             
             if delegate.respondsToSelector("getAlarmTime"){
                 

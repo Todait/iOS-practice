@@ -342,20 +342,14 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
             
             let jsons = JSON(object!)
             
-            
-            let jsonData:NSMutableData! = NSMutableData()
-            
-            
-            jsonData.appendData(jsons["results"][0]["body"].stringValue.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
-            let ddd = JSON(data:jsonData)
-            
-            
-            let syncData = JSON(self.sss(jsons["results"][0]["body"].stringValue))
+            let syncData = encodeData(jsons["results"][0]["body"])
             self.realmManager.synchronize(syncData)
             
             
-            let categoryData = JSON(jsons["results"][1]["body"].stringValue)
-            let json:JSON? = jsons["category"]
+            
+            
+            let categoryData = encodeData(jsons["results"][1]["body"])
+            let json:JSON? = categoryData["category"]
             
             if let json = json {
                 
@@ -371,13 +365,8 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         }
     }
     
+   
     
-    func sss(string:String)->String{
-        
-        var s = string
-        
-        return s
-    }
     
     
     func categoryEdited(category:Category){
