@@ -19,7 +19,7 @@ class TimeTask: NSObject {
     var startAmount:Int?
     var endAmount:Int?
     var category:Category? = nil
-    var repeatCount = 0
+    var repeatCount = 1
     var reviewCount = 0
     var isNotification = false
     var notificationDate:NSDate? = nil
@@ -30,10 +30,8 @@ class TimeTask: NSObject {
     func getParams()->[String:AnyObject]?{
         
         //params["user"] = ["email":email,"name":name,"password":password,"password_confirmation":confirm,"grade":job,"image_names":fileName]
-        
-        var params:[String:AnyObject] = [:]
-        
         var param:[String:AnyObject] = [:]
+        
         param["body"] = goal
         param["color"] = color
         param["review_count"] = reviewCount
@@ -49,7 +47,7 @@ class TimeTask: NSObject {
             param["start_point"] = startAmount
         }
         
-        return params
+        return param
         
     }
     
@@ -89,10 +87,11 @@ class TimeTask: NSObject {
         return 0
     }
     
-    func createTimeTaskParams()->[String:AnyObject]{
+    func createTimeTaskParams()->[String:AnyObject]?{
         
         var params:[String:AnyObject] = [:]
         params["task"] = createTaskParams()
+        params["today_date"] = getTodayDateNumber()
         
         return params
     }
@@ -103,22 +102,31 @@ class TimeTask: NSObject {
         var task:[String:AnyObject] = [:]
         task["local_id"] = NSUUID().UUIDString
         task["name"] = goal
-        task["start_date"] = startDate
         task["category_id"] = category?.serverId
         task["review_count"] = reviewCount
         task["repeat_count"] = repeatCount
-        task["task_date"] = createTaskDateParams()
+        task["task_dates_attributes"] = createTaskDateParams()
         task["unit"] = unit
         
         if isTotal == true {
-            task["task_type"] = "total_by_amount"
+            task["task_type"] = "total_by_time"
+            task["amount"] = totalAmount ?? 0
         }else{
-            task["task_type"] = "range_by_amount"
+            task["task_type"] = "range_by_time"
+            task["start_point"] = startAmount!
+            task["amount"] = endAmount! - startAmount!
         }
         
         if isNotification == true {
             
+            var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: notificationDate!)
+            task["notification_mode"] = true
+            task["notification_time"] = String(format: "%02lu", arguments: [comp.hour]) + ":" + String(format: "%02lu", arguments: [comp.minute])
+            
         }else{
+            
+            task["notification_mode"] = false
+            task["notification_time"] = "00:00"
             
         }
         
@@ -126,12 +134,32 @@ class TimeTask: NSObject {
         return task
     }
     
-    func createTaskDateParams()->[String:AnyObject]{
+    func setTask(task:Task){
+        
+        goal = task.name
+        unit = task.unit
+        startDate = getDateFromDateNumber(task.taskDates.last!.startDate)
+        endDate = getDateFromDateNumber(task.taskDates.last!.endDate)
+        
+        if task.taskType == "total_by_time"{
+            totalAmount = task.amount
+        }
+        isNotification = task.notificationMode
+        
+        if let week = task.getWeekValues(){
+            weekTimes = week
+        }
+        
+        
+    }
+    
+    func createTaskDateParams()->[[String:AnyObject]]{
         var taskDate:[String:AnyObject] = [:]
         taskDate["start_date"] = getDateNumberFromDate(startDate!)
-        taskDate["week"] = createWeekParams()
+        taskDate["end_date"] = getDateNumberFromDate(endDate!)
+        taskDate["week_attributes"] = createWeekParams()
         
-        return taskDate
+        return [taskDate]
         
     }
     

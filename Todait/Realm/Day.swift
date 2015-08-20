@@ -69,23 +69,17 @@ class Day: RealmObject {
     
     func setupJSON(json:JSON){
         
-        if let serverId = json["id"].int{
-            self.serverId = serverId
-        }else{
-            serverId = -1 
-        }
         
-        
-        
-        expectAmount = json["expect_amount"].intValue
-        doneAmount = json["done_amount"].intValue
-        doneSecond = json["done_second"].intValue
-        done = json["done"].boolValue
-        date = json["date"].intValue
-        off = json["off"].boolValue
-        archived = json["archived"].boolValue
-        userId = json["user_id"].intValue
-        score = json["score"].doubleValue
+        serverId = json["id"].int ?? -1
+        expectAmount = json["expect_amount"].int ?? 0
+        doneAmount = json["done_amount"].int ?? 0
+        doneSecond = json["done_second"].int ?? 0
+        done = json["done"].bool ?? false
+        date = json["date"].int ?? 0
+        off = json["off"].bool ?? false
+        archived = json["archived"].bool ?? false
+        userId = json["user_id"].int ?? -1
+        score = json["score"].double ?? 0.0
         
     }
     

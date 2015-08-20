@@ -69,6 +69,15 @@ public func makeBatchParams(url:String,param:[String:AnyObject])->[String:AnyObj
     
 }
 
+public func encodeData(json:JSON)->JSON{
+    
+    let jsonData:NSMutableData! = NSMutableData()
+    jsonData.appendData(json.stringValue.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)!)
+    return JSON(data: jsonData)
+}
+
+
+
 public func getBaseHeaderValue()->[String:AnyObject]{
     return ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
 }
@@ -76,7 +85,11 @@ public func getBaseHeaderValue()->[String:AnyObject]{
 public func getUserHeaderValue()->[String:AnyObject]{
     
     let defaults = NSUserDefaults.standardUserDefaults()
-    return ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json","X-User-Email":defaults.objectForKey("email")!,"X-User-Token":defaults.objectForKey("token")!]
+    
+    
+    return ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json","X-User-Email":defaults.objectForKey("email") ?? "","X-User-Token":defaults.objectForKey("authentication_token") ?? ""]
+    
+    
 }
 
 
@@ -128,10 +141,10 @@ class RealmManager: NSObject {
                 
                 switch key {
                 case "categories": synchronizeCategorys(json)
-                case "tasks": synchronizeTask(json)
-                case "task_dates": synchronizeTaskDate(json)
+                case "tasks": synchronizeTasks(json)
+                case "task_dates": synchronizeTaskDates(json)
                 case "weeks": synchronizeWeek(json)
-                case "days": synchronizeDay(json)
+                case "days": synchronizeDays(json)
                 case "diarys": synchronizeDiary(json)
                 case "amount_ranges": synchronizeAmountRange(json)
                 case "review_days": synchronizeReviewDay(json)
@@ -370,7 +383,7 @@ class RealmManager: NSObject {
     }
     
     
-    func synchronizeTask(jsons:JSON){
+    func synchronizeTasks(jsons:JSON){
         
         for var index = 0 ; index < jsons.count ; index++ {
             
@@ -388,6 +401,35 @@ class RealmManager: NSObject {
             
             createTask(json)
             
+        }
+    }
+    
+    func synchronizeTask(json:JSON){
+        
+        
+        let taskDates = json["task_dates"]
+        
+        
+        
+        if let serverId = json["id"].int {
+            
+            var results = realm.objects(Task).filter("serverId == %lu", serverId)
+            
+            if results.count > 0 {
+                updateTask(json,task:results.first!)
+                
+                if taskDates.count > 0 {
+                    synchronizeTaskDates(taskDates)
+                }
+                
+                return
+            }
+        }
+        
+        createTask(json)
+        
+        if taskDates.count > 0 {
+            synchronizeTaskDates(taskDates)
         }
     }
     
@@ -442,11 +484,15 @@ class RealmManager: NSObject {
     
     
     
-    func synchronizeTaskDate(jsons:JSON){
+    func synchronizeTaskDates(jsons:JSON){
+        
+        
         
         for var index = 0 ; index < jsons.count ; index++ {
-            
+          
             let json = jsons[index]
+            let week = json["week"]
+            let days = json["day"]
             
             if let serverId = json["id"].int {
                 
@@ -454,11 +500,29 @@ class RealmManager: NSObject {
                 
                 if results.count > 0 {
                     updateTaskDate(json,taskDate:results.first!)
+                    
+                    if week.count > 0 {
+                        synchronizeWeek(week)
+                    }
+                    
+                    if days.count > 0 {
+                        synchronizeDays(days)
+                    }
+                    
                     continue
                 }
             }
             
             createTaskDate(json)
+            
+            if week.count > 0 {
+                synchronizeWeek(week)
+            }
+            
+            if days.count > 0 {
+                synchronizeDays(days)
+            }
+            
         }
         
     }
@@ -513,7 +577,7 @@ class RealmManager: NSObject {
     }
     
     
-    func synchronizeDay(jsons:JSON){
+    func synchronizeDays(jsons:JSON){
         
         for var index = 0 ; index < jsons.count ; index++ {
             

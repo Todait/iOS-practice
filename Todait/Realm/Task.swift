@@ -226,6 +226,19 @@ class Task: RealmObject{
         return doneTime
     }
     
+    func getWeekValues()->[Int]?{
+        
+        if let taskDate = taskDates.last {
+            
+            return taskDate.week?.getExpectedTime()
+            
+        }
+        
+        
+        return nil
+    }
+    
+    
     func getPercentOfPeriodProgress()->Float{
         
         var totalDay = 0
@@ -445,7 +458,7 @@ class Task: RealmObject{
 
     func getTotalDoneAmount()->Int{
         
-        var doneAmount:Int = 0
+        var doneAmount:Int! = 0
         
         for taskDate in taskDates {
             

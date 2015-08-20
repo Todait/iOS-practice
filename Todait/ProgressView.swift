@@ -31,6 +31,7 @@ class ProgressView: UIView {
     
     func stopAnimation(){
         
+        progressImage.layer.removeAllAnimations()
         
     }
     

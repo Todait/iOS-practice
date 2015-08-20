@@ -12,7 +12,7 @@ import SwiftyJSON
 class Category: RealmObject {
     
     dynamic var name = ""
-    dynamic var color = ""
+    dynamic var color = "FFFFFFFF"
     dynamic var archived = false
     dynamic var priority = 0
     dynamic var categoryType = "study"
@@ -25,7 +25,7 @@ class Category: RealmObject {
         
         serverId = json["id"].intValue
         name = json["name"].stringValue
-        color = json["color"].stringValue
+        color = json["color"].string ?? "FFFFFFFF"
         archived = json["archived"].boolValue
         categoryType = json["category_type"].stringValue
         priority = json["priority"].intValue
