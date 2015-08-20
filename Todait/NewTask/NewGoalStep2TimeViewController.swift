@@ -231,6 +231,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         timeTask.goal = goalTextField.text
         timeTask.unit = unitTextField.text
         timeTask.isTotal = isTotal
+        timeTask.weekTimes = [Int](count:7, repeatedValue:60)
         
         if isTotal == true {
             timeTask.totalAmount = totalAmountField.text.toInt()!

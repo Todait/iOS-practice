@@ -158,7 +158,7 @@ class ThumbChartBox: BasicView {
         }
         
         
-        print("\(Int(currentValue/3600))시간 \(Int((currentValue%3600)/60))분")
+        print("\(Int(currentValue/60))시간 \(Int((currentValue%60)))분")
     }
     
     func thumbTouchBegan(){

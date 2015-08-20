@@ -13,7 +13,7 @@ class WeekTimesViewController: BasicViewController,ThumbChartDelegate ,TodaitNav
     
     
     
-    var maxTime:CGFloat! = 3600
+    var maxTime:CGFloat! = 60
     
     var amountView:UIView!
     var baseView:UIView!
@@ -210,7 +210,7 @@ class WeekTimesViewController: BasicViewController,ThumbChartDelegate ,TodaitNav
             thumbChartBox.maxColor = UIColor.colorWithHexString("#95CCC4")
             
             thumbChartBox.maxValue = CGFloat(maxTime)
-            thumbChartBox.currentValue = CGFloat(3600)
+            thumbChartBox.currentValue = CGFloat(timeTask.weekTimes[index])
             thumbChartBox.setStroke()
             thumbChartBox.delegate = self
             
@@ -399,19 +399,19 @@ class WeekTimesViewController: BasicViewController,ThumbChartDelegate ,TodaitNav
             
             
             
-            var minute = Int(chart.currentValue/600)
-            var second = Int(chart.currentValue%600)
-            if second > 300 {
+            var minute = Int(chart.currentValue/10)
+            var second = Int(chart.currentValue%10)
+            if second > 5 {
                 minute = minute + 1
             }
             
-            let data = CGFloat(Int(minute)*600)
+            let data = CGFloat(Int(minute)*10)
             chart.currentValue = data
             
-            label.text = getTimeStringOfHourMinuteFromSeconds(NSTimeInterval(data))
+            label.text = getTimeStringOfHourMinuteFromMinutes(NSTimeInterval(data))
 
             
-            print("\(Int(chart.currentValue/3600))시간 \(Int((chart.currentValue%3600)/60))분 \n")
+            print("\(Int(chart.currentValue/60))시간 \(Int((chart.currentValue%60)))분 \n")
 
             
             UIView.animateWithDuration(0.7, animations: { () -> Void in
@@ -419,6 +419,7 @@ class WeekTimesViewController: BasicViewController,ThumbChartDelegate ,TodaitNav
             })
         }
     }
+    
     
     func needToChartUpdate(){
         
@@ -443,18 +444,18 @@ class WeekTimesViewController: BasicViewController,ThumbChartDelegate ,TodaitNav
             let button = weekButtons[index]
             let label = timeLabels[index]
             
-            var minute = Int(chart.currentValue/600)
-            var second = Int(chart.currentValue%600)
+            var minute = Int(chart.currentValue/10)
+            var second = Int(chart.currentValue%10)
             
-            if second > 300 {
+            if second > 5 {
                 minute = minute + 1
             }
             
-            let data = CGFloat(Int(minute)*600)
+            let data = CGFloat(Int(minute)*10)
             
             
             //chart.currentValue = data
-            label.text = getTimeStringOfHourMinuteFromSeconds(NSTimeInterval(data))
+            label.text = getTimeStringOfHourMinuteFromMinutes(NSTimeInterval(data))
             
             sumData = sumData + CGFloat(data)
             
@@ -584,7 +585,7 @@ class WeekTimesViewController: BasicViewController,ThumbChartDelegate ,TodaitNav
             sum = sum + times[dayOfWeek]
         }
         
-        var totalMinute = sum / 60
+        var totalMinute = sum
         var amountPerMinute = CGFloat(timeTask.getAmount()) / totalMinute
         
         
@@ -596,7 +597,7 @@ class WeekTimesViewController: BasicViewController,ThumbChartDelegate ,TodaitNav
                 label.text = "1개"
             }else{
                 let chart:ThumbChartBox = weekCharts[index]
-                label.text = String(format: "%.0f개", arguments: [(chart.currentValue / 60) * amountPerMinute])
+                label.text = String(format: "%.0f개", arguments: [(chart.currentValue) * amountPerMinute])
             }
         }
         
@@ -632,10 +633,10 @@ class WeekTimesViewController: BasicViewController,ThumbChartDelegate ,TodaitNav
         if needChange == true {
             
             maxChangeTimeCount = maxChangeTimeCount + 1
-            var addUnit:CGFloat = 600
+            var addUnit:CGFloat = 10
             
             if maxChangeTimeCount > 30 {
-                addUnit = 1800
+                addUnit = 30
             }
             
             if maxTime + addUnit > 24 * 60 * 60 {
@@ -646,13 +647,13 @@ class WeekTimesViewController: BasicViewController,ThumbChartDelegate ,TodaitNav
                 
                 let chart = weekCharts[index]
                 let label = timeLabels[index]
-                let data = Int(chart.currentValue/600)*600
+                let data = Int(chart.currentValue/10)*10
                 
                 if chart.isThumbed == true && chart.currentValue == maxTime{
                     chart.currentValue = maxTime + addUnit
                 }
                 
-                label.text = getTimeStringOfHourMinuteFromSeconds(NSTimeInterval(data))
+                label.text = getTimeStringOfHourMinuteFromMinutes(NSTimeInterval(data))
                 
                 chart.setMaxValue(maxTime + addUnit)
             }

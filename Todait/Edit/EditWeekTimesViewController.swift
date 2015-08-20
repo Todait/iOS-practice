@@ -19,4 +19,17 @@ class EditWeekTimesViewController: WeekTimesViewController {
         
     }
     
+    
+    override func viewWillDisappear(animated: Bool) {
+        
+        for var index = 0 ; index < 7 ; index++ {
+            
+            let chart = weekCharts[index]
+            timeTask.weekTimes[index] = Int(chart.currentValue)
+        }
+        
+        super.viewWillDisappear(animated)
+
+    }
+    
 }

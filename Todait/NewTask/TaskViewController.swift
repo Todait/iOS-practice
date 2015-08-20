@@ -20,8 +20,15 @@ class TaskViewController: BasicViewController {
     var amountImage:UIImageView!
     var dateImage:UIImageView!
     
+    var amountTask = AmountTask.sharedInstance
+    var timeTask = TimeTask.sharedInstance
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        amountTask.setDefault()
+        timeTask.setDefault()
         
         view.backgroundColor = UIColor.todaitBackgroundGray()
         

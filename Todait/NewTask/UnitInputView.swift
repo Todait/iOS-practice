@@ -21,7 +21,7 @@ class UnitInputView: UIView,UICollectionViewDelegate,UICollectionViewDataSource{
     
     var title:[String] = ["개","문제","쪽"]
     var ratio:CGFloat! = 0
-    var delegate:UnitInputViewDelegate!
+    var delegate:UnitInputViewDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -82,10 +82,11 @@ class UnitInputView: UIView,UICollectionViewDelegate,UICollectionViewDataSource{
     
     func collectionView(collectionView: UICollectionView, shouldHighlightItemAtIndexPath indexPath: NSIndexPath) -> Bool {
         
-        if self.delegate.respondsToSelector("updateUnit:"){
-            self.delegate.updateUnit(title[indexPath.row])
+        if let delegate = delegate {
+            if delegate.respondsToSelector("updateUnit:"){
+                delegate.updateUnit(title[indexPath.row])
+            }
         }
-        
         
         return false
     }

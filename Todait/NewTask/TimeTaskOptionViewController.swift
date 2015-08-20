@@ -183,7 +183,6 @@ class TimeTaskOptionViewController: TaskOptionViewController ,AlarmDelegate ,Cou
         if let param = timeTask.createTimeTaskParams() {
             
             
-            
             var manager = Alamofire.Manager.sharedInstance
             manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
             
@@ -207,15 +206,21 @@ class TimeTaskOptionViewController: TaskOptionViewController ,AlarmDelegate ,Cou
                 let task:JSON? = taskData["task"]
                 if let task = task {
                     
-                    self.defaults.setObject(task.stringValue, forKey: "sync_at")
+                    self.defaults.setObject(task["sync_at"].stringValue, forKey: "sync_at")
                     self.realmManager.synchronizeTask(task)
                 }
                 
                 
                 let day:JSON? = taskData["future_days"]
                 if let day = day {
-                    self.defaults.setObject(day.stringValue, forKey: "sync_at")
+                    self.defaults.setObject(day["sync_at"].stringValue, forKey: "sync_at")
                     self.realmManager.synchronizeDays(day)
+                }
+                
+                let deleteDays:JSON? = taskData["deleted_days"]
+                if let deleteDays = deleteDays {
+                    self.defaults.setObject(deleteDays["sync_at"].stringValue, forKey: "sync_at")
+                    self.realmManager.deleteDays(deleteDays)
                 }
                 
                 ProgressManager.hide()

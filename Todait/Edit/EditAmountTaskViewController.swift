@@ -138,20 +138,6 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
             self.category = category
         }
         
-        /*
-        let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
-        let request = NSFetchRequest()
-        
-        request.entity = entityDescription
-        
-        var error: NSError?
-        
-        var categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as? [Category]
-        
-        if let categoryData = categoryData {
-            category = categoryData.first
-        }
-        */
     }
     
     func addGoalView(){
@@ -229,7 +215,7 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         
         
         periodStartLabel = UILabel(frame:CGRectMake(15*ratio, 26*ratio, 137*ratio, 20*ratio))
-        periodStartLabel.text = getDateString(getDateNumberFromDate(periodStartDate))
+        periodStartLabel.text = getDateString(getDateNumberFromDate(amountTask.startDate!))
         periodStartLabel.textAlignment = NSTextAlignment.Right
         periodStartLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
         periodStartLabel.textColor = UIColor.todaitDarkGray()
@@ -243,7 +229,7 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         
         
         periodEndLabel = UILabel(frame:CGRectMake(168*ratio, 26*ratio, 140*ratio, 20*ratio))
-        periodEndLabel.text = getDateString(getDateNumberFromDate(periodEndDate))
+        periodEndLabel.text = getDateString(getDateNumberFromDate(amountTask.endDate!))
         periodEndLabel.textAlignment = NSTextAlignment.Left
         periodEndLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
         periodEndLabel.textColor = UIColor.todaitDarkGray()

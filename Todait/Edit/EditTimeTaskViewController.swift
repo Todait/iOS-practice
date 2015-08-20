@@ -8,6 +8,8 @@
 
 import UIKit
 import CoreData
+import Alamofire
+
 
 class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitInputViewDelegate,CategoryDelegate,TodaitNavigationDelegate,ValidationDelegate,KeyboardHelpDelegate,CountDelegate,AlarmDelegate{
     
@@ -39,7 +41,6 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
     var startAmountField: UITextField!
     var endAmountField: UITextField!
     
-    var saveButton: UIButton!
     var currentTextField: UITextField!
     
     var startDateLabel: UILabel!
@@ -464,12 +465,14 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
     
     func getAlarmStatus()->Bool{
         
-        
+        timeTask.isNotification = isAlarmOn
         
         return isAlarmOn
     }
     
     func getAlarmTime() -> NSDate? {
+        
+        timeTask.notificationDate = alarmTime
         
         return alarmTime
         
@@ -687,6 +690,22 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
     func doneButtonClk(){
         
         
+        timeTask.goal = goalTextField.text
+        timeTask.unit = unitTextField.text
+        timeTask.isTotal = isTotal
+        timeTask.weekTimes = [Int](count:7, repeatedValue:60)
+        
+        if isTotal == true {
+            timeTask.totalAmount = totalAmountField.text.toInt()!
+        }else {
+            timeTask.startAmount = startAmountField.text.toInt()!
+            timeTask.endAmount = endAmountField.text.toInt()!
+        }
+        
+        
+        
+        
+        
         let validator = Validator()
         validator.registerField(goalTextField, rules:[MinLengthRule(length: 1, message: "목표를 입력해주세요.")])
         validator.registerField(unitTextField, rules: [MinLengthRule(length: 1, message: "단위를 입력해주세요.")])
@@ -709,18 +728,76 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
         
         
         if isAlarmOn == true {
-            
             let notificationId = NSUUID().UUIDString
-            //editedTask.notificationId = notificationId
             registerAlarm(notificationId)
-            
         }
         
+        
+        ProgressManager.show()
+        
+        if let param = timeTask.createEditedTimeTaskParams() {
+            
+            
+            var manager = Alamofire.Manager.sharedInstance
+            manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
+            
+            var params = makeUpdateBatchParams(EDIT_TASK + "/\(editedTask!.serverId)", param)
+            setUserHeader()
+            
+            Alamofire.request(.POST, SERVER_URL + BATCH, parameters: params).responseJSON(options: nil) { (request, response, object, error) -> Void in
+                
+                
+                let jsons = JSON(object!)
+                
+                let syncData = encodeData(jsons["results"][0]["body"])
+                self.realmManager.synchronize(syncData)
+                
+                
+                
+                
+                let taskData = encodeData(jsons["results"][1]["body"])
+                
+                
+                let task:JSON? = taskData["task"]
+                if let task = task {
+                    
+                    self.defaults.setObject(task["sync_at"].stringValue, forKey: "sync_at")
+                    self.realmManager.synchronizeTask(task)
+                }
+                
+                
+                let day:JSON? = taskData["future_days"]
+                if let day = day {
+                    self.defaults.setObject(day["sync_at"].stringValue, forKey: "sync_at")
+                    self.realmManager.synchronizeDays(day)
+                }
+                
+                let deleteDays:JSON? = taskData["deleted_days"]
+                if let deleteDays = deleteDays {
+                    self.defaults.setObject(deleteDays["sync_at"].stringValue, forKey: "sync_at")
+                    self.realmManager.deleteDays(deleteDays)
+                }
+                
+                ProgressManager.hide()
+                
+                self.navigationController?.popViewControllerAnimated(true)
+                
+            }
+            
+        }
+
+        
+        
+        
+        
+        
+        
+        /*
         realm.write{
             self.realm.add(self.editedTask,update:true)
         }
-        
-        self.navigationController?.popViewControllerAnimated(true)
+        */
+
         
         
     }
@@ -1104,7 +1181,7 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
         
         
         let periodStartLabel = UILabel(frame:CGRectMake(15*ratio, 28*ratio, 140*ratio, 20*ratio))
-        periodStartLabel.text = getDateString(getDateNumberFromDate(periodStartDate))
+        periodStartLabel.text = getDateString(getDateNumberFromDate(timeTask.startDate!))
         periodStartLabel.textAlignment = NSTextAlignment.Right
         periodStartLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
         periodStartLabel.textColor = UIColor.todaitDarkGray()
@@ -1117,7 +1194,7 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
         
         
         let periodEndLabel = UILabel(frame:CGRectMake(165*ratio, 28*ratio, 140*ratio, 20*ratio))
-        periodEndLabel.text = getDateString(getDateNumberFromDate(periodEndDate))
+        periodEndLabel.text = getDateString(getDateNumberFromDate(timeTask.endDate!))
         periodEndLabel.textAlignment = NSTextAlignment.Left
         periodEndLabel.font = UIFont(name: "AppleSDGothicNeo-Ultralight", size: 15*ratio)
         periodEndLabel.textColor = UIColor.todaitDarkGray()

@@ -268,14 +268,14 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
             let task:JSON? = taskData["task"]
             if let task = task {
                 
-                self.defaults.setObject(task.stringValue, forKey: "sync_at")
+                self.defaults.setObject(task["sync_at"].stringValue, forKey: "sync_at")
                 self.realmManager.synchronizeTask(task)
             }
             
             
             let day:JSON? = taskData["future_days"]
             if let day = day {
-                self.defaults.setObject(day.stringValue, forKey: "sync_at")
+                self.defaults.setObject(day["sync_at"].stringValue, forKey: "sync_at")
                 self.realmManager.synchronizeDays(day)
             }
             

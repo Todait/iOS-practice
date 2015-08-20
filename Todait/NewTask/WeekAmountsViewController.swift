@@ -229,11 +229,7 @@ class WeekAmountsViewController: BasicViewController,TodaitNavigationDelegate,Th
             thumbChartBox.maxColor = UIColor.colorWithHexString("#95CCC4")
             
             thumbChartBox.maxValue = maxValue
-            
-            if let dayAmount = amountTask.dayAmount {
-                thumbChartBox.currentValue = CGFloat(dayAmount)
-            }
-            
+            thumbChartBox.currentValue = CGFloat(amountTask.weekAmounts[index])
             thumbChartBox.setStroke()
             thumbChartBox.delegate = self
             
