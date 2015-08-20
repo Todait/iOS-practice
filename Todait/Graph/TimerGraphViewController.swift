@@ -22,7 +22,7 @@ class TimerGraphViewController: BasicViewController,TodaitNavigationDelegate{
     var trendDashView:UIView!
     
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     
     
@@ -111,8 +111,8 @@ class TimerGraphViewController: BasicViewController,TodaitNavigationDelegate{
         var weekDoneSecond:Int = 0
         
         for chartItem in weekSecondProgressData {
-            weekDoneSecond = weekDoneSecond + chartItem["done"]!.integerValue
-            weekExpectSecond = weekExpectSecond + chartItem["expect"]!.integerValue
+            weekDoneSecond = weekDoneSecond + chartItem["done"]!
+            weekExpectSecond = weekExpectSecond + chartItem["expect"]!
         }
         
         weekDoneTimeLabel.text = getTimeWeekProgressString(weekDoneSecond, expectSecond: weekExpectSecond)
@@ -150,7 +150,7 @@ class TimerGraphViewController: BasicViewController,TodaitNavigationDelegate{
     func addBarDashTableView(){
         
         
-        var focus:CGFloat = CGFloat(task.getAverageFocusScore().floatValue)
+        var focus:CGFloat = CGFloat(task.getAverageFocusScore())
         
         let titleLabel = UILabel(frame:CGRectMake(15*ratio, 14*ratio, 80*ratio, 12*ratio))
         titleLabel.text = "집중도"
@@ -277,7 +277,7 @@ class TimerGraphViewController: BasicViewController,TodaitNavigationDelegate{
             trendDashView.addSubview(yAxixLabel)
             
             
-            var count = CGFloat(task.dayList.count)
+            //var count = CGFloat(task.dayList.count)
             
             
             if index == 1 {
@@ -312,7 +312,7 @@ class TimerGraphViewController: BasicViewController,TodaitNavigationDelegate{
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
         todaitNavBar.shadowImage = UIImage()
-        self.titleLabel.text = task.categoryId.name + " - " + task.name
+        self.titleLabel.text = task.category!.name + " - " + task.name
         self.screenName = "Statistics Activity"
         
     }

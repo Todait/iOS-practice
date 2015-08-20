@@ -27,7 +27,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
     var trendDashView:UIView!
     
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     
     
@@ -219,8 +219,8 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         var weekDoneAmount:Int = 0
         
         for chartItem in weekAmountProgressData {
-            weekDoneAmount = weekDoneAmount + chartItem["done"]!.integerValue
-            weekExpectAmount = weekExpectAmount + chartItem["expect"]!.integerValue
+            weekDoneAmount = weekDoneAmount + chartItem["done"]!
+            weekExpectAmount = weekExpectAmount + chartItem["expect"]!
         }
         
         weekDoneAmountLabel.text = getAmountWeekProgressString(weekDoneAmount, expectAmount: weekExpectAmount)
@@ -258,8 +258,8 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         var weekDoneSecond:Int = 0
         
         for chartItem in weekSecondProgressData {
-            weekDoneSecond = weekDoneSecond + chartItem["done"]!.integerValue
-            weekExpectSecond = weekExpectSecond + chartItem["expect"]!.integerValue
+            weekDoneSecond = weekDoneSecond + chartItem["done"]!
+            weekExpectSecond = weekExpectSecond + chartItem["expect"]!
         }
         
         weekDoneTimeLabel.text = getTimeWeekProgressString(weekDoneSecond, expectSecond: weekExpectSecond)
@@ -297,7 +297,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
     func addBarDashTableView(){
         
         
-        var focus:CGFloat = CGFloat(task.getAverageFocusScore().floatValue)
+        var focus:CGFloat = CGFloat(task.getAverageFocusScore())
         
         let titleLabel = UILabel(frame:CGRectMake(15*ratio, 17*ratio, 80*ratio, 12*ratio))
         titleLabel.text = "집중도"
@@ -424,9 +424,6 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
             trendDashView.addSubview(yAxixLabel)
             
             
-            var count = CGFloat(task.dayList.count)
-       
-            
             if index == 1 {
                 
                 let line = UIView(frame:CGRectMake(28*ratio, 35*ratio + CGFloat(index)*CGFloat(16*ratio) , 278*ratio, 2))
@@ -459,7 +456,7 @@ class GraphViewController: BasicViewController,TodaitNavigationDelegate {
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
         todaitNavBar.shadowImage = UIImage()
-        self.titleLabel.text = task.categoryId.name + " - " + task.name
+        self.titleLabel.text = task.category!.name + " - " + task.name
         self.screenName = "Statistics Activity"
         
     }

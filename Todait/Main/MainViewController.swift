@@ -162,10 +162,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //requestDayToServer()
+        requestDayToServer()
         
         //createTestData()
         //createTestDataRealm()
+        
         addParallelView()
         addMainTableView()
         
@@ -186,16 +187,12 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         
         var params:[String:AnyObject] = [:]
-        params["sync_at"] = defaults.objectForKey("sync_at")
+        params["sync_at"] = defaults.objectForKey("sync_at") ?? 0 
         
-        var manager = Alamofire.Manager.sharedInstance
-        manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json","X-User-Email":defaults.objectForKey("email")!,"X-User-Token":defaults.objectForKey("token")!]
-        
+        setUserHeader()
         
         Alamofire.request(.GET, SERVER_URL + SYNCHRONIZE , parameters: params).responseJSON(options: nil) {
             (request, response , object , error) -> Void in
-            
-            print(JSON(object!))
             
             
             self.realmManager.synchronize(JSON(object!))
@@ -208,7 +205,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func createTestDataRealm(){
         
-        for index in 0...9{
+        for index in 0...5{
             
             let category = Category()
             category.name = String.categoryTestNameAtIndex(index)
@@ -230,7 +227,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func createTask(category:Category){
         
         
-        for index in 0...19{
+        for index in 0...10{
             let task = Task()
             
             task.name = String.categoryTestNameAtIndex(Int(rand()%20))
@@ -254,7 +251,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func createTaskDate(task:Task){
         
         
-        for index in 0...8 {
+        for index in 0...3 {
             
             let taskDate = TaskDate()
             taskDate.id = NSUUID().UUIDString
@@ -363,7 +360,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         mainTableView.registerClass(TimerTaskTableViewCell.self, forCellReuseIdentifier: "timerCell")
         mainTableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "emptyCell")
         mainTableView.registerClass(UncompletedTableViewCell.self, forCellReuseIdentifier:"uncompletedCell")
-        
+        mainTableView.showsVerticalScrollIndicator = false
         mainTableView.backgroundColor = UIColor.todaitBackgroundGray()
         mainTableView.bounces = false
         mainTableView.contentInset = UIEdgeInsetsMake(-20*ratio, 0, 0, 0)
@@ -563,7 +560,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         
         
         let todayDateNumber = getTodayDateNumber()
-        let predicate = NSPredicate(format:"archived == false && date == %lu && taskDate.state == 1 ",todayDateNumber)
+        let predicate = NSPredicate(format:"archived == false && date == %lu && taskDate.state == 0 ",todayDateNumber)
         
         dayResults = realm.objects(Day).filter(predicate)//.sorted("taskDate.task.name", ascending: true)
         
@@ -571,7 +568,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func loadUncompletedTaskDate(){
         
-        let uncomplete = NSPredicate(format:"archived == false && state == 0 ")
+        let todayDateNumber = getTodayDateNumber()
+        let uncomplete = NSPredicate(format:"archived == false && state == 0 && endDate < %lu " ,todayDateNumber)
         uncompletedTaskDateResults = realm.objects(TaskDate).filter(uncomplete)
         
     }
@@ -971,7 +969,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         let task:Task! = day!.taskDate?.task!
         
         
-        if task.taskType == "timer" {
+        if task.taskType == "time" {
             
             let cell = tableView.dequeueReusableCellWithIdentifier("timerCell", forIndexPath: indexPath) as! TimerTaskTableViewCell
             
@@ -993,11 +991,10 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
                 
                 cell.titleLabel.text = task.name
                 cell.contentsTextView.setupText(NSTimeInterval(day.doneSecond))
-                cell.percentLabel.text = String(format: "%lu%@", Int(Float(day.doneAmount)/Float(day.expectAmount)*100),"%")
                 cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
-                cell.percentLayer.strokeEnd = CGFloat(Float(day.doneAmount)/Float(day.expectAmount))
                 cell.percentLabel.textColor = UIColor.todaitRed()
-                
+                cell.percentLabel.text = String(format: "%lu%@", day.getDonePercentInt(),"%")
+                cell.percentLayer.strokeEnd = day.getDonePercentCGFloat()
             }
             
             var line = UIView(frame: CGRectMake(0, 57.5, 320*ratio, 0.5))
@@ -1031,10 +1028,11 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
                 //cell.contentsLabel.text = day.getProgressString()
                 cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.doneSecond))
                 cell.contentsTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
-                cell.percentLabel.text = String(format: "%lu%@", Int(Float(day.doneAmount)/Float(day.expectAmount)*100),"%")
                 cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
-                cell.percentLayer.strokeEnd = CGFloat(Float(day.doneAmount)/Float(day.expectAmount))
                 cell.percentLabel.textColor = UIColor.todaitRed()
+                cell.percentLabel.text = String(format: "%lu%@", day.getDonePercentInt(),"%")
+                cell.percentLayer.strokeEnd = day.getDonePercentCGFloat()
+                
                 //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
                 
             }else{
@@ -1255,9 +1253,9 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     
     func getTotalPercentStringOfToday()->String{
         
-        var completeCount:Float = 0.0
+        var completeCount:CGFloat = 0.0
         
-        var count:Float = Float(dayResults!.count)
+        var count:CGFloat = CGFloat(dayResults!.count)
         /*
         for dayItem in dayData{
             let day:Day! = dayItem
@@ -1266,7 +1264,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         */
         
         for day in dayResults!{
-            completeCount = completeCount + Float(day.doneAmount)/Float(day.expectAmount)
+            completeCount = completeCount + day.getDonePercentCGFloat()
         }
         
         if dayResults!.count == 0 {
