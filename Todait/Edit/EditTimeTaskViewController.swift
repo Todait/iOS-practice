@@ -133,25 +133,8 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
     
     func loadDefaultCategory(){
         
-        var categoryResults = realm.objects(Category).filter("archived == false")
-        if let category = categoryResults.first{
-            self.category = category
-        }
+        category = editedTask.category
         
-        /*
-        let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
-        let request = NSFetchRequest()
-        
-        request.entity = entityDescription
-        
-        var error: NSError?
-        
-        var categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as? [Category]
-        
-        if let categoryData = categoryData {
-        category = categoryData.first
-        }
-        */
     }
     
     func addGoalView(){
@@ -1102,6 +1085,7 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
         categoryButton.setBackgroundImage(UIImage.maskColor("circle@3x.png", color: UIColor.todaitLightGray()), forState: UIControlState.Highlighted)
         self.category = editedCategory
         
+        timeTask.category = editedCategory
     }
     
     

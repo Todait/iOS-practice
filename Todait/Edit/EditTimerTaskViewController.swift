@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import Alamofire
 
 class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryDelegate,TodaitNavigationDelegate,AlarmDelegate{
    
@@ -54,11 +55,11 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         
         loadDefaultCategory()
         setupTimeTaskViewController()
-        
         addGoalView()
         addOptionView()
-        
         addDeleteButton()
+    
+    
     }
     
     func loadDefaultCategory(){
@@ -100,6 +101,11 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         
         currentTextField = goalTextField
     }
+    
+    func updateAllEvents(textField:UITextField){
+        aimString = textField.text
+    }
+    
     
     func addCategoryButton(){
         categoryButton = UIButton(frame: CGRectMake(280*ratio,7*ratio, 29*ratio, 29*ratio))
@@ -281,18 +287,73 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         
         
         
+        ProgressManager.show()
         
         
-        editedTask.name = goalTextField.text
-        editedTask.category = category
-        category.tasks.append(editedTask)
+        var param:[String:AnyObject] = [:]
+        var task:[String:AnyObject] = [:]
+        task["name"] = goalTextField.text
+        task["task_type"] = "time"
+        task["repeat_count"] = 1
+        task["notification_mode"] = isAlarmOn
+        task["priority"] = 0
         
-        realm.write{
-            self.realm.add(self.category,update:true)
-            self.realm.add(self.editedTask,update:true)
+        if let category = category {
+            task["category_id"] = category.serverId
         }
         
-        backButtonClk()
+        task["task_dates_attributes"] = [["start_date":"\(getTodayDateNumber())","state":0]]
+        
+        if isAlarmOn == true {
+            task["notification_time"] = alarmOption.optionText
+        }
+        
+        param["today_date"] = getTodayDateNumber()
+        param["task"] = task
+        
+        var params = makeUpdateBatchParams(EDIT_TASK + "/\(editedTask!.serverId)", param)
+        
+        setUserHeader()
+        
+        Alamofire.request(.POST, SERVER_URL + BATCH , parameters: params).responseJSON(options: nil) {
+            (request, response , object , error) -> Void in
+            
+            let jsons = JSON(object!)
+            
+            let syncData = encodeData(jsons["results"][0]["body"])
+            self.realmManager.synchronize(syncData)
+            
+            
+            
+            
+            let taskData = encodeData(jsons["results"][1]["body"])
+            
+            
+            let task:JSON? = taskData["task"]
+            if let task = task {
+                
+                self.defaults.setObject(task["sync_at"].stringValue, forKey: "sync_at")
+                self.realmManager.synchronizeTask(task)
+            }
+            
+            
+            let day:JSON? = taskData["future_days"]
+            if let day = day {
+                self.defaults.setObject(day["sync_at"].stringValue, forKey: "sync_at")
+                self.realmManager.synchronizeDays(day)
+            }
+            
+            let deleteDays:JSON? = taskData["deleted_days"]
+            if let deleteDays = deleteDays {
+                self.defaults.setObject(deleteDays["sync_at"].stringValue, forKey: "sync_at")
+                self.realmManager.deleteDays(deleteDays)
+            }
+            
+            ProgressManager.hide()
+            self.backButtonClk()
+        }
+        
+        
         
         
         /*
