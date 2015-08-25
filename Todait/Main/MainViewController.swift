@@ -185,18 +185,24 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
     func requestDayToServer(){
         
         
+        ProgressManager.show()
         
         var params:[String:AnyObject] = [:]
-        params["sync_at"] = defaults.objectForKey("sync_at") ?? 0 
+        params["sync_at"] = defaults.objectForKey("sync_at")
+        params["today_date"] = getTodayDateNumber()
         
         setUserHeader()
         
         Alamofire.request(.GET, SERVER_URL + SYNCHRONIZE , parameters: params).responseJSON(options: nil) {
             (request, response , object , error) -> Void in
             
+            if error == nil {
+                self.realmManager.synchronize(JSON(object!))
+            }
             
-            self.realmManager.synchronize(JSON(object!))
             
+            ProgressManager.hide()
+            self.needToUpdate()
         }
         
     }
@@ -730,15 +736,25 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         needToUpdate()
         
         
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("categoryDataMainUpdate"), name: "categoryDataMainUpdate", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("categoryUpdate"), name: "categoryUpdate", object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("dayUpdate"), name: "dayUpdate", object: nil)
         
     }
     
-    func categoryDataMainUpdate(){
+    
+    func categoryUpdate(){
         
         needToUpdate()
         
     }
+    
+    func dayUpdate(){
+        
+        needToUpdate()
+        
+    }
+    
+    
     
     func addLogoImageView(){
         
@@ -993,8 +1009,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
                 cell.contentsTextView.setupText(NSTimeInterval(day.doneSecond))
                 cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
                 cell.percentLabel.textColor = UIColor.todaitRed()
-                cell.percentLabel.text = String(format: "%lu%@", day.getDonePercentInt(),"%")
-                cell.percentLayer.strokeEnd = day.getDonePercentCGFloat()
+                cell.percentLabel.text = String(format: "%lu%@", day.getDonePercent(),"%")
+                cell.percentLayer.strokeEnd = day.getProgressPercent()
             }
             
             var line = UIView(frame: CGRectMake(0, 57.5, 320*ratio, 0.5))
@@ -1030,8 +1046,8 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
                 cell.contentsTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
                 cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
                 cell.percentLabel.textColor = UIColor.todaitRed()
-                cell.percentLabel.text = String(format: "%lu%@", day.getDonePercentInt(),"%")
-                cell.percentLayer.strokeEnd = day.getDonePercentCGFloat()
+                cell.percentLabel.text = String(format: "%lu%@", day.getDonePercent(),"%")
+                cell.percentLayer.strokeEnd = day.getProgressPercent()
                 
                 //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
                 
@@ -1264,7 +1280,7 @@ class MainViewController: BasicViewController,UITableViewDataSource,UITableViewD
         */
         
         for day in dayResults!{
-            completeCount = completeCount + day.getDonePercentCGFloat()
+            completeCount = completeCount + day.getProgressPercent()
         }
         
         if dayResults!.count == 0 {
