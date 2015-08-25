@@ -59,7 +59,7 @@ protocol TodaitNavigationDelegate : NSObjectProtocol {
     
     func backButtonClk(){
         
-        if let delegate = delegate {
+        if let delegate = todaitDelegate {
             if(delegate.respondsToSelector(Selector("backButtonClk"))){
                 delegate.backButtonClk()
             }

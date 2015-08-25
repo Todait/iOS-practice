@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource{
    
@@ -15,8 +16,10 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
     var categoryTableView:UITableView!
     var selectedIndexPath: NSIndexPath!
     let headerHeight: CGFloat = 220
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    
     var categoryData: [Category] = []
+    var categoryResults:Results<Category>?
     
     var sortButton:UIButton!
     var addButton:UIButton!
@@ -102,7 +105,13 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         
     }
     
+    func loadCategoryData(){
+        
+        categoryResults = realm.objects(Category).filter("archived == false")
+        
+    }
     
+    /*
     func loadCategoryData(){
         
         categoryData.removeAll(keepCapacity: false)
@@ -117,7 +126,7 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Category]
    
     }
-    
+    */
        
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -129,7 +138,12 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
         if section == 0 {
             return 1
         }else{
-            return categoryData.count
+            
+            if let  categoryResults = categoryResults {
+                return categoryResults.count
+            }
+            
+            return 0
         }
         
     }
@@ -267,6 +281,25 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         
         
+        let category = categoryResults![indexPath.row]
+        category.archived = true
+        
+        realm.write{
+            self.realm.add(category, update: true)
+        }
+        
+        categoryResults = categoryResults?.filter("archived == false")
+        
+        categoryData.removeAtIndex(indexPath.row)
+        selectedIndexPath = NSIndexPath(forRow: 0, inSection: 0)
+        
+        tableView.beginUpdates()
+        tableView.reloadRowsAtIndexPaths([selectedIndexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+        tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation:UITableViewRowAnimation.Automatic)
+        tableView.endUpdates()
+        
+        
+        /*
         let category = categoryData[indexPath.row]
         managedObjectContext?.deleteObject(category)
         
@@ -290,6 +323,7 @@ class CategoryRearViewController: BasicViewController,UITableViewDelegate,UITabl
             //삭제에러처리
             
         }
+        */
     }
     
     

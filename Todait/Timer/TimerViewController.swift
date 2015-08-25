@@ -627,8 +627,6 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         
         let timeView = UIView(frame:view.frame)
         timeView.backgroundColor = task.getColor()
-        //view.addSubview(timeView)
-        
         
     }
     
@@ -638,7 +636,12 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
         
-        self.titleLabel.text = task.category!.name + " - " + task.name
+        if let category = task.category {
+            self.titleLabel.text = task.category!.name + " - " + task.name
+        }else{
+            self.titleLabel.text = task.name
+        }
+        
         
         todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(),frame:todaitNavBar.frame), forBarMetrics: UIBarMetrics.Default)
         todaitNavBar.shadowImage = UIImage()

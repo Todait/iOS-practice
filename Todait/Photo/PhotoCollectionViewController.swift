@@ -7,12 +7,13 @@
 //
 
 import UIKit
+import RealmSwift
 
 let reuseIdentifier = "Cell"
 
 class PhotoCollectionViewController: UICollectionViewController,UICollectionViewDelegateFlowLayout{
 
-    var data:NSOrderedSet!
+    var data:List<Image>?
     var ratio:CGFloat! = 0
     
     override init(collectionViewLayout layout: UICollectionViewLayout) {
@@ -71,7 +72,7 @@ class PhotoCollectionViewController: UICollectionViewController,UICollectionView
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         //#warning Incomplete method implementation -- Return the number of items in the section
-        return data.count
+        return data!.count
     }
 
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
@@ -80,7 +81,9 @@ class PhotoCollectionViewController: UICollectionViewController,UICollectionView
         
         if let data = data {
             
-            let imageData = data.objectAtIndex(indexPath.row) as! ImageData
+            //let image = data.objectAtIndex(indexPath.row) as! Image
+            
+            let image = data[indexPath.row]
             let imageView = UIImageView(frame: CGRectMake(0, 0, 204*ratio, 204*ratio))
             
             if data.count == 1 {
@@ -89,8 +92,8 @@ class PhotoCollectionViewController: UICollectionViewController,UICollectionView
             
             imageView.contentMode = UIViewContentMode.ScaleAspectFill
             imageView.clipsToBounds = true
-            let image = UIImage(data: imageData.image)
-            imageView.image = image
+            //let image = UIImage(data: imageData.image)
+            //imageView.image = image
             
             cell.contentView.addSubview(imageView)
             
@@ -101,6 +104,7 @@ class PhotoCollectionViewController: UICollectionViewController,UICollectionView
        
         return cell
     }
+    
     
     
     func saveImage(gesture:UILongPressGestureRecognizer){
@@ -120,7 +124,7 @@ class PhotoCollectionViewController: UICollectionViewController,UICollectionView
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
         
         
-        if data.count == 1{
+        if data!.count == 1{
             return CGSizeMake(308*ratio, 204*ratio)
         }
         

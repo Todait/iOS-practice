@@ -8,14 +8,16 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 class UserSortViewController: BasicTableViewController,TodaitNavigationDelegate{
  
     
    
     var taskData:[Task]! = []
+    var taskResults:Results<Task>?
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,6 +43,8 @@ class UserSortViewController: BasicTableViewController,TodaitNavigationDelegate{
     }
     
     func loadTaskData(){
+        
+        /*
         let entityDescription = NSEntityDescription.entityForName("Task",inManagedObjectContext:managedObjectContext!)
         
         let request = NSFetchRequest()
@@ -49,16 +53,25 @@ class UserSortViewController: BasicTableViewController,TodaitNavigationDelegate{
         
         var error: NSError?
         taskData = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Task]
+        */
+        
+        taskResults = realm.objects(Task).sorted("priority", ascending: true).filter("archived == false")
+        
         
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return taskData.count
+        
+        if let taskResults = taskResults {
+            return taskResults.count
+        }
+        
+        return 0
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        let task:Task! = taskData[indexPath.row]
+        let task:Task! = taskResults![indexPath.row]
         let day:Day? = task.getDay(getTodayDateNumber())
         
         
@@ -85,10 +98,10 @@ class UserSortViewController: BasicTableViewController,TodaitNavigationDelegate{
             if let day = day {
                 
                 cell.titleLabel.text = task.name
-                cell.contentsTextView.setupText(NSTimeInterval(day.doneSecond.integerValue))
-                cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
+                cell.contentsTextView.setupText(NSTimeInterval(day.doneSecond))
+                cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount/day.expectAmount),"%")
                 cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
-                cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
+                cell.percentLayer.strokeEnd = CGFloat(day.doneAmount/day.expectAmount)
                 cell.percentLabel.textColor = UIColor.todaitRed()
                 
             }
@@ -121,11 +134,11 @@ class UserSortViewController: BasicTableViewController,TodaitNavigationDelegate{
             if let day = day {
                 
                 //cell.contentsLabel.text = day.getProgressString()
-                cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.doneSecond.integerValue))
-                cell.contentsTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
-                cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
+                cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(day.doneSecond))
+                cell.contentsTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
+                cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount/day.expectAmount),"%")
                 cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
-                cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
+                cell.percentLayer.strokeEnd = CGFloat(day.doneAmount/day.expectAmount)
                 cell.percentLabel.textColor = UIColor.todaitRed()
                 //cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.category_id.color)
                 
@@ -198,16 +211,14 @@ class UserSortViewController: BasicTableViewController,TodaitNavigationDelegate{
         }
         
         
-        var error:NSError?
-        managedObjectContext?.save(&error)
+        //var error:NSError?
+        //managedObjectContext?.save(&error)
         
-        if error != nil {
-            print(11)
+        realm.write {
+            self.realm.add(sourceTask,update:true)
+            self.realm.add(destTask,update:true)
         }
         
-        print(sourceTask.priority)
-        print("\n")
-        print(destTask.priority)
         
         loadTaskData()
         

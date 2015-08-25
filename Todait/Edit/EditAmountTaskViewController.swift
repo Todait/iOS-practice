@@ -153,7 +153,7 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     }
     
     func addGoalTextField(){
-        goalTextField = UITextField(frame: CGRectMake(20*ratio, 15.5*ratio, 255*ratio, 12*ratio))
+        goalTextField = UITextField(frame: CGRectMake(20*ratio, 10*ratio, 255*ratio, 23*ratio))
         goalTextField.placeholder = "이곳에 목표를 입력해주세요"
         goalTextField.textAlignment = NSTextAlignment.Left
         goalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
@@ -883,8 +883,12 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     func confirmButtonClk(){
         
         status = Status.None
-        currentTextField.textColor = UIColor.todaitGray()
-        currentTextField.resignFirstResponder()
+        
+        if let currentTextField = currentTextField {
+            currentTextField.textColor = UIColor.todaitGray()
+            currentTextField.resignFirstResponder()
+        }
+        
         
         
     }
@@ -957,22 +961,11 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
-        /*
-        if textField == goalTextField {
-        
-        unitView.hidden = false
-        currentTextField = unitTextField
-        
-        }else if textField == unitTextField {
-        
-        unitView.hidden = true
-        
+        if let currentTextField = currentTextField {
+            currentTextField.becomeFirstResponder()
         }
-        */
         
-        currentTextField.becomeFirstResponder()
-        
-        return false
+        return true
     }
     
     func updateAllEvents(textField:UITextField){

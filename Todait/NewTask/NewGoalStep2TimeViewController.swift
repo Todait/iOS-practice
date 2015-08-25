@@ -285,8 +285,6 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
         goalTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         status = Status.Goal
         
-        currentTextField = goalTextField
-        goalTextField.becomeFirstResponder()
         
         
         
@@ -500,9 +498,10 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
     func confirmButtonClk(){
         
         status = Status.None
-        currentTextField.textColor = UIColor.todaitGray()
-        currentTextField.resignFirstResponder()
-        
+        if let currentTextField = currentTextField {
+            currentTextField.textColor = UIColor.todaitGray()
+            currentTextField.resignFirstResponder()
+        }
         
     }
     
@@ -705,7 +704,7 @@ class NewGoalStep2TimeViewController: BasicViewController,UITableViewDelegate,UI
 
         currentTextField.becomeFirstResponder()
         
-        return false
+        return true
     }
     
     func updateAllEvents(textField:UITextField){

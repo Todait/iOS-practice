@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,CalendarDelegate,UIScrollViewDelegate,UIGestureRecognizerDelegate,UITableViewDelegate,UITableViewDataSource{
 
@@ -31,9 +32,10 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     let monthCalendarHeight:CGFloat = 288
     
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     var timeHistoryList:[TimeHistory] = []
+    var timeHistoryResults:Results<TimeHistory>?
     var hourTexts:[String] = []
     
     var selectedDateNumber:NSNumber!
@@ -611,6 +613,7 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     
     func loadTimeHistory(){
         
+        /*
         let entityDescription = NSEntityDescription.entityForName("TimeHistory",inManagedObjectContext:managedObjectContext!)
         
         let request = NSFetchRequest()
@@ -619,6 +622,8 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
         var error: NSError?
         timeHistoryList = managedObjectContext?.executeFetchRequest(request, error: &error) as! [TimeHistory]
         
+        */
+        timeHistoryResults = realm.objects(TimeHistory).filter("archived == false")
         addHistoryView()
     }
     
@@ -647,22 +652,24 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
 
     func addHistoryView(){
         
-        for historyItem in timeHistoryList {
+        for timeHistory in timeHistoryList {
             
             let originX:CGFloat = HistoryViewOriginX*ratio
-            let originY = getHistoryOriginY(historyItem)
+            let originY = getHistoryOriginY(timeHistory)
             let width = HistoryViewWidth*ratio
-            let height = getHistoryHeight(historyItem)
-            let color = historyItem.getColor()
+            let height = getHistoryHeight(timeHistory)
+            
             
             let historyView = UIView(frame:CGRectMake(originX,originY,width,height))
-            historyView.backgroundColor = color.colorWithAlphaComponent(0.3)
+            let color = timeHistory.getColor()
+            historyView.backgroundColor = color!.colorWithAlphaComponent(0.3)
+            
             historyView.alpha = 0.5
             historyView.layer.cornerRadius = 4*ratio
             historyView.clipsToBounds = true
             
             let colorBox = UIView(frame:CGRectMake(0,0,6*ratio,height))
-            colorBox.backgroundColor = color
+            colorBox.backgroundColor = color!
             historyView.addSubview(colorBox)
             
             
@@ -679,7 +686,9 @@ class TimeTableViewController: BasicViewController,TodaitNavigationDelegate,Cale
     
     func getHistoryOriginY(history:TimeHistory)->CGFloat{
         
-        let dateComps = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute|NSCalendarUnit.CalendarUnitSecond, fromDate:history.startedAt)
+        
+        let startAt = NSDate(timeIntervalSince1970: NSTimeInterval(history.startedAt))
+        let dateComps = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute|NSCalendarUnit.CalendarUnitSecond, fromDate:startAt)
         
         
         return getHeightFromComps(dateComps)

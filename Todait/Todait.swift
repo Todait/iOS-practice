@@ -8,6 +8,4 @@
 
 import UIKit
 
-class Todait: NSObject {
-   
-}
+

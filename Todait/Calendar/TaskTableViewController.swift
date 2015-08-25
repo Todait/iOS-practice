@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class TaskTableViewController: UITableViewController,TaskTableViewCellDelegate{
 
@@ -16,8 +17,8 @@ class TaskTableViewController: UITableViewController,TaskTableViewCellDelegate{
     var height: CGFloat! = 0
     
     var dayData:[Day] = []
-    var taskData:[Task] = []
-    
+    //var taskData:[Task] = []
+    var taskResults:Results<Task>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +59,13 @@ class TaskTableViewController: UITableViewController,TaskTableViewCellDelegate{
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
-        return taskData.count
+        
+        
+        if let taskResults = taskResults{
+            return taskResults.count
+        }
+        
+        return 0
     }
 
     
@@ -75,9 +82,8 @@ class TaskTableViewController: UITableViewController,TaskTableViewCellDelegate{
         cell.indexPath = indexPath
         
         
-        let task:Task! = taskData[indexPath.row]
+        let task:Task! = taskResults![indexPath.row]
         
-        NSLog("%@",task.categoryId.name)
         
         let day:Day! = task.getDay(getTodayDateNumber())
         
@@ -86,11 +92,11 @@ class TaskTableViewController: UITableViewController,TaskTableViewCellDelegate{
         
         if let isDayValid = day {
             
-            cell.contentsTextView.setupText(day.doneAmount.integerValue, total: day.expectAmount.integerValue, unit: task.unit)
-            cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount.floatValue/day.expectAmount.floatValue * 100),"%")
+            cell.contentsTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
+            cell.percentLabel.text = String(format: "%lu%@", Int(day.doneAmount/day.expectAmount),"%")
             cell.percentLayer.strokeColor = UIColor.colorWithHexString("#00D2B1").CGColor
-            cell.percentLayer.strokeEnd = CGFloat(day.doneAmount.floatValue/day.expectAmount.floatValue)
-            cell.colorBoxView.backgroundColor = UIColor.colorWithHexString(task.categoryId.color)
+            cell.percentLayer.strokeEnd = CGFloat(day.doneAmount/day.expectAmount)
+            cell.colorBoxView.backgroundColor = task.getColor()
         }else{
             
             //cell.contentsLabel.text = "공부 시작 전입니다"

@@ -8,14 +8,7 @@
 
 import UIKit
 import CoreData
-
-
-
-
-
-
-
-
+import RealmSwift
 
 class MainCategoryViewController: BasicViewController,UITableViewDelegate,UITableViewDataSource{
     
@@ -35,8 +28,9 @@ class MainCategoryViewController: BasicViewController,UITableViewDelegate,UITabl
     var categoryTableView:UITableView!
     
     var categoryData: [Category] = []
+    var categoryResults : Results<Category>?
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,6 +75,7 @@ class MainCategoryViewController: BasicViewController,UITableViewDelegate,UITabl
     
     func loadCategoryData(){
         
+        /*
         let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
         
         let request = NSFetchRequest()
@@ -91,6 +86,9 @@ class MainCategoryViewController: BasicViewController,UITableViewDelegate,UITabl
         categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Category]
         
         NSLog("Category results %@",categoryData)
+        */
+        
+        categoryResults = realm.objects(Category).filter("archived == false")
     }
     
     func addStudyButton(){
@@ -228,7 +226,6 @@ class MainCategoryViewController: BasicViewController,UITableViewDelegate,UITabl
         }
         
         
-        
         return categoryData.count
     }
     
@@ -335,13 +332,19 @@ class MainCategoryViewController: BasicViewController,UITableViewDelegate,UITabl
         let category = categoryData[indexPath.row]
         category.hidden = !category.hidden
         
+        realm.write{
+            self.realm.add(category,update:true)
+        }
+        
+        NSNotificationCenter.defaultCenter().postNotificationName("categoryDataMainUpdate", object: nil)
+        /*
         var error: NSError?
         managedObjectContext?.save(&error)
         
         if error == nil {
             NSNotificationCenter.defaultCenter().postNotificationName("categoryDataMainUpdate", object: nil)
         }
-        
+        */
         tableView.reloadRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
     }
     

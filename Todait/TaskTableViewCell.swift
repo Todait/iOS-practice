@@ -127,8 +127,11 @@ class TaskTableViewCell: BasicTableViewCell {
     }
     
     func timerButtonClk(){
-        if delegate.respondsToSelector(Selector("timerButtonClk:")){
-            delegate.timerButtonClk(indexPath)
+        
+        if let delegate = delegate {
+            if delegate.respondsToSelector(Selector("timerButtonClk:")){
+                delegate.timerButtonClk(indexPath)
+            }
         }
     }
     

@@ -192,8 +192,9 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     
     func closeButtonClk(){
         
-        
-        currentTextField.resignFirstResponder()
+        if let currentTextField = currentTextField {
+            currentTextField.resignFirstResponder()
+        }
         
         self.dismissViewControllerAnimated(true, completion: { () -> Void in
             
@@ -229,24 +230,48 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     
     func saveNewTask(){
         
-        
-        var param:[String:AnyObject] = [:]
-        var task:[String:AnyObject] = [:]
-        task["name"] = goalTextField.text
-        task["task_type"] = "time"
-        task["repeat_count"] = 1
-        task["notification_mode"] = isAlarmOn
-        task["priority"] = 0
-        task["task_dates_attributes"] = [["start_date":"\(getTodayDateNumber())","state":0]]
-        
-        if isAlarmOn == true {
-            task["notification_time"] = alarmOption.optionText
+        if InternetManager.sharedInstance.isInternetEnable() == true {
+            
+            var param:[String:AnyObject] = [:]
+            var task:[String:AnyObject] = [:]
+            task["name"] = goalTextField.text
+            task["task_type"] = "time"
+            task["repeat_count"] = 1
+            task["notification_mode"] = isAlarmOn
+            task["priority"] = 0
+            task["task_dates_attributes"] = [["start_date":"\(getTodayDateNumber())","state":0]]
+            
+            if let category = category {
+                task["category_id"] = category.serverId
+            }
+            
+            if isAlarmOn == true {
+                task["notification_time"] = alarmOption.optionText
+            }
+            
+            param["today_date"] = getTodayDateNumber()
+            param["task"] = task
+            
+            var params = makeBatchParams(CREATE_TASK, param)
+            
+            requestCreateTask(params)
+            
+        }else{
+            
+            
+            let alert = UIAlertView(title: "Invalid", message: "인터넷 연결이 필요합니다.", delegate: nil, cancelButtonTitle: "Cancel")
+            alert.show()
+            
+            ProgressManager.hide()
+            
         }
         
-        param["today_date"] = getTodayDateNumber()
-        param["task"] = task
         
-        var params = makeBatchParams(CREATE_TASK, param)
+        
+    }
+    
+    
+    func requestCreateTask(params:[String:AnyObject]){
         
         setUserHeader()
         
@@ -254,31 +279,38 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
             (request, response , object , error) -> Void in
             
             
-            let jsons = JSON(object!)
-            
-            let syncData = encodeData(jsons["results"][0]["body"])
-            self.realmManager.synchronize(syncData)
-            
-            
-            
-            
-            let taskData = encodeData(jsons["results"][1]["body"])
-            
-            
-            let task:JSON? = taskData["task"]
-            if let task = task {
+            if let object = object {
                 
-                self.defaults.setObject(task["sync_at"].stringValue, forKey: "sync_at")
-                self.realmManager.synchronizeTask(task)
+                let jsons = JSON(object)
+                
+                let syncData = encodeData(jsons["results"][0]["body"])
+                self.realmManager.synchronize(syncData)
+                
+                
+                
+                
+                let taskData = encodeData(jsons["results"][1]["body"])
+                
+                
+                let task:JSON? = taskData["task"]
+                if let task = task {
+                    
+                    self.defaults.setObject(task["sync_at"].stringValue, forKey: "sync_at")
+                    self.realmManager.synchronizeTask(task)
+                }
+                
+                
+                let day:JSON? = taskData["future_days"]
+                if let day = day {
+                    self.defaults.setObject(day["sync_at"].stringValue, forKey: "sync_at")
+                    self.realmManager.synchronizeDays(day)
+                }
+                
             }
             
-            
-            let day:JSON? = taskData["future_days"]
-            if let day = day {
-                self.defaults.setObject(day["sync_at"].stringValue, forKey: "sync_at")
-                self.realmManager.synchronizeDays(day)
+            if let currentTextField = currentTextField {
+                currentTextField.resignFirstResponder()
             }
-            
             
             ProgressManager.hide()
             
@@ -286,42 +318,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
                 
             })
         }
-
-        /*
-        let task = Task()
-        task.name = goalTextField.text
-        task.id = NSUUID().UUIDString
-        task.taskType = "Timer"
-        task.category = category
-        
-        
-        if isAlarmOn == true {
-            
-            let notificationId = NSUUID().UUIDString
-            //task.notificationId = notificationId
-            registerAlarm(notificationId)
-            
-        }
-        
-        realm.write{
-            
-            if let category = self.category {
-                category.addRelation(task)
-            }
-            
-            self.realm.add(task)
-        }
-        
-        
-        goalTextField.resignFirstResponder()
-        
-        self.navigationController?.dismissViewControllerAnimated(true, completion: { () -> Void in
-            
-        })
-        */
     }
-    
-    
     
     func registerAlarm(notificationId:String){
         
@@ -365,23 +362,19 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     
     func addgoalTextField(){
         
-        goalTextField = UITextField(frame: CGRectMake(20*ratio, 15.5*ratio, 255*ratio, 12*ratio))
+        goalTextField = UITextField(frame: CGRectMake(20*ratio, 10*ratio, 255*ratio, 23*ratio))
         goalTextField.placeholder = "이곳에 목표를 입력해주세요"
         goalTextField.textAlignment = NSTextAlignment.Left
         goalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
-        goalTextField.textColor = UIColor.todaitGray()
+        goalTextField.textColor = UIColor.colorWithHexString("#969696")
         goalTextField.returnKeyType = UIReturnKeyType.Next
         goalTextField.backgroundColor = UIColor.whiteColor()
+        //goalTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
+        goalTextField.text = ""
         goalTextField.delegate = self
         goalTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
-        //goalTextField.addTarget(self, action: Selector("updateAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
-        //goalTextField.text = aimString
-        goalTextField.tintColor = UIColor.todaitGreen()
-        //goalTextField.delegate = self
-        
-        currentTextField = goalTextField
-        currentTextField.becomeFirstResponder()
         goalView.addSubview(goalTextField)
+        
     }
     
     func addCategoryButton(){
@@ -523,9 +516,22 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
 
     
     
+    func textFieldShouldBeginEditing(textField: UITextField) -> Bool {
+        
+        
+        currentTextField = textField
+        currentTextField.textColor = UIColor.todaitRed()
+        
+        
+        return true
+    }
+    
+    
+    
     func textFieldShouldReturn(textField: UITextField) -> Bool {
         
         currentTextField = textField
+        
         
         confirmButtonClk()
         
@@ -533,6 +539,11 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     }
     
     
+    func textFieldDidBeginEditing(textField: UITextField) {
+        
+        currentTextField = textField
+        
+    }
     
     func addKeyboardHelpView(){
         
@@ -553,9 +564,10 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     
     func confirmButtonClk(){
         
-        currentTextField.textColor = UIColor.todaitGray()
-        currentTextField.resignFirstResponder()
-        
+        if let currentTextField = currentTextField {
+            currentTextField.textColor = UIColor.todaitGray()
+            currentTextField.resignFirstResponder()
+        }
     }
     
     func leftButtonClk() {

@@ -8,14 +8,16 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 class MainCategoryCollectionViewController: BasicViewController,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource{
     
     var categoryView:UICollectionView!
     
     var categoryData: [Category] = []
+    var categoryResults:Results<Category>?
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     var filterView:UIVisualEffectView!
     
     override func viewDidLoad() {
@@ -39,6 +41,9 @@ class MainCategoryCollectionViewController: BasicViewController,UICollectionView
     
     func loadCategoryData(){
         
+        categoryResults = realm.objects(Category).filter("archived == false")
+        
+        /*
         let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
         
         let request = NSFetchRequest()
@@ -49,6 +54,7 @@ class MainCategoryCollectionViewController: BasicViewController,UICollectionView
         categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Category]
         
         NSLog("Category results %@",categoryData)
+        */
     }
 
     
@@ -84,7 +90,13 @@ class MainCategoryCollectionViewController: BasicViewController,UICollectionView
         
         switch section {
         case 0: return 1
-        case 1: return categoryData.count
+        case 1:
+            
+        if let categoryResults = categoryResults{
+            return categoryResults.count
+        }
+            return 0
+            
         default: return 1
             
         }
@@ -148,8 +160,17 @@ class MainCategoryCollectionViewController: BasicViewController,UICollectionView
         }else {
             
             
-            let category = categoryData[indexPath.row]
-            let mainColor = UIColor.colorWithHexString(category.color)
+            let category = categoryResults![indexPath.row]
+            let mainColor:UIColor!
+                
+            if let categoryColor = UIColor.colorWithHexString(category.color){
+                mainColor = categoryColor
+            }else{
+                mainColor = UIColor.clearColor()
+            }
+            
+            
+            
             
             let categoryCircle = UIView(frame: CGRectMake(15*ratio, 15*ratio, 10*ratio, 10*ratio))
             categoryCircle.backgroundColor = UIColor.clearColor()
@@ -195,18 +216,30 @@ class MainCategoryCollectionViewController: BasicViewController,UICollectionView
             
             cell!.selected = true
             
-            let category = categoryData[indexPath.row]
-            category.hidden = !category.hidden
+            let category = categoryResults![indexPath.row]
             
+            realm.write {
+                
+                category.hidden = !category.hidden
+                self.realm.add(category,update:true)
+            }
+            
+            NSNotificationCenter.defaultCenter().postNotificationName("categoryDataMainUpdate", object: nil)
+            
+            /*
             var error: NSError?
             managedObjectContext?.save(&error)
-            
+
             if error == nil {
                 NSNotificationCenter.defaultCenter().postNotificationName("categoryDataMainUpdate", object: nil)
             }
+            */
             
             collectionView.reloadItemsAtIndexPaths([indexPath])
-
+            
+            
+            
+            
         }
         
     }
