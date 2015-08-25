@@ -75,11 +75,13 @@ public extension String {
     
     static func taskTestTaskType(index:Int)->String{
         switch index{
-        case 0: return "Timer"
-        case 1: return "Time"
-        case 2: return "Amount"
-        case 3: return "Total"
-        default: return "Timer"
+        case 0: return "time"
+        case 1: return "daily"
+        case 2: return "total_by_time"
+        case 3: return "range_by_time"
+        case 4: return "total_by_amount"
+        case 5: return "range_by_amount"
+        default: return "time"
         }
     }
         
