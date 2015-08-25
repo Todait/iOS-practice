@@ -589,7 +589,7 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
         self.todaitNavBar.backButton.hidden = false
         self.todaitNavBar.todaitDelegate = self
         
-        addDoneButton()
+        addSaveButton()
         registerForKeyboardNotification()
         
     }

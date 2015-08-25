@@ -22,7 +22,7 @@ class FinishTimeViewController: BasicViewController,TodaitNavigationDelegate {
     
     
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     
     override func viewDidLoad() {
@@ -102,7 +102,7 @@ class FinishTimeViewController: BasicViewController,TodaitNavigationDelegate {
     
     func checkFinishDays(){
         
-        
+        /*
         let todayDateNumber = getTodayDateNumber()
         
         let dayDescription = NSEntityDescription.entityForName("Day", inManagedObjectContext:managedObjectContext!)
@@ -122,12 +122,19 @@ class FinishTimeViewController: BasicViewController,TodaitNavigationDelegate {
             return
         }
         
-        for deleteDay in days {
-            managedObjectContext?.deleteObject(deleteDay)
+        for day in days {
+            
+            day.archived = true
+            
+            realm.write{
+                self.realm.add(day,update:true)
+            }
+            
+            //managedObjectContext?.deleteObject(deleteDay)
         }
+        */
         
-        
-        
+        /*
         managedObjectContext?.save(&error)
         
         
@@ -137,7 +144,7 @@ class FinishTimeViewController: BasicViewController,TodaitNavigationDelegate {
         }else{
             NSLog("삭제성공",1)
         }
-        
+        */
         
     }
     

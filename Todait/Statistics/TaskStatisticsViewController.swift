@@ -41,7 +41,7 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
     var barDashView:UIView!
     var pieDashView:UIView!
     
-    let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
+    //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
     
     
     
@@ -176,6 +176,7 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
     
     func getTaskAllDonePercentOfDateNumber(dateNumber:NSNumber)->[String:CGFloat] {
         
+        /*
         let dayDescription = NSEntityDescription.entityForName("Day", inManagedObjectContext: managedObjectContext!)
         let request = NSFetchRequest()
         request.entity = dayDescription
@@ -184,7 +185,13 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
         var error:NSError?
         let dayDataOfDateNumber:[Day] = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Day]
         
-        if dayDataOfDateNumber.count == 0 {
+        */
+        
+        let predicate = NSPredicate(format: "date == %@ && taskDate.task.category == %@", dateNumber,category)
+        var dayResults = realm.objects(Day).filter(predicate)
+        
+        
+        if dayResults.count == 0 {
             
             return ["percent":0,"time":0]
         }
@@ -194,13 +201,13 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
         var percent:CGFloat! = 0
         var time:CGFloat! = 0
         
-        for day in dayDataOfDateNumber {
+        for day in dayResults {
             
             percent = percent + CGFloat(day.getProgressPercent())
             time = time + CGFloat(day.doneSecond)
         }
         
-        return ["percent":100*percent/CGFloat(dayDataOfDateNumber.count),"time":time/CGFloat(dayDataOfDateNumber.count)]
+        return ["percent":100*percent/CGFloat(dayResults.count),"time":time/CGFloat(dayResults.count)]
     }
     
     
@@ -470,8 +477,9 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
     
     func getAllCategory()->[[String:AnyObject]]{
         
-        var categoryItems:[[String:AnyObject]] = []
+        var categorys:[[String:AnyObject]] = []
         
+        /*
         let categoryEntity = NSEntityDescription.entityForName("Category", inManagedObjectContext: managedObjectContext!)
         
         let request = NSFetchRequest()
@@ -479,23 +487,24 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
         
         var error:NSError?
         var categorys:[Category] = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Category]
+        */
+        var categoryResults = realm.objects(Category).filter("archived == false")
         
-        for category in categorys {
+        for category in categoryResults {
             
-            let categoryItem:Category = category as Category
             
             var item:[String:AnyObject] = [:]
-            item["category"] = categoryItem
-            item["value"] = categoryItem.getAveragePercent()
+            item["category"] = category
+            item["value"] = category.getAveragePercent()
             
-            categoryItems.append(item)
+            categorys.append(item)
         }
         
         
         //var sorted = chartItems
         
         let sortDescriptor:NSSortDescriptor = NSSortDescriptor(key: "value", ascending: false)
-        var sortItems:[[String:AnyObject]] = (categoryItems as NSArray).sortedArrayUsingDescriptors([sortDescriptor]) as! [[String:AnyObject]]
+        var sortItems:[[String:AnyObject]] = (categorys as NSArray).sortedArrayUsingDescriptors([sortDescriptor]) as! [[String:AnyObject]]
         
         
         return sortItems
@@ -507,6 +516,7 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
         
         var chartItems:[ChartItem] = []
         
+        /*
         let categoryEntity = NSEntityDescription.entityForName("Category", inManagedObjectContext: managedObjectContext!)
         
         let request = NSFetchRequest()
@@ -514,12 +524,13 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
         
         var error:NSError?
         var categorys:[Category] = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Category]
+        */
+
+        var categoryResults = realm.objects(Category).filter("archived == false")
         
-        for category in categorys {
+        for category in categoryResults {
             
-            let categoryItem:Category = category as Category
-            
-            var chartItem = ChartItem(color:UIColor.colorWithHexString(categoryItem.color),value:categoryItem.getAveragePercent())
+            var chartItem = ChartItem(color:UIColor.colorWithHexString(category.color),value:category.getAveragePercent())
             
             chartItems.append(chartItem)
         }
@@ -648,6 +659,8 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
         let startDateNumber:NSNumber = weekDateNumber.first!
         let endDateNumber:NSNumber = weekDateNumber.last!
         
+        
+        /*
         var allDayList:[Day] = []
         
         let entityDescription = NSEntityDescription.entityForName("Day",inManagedObjectContext:managedObjectContext!)
@@ -659,17 +672,22 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
         
         var error: NSError?
         allDayList = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Day]
+        */
         
+        let predicate = NSPredicate(format:"%@ <= date && date <= %@ && taskDate.task.category == %@",startDateNumber,endDateNumber,category)
+        
+        var days = realm.objects(Day).filter(predicate)
+
         
         var totalPercent:CGFloat = 0
         var totalDoneTime:Int = 0
         
-        var totalCount = allDayList.count
+        var totalCount = days.count
         
-        for dayItem in allDayList {
+        for day in days {
             
-            totalPercent = totalPercent + CGFloat(dayItem.getProgressPercent())
-            totalDoneTime = totalDoneTime + Int(dayItem.doneSecond)
+            totalPercent = totalPercent + CGFloat(day.getProgressPercent())
+            totalDoneTime = totalDoneTime + Int(day.doneSecond)
         }
         
         if totalCount == 0 {
@@ -690,8 +708,9 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
     
     func getAllPercent(){
         
-        var allDayList:[Day] = []
         
+        /*
+        var allDayList:[Day] = []
         let entityDescription = NSEntityDescription.entityForName("Day",inManagedObjectContext:managedObjectContext!)
         
         let request = NSFetchRequest()
@@ -699,17 +718,19 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
         
         var error: NSError?
         allDayList = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Day]
+        */
         
+        var days = realm.objects(Day).filter("archived == false")
         
         var totalPercent:CGFloat = 0
         var totalDoneTime:Int = 0
         
-        var totalCount = allDayList.count
+        var totalCount = days.count
         
-        for dayItem in allDayList {
+        for day in days {
             
-            totalPercent = totalPercent + CGFloat(dayItem.getProgressPercent())
-            totalDoneTime = totalDoneTime + Int(dayItem.doneSecond)
+            totalPercent = totalPercent + CGFloat(day.getProgressPercent())
+            totalDoneTime = totalDoneTime + Int(day.doneSecond)
         }
         
         
@@ -726,34 +747,36 @@ class TaskStatisticsViewController: BasicViewController,TodaitNavigationDelegate
         
         //resetTasks()
         
-        var allTaskList:[Task] = []
+        /*
+        var tasks:[Task] = []
         let entityDescription = NSEntityDescription.entityForName("Task",inManagedObjectContext:managedObjectContext!)
         
         let request = NSFetchRequest()
         request.entity = entityDescription
-        //request.predicate = NSPredicate(format: "", <#args: CVarArgType#>...))
         
         var error: NSError?
-        allTaskList = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Task]
+        tasks = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Task]
+        */
         
+        var tasks = realm.objects(Task).filter("archived == false")
         
         var progressCount = 0
         var completeCount = 0
         var incompleteCount = 0
         
-        for taskItem in allTaskList {
+        for task in tasks {
             
-            if taskItem.isComplete(){
+            if task.isComplete(){
                 completeCount = completeCount + 1
-                completeTasks.append(taskItem as Task)
+                completeTasks.append(task as Task)
             }else{
                 
-                if taskItem.isProgress(){
+                if task.isProgress(){
                     progressCount = progressCount + 1
-                    progressTasks.append(taskItem as Task)
+                    progressTasks.append(task as Task)
                 }else{
                     incompleteCount = incompleteCount + 1
-                    incompleteTasks.append(taskItem as Task)
+                    incompleteTasks.append(task as Task)
                 }
             }
         }

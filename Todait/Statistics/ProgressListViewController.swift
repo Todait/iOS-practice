@@ -50,9 +50,6 @@ class ProgressListViewController: BasicTableViewController,TodaitNavigationDeleg
         cell.percentLabel.textColor = mainColor
         
         
-        NSLog("%f",CGFloat(task.getPercentOfDoneAmount()))
-        
-        
         cell.percentLabel.text = String(format:"%.0f%@",CGFloat(task.getPercentOfDoneAmount()),"%")
         cell.titleLabel.text = task.name
         
