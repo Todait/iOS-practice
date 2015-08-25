@@ -141,8 +141,23 @@ class CategoryEditViewController: BasicViewController,UICollectionViewDelegate,U
         
         ProgressManager.show()
         
-        var params:[String:AnyObject] = makeCategoryBatchParams(categoryTextField.text,String.categoryColorStringAtIndex(selectedIndex))
+        if InternetManager.sharedInstance.isInternetEnable() == false {
+            
+            let alert = UIAlertView(title: "Invalid", message: "인터넷 연결이 필요합니다.", delegate: nil, cancelButtonTitle: "Cancel")
+            alert.show()
+            ProgressManager.hide()
+            
+        }else{
+            
+            requestCategory()
+            
+        }
+    }
+    
+    func requestCategory(){
         
+        
+        var params:[String:AnyObject] = makeCategoryBatchParams(categoryTextField.text,String.categoryColorStringAtIndex(selectedIndex))
         setUserHeader()
         
         Alamofire.request(.POST, SERVER_URL + BATCH , parameters: params).responseJSON(options: nil) {
@@ -181,7 +196,9 @@ class CategoryEditViewController: BasicViewController,UICollectionViewDelegate,U
             ProgressManager.hide()
             self.closeButtonClk()
         }
+        
     }
+    
     
     func categoryEdited(category:Category){
         

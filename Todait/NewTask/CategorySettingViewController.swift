@@ -39,10 +39,16 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
     var isAddCategoryView:Bool! = false
     var delegate:CategoryDelegate?
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         loadCategoryData()
+        
+        
+       
+        
 
         addFilterView()
         addCategoryView()
@@ -65,26 +71,9 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         }else{
             selectedCategory = categorys!.first
         }
-        
-        /*
-        let entityDescription = NSEntityDescription.entityForName("Category",inManagedObjectContext:managedObjectContext!)
-        let request = NSFetchRequest()
-        
-        request.entity = entityDescription
-        
-        var error: NSError?
-        
-        categoryData = managedObjectContext?.executeFetchRequest(request, error: &error) as! [Category]
-        
-        if let category = selectedCategory {
-            
-        }else{
-            selectedCategory = categoryData.first
-        }
-        */
-        
-    
     }
+    
+   
     
     func addFilterView(){
         
@@ -312,20 +301,6 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
             
             closeButtonClk()
         }
-        
-        /*
-        if self.delegate.respondsToSelector("saveTimeLog:"){
-            
-            
-            let time = getTimeLog()
-            self.delegate.saveTimeLog(time)
-            
-            closeButtonClk()
-        }
-        */
-        
-        
-        
     }
     
     
@@ -333,8 +308,23 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         
         ProgressManager.show()
         
-        var params:[String:AnyObject] = makeCategoryBatchParams(categoryTextField.text,String.categoryColorStringAtIndex(selectedIndex))
+        if InternetManager.sharedInstance.isInternetEnable() == false {
+            
+            let alert = UIAlertView(title: "Invalid", message: "인터넷 연결이 필요합니다.", delegate: nil, cancelButtonTitle: "Cancel")
+            alert.show()
+            ProgressManager.hide()
+            
+        }else{
+            
+            requestCategory()
+            
+        }
+    }
+    
+    func requestCategory(){
         
+        
+        var params:[String:AnyObject] = makeCategoryBatchParams(categoryTextField.text,String.categoryColorStringAtIndex(selectedIndex))
         setUserHeader()
         
         Alamofire.request(.POST, SERVER_URL + BATCH , parameters: params).responseJSON(options: nil) {
@@ -373,8 +363,8 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
             ProgressManager.hide()
             self.closeButtonClk()
         }
+        
     }
-    
    
     
     

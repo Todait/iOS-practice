@@ -592,7 +592,18 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
     }
     
     func validationSuccessful(){
-        requestRegister()
+        
+        ProgressManager.show()
+        
+        if InternetManager.sharedInstance.isInternetEnable() == false {
+            
+            let alert = UIAlertView(title: "Invalid", message: "인터넷 연결이 필요합니다.", delegate: nil, cancelButtonTitle: "Cancel")
+            alert.show()
+            ProgressManager.hide()
+            
+        }else{
+            requestRegister()
+        }
     }
     
     func requestRegister(){
@@ -624,7 +635,9 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
             if json["success"].boolValue == true{
                 let data = json["data"]
                 let user = data["user"]
-                self.defaults.setObject(user["authentication_token"].stringValue, forKey: "authentication_token")
+                
+                self.defaults.setObject(email, forKey: "email")
+                self.defaults.setObject(data["authentication_token"].stringValue, forKey: "authentication_token")
                 
                 if let delegate = self.delegate {
                     if delegate.respondsToSelector("login") {
@@ -641,9 +654,11 @@ class RegisterViewController: BasicViewController,UITextFieldDelegate,UIImagePic
                  print(json)
             }
             
-            
+            ProgressManager.hide()
             
         }
+        
+        
     }
     
     

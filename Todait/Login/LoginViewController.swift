@@ -256,7 +256,22 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
     }
     
     func validationSuccessful(){
-        requestLogin()
+        
+        ProgressManager.show()
+        
+        if InternetManager.sharedInstance.isInternetEnable() == false {
+            
+            let alert = UIAlertView(title: "Invalid", message: "인터넷 연결이 필요합니다.", delegate: nil, cancelButtonTitle: "Cancel")
+            alert.show()
+            ProgressManager.hide()
+            
+        }else{
+            
+            requestLogin()
+            
+        }
+        
+        
     }
     
     func requestLogin(){
@@ -279,19 +294,22 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
                 
                 
                 
-                let errorMessage = json["error"]
+                let errorMessage = json["error"].stringValue
                 let success = json["success"].stringValue
                 
                 
                 if errorMessage == "Invalid email or password."{
                     print("ERROR")
                     
+                    let alert = UIAlertView(title: "Invalid", message: errorMessage, delegate: nil, cancelButtonTitle: "Cancel")
+                    alert.show()
+                    
                     
                 }else if (success == "true"){
                     print("login ")
                     
                     self.defaults.setObject(email, forKey: "email")
-                    self.defaults.setObject(json["data"]["authentication_token"].stringValue, forKey: "token")
+                    self.defaults.setObject(json["data"]["authentication_token"].stringValue, forKey: "authentication_token")
                     
                     self.login()
                     
@@ -299,6 +317,7 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
                 }
                 
             }
+            
             ProgressManager.hide()
         }
     }
