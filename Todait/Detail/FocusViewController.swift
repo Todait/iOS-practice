@@ -27,7 +27,7 @@ class FocusViewController: BasicViewController{
     var cancelButton:UIButton!
     var confirmButton:UIButton!
     
-    var delegate:FocusDelegate!
+    var delegate:FocusDelegate?
     
     
     var task_type:String! = ""
@@ -117,9 +117,10 @@ class FocusViewController: BasicViewController{
         
         //리팩토링 필요
         
+        if let day = day {
+            focus = CGFloat(day.score)
+        }
         
-        
-        focus = CGFloat(day.score.floatValue)
         
         
         for index in 0...4 {
@@ -298,11 +299,13 @@ class FocusViewController: BasicViewController{
     
     func confirmButtonClk(){
         
-        if self.delegate.respondsToSelector("saveFocus:"){
+        
+        if let delegate = delegate{
             
-            self.delegate.saveFocus(focus)
-            
-            closeButtonClk()
+            if delegate.respondsToSelector("saveFocus:"){
+                delegate.saveFocus(focus)
+                closeButtonClk()
+            }
         }
     }
     
