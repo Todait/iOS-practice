@@ -85,7 +85,7 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
     }
     
     func addGoalTextField(){
-        goalTextField = UITextField(frame: CGRectMake(20*ratio, 19*ratio, 255*ratio, 12*ratio))
+        goalTextField = UITextField(frame: CGRectMake(20*ratio, 10*ratio, 255*ratio, 23*ratio))
         goalTextField.placeholder = "이곳에 목표를 입력해주세요"
         goalTextField.textAlignment = NSTextAlignment.Left
         goalTextField.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 12*ratio)
@@ -279,15 +279,30 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         
         saveButton = UIButton(frame: CGRectMake(288*ratio,32,22,16))
         saveButton.setImage(UIImage.maskColor("icon_check_wt@3x.png",color:UIColor.whiteColor()), forState: UIControlState.Normal)
-        saveButton.addTarget(self, action: Selector("saveEditedTask"), forControlEvents: UIControlEvents.TouchUpInside)
+        saveButton.addTarget(self, action: Selector("saveButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         view.addSubview(saveButton)
     }
     
-    func saveEditedTask(){
-        
-        
+    func saveButtonClk(){
         
         ProgressManager.show()
+        
+        if InternetManager.sharedInstance.isInternetEnable() == false {
+            
+            let alert = UIAlertView(title: "Invalid", message: "인터넷 연결이 필요합니다.", delegate: nil, cancelButtonTitle: "Cancel")
+            alert.show()
+            
+            ProgressManager.hide()
+            
+        }else{
+            
+            saveEditedTask()
+            
+        }
+        
+    }
+    
+    func saveEditedTask(){
         
         
         var param:[String:AnyObject] = [:]
@@ -352,22 +367,6 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
             ProgressManager.hide()
             self.backButtonClk()
         }
-        
-        
-        
-        
-        /*
-        var error: NSError?
-        managedObjectContext?.save(&error)
-        
-        if let err = error {
-            //에러처리
-        }else{
-            
-            
-            backButtonClk()
-        }
-        */
     }
     
     

@@ -55,12 +55,10 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     //let managedObjectContext = (UIApplication.sharedApplication().delegate as! AppDelegate).managedObjectContext
 
     
-    var day:Day!
-    var task:Task!
+    var day:Day?
+    var task:Task?
     
     var completeButton:UIButton!
-    
-    var timerView:TimerView!
     
     var isSaved:Bool = false
     
@@ -68,7 +66,13 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         super.viewDidLoad()
         view.backgroundColor = UIColor.whiteColor()
         
-        totalTime = NSTimeInterval(day.doneSecond)
+        if let day = day {
+            
+            totalTime = NSTimeInterval(day.doneSecond)
+            
+        }
+        
+        
         
         addBackgroundImageView()
         
@@ -80,8 +84,6 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         addAmountButton()
         addDoneButton()
         
-        //addAmountChartView()
-        //addTimerView()
         addCompleteButton()
         setMainTimerLabel()
         setSubTimerLabel()
@@ -124,7 +126,12 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         view.addSubview(amountTextView)
         
         if let day = day {
-            amountTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
+            
+            if let task = task {
+                
+                amountTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
+
+            }
         }
     }
     
@@ -166,44 +173,34 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     func saveTimeLog(){
         
         
-        /*
-        let entityDescription = NSEntityDescription.entityForName("TimeLog", inManagedObjectContext:managedObjectContext!)
-        let timeLog = TimeLog(entity: entityDescription!, insertIntoManagedObjectContext:managedObjectContext)
-        
-        timeLog.dayId = day
-        timeLog.timestamp = NSDate().timeIntervalSince1970
-        timeLog.createdAt = NSDate()
-        timeLog.beforeSecond = day.doneSecond
-        day.doneSecond = Int(day.doneSecond) + Int(currentTime)
-        currentTime = 0
-        timeLog.afterSecond = day.doneSecond
-        timeLog.createdAt = NSDate()
-        timeLog.updatedAt = NSDate()
-        
-        
-        var error: NSError?
-        managedObjectContext?.save(&error)
-        */
-        
-        let timeLog = TimeLog()
-        timeLog.id = NSUUID().UUIDString
-        timeLog.day = day
-        timeLog.timestamp = Int(NSDate().timeIntervalSince1970)
-        timeLog.beforeSecond = day.doneSecond
-        timeLog.afterSecond = Int(day.doneSecond) + Int(currentTime)
-        
-        realm.write{
-            self.realm.add(timeLog)
-            self.day.timeLogs.append(timeLog)
-            self.day.doneSecond = Int(self.day.doneSecond) + Int(self.currentTime)
-            self.realm.add(self.day, update: true)
+        if let day = day {
+            
+            let timeLog = TimeLog()
+            timeLog.id = NSUUID().UUIDString
+            timeLog.day = day
+            timeLog.timestamp = Int(NSDate().timeIntervalSince1970)
+            timeLog.beforeSecond = day.doneSecond
+            timeLog.afterSecond = Int(day.doneSecond) + Int(currentTime)
+            
+            realm.write{
+                
+                self.realm.add(timeLog)
+                day.timeLogs.append(timeLog)
+                day.doneSecond = Int(day.doneSecond) + Int(self.currentTime)
+                self.realm.add(day, update: true)
+                
+            }
+            
+            
+            
+            currentTime = 0
+            updateTimeLabel()
+            
+            if let task = task {
+                amountTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
+            }
         }
         
-        
-        
-        currentTime = 0
-        updateTimeLabel()
-        amountTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
     }
     
     func resetTimeLog() {
@@ -305,66 +302,49 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     func amountButtonClk(){
         
-        var amountVC = AmountViewController()
-        //amountVC.delegate = self
-        amountVC.taskType = task.taskType
-        amountVC.unit = task.unit
-        amountVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
-        amountVC.delegate = self
-        self.navigationController?.presentViewController(amountVC, animated: false, completion: { () -> Void in
+        
+        
+        if let task = task {
             
-        })
+            var amountVC = AmountViewController()
+            //amountVC.delegate = self
+            amountVC.taskType = task.taskType
+            amountVC.unit = task.unit
+            amountVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
+            amountVC.delegate = self
+            self.navigationController?.presentViewController(amountVC, animated: false, completion: { () -> Void in
+                
+            })
+        }
     }
     
     func saveAmountLog(amount:Int){
         
-        /*
-        let entityDescription = NSEntityDescription.entityForName("AmountLog", inManagedObjectContext:managedObjectContext!)
-        
-        let amountLog = AmountLog(entity: entityDescription!, insertIntoManagedObjectContext: managedObjectContext)
-        
-        amountLog.dayId = day
-        amountLog.beforeDoneAmount = day.doneAmount
-        amountLog.updatedAt = NSDate()
-        amountLog.dirtyFlag = 0
-        day.doneAmount = Int(day.doneAmount) + Int(amount)
-        amountLog.afterDoneAmount = day.doneAmount
-        amountLog.createdAt = NSDate()
-        amountLog.timestamp = NSDate().timeIntervalSince1970
-        amountLog.serverId = 0
-        amountLog.serverDayId = 0
-        amountLog.archived = 0
-    
-        
-        var error: NSError?
-        managedObjectContext?.save(&error)
-        
-        if let err = error {
-            //에러처리
-        }else{
-            NSLog("AmountLog 저장 및 업데이트성공",1)
-        }
-        */
-        
-        let amountLog = AmountLog()
-        amountLog.id = NSUUID().UUIDString
-        amountLog.day = day
-        amountLog.beforeAmount = day.doneAmount
-        amountLog.dirtyFlag = false
+        if let day = day {
+            let amountLog = AmountLog()
+            amountLog.id = NSUUID().UUIDString
+            amountLog.day = day
+            amountLog.beforeAmount = day.doneAmount
+            amountLog.dirtyFlag = false
+            
+            amountLog.afterAmount = day.doneAmount
+            amountLog.timestamp = Int(NSDate().timeIntervalSince1970)
+            amountLog.serverId = 0
+            amountLog.archived = false
+            
+            realm.write{
+                self.realm.add(amountLog)
+                day.amountLogs.append(amountLog)
+                day.doneAmount = Int(day.doneAmount) + Int(amount)
+                self.realm.add(day,update:true)
+            }
+            
+            if let task = task {
+                amountTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
+            }
 
-        amountLog.afterAmount = day.doneAmount
-        amountLog.timestamp = Int(NSDate().timeIntervalSince1970)
-        amountLog.serverId = 0
-        amountLog.archived = false
-        
-        realm.write{
-            self.realm.add(amountLog)
-            self.day.amountLogs.append(amountLog)
-            self.day.doneAmount = Int(self.day.doneAmount) + Int(amount)
-            self.realm.add(self.day,update:true)
         }
         
-        amountTextView.setupText(day.doneAmount, total: day.expectAmount, unit: task.unit)
     }
     
     
@@ -419,10 +399,14 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         
         
         amountChartFrontView = UIView(frame: CGRectMake(0, 0, 0*ratio, 24*ratio))
-        amountChartFrontView.backgroundColor = task.getColor()
+        
         amountChartFrontView.layer.cornerRadius = 12*ratio
         amountChartFrontView.clipsToBounds = true
         amountChartBackView.addSubview(amountChartFrontView)
+        
+        if let task = task {
+            amountChartFrontView.backgroundColor = task.getColor()
+        }
         
         
     }
@@ -506,7 +490,9 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         saveTimeLog()
         saveTimeHistory()
         
-        day.doneSecond = Int(totalTime)
+        if let day = day {
+            day.doneSecond = Int(totalTime)
+        }
         
         //var error:NSError?
         //managedObjectContext?.save(&error)
@@ -516,37 +502,32 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     
     func saveTimeHistory(){
         
-        let timeHistory = TimeHistory()
-        timeHistory.id = NSUUID().UUIDString
-        timeHistory.day = day
-        timeHistory.startedAt = Int(startDate.timeIntervalSince1970)
-        timeHistory.endedAt = Int(endDate.timeIntervalSince1970)
-        timeHistory.doneMillis = Int(endDate.timeIntervalSinceDate(startDate))
         
-        day.timeHistorys.append(timeHistory)
-        
-        realm.write{
-            self.realm.add(timeHistory)
-            self.realm.add(self.day,update:true)
+        if let day = day {
+            let timeHistory = TimeHistory()
+            timeHistory.id = NSUUID().UUIDString
+            timeHistory.day = day
+            timeHistory.startedAt = Int(startDate.timeIntervalSince1970)
+            timeHistory.endedAt = Int(endDate.timeIntervalSince1970)
+            timeHistory.doneMillis = Int(endDate.timeIntervalSinceDate(startDate))
+            
+            day.timeHistorys.append(timeHistory)
+            
+            realm.write{
+                self.realm.add(timeHistory)
+                self.realm.add(day,update:true)
+            }
         }
         
-        
-        /*
-        let entityDescription = NSEntityDescription.entityForName("TimeHistory", inManagedObjectContext:managedObjectContext!)
-        let timeHistory = TimeHistory(entity: entityDescription!, insertIntoManagedObjectContext:managedObjectContext)
-        timeHistory.dayId = day
-        timeHistory.startedAt = startDate
-        timeHistory.endedAt = endDate
-        timeHistory.doneMillis = endDate.timeIntervalSinceDate(startDate)
-        
-        var error: NSError?
-        managedObjectContext?.save(&error)
-        */
     }
     
     func setupTimer(){
         currentTime = 0
-        totalTime = NSTimeInterval(day.doneSecond)
+        
+        if let day = day {
+            totalTime = NSTimeInterval(day.doneSecond)
+        }
+        
         startDate = NSDate()
     }
     
@@ -559,36 +540,28 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     }
     
     
-    func addTimerView(){
-        
-        timerView = TimerView(frame:CGRectMake(0,0,240*ratio,240*ratio))
-        timerView.center = view.center
-        timerView.setTimerColor(task.getColor())
-        timerView.startAnimation()
-        
-        view.addSubview(timerView)
-        
-    }
-    
-    
     
     
     func addCompleteButton(){
         
         completeButton = UIButton(frame:CGRectMake(50*ratio, 470*ratio, 220*ratio, 45*ratio))
         completeButton.layer.borderWidth = 2*ratio
-        completeButton.layer.borderColor = task.getColor().CGColor
-        completeButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame: CGRectMake(0,0,260*ratio,45*ratio)), forState:UIControlState.Normal)
-        completeButton.setBackgroundImage(UIImage.colorImage(task.getColor(), frame: CGRectMake(0, 0, 260*ratio, 45*ratio)), forState: UIControlState.Highlighted)
+                completeButton.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(), frame: CGRectMake(0,0,260*ratio,45*ratio)), forState:UIControlState.Normal)
+        
         completeButton.setTitle("Complete", forState: UIControlState.Normal)
-        completeButton.setTitleColor(task.getColor(), forState: UIControlState.Normal)
+        
         completeButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Highlighted)
         completeButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Regular", size: 18*ratio)
         completeButton.addTarget(self, action: Selector("recordTime"), forControlEvents: UIControlEvents.TouchUpInside)
-        //view.addSubview(completeButton)
         
         
-        //self.navigationController?.popViewControllerAnimated(true)
+        if let task = task {
+            
+            completeButton.layer.borderColor = task.getColor().CGColor
+            completeButton.setBackgroundImage(UIImage.colorImage(task.getColor(), frame: CGRectMake(0, 0, 260*ratio, 45*ratio)), forState: UIControlState.Highlighted)
+            completeButton.setTitleColor(task.getColor(), forState: UIControlState.Normal)
+        }
+        
         
     }
     
@@ -626,8 +599,10 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
     func addTimeSettingView(){
         
         let timeView = UIView(frame:view.frame)
-        timeView.backgroundColor = task.getColor()
         
+        if let task = task {
+            timeView.backgroundColor = task.getColor()
+        }
     }
     
     
@@ -636,12 +611,14 @@ class TimerViewController: BasicViewController,TodaitNavigationDelegate,ResetDel
         todaitNavBar.todaitDelegate = self
         todaitNavBar.backButton.hidden = false
         
-        if let category = task.category {
-            self.titleLabel.text = task.category!.name + " - " + task.name
-        }else{
-            self.titleLabel.text = task.name
+        if let task = task {
+            
+            if let category = task.category {
+                self.titleLabel.text = task.category!.name + " - " + task.name
+            }else{
+                self.titleLabel.text = task.name
+            }
         }
-        
         
         todaitNavBar.setBackgroundImage(UIImage.colorImage(UIColor.clearColor(),frame:todaitNavBar.frame), forBarMetrics: UIBarMetrics.Default)
         todaitNavBar.shadowImage = UIImage()

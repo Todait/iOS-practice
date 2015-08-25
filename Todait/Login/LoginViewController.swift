@@ -288,10 +288,17 @@ class LoginViewController: BasicViewController,UITextFieldDelegate,ValidationDel
         Alamofire.request(.POST, SERVER_URL + LOGIN, parameters: params , encoding: .JSON).responseJSON(options: nil) { (request, response, object, error) -> Void in
             
             
+            if error != nil {
+                
+                let alert = UIAlertView(title: "Invalid", message: "서버에 연결 할 수 없습니다.", delegate: nil, cancelButtonTitle: "Cancel")
+                alert.show()
+                
+            }
+            
+            
             if let object: AnyObject = object {
                 let json = JSON(object)
                 print(json)
-                
                 
                 
                 let errorMessage = json["error"].stringValue

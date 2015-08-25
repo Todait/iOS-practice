@@ -94,7 +94,7 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
     var endAmount:Int! = 0
     
     
-    var doneButton:UIButton!
+    var saveButton:UIButton!
     var deleteButton:UIButton!
     
     var keyboardHelpView:KeyboardHelpView!
@@ -655,22 +655,25 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
         self.navigationController?.popViewControllerAnimated(true)
     }
     
-    func addDoneButton(){
+    
+    
+    func addSaveButton(){
         
-        if doneButton != nil {
+        if saveButton != nil {
             return
         }
         
-        doneButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
-        doneButton.setTitle("Done", forState: UIControlState.Normal)
-        doneButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
-        doneButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        doneButton.addTarget(self, action: Selector("doneButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        doneButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right
-        view.addSubview(doneButton)
+        saveButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
+        saveButton.setTitle("Done", forState: UIControlState.Normal)
+        saveButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
+        saveButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        saveButton.addTarget(self, action: Selector("saveButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        saveButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right
+        view.addSubview(saveButton)
     }
     
-    func doneButtonClk(){
+    
+    func saveButtonClk(){
         
         
         timeTask.goal = goalTextField.text
@@ -709,7 +712,24 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
     
     func validationSuccessful(){
         
+        ProgressManager.show()
         
+        if InternetManager.sharedInstance.isInternetEnable() == false {
+            
+            let alert = UIAlertView(title: "Invalid", message: "인터넷 연결이 필요합니다.", delegate: nil, cancelButtonTitle: "Cancel")
+            alert.show()
+            
+            ProgressManager.hide()
+            
+        }else{
+            
+            requestEditTask()
+            
+        }
+        
+    }
+    
+    func requestEditTask(){
         if isAlarmOn == true {
             let notificationId = NSUUID().UUIDString
             registerAlarm(notificationId)
@@ -768,20 +788,6 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
             }
             
         }
-
-        
-        
-        
-        
-        
-        
-        /*
-        realm.write{
-            self.realm.add(self.editedTask,update:true)
-        }
-        */
-
-        
         
     }
     

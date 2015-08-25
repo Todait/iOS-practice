@@ -588,7 +588,7 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         self.todaitNavBar.backButton.hidden = false
         self.todaitNavBar.todaitDelegate = self
         
-        addDoneButton()
+        addSaveButton()
         registerForKeyboardNotification()
         
     }
@@ -654,37 +654,48 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         self.navigationController?.popViewControllerAnimated(true)
     }
     
-    func addDoneButton(){
+    func addSaveButton(){
         
-        if doneButton != nil {
+        
+        
+        if saveButton != nil {
             return
         }
         
-        doneButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
-        doneButton.setTitle("Done", forState: UIControlState.Normal)
-        doneButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
-        doneButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
-        doneButton.addTarget(self, action: Selector("doneButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
-        doneButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right
-        view.addSubview(doneButton)
+        saveButton = UIButton(frame: CGRectMake(255*ratio, 32, 50*ratio, 20))
+        saveButton.setTitle("Save", forState: UIControlState.Normal)
+        saveButton.titleLabel?.font = UIFont(name: "AppleSDGothicNeo-Medium", size: 18)
+        saveButton.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Normal)
+        saveButton.addTarget(self, action: Selector("saveButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
+        saveButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.Right
+        view.addSubview(saveButton)
+        
     }
     
-    func doneButtonClk(){
+    
+    
+    func saveButtonClk(){
         
+        ProgressManager.show()
         
-        let validator = Validator()
-        validator.registerField(goalTextField, rules:[MinLengthRule(length: 1, message: "목표를 입력해주세요.")])
-        validator.registerField(unitTextField, rules: [MinLengthRule(length: 1, message: "단위를 입력해주세요.")])
-        
-        if isTotal == true {
-            validator.registerField(totalAmountField, rules: [MinLengthRule(length: 1, message: "전체분량을 입력해주세요.")])
+        if InternetManager.sharedInstance.isInternetEnable() == false {
+            
+            let alert = UIAlertView(title: "Invalid", message: "인터넷 연결이 필요합니다.", delegate: nil, cancelButtonTitle: "Cancel")
+            alert.show()
+            
+            ProgressManager.hide()
+            
         }else{
-            validator.registerField(startAmountField, rules: [MinLengthRule(length: 1, message: "시작범위를 입력해주세요.")])
-            validator.registerField(endAmountField, rules: [MinLengthRule(length: 1, message: "종료범위를 입력해주세요.")])
+            
+            saveEditedTask()
+            
         }
         
+    }
+    
+    
+    func saveEditedTask(){
         
-        validator.validate(self)
         
     }
     
