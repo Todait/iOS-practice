@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import Alamofire
 
 class CategoryEditViewController: BasicViewController,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UICollectionViewDataSource,UITextFieldDelegate{
     
@@ -138,36 +139,48 @@ class CategoryEditViewController: BasicViewController,UICollectionViewDelegate,U
     
     func saveCategory(){
         
+        ProgressManager.show()
         
+        var params:[String:AnyObject] = makeCategoryBatchParams(categoryTextField.text,String.categoryColorStringAtIndex(selectedIndex))
         
+        setUserHeader()
         
-        editedCategory.name = categoryTextField.text
-        editedCategory.color = String.categoryColorStringAtIndex(selectedIndex)
-        
-        realm.write {
-            self.realm.add(self.editedCategory, update: true)
+        Alamofire.request(.POST, SERVER_URL + BATCH , parameters: params).responseJSON(options: nil) {
+            (request, response , object , error) -> Void in
+            
+            
+            if let object:AnyObject = object {
+                
+                let jsons = JSON(object)
+                let syncData = encodeData(jsons["results"][0]["body"])
+                self.realmManager.synchronize(syncData)
+                
+                
+                let categoryData = encodeData(jsons["results"][1]["body"])
+                let json:JSON? = categoryData["category"]
+                
+                
+                if let json = json {
+                    self.defaults.setObject(json.stringValue, forKey: "sync_at")
+                    self.realmManager.synchronizeCategory(json)
+                    
+                    
+                    if let serverId = json["id"].int {
+                        
+                        let predicate = NSPredicate(format: " archived == false && serverId == %lu",serverId)
+                        let editedCategory = self.realm.objects(Category).filter(predicate)
+                        
+                        
+                        if editedCategory.count > 0 {
+                            self.categoryEdited(editedCategory.first!)
+                        }
+                    }
+                }
+            }
+            
+            ProgressManager.hide()
+            self.closeButtonClk()
         }
-        
-        NSNotificationCenter.defaultCenter().postNotificationName("categoryDataChanged", object: nil)
-        categoryEdited(editedCategory)
-        
-        /*
-        
-        var error: NSError?
-        managedObjectContext?.save(&error)
-        
-        if let err = error {
-            //에러처리
-        }else{
-            NSLog("Category 저장성공",1)
-            
-            
-            NSNotificationCenter.defaultCenter().postNotificationName("categoryDataChanged", object: nil)
-            
-            categoryEdited(editedCategory)
-            
-        }
-        */
     }
     
     func categoryEdited(category:Category){
@@ -192,6 +205,7 @@ class CategoryEditViewController: BasicViewController,UICollectionViewDelegate,U
         categoryTextField.delegate = self
         categoryTextField.textColor = UIColor.todaitLightGray()
         categoryTextField.text = editedCategory.name
+        categoryTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         categoryView.addSubview(categoryTextField)
         
         let line = UIView(frame: CGRectMake(10*ratio,85*ratio,274*ratio,1))
@@ -206,7 +220,7 @@ class CategoryEditViewController: BasicViewController,UICollectionViewDelegate,U
         confirmButtonClk()
         
         
-        return false
+        return true
     }
     
     func addColorCollectionView(){

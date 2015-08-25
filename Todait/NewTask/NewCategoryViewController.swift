@@ -79,7 +79,7 @@ class NewCategoryViewController: BasicViewController,TodaitNavigationDelegate,UI
         })
         
         
-        return false
+        return true
     }
     
     func addCollectionView(){

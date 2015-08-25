@@ -340,28 +340,38 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         Alamofire.request(.POST, SERVER_URL + BATCH , parameters: params).responseJSON(options: nil) {
             (request, response , object , error) -> Void in
             
-            let jsons = JSON(object!)
             
-            let syncData = encodeData(jsons["results"][0]["body"])
-            self.realmManager.synchronize(syncData)
-            
-            
-            
-            
-            let categoryData = encodeData(jsons["results"][1]["body"])
-            let json:JSON? = categoryData["category"]
-            
-            if let json = json {
+            if let object:AnyObject = object {
                 
-                self.defaults.setObject(json.stringValue, forKey: "sync_at")
-                self.realmManager.synchronizeCategory(json)
+                let jsons = JSON(object)
+                let syncData = encodeData(jsons["results"][0]["body"])
+                self.realmManager.synchronize(syncData)
+                
+                
+                let categoryData = encodeData(jsons["results"][1]["body"])
+                let json:JSON? = categoryData["category"]
+                
+                
+                if let json = json {
+                    self.defaults.setObject(json.stringValue, forKey: "sync_at")
+                    self.realmManager.synchronizeCategory(json)
+                    
+                    
+                    if let serverId = json["id"].int {
+                        
+                        let predicate = NSPredicate(format: " archived == false && serverId == %lu",serverId)
+                        let editedCategory = self.realm.objects(Category).filter(predicate)
+                        
+                        
+                        if editedCategory.count > 0 {
+                            self.categoryEdited(editedCategory.first!)
+                        }
+                    }
+                }
             }
             
             ProgressManager.hide()
-            
-            
             self.closeButtonClk()
-            
         }
     }
     
@@ -386,6 +396,7 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         categoryTextField.hidden = true
         categoryTextField.returnKeyType = UIReturnKeyType.Done
         categoryTextField.delegate = self
+        categoryTextField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         categoryView.addSubview(categoryTextField)
     }
     
@@ -397,8 +408,7 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
         
         confirmButtonClk()
         
-        
-        return false
+        return true
     }
     
     func addColorCollectionView(){
