@@ -118,7 +118,7 @@ class TimeTask: NSObject {
     func createEditedTaskParams()->[String:AnyObject]?{
 
         var params:[String:AnyObject] = [:]
-        params["task"] = createEditedTaskParams()
+        params["task"] = createEditedTaskParam()
         params["today_date"] = getTodayDateNumber()
         return params
         
@@ -218,11 +218,12 @@ class TimeTask: NSObject {
     func createTaskParams()->[String:AnyObject]?{
         
         var params:[String:AnyObject] = [:]
-        params["task"] = createTaskParams()
+        params["task"] = createTaskParam()
         params["today_date"] = getTodayDateNumber()
         
         return params
     }
+    
     func createTaskParam()->[String:AnyObject]{
         
         

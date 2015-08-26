@@ -308,20 +308,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         }
     }
     
-    func registerAlarm(notificationId:String){
-        
-        
-        let notification = UILocalNotification()
-        notification.alertBody = goalTextField.text
-        notification.timeZone = NSTimeZone.systemTimeZone()
-        notification.fireDate = alarmTime
-        notification.soundName = UILocalNotificationDefaultSoundName
-        notification.hasAction = true
-        notification.userInfo?.updateValue(notificationId, forKey: "notificationId")
-        UIApplication.sharedApplication().scheduleLocalNotification(notification)
-        
-        
-    }
+    
 
     
     

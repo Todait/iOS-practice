@@ -86,7 +86,7 @@ class AmountTask: NSObject {
     func createTaskParams()->[String:AnyObject]{
         
         var params:[String:AnyObject] = [:]
-        params["task"] = createTaskParams()
+        params["task"] = createTaskParam()
         params["today_date"] = getTodayDateNumber()
         
         return params

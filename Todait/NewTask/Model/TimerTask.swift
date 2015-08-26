@@ -55,7 +55,7 @@ class TimerTask: NSObject {
     func createEditedTaskParams()->[String:AnyObject]?{
         
         var params:[String:AnyObject] = [:]
-        params["task"] = createEditedTaskParams()
+        params["task"] = createEditedTaskParam()
         params["today_date"] = getTodayDateNumber()
         return params
         
@@ -123,7 +123,7 @@ class TimerTask: NSObject {
     func createTaskParams()->[String:AnyObject]?{
         
         var params:[String:AnyObject] = [:]
-        params["task"] = createTaskParams()
+        params["task"] = createTaskParam()
         params["today_date"] = getTodayDateNumber()
         
         return params
@@ -195,7 +195,13 @@ class TimerTask: NSObject {
     func createTaskDateParams()->[[String:AnyObject]]{
         
         var taskDate:[String:AnyObject] = [:]
-        taskDate["start_date"] = getDateNumberFromDate(startDate!)
+        
+        if let startDate = startDate {
+            taskDate["start_date"] = taskDate["start_date"]
+        }else{
+            taskDate["start_date"] = getDateFromDateNumber(getTodayDateNumber())
+        }
+        
         taskDate["state"] = 0
         
         return [taskDate]

@@ -121,8 +121,6 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
         addDataView()
         addDetailView()
         addOptionView()
-        
-        
         addUnitView()
         addKeyboardHelpView()
         addDeleteButton()
@@ -449,16 +447,14 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
     
     func getAlarmStatus()->Bool{
         
-        timeTask.isNotification = isAlarmOn
-        
-        return isAlarmOn
+        return timeTask.isNotification
     }
     
     func getAlarmTime() -> NSDate? {
         
         timeTask.notificationDate = alarmTime
         
-        return alarmTime
+        return timeTask.notificationDate
         
     }
     
@@ -469,21 +465,24 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
     func updateAlarmStatus(status: Bool) {
         
         
-        isAlarmOn = status
+        timeTask.isNotification = status
         
-        
-        if isAlarmOn == true {
+        if timeTask.isNotification == true {
             
-            var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: alarmTime!)
+            if let notificationDate = timeTask.notificationDate {
+                
+                let dateForm = NSDateFormatter()
+                dateForm.dateFormat = "HH:mm"
+                alarmOption.setText(dateForm.stringFromDate(notificationDate))
+                
+            }
             
-            alarmOption.setText("\(comp.hour):\(comp.minute)")
-            //alarmOption.setText(dateForm.stringFromDate(alarmTime!))
             
         }else{
             alarmOption.setText("알람없음")
         }
         
-        alarmOption.setButtonOn(isAlarmOn)
+        alarmOption.setButtonOn(timeTask.isNotification)
     }
     
     
@@ -731,7 +730,8 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
     }
     
     func requestEditTask(){
-        if isAlarmOn == true {
+        
+        if timeTask.isNotification == true {
             let notificationId = NSUUID().UUIDString
             registerAlarm(notificationId)
         }

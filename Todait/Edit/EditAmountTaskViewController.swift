@@ -341,7 +341,7 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         endAmountField.delegate = self
         endAmountField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
         
-        if let startAmount = amountTask.startAmount {
+        if let endAmount = amountTask.endAmount {
             endAmountField.text = "\(endAmount)"
         }
         
@@ -762,8 +762,9 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         if amountTask.isTotal == true {
             amountTask.totalAmount = editedTask.amount
         }else{
+            
             amountTask.startAmount = editedTask.startPoint
-            amountTask.endAmount = amountTask.startAmount + editedTask.amount
+            amountTask.endAmount = amountTask.startAmount! + editedTask.amount
         }
         
         
@@ -1278,9 +1279,9 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     func updateAmountAllEvents(textField:UITextField){
         
         switch textField {
-        case totalAmountField : totalAmount = textField.text.toInt()
-        case startAmountField : startAmount = textField.text.toInt()
-        case endAmountField : endAmount = textField.text.toInt()
+        case totalAmountField : amountTask.totalAmount = textField.text.toInt()
+        case startAmountField : amountTask.startAmount = textField.text.toInt()
+        case endAmountField : amountTask.endAmount = textField.text.toInt()
         default: textField.text = ""
         }
         
