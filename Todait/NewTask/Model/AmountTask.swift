@@ -80,7 +80,7 @@ class AmountTask: NSObject {
         
     }
     
-    func createAmountTaskParams()->[String:AnyObject]{
+    func createTaskParams()->[String:AnyObject]{
         
         var params:[String:AnyObject] = [:]
         params["task"] = createTaskParams()
@@ -89,7 +89,7 @@ class AmountTask: NSObject {
         return params
     }
     
-    func createTaskParams()->[String:AnyObject]{
+    func createTaskParam()->[String:AnyObject]{
         
         
         var task:[String:AnyObject] = [:]

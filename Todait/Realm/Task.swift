@@ -81,7 +81,12 @@ class Task: RealmObject{
         
         for taskDate in taskDates {
             
-            var expectedTimes = taskDate.week!.getExpectedTime()
+            var expectedTimes:[NSNumber] = [NSNumber](count:7, repeatedValue:0.0)
+            
+            if let week = taskDate.week {
+                expectedTimes = week.getExpectedTime()
+            }
+            
             
             for day in taskDate.days {
                 
@@ -90,9 +95,7 @@ class Task: RealmObject{
                 
                 var amountPercent:CGFloat = 0
                 
-                if expectAmount != 0 {
-                    amountPercent = CGFloat(doneAmount)/CGFloat(expectAmount)
-                }
+                amountPercent = day.getProgressPercent()
                 amountValue.append(amountPercent)
                 
                 
@@ -262,6 +265,10 @@ class Task: RealmObject{
                 
             }
             
+        }
+        
+        if totalDay == 0 {
+            return 0
         }
         
         

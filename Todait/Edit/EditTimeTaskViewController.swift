@@ -432,6 +432,7 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
         optionView.addSubview(alarmOption)
         
         
+        updateAlarmStatus(timeTask.isNotification)
     }
     
     func alarmOptionClk(){
@@ -738,7 +739,7 @@ class EditTimeTaskViewController: BasicViewController,UITextFieldDelegate,UnitIn
         
         ProgressManager.show()
         
-        if let param = timeTask.createEditedTimeTaskParams() {
+        if let param = timeTask.createEditedTaskParams() {
             
             
             var manager = Alamofire.Manager.sharedInstance

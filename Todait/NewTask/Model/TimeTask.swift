@@ -115,7 +115,7 @@ class TimeTask: NSObject {
     
     
     
-    func createEditedTimeTaskParams()->[String:AnyObject]?{
+    func createEditedTaskParams()->[String:AnyObject]?{
 
         var params:[String:AnyObject] = [:]
         params["task"] = createEditedTaskParams()
@@ -125,7 +125,7 @@ class TimeTask: NSObject {
     }
     
     
-    func createEditedTaskParams()->[String:AnyObject]{
+    func createEditedTaskParam()->[String:AnyObject]{
         
         
         var task:[String:AnyObject] = [:]
@@ -215,7 +215,7 @@ class TimeTask: NSObject {
     
     
     
-    func createTimeTaskParams()->[String:AnyObject]?{
+    func createTaskParams()->[String:AnyObject]?{
         
         var params:[String:AnyObject] = [:]
         params["task"] = createTaskParams()
@@ -223,7 +223,7 @@ class TimeTask: NSObject {
         
         return params
     }
-    func createTaskParams()->[String:AnyObject]{
+    func createTaskParam()->[String:AnyObject]{
         
         
         var task:[String:AnyObject] = [:]

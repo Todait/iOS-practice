@@ -21,8 +21,10 @@ class AmountTaskOptionViewController: TaskOptionViewController ,AlarmDelegate,Co
         addOptionView()
         
         updateAlarmStatus(amountTask.isNotification)
+        
         eventOption = 1
         count(amountTask.reviewCount)
+        
         eventOption = 2
         count(amountTask.repeatCount)
         
@@ -172,7 +174,21 @@ class AmountTaskOptionViewController: TaskOptionViewController ,AlarmDelegate,Co
     
     override func completeButtonClk(){
         
-        requestAmountTask()
+        
+        ProgressManager.show()
+        
+        if InternetManager.sharedInstance.isInternetEnable() == false {
+            
+            let alert = UIAlertView(title: "Invalid", message: "인터넷 연결이 필요합니다.", delegate: nil, cancelButtonTitle: "Cancel")
+            alert.show()
+            
+            ProgressManager.hide()
+            
+        }else{
+            
+            requestAmountTask()
+            
+        }
         
     }
     
@@ -180,7 +196,7 @@ class AmountTaskOptionViewController: TaskOptionViewController ,AlarmDelegate,Co
         
         ProgressManager.show()
         
-        var params:[String:AnyObject] = makeBatchParams(CREATE_TASK,amountTask.createAmountTaskParams())
+        var params:[String:AnyObject] = makeBatchParams(CREATE_TASK,amountTask.createTaskParams())
         
         setUserHeader()
         
@@ -223,7 +239,7 @@ class AmountTaskOptionViewController: TaskOptionViewController ,AlarmDelegate,Co
         
         
         
-        amountTask.createAmountTaskParams()
+        amountTask.createTaskParams()
         
     }
     

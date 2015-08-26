@@ -436,7 +436,7 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         alarmOption.setButtonOn(false)
         optionView.addSubview(alarmOption)
         
-        
+        updateAlarmStatus(amountTask.isNotification)
     }
     
     func alarmOptionClk(){

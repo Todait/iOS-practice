@@ -113,9 +113,6 @@ class AmountTaskViewController: BasicViewController,TodaitNavigationDelegate,Cat
             goalTextField.text = goal
         }
         
-        currentTextField = goalTextField
-        
-        goalTextField.becomeFirstResponder()
         
         
         status = Status.Goal

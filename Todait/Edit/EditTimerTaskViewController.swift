@@ -13,10 +13,6 @@ import Alamofire
 class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryDelegate,TodaitNavigationDelegate,AlarmDelegate{
    
     var editedTask:Task!
-    var category:Category!
-    var mainColor: UIColor!
-   
-    
     
     var goalView:UIView!
     var goalTextField: UITextField!
@@ -36,6 +32,7 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
     
     var dateForm: NSDateFormatter!
     
+    var timerTask = TimerTask.sharedInstance
     
     
     
@@ -43,8 +40,6 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
     
     var options:[Int] = [1,2,4,8]
     var option:Int! = 0
-    var isAlarmOn:Bool! = false
-    var alarmTime:NSDate?
     var deleteButton:UIButton!
     
     override func viewDidLoad() {
@@ -66,7 +61,7 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         
         var categoryResults = realm.objects(Category).filter("archived == false")
         if let category = categoryResults.first{
-            self.category = category
+            timerTask.category = category
         }
         
     }
@@ -117,7 +112,10 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         categoryButton.addTarget(self, action: Selector("showCategorySettingVC"), forControlEvents: UIControlEvents.TouchUpInside)
         goalView.addSubview(categoryButton)
         
-        categoryEdited(category)
+        
+        if let category = timerTask.category {
+            categoryEdited(category)
+        }
     }
 
     
@@ -126,9 +124,10 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         var categoryVC = CategorySettingViewController()
         //categoryVC.delegate = self
         
-        categoryVC.selectedCategory = category
+        categoryVC.selectedCategory = timerTask.category
         categoryVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         categoryVC.delegate = self
+        
         self.navigationController?.presentViewController(categoryVC, animated: false, completion: { () -> Void in
             
         })
@@ -143,7 +142,7 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         categoryButton.setImage(UIImage.maskColor("category@3x.png", color: UIColor.whiteColor()), forState: UIControlState.Normal)
         categoryButton.backgroundColor = UIColor.colorWithHexString(editedCategory.color)
         
-        self.category = editedCategory
+        timerTask.category = editedCategory
     }
     
     
@@ -201,6 +200,7 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         alarmOption.iconImageView.center = CGPointMake(37*ratio, 27.5*ratio)
         alarmOption.textLabel.frame = CGRectMake(63*ratio, 12*ratio, 92*ratio, 31*ratio)
         
+        updateAlarmStatus(timerTask.isNotification)
     }
     
     func alarmOptionClk(){
@@ -218,38 +218,41 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
     func getAlarmStatus()->Bool{
         
         
-        
-        return isAlarmOn
+        return timerTask.isNotification
     }
     
     func getAlarmTime() -> NSDate? {
         
-        return alarmTime
+        return timerTask.notificationDate
         
     }
     
     func updateAlarmTime(date: NSDate) {
-        alarmTime = date
+        timerTask.notificationDate = date
     }
     
     func updateAlarmStatus(status: Bool) {
         
         
-        isAlarmOn = status
+        timerTask.isNotification = status
         
         
-        if isAlarmOn == true {
+        if timerTask.isNotification == true {
             
-            var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: alarmTime!)
-            
-            alarmOption.setText("\(comp.hour):\(comp.minute)")
+            if let notificationDate = timerTask.notificationDate{
+                
+                var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: notificationDate)
+                
+                alarmOption.setText("\(comp.hour):\(comp.minute)")
+                
+            }
             //alarmOption.setText(dateForm.stringFromDate(alarmTime!))
             
         }else{
             alarmOption.setText("알람없음")
         }
         
-        alarmOption.setButtonOn(isAlarmOn)
+        alarmOption.setButtonOn(timerTask.isNotification)
     }
 
     
@@ -285,6 +288,8 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
     
     func saveButtonClk(){
         
+        
+        
         ProgressManager.show()
         
         if InternetManager.sharedInstance.isInternetEnable() == false {
@@ -304,68 +309,50 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
     
     func saveEditedTask(){
         
-        
-        var param:[String:AnyObject] = [:]
-        var task:[String:AnyObject] = [:]
-        task["name"] = goalTextField.text
-        task["task_type"] = "time"
-        task["repeat_count"] = 1
-        task["notification_mode"] = isAlarmOn
-        task["priority"] = 0
-        
-        if let category = category {
-            task["category_id"] = category.serverId
-        }
-        
-        task["task_dates_attributes"] = [["start_date":"\(getTodayDateNumber())","state":0]]
-        
-        if isAlarmOn == true {
-            task["notification_time"] = alarmOption.optionText
-        }
-        
-        param["today_date"] = getTodayDateNumber()
-        param["task"] = task
-        
-        var params = makeUpdateBatchParams(EDIT_TASK + "/\(editedTask!.serverId)", param)
-        
-        setUserHeader()
-        
-        Alamofire.request(.POST, SERVER_URL + BATCH , parameters: params).responseJSON(options: nil) {
-            (request, response , object , error) -> Void in
-            
-            let jsons = JSON(object!)
-            
-            let syncData = encodeData(jsons["results"][0]["body"])
-            self.realmManager.synchronize(syncData)
-            
-            
-            
-            
-            let taskData = encodeData(jsons["results"][1]["body"])
-            
-            
-            let task:JSON? = taskData["task"]
-            if let task = task {
+        if InternetManager.sharedInstance.isInternetEnable() == true {
+            if let param = timerTask.createEditedTaskParams() {
+                var params = makeUpdateBatchParams(EDIT_TASK + "/\(editedTask!.serverId)", param)
                 
-                self.defaults.setObject(task["sync_at"].stringValue, forKey: "sync_at")
-                self.realmManager.synchronizeTask(task)
+                setUserHeader()
+                
+                Alamofire.request(.POST, SERVER_URL + BATCH , parameters: params).responseJSON(options: nil) {
+                    (request, response , object , error) -> Void in
+                    
+                    let jsons = JSON(object!)
+                    
+                    let syncData = encodeData(jsons["results"][0]["body"])
+                    self.realmManager.synchronize(syncData)
+                    
+                    
+                    
+                    
+                    let taskData = encodeData(jsons["results"][1]["body"])
+                    
+                    
+                    let task:JSON? = taskData["task"]
+                    if let task = task {
+                        
+                        self.defaults.setObject(task["sync_at"].stringValue, forKey: "sync_at")
+                        self.realmManager.synchronizeTask(task)
+                    }
+                    
+                    
+                    let day:JSON? = taskData["future_days"]
+                    if let day = day {
+                        self.defaults.setObject(day["sync_at"].stringValue, forKey: "sync_at")
+                        self.realmManager.synchronizeDays(day)
+                    }
+                    
+                    let deleteDays:JSON? = taskData["deleted_days"]
+                    if let deleteDays = deleteDays {
+                        self.defaults.setObject(deleteDays["sync_at"].stringValue, forKey: "sync_at")
+                        self.realmManager.deleteDays(deleteDays)
+                    }
+                    
+                    ProgressManager.hide()
+                    self.backButtonClk()
+                }
             }
-            
-            
-            let day:JSON? = taskData["future_days"]
-            if let day = day {
-                self.defaults.setObject(day["sync_at"].stringValue, forKey: "sync_at")
-                self.realmManager.synchronizeDays(day)
-            }
-            
-            let deleteDays:JSON? = taskData["deleted_days"]
-            if let deleteDays = deleteDays {
-                self.defaults.setObject(deleteDays["sync_at"].stringValue, forKey: "sync_at")
-                self.realmManager.deleteDays(deleteDays)
-            }
-            
-            ProgressManager.hide()
-            self.backButtonClk()
         }
     }
     

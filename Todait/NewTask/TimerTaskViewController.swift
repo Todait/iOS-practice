@@ -51,7 +51,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     var closeButton:UIButton!
     var keyboardHelpView:KeyboardHelpView!
     
-    
+    var timerTask = TimerTask.sharedInstance
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -211,6 +211,8 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     }
     
     func validationSuccessful(){
+        
+        ProgressManager.show()
         saveNewTask()
     }
     
@@ -232,29 +234,15 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
         
         if InternetManager.sharedInstance.isInternetEnable() == true {
             
-            var param:[String:AnyObject] = [:]
-            var task:[String:AnyObject] = [:]
-            task["name"] = goalTextField.text
-            task["task_type"] = "time"
-            task["repeat_count"] = 1
-            task["notification_mode"] = isAlarmOn
-            task["priority"] = 0
-            task["task_dates_attributes"] = [["start_date":"\(getTodayDateNumber())","state":0]]
             
-            if let category = category {
-                task["category_id"] = category.serverId
+           
+            
+            if let param = timerTask.createTaskParams() {
+                
+                var params = makeBatchParams(CREATE_TASK, param)
+                setUserHeader()
+                requestCreateTask(params)
             }
-            
-            if isAlarmOn == true {
-                task["notification_time"] = alarmOption.optionText
-            }
-            
-            param["today_date"] = getTodayDateNumber()
-            param["task"] = task
-            
-            var params = makeBatchParams(CREATE_TASK, param)
-            
-            requestCreateTask(params)
             
         }else{
             
@@ -279,7 +267,7 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
             (request, response , object , error) -> Void in
             
             
-            if let object = object {
+            if let object: AnyObject = object {
                 
                 let jsons = JSON(object)
                 
@@ -308,10 +296,12 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
                 
             }
             
-            if let currentTextField = currentTextField {
+            if let currentTextField = self.currentTextField {
                 currentTextField.resignFirstResponder()
             }
             
+            
+            NSNotificationCenter.defaultCenter().postNotificationName("dayUpdate", object: nil)
             ProgressManager.hide()
             
             self.navigationController?.dismissViewControllerAnimated(true, completion: { () -> Void in

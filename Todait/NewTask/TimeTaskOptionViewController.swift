@@ -171,20 +171,26 @@ class TimeTaskOptionViewController: TaskOptionViewController ,AlarmDelegate ,Cou
     
     override func completeButtonClk(){
         
-        requestTimeTask()
+        ProgressManager.show()
         
+        if InternetManager.sharedInstance.isInternetEnable() == false {
+            
+            let alert = UIAlertView(title: "Invalid", message: "인터넷 연결이 필요합니다.", delegate: nil, cancelButtonTitle: "Cancel")
+            alert.show()
+            
+            ProgressManager.hide()
+            
+        }else{
+            
+            requestTimeTask()
+            
+        }
     }
     
     func requestTimeTask(){
         
         
-        ProgressManager.show()
-        
-        if let param = timeTask.createTimeTaskParams() {
-            
-            
-            var manager = Alamofire.Manager.sharedInstance
-            manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
+        if let param = timeTask.createTaskParams() {
             
             var params = makeBatchParams(CREATE_TASK, param)
             setUserHeader()
