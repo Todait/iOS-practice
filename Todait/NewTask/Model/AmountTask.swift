@@ -16,6 +16,9 @@ class AmountTask: NSObject {
     var unit:String? = nil
     var totalAmount:Int?
     var dayAmount:Int?
+    var startAmount:Int?
+    var endAmount:Int?
+    
     var category:Category? = nil
     var repeatCount = 0
     var reviewCount = 0

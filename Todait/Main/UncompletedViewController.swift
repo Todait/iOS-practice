@@ -27,8 +27,10 @@ class UncompletedViewController: BasicViewController,TodaitNavigationDelegate,UI
     func loadUncompletedTaskData(){
         
         
+        let todayDateNumber = getTodayDateNumber()
+        let uncomplete = NSPredicate(format:"archived == false && state == 0 && endDate < %lu " ,todayDateNumber)
         
-        uncompletedTaskDateResults = realm.objects(TaskDate).filter("state == 0")
+        uncompletedTaskDateResults = realm.objects(TaskDate).filter(uncomplete)
         
     
     }
@@ -117,14 +119,20 @@ class UncompletedViewController: BasicViewController,TodaitNavigationDelegate,UI
             
             cell.titleLabel.text = task.name
             cell.titleLabel.text = task.name + " | " + getTimeStringFromSeconds(NSTimeInterval(totalDoneTime))
-            
             cell.contentsTextView.setupText(totalDoneAmount, total: amount, unit: task.unit)
             
             
-            cell.percentLabel.text = String(format: "%lu%@", Int(totalDoneAmount/amount * 100),"%")
+            if amount == 0 {
+                cell.percentLabel.text = String(format: "%lu%@", Int(0),"%")
+                cell.percentLayer.strokeEnd = CGFloat(0)
+            }else{
+                cell.percentLabel.text = String(format: "%lu%@", Int(totalDoneAmount/amount * 100),"%")
+                cell.percentLayer.strokeEnd = CGFloat(totalDoneAmount/amount)
+            }
+            
             
             cell.percentLayer.strokeColor = UIColor.todaitRed().CGColor
-            cell.percentLayer.strokeEnd = CGFloat(totalDoneAmount/amount)
+            
             cell.percentLabel.textColor = UIColor.todaitRed()
             
         }

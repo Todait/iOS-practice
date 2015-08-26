@@ -69,7 +69,6 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     var middleBox:UIView!
     
     
-    var isTotal:Bool! = true
     var rangeList:[[String:String]] = []
     
     
@@ -82,15 +81,6 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     
     var options:[Int] = [1,2,4]
     var eventOption = 0
-    var repeatCount:Int! = 0
-    var reviewCount:Int! = 0
-    
-    
-    
-    
-    var totalAmount:Int! = 0
-    var startAmount:Int! = 0
-    var endAmount:Int! = 0
     
     
     var doneButton:UIButton!
@@ -98,10 +88,6 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     
     var keyboardHelpView:KeyboardHelpView!
     private var status:Status! = Status.None
-    
-    var isAlarmOn:Bool! = false
-    var alarmTime:NSDate?
-    
     
     var amountTask = AmountTask.sharedInstance
     
@@ -278,8 +264,8 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         rangeButton.addTarget(self, action: Selector("rangeButtonClk"), forControlEvents: UIControlEvents.TouchUpInside)
         dataView.addSubview(rangeButton)
         
-        setAmountButtonHighlight(totalButton, highlight: isTotal)
-        setAmountButtonHighlight(rangeButton, highlight: !isTotal)
+        setAmountButtonHighlight(totalButton, highlight: amountTask.isTotal)
+        setAmountButtonHighlight(rangeButton, highlight: !amountTask.isTotal)
         
         
         
@@ -317,7 +303,11 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         totalAmountField.addTarget(self, action: Selector("updateAmountAllEvents:"), forControlEvents: UIControlEvents.AllEvents)
         totalAmountField.delegate = self
         totalAmountField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
-        totalAmountField.text = "\(totalAmount)"
+        
+        if let totalAmount = amountTask.totalAmount {
+            totalAmountField.text = "\(totalAmount)"
+        }
+        
         dataView.addSubview(totalAmountField)
         
         
@@ -333,7 +323,11 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         startAmountField.addTarget(self, action: Selector("updateStartAmount:"), forControlEvents: UIControlEvents.AllEvents)
         startAmountField.delegate = self
         startAmountField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
-        startAmountField.text = "\(startAmount)"
+        
+        if let startAmount = amountTask.startAmount {
+            startAmountField.text = "\(startAmount)"
+        }
+        
         dataView.addSubview(startAmountField)
         
         
@@ -346,7 +340,11 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         endAmountField.keyboardType = UIKeyboardType.NumberPad
         endAmountField.delegate = self
         endAmountField.contentVerticalAlignment = UIControlContentVerticalAlignment.Center
-        endAmountField.text = "\(endAmount)"
+        
+        if let startAmount = amountTask.startAmount {
+            endAmountField.text = "\(endAmount)"
+        }
+        
         dataView.addSubview(endAmountField)
         
         
@@ -455,37 +453,40 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         
         
         
-        return isAlarmOn
+        return amountTask.isNotification
     }
     
     func getAlarmTime() -> NSDate? {
         
-        return alarmTime
+        return amountTask.notificationDate
         
     }
     
     func updateAlarmTime(date: NSDate) {
-        alarmTime = date
+        amountTask.notificationDate = date
     }
     
     func updateAlarmStatus(status: Bool) {
         
         
-        isAlarmOn = status
+        amountTask.isNotification = status
         
         
-        if isAlarmOn == true {
+        if amountTask.isNotification == true {
             
-            var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: alarmTime!)
-            
-            alarmOption.setText("\(comp.hour):\(comp.minute)")
-            //alarmOption.setText(dateForm.stringFromDate(alarmTime!))
+            if let notificationDate = amountTask.notificationDate {
+                
+                let dateForm = NSDateFormatter()
+                dateForm.dateFormat = "HH:mm"
+                alarmOption.setText(dateForm.stringFromDate(notificationDate))
+                
+            }
             
         }else{
             alarmOption.setText("알람없음")
         }
         
-        alarmOption.setButtonOn(isAlarmOn)
+        alarmOption.setButtonOn(amountTask.isNotification)
     }
 
     
@@ -516,7 +517,7 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         
         var reviewOptionVC = ReviewViewController()
         reviewOptionVC.delegate = self
-        reviewOptionVC.count = reviewCount
+        reviewOptionVC.count = amountTask.reviewCount
         reviewOptionVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         
         self.navigationController?.presentViewController(reviewOptionVC, animated: false, completion: { () -> Void in
@@ -552,7 +553,7 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         
         var repeatOptionVC = RepeatViewController()
         repeatOptionVC.delegate = self
-        repeatOptionVC.count = repeatCount
+        repeatOptionVC.count = amountTask.repeatCount
         repeatOptionVC.modalPresentationStyle = UIModalPresentationStyle.OverCurrentContext
         
         self.navigationController?.presentViewController(repeatOptionVC, animated: false, completion: { () -> Void in
@@ -567,8 +568,8 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         
         
         switch eventOption {
-        case 1: reviewOption.setText("복습 \(count)회") ; reviewOption.setButtonOn(count != 0) ; reviewCount = count
-        case 2: repeatOption.setText("회독 \(count)회") ; repeatOption.setButtonOn(count != 0) ; repeatCount = count
+        case 1: reviewOption.setText("복습 \(count)회") ; reviewOption.setButtonOn(count != 0) ; amountTask.reviewCount = count
+        case 2: repeatOption.setText("회독 \(count)회") ; repeatOption.setButtonOn(count != 0) ; amountTask.repeatCount = count
         default: eventOption = 0
         }
         
@@ -704,7 +705,7 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     func validationSuccessful(){
        
         
-        if isAlarmOn == true {
+        if amountTask.isNotification == true {
             
             let notificationId = NSUUID().UUIDString
             //editedTask.notificationId = notificationId
@@ -724,15 +725,18 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     func registerAlarm(notificationId:String){
         
         
-        let notification = UILocalNotification()
-        notification.alertBody = goalTextField.text
-        notification.timeZone = NSTimeZone.systemTimeZone()
-        notification.fireDate = alarmTime
-        notification.soundName = UILocalNotificationDefaultSoundName
-        notification.hasAction = true
-        notification.userInfo?.updateValue(notificationId, forKey: "notificationId")
-        UIApplication.sharedApplication().scheduleLocalNotification(notification)
-        
+        if let alarmTime = amountTask.notificationDate {
+            
+            let notification = UILocalNotification()
+            notification.alertBody = goalTextField.text
+            notification.timeZone = NSTimeZone.systemTimeZone()
+            notification.fireDate = alarmTime
+            notification.soundName = UILocalNotificationDefaultSoundName
+            notification.hasAction = true
+            notification.userInfo?.updateValue(notificationId, forKey: "notificationId")
+            UIApplication.sharedApplication().scheduleLocalNotification(notification)
+            
+        }
         
     }
     
@@ -753,13 +757,13 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     func setupTimeTaskViewController(){
         
         
-        isTotal = editedTask.startPoint == 0
+        amountTask.isTotal = editedTask.startPoint == 0
         
-        if isTotal == true {
-            totalAmount = editedTask.amount
+        if amountTask.isTotal == true {
+            amountTask.totalAmount = editedTask.amount
         }else{
-            startAmount = editedTask.startPoint
-            endAmount = startAmount + editedTask.amount
+            amountTask.startAmount = editedTask.startPoint
+            amountTask.endAmount = amountTask.startAmount + editedTask.amount
         }
         
         
@@ -845,7 +849,7 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     
     func leftButtonClk(){
         
-        if isTotal == true {
+        if amountTask.isTotal == true {
             
             switch status as Status {
                 
@@ -870,7 +874,7 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     
     func rightButtonClk(){
         
-        if isTotal == true {
+        if amountTask.isTotal == true {
             
             switch status as Status {
             case .Goal: totalAmountField.becomeFirstResponder() ; status = .Total ; keyboardHelpView.setStatus(KeyboardHelpStatus.Center)
@@ -1051,11 +1055,11 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         cell.contentView.addSubview(endAmountField)
         
         
-        if let value = startAmount {
+        if let value = amountTask.startAmount {
             startAmountField.text = "\(value)"
         }
         
-        if let value = endAmount {
+        if let value = amountTask.endAmount {
             endAmountField.text = "\(value)"
         }
         
@@ -1070,12 +1074,12 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     
     
     func updateStartAmount(textField:UITextField){
-        startAmount = textField.text.toInt()
+        amountTask.startAmount = textField.text.toInt()
     }
     
     
     func updateEndAmount(textField:UITextField){
-        endAmount = textField.text.toInt()
+        amountTask.endAmount = textField.text.toInt()
     }
     
     
@@ -1138,8 +1142,8 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
         
         
         
-        setAmountButtonHighlight(totalButton, highlight: isTotal)
-        setAmountButtonHighlight(rangeButton, highlight: !isTotal)
+        setAmountButtonHighlight(totalButton, highlight: amountTask.isTotal)
+        setAmountButtonHighlight(rangeButton, highlight: !amountTask.isTotal)
         cell.contentView.addSubview(unitTextField)
         
         
@@ -1152,10 +1156,10 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     
     func totalButtonClk(){
         
-        isTotal = true
+        amountTask.isTotal = true
         
-        setAmountButtonHighlight(totalButton, highlight: isTotal)
-        setAmountButtonHighlight(rangeButton, highlight: !isTotal)
+        setAmountButtonHighlight(totalButton, highlight: amountTask.isTotal)
+        setAmountButtonHighlight(rangeButton, highlight: !amountTask.isTotal)
         
         totalUpdate()
         
@@ -1164,10 +1168,10 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     
     func rangeButtonClk(){
         
-        isTotal = false
+        amountTask.isTotal = false
         
-        setAmountButtonHighlight(totalButton, highlight: isTotal)
-        setAmountButtonHighlight(rangeButton, highlight: !isTotal)
+        setAmountButtonHighlight(totalButton, highlight: amountTask.isTotal)
+        setAmountButtonHighlight(rangeButton, highlight: !amountTask.isTotal)
         
         totalUpdate()
     }
@@ -1214,12 +1218,13 @@ class EditAmountTaskViewController: BasicViewController,UITextFieldDelegate,Unit
     
     func totalUpdate(){
         
-        totalAmountField.hidden = !isTotal
-        startAmountField.hidden = isTotal
-        endAmountField.hidden = isTotal
-        middleBox.hidden = isTotal
         
-        if isTotal == true {
+        totalAmountField.hidden = !amountTask.isTotal
+        startAmountField.hidden = amountTask.isTotal
+        endAmountField.hidden = amountTask.isTotal
+        middleBox.hidden = amountTask.isTotal
+        
+        if amountTask.isTotal == true {
             infoLabel.text = "전체"
         }else{
             infoLabel.text = "범위"

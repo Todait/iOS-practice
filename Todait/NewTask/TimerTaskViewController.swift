@@ -254,8 +254,6 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
             
         }
         
-        
-        
     }
     
     
@@ -487,15 +485,18 @@ class TimerTaskViewController: BasicViewController,UITextFieldDelegate,CategoryD
     func updateAlarmStatus(status: Bool) {
         
         
-        isAlarmOn = status
+        timerTask.isNotification = status
         
         
-        if isAlarmOn == true {
+        if timerTask.isNotification == true {
             
-            var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: alarmTime!)
-            
-            alarmOption.setText(String(format: "%0lu", arguments: [comp.hour]) + ":" + String(format: "%0lu", arguments: [comp.minute]))
-            
+            if let notificationDate = timerTask.notificationDate {
+                
+                let dateForm = NSDateFormatter()
+                dateForm.dateFormat = "HH:mm"
+                alarmOption.setText(dateForm.stringFromDate(notificationDate))
+                
+            }
             
         }else{
             alarmOption.setText("알람없음")

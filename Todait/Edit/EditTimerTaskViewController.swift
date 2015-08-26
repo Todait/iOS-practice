@@ -46,7 +46,7 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.todaitBackgroundGray()
-        
+        timerTask.setTask(editedTask)
         
         loadDefaultCategory()
         setupTimeTaskViewController()
@@ -239,11 +239,15 @@ class EditTimerTaskViewController: BasicViewController,UITextFieldDelegate,Categ
         
         if timerTask.isNotification == true {
             
-            if let notificationDate = timerTask.notificationDate{
+            if timerTask.isNotification == true {
                 
-                var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: notificationDate)
-                
-                alarmOption.setText("\(comp.hour):\(comp.minute)")
+                if let notificationDate = timerTask.notificationDate {
+                    
+                    let dateForm = NSDateFormatter()
+                    dateForm.dateFormat = "HH:mm"
+                    alarmOption.setText(dateForm.stringFromDate(notificationDate))
+                    
+                }
                 
             }
             //alarmOption.setText(dateForm.stringFromDate(alarmTime!))

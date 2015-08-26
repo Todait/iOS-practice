@@ -135,9 +135,11 @@ class AmountTaskOptionViewController: TaskOptionViewController ,AlarmDelegate,Co
         if amountTask.isNotification == true {
             
             if let notificationDate = amountTask.notificationDate {
-                var comp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: amountTask.notificationDate!)
                 
-                alarmOption.setText("\(comp.hour):\(comp.minute)")
+                let dateForm = NSDateFormatter()
+                dateForm.dateFormat = "HH:mm"
+                alarmOption.setText(dateForm.stringFromDate(notificationDate))
+                
             }
             
         }else{

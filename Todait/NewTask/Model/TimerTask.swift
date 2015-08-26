@@ -163,8 +163,34 @@ class TimerTask: NSObject {
         isEditedMode = true
         goal = task.name
         isNotification = task.notificationMode
-        //notificationDate = task.notificationTime
+        
+        if let notificationDate = getNotificationDate(task.notificationTime){
+            self.notificationDate = notificationDate
+        }
+        
     }
+    
+    func getNotificationDate(notificationTime:String)->NSDate?{
+        
+        let dateForm = NSDateFormatter()
+        dateForm.dateFormat = "HH:mm"
+        
+        if let notificationDate = dateForm.dateFromString(notificationTime) {
+            
+            let dateComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: notificationDate)
+            
+            let todayDate = getDateFromDateNumber(getTodayDateNumber())
+            
+            let todayComp = NSCalendar.currentCalendar().components(NSCalendarUnit.CalendarUnitHour|NSCalendarUnit.CalendarUnitMinute, fromDate: todayDate)
+            todayComp.hour = dateComp.hour
+            todayComp.minute = dateComp.minute
+            
+            return NSCalendar.currentCalendar().dateFromComponents(todayComp)
+        }
+        
+        return nil
+    }
+    
     
     func createTaskDateParams()->[[String:AnyObject]]{
         

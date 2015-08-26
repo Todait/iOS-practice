@@ -8,11 +8,38 @@
 
 import UIKit
 import Foundation
-
+import Alamofire
 
 public let CREDENTIAL_ACCESS_KEY:String = "AKIAJS3V26L2Z3N64B6A"
 public let CREDENTIAL_SECRET_KEY:String = "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"
 public let AWSS3_BUCKET_NAME:String = "todait-images"
+
+
+public let SERVER_URL:String = "http://192.168.0.5:3000" //"http://1.255.56.11:80"
+
+public let REGISTER:String =  "/registrations"
+public let LOGIN:String = "/sessions"
+public let VALIDATION:String = "/validations"
+public let SYNCHRONIZE:String = "/get_sync_data"
+public let CREATE_CATEGORY:String = "/categories"
+public let CREATE_TASK:String = "/tasks"
+public let EDIT_TASK:String = "/tasks"
+public let BATCH:String = "/todait_batchapi"
+
+
+
+public func setBaseHeader(){
+    
+    var manager = Alamofire.Manager.sharedInstance
+    manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json"]
+}
+
+public func setUserHeader(){
+    
+    let defaults = NSUserDefaults.standardUserDefaults()
+    var manager = Alamofire.Manager.sharedInstance
+    manager.session.configuration.HTTPAdditionalHeaders = ["Content-Type":"application/json","Accept" : "application/vnd.todait.v1+json","X-User-Email":defaults.objectForKey("email") ?? "" ,"X-User-Token":defaults.objectForKey("authentication_token") ?? ""]
+}
 
 
 extension Array {
@@ -32,6 +59,8 @@ extension Array {
     }
     
 }
+
+
 
 
 extension UIView {
@@ -106,7 +135,7 @@ public func getTimeString(time:Int)->String{
 }
 
 
-public func getTodayDateNumber()->NSNumber{
+public func getTodayDateNumber()->Int{
     
     return getDateNumberFromDate(NSDate())
 }
@@ -215,6 +244,16 @@ public func getTimeStringOfTwoArgumentsFromSeconds(seconds : NSTimeInterval ) ->
 }
 
 
+public func getTimeStringOfHourMinuteFromMinutes(minutes : NSTimeInterval ) -> String {
+    
+    
+    let hour : Int = Int(minutes / 60)
+    let minute : Int = Int(minutes % 60)
+    
+    return String(format:  "%02lu:%02lu", arguments: [hour,minute])
+}
+
+
 public func getTimeStringOfHourMinuteFromSeconds(seconds : NSTimeInterval ) -> String {
     
     
@@ -244,7 +283,7 @@ public func getDate(year:Int,month:Int,day:Int,hour:Int,minute:Int,second:Int)->
     
 }
 
-public func getDateNumberFromDate(date:NSDate)->NSNumber{
+public func getDateNumberFromDate(date:NSDate)->Int{
     
     let dateForm = NSDateFormatter()
     dateForm.dateFormat = "yyyyMMdd"

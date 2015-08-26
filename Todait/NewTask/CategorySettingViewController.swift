@@ -312,8 +312,9 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
             
             let alert = UIAlertView(title: "Invalid", message: "인터넷 연결이 필요합니다.", delegate: nil, cancelButtonTitle: "Cancel")
             alert.show()
-            ProgressManager.hide()
             
+            ProgressManager.hide()
+            closeButtonClk()
         }else{
             
             requestCategory()
@@ -360,6 +361,7 @@ class CategorySettingViewController: BasicViewController,UITableViewDelegate,UIT
                 }
             }
             
+            NSNotificationCenter.defaultCenter().postNotificationName("dayUpdate", object: nil)
             ProgressManager.hide()
             self.closeButtonClk()
         }
